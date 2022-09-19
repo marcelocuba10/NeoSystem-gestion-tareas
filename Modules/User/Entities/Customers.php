@@ -12,18 +12,21 @@ class Customers extends Model
     protected $fillable = [
         'name',
         'last_name',
+        'idReference',
         'phone',
         'doc_id',
         'email',
         'address',
-        'access_key',
-        'puid',
-        'total_machines',
-        'pool',
-        'userIdPool',
-        'apiKey',
-        'secretKey',
-        'idReference'
+        'localidad',
+        'latitud',
+        'longitud',
+        'is_vigia',
+        'category',
+        'potential_products',
+        'unit_quantity',
+        'result_of_the_visit',
+        'objective',
+        'next_visit_date',
     ];
     
     protected static function newFactory()

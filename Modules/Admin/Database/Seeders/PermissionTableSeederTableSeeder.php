@@ -22,15 +22,15 @@ class PermissionTableSeederTableSeeder extends Seeder
             'role-sa-edit',
             'role-sa-delete',
 
-            'plan-sa-list',
-            'plan-sa-create',
-            'plan-sa-edit',
-            'plan-sa-delete',
-
             'permission-sa-list',
             'permission-sa-create',
             'permission-sa-edit',
             'permission-sa-delete',
+
+            'plan-sa-list',
+            'plan-sa-create',
+            'plan-sa-edit',
+            'plan-sa-delete',
 
             'user-sa-list',
             'user-sa-create',
@@ -51,11 +51,6 @@ class PermissionTableSeederTableSeeder extends Seeder
             'customer-sa-create',
             'customer-sa-edit',
             'customer-sa-delete',
-
-            'notification-sa-list',
-            'notification-sa-create',
-            'notification-sa-edit',
-            'notification-sa-delete',
          ];
       
          foreach ($permissions as $permission) {

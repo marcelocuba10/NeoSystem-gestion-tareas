@@ -22,35 +22,19 @@ class CreateCustomersTable extends Migration
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
             $table->string('address')->nullable();
-            $table->string('access_key')->nullable();
-            $table->string('puid')->nullable();
-            $table->integer('total_machines');
-            $table->string('pool')->nullable();
-            $table->string('userIdPool')->nullable();
-            $table->string('apiKey')->nullable();
-            $table->string('secretKey')->nullable();
+            $table->integer('status')->default(1);
 
-            $table->integer('workers_active')->nullable();
-            $table->integer('workers_inactive')->nullable();
-            $table->integer('workers_dead')->nullable();
-            $table->decimal('shares_1m', 20)->nullable();
-            $table->decimal('shares_5m', 20)->nullable();
-            $table->decimal('shares_15m', 20)->nullable();
-            $table->decimal('shares_1h', 20)->nullable();
-            $table->decimal('shares_1d', 20)->nullable();
-            $table->integer('workers_total')->nullable();
-            $table->string('shares_unit')->nullable();
+            $table->string('localidad')->nullable();
+            $table->string('latitud')->nullable();
+            $table->string('longitud')->nullable();
+            $table->string('is_vigia')->nullable();
+            $table->string('category')->nullable();
+            $table->string('potential_products')->nullable();
+            $table->string('unit_quantity')->nullable();
+            $table->string('result_of_the_visit')->nullable();
+            $table->string('objective')->nullable();
+            $table->string('next_visit_date')->nullable();
 
-            $table->string('hsLast10m')->nullable();
-            $table->string('hsLast1h')->nullable();
-            $table->string('hsLast1d')->nullable();
-            $table->string('totalAmount')->nullable();
-            $table->string('unpaidAmount')->nullable();
-            $table->string('yesterdayAmount')->nullable();
-            $table->string('inactiveWorkerNum')->nullable();
-            $table->string('activeWorkerNum')->nullable();
-            $table->string('invalidWorkerNum')->nullable();
-            $table->string('totalWorkerNum')->nullable();
             $table->timestamps();
         });
     }

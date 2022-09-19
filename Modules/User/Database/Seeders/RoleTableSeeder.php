@@ -29,16 +29,17 @@ class RoleTableSeeder extends Seeder
             'name' => 'Funcionario',
             'guard_name' => 'web',
             'system_role' => '1',
-            'idReference' => 0
+            'idReference' => 000001
         ]);
 
-        //Assign permissions
+        //Assign default permissions
         $role->givePermissionTo('user-list');
-        $role->givePermissionTo('machine-list');
-        $role->givePermissionTo('machine-edit');
         $role->givePermissionTo('customer-list');
-        $role->givePermissionTo('notification-list');
-        $role->givePermissionTo('schedule-list');
-        $role->givePermissionTo('schedule-create');
+        $role->givePermissionTo('customer-create');
+        $role->givePermissionTo('customer-edit');
+        $role->givePermissionTo('role-list');
+        $role->givePermissionTo('role-create');
+        $role->givePermissionTo('role-edit');
+        $role->givePermissionTo('report-list');
     }
 }

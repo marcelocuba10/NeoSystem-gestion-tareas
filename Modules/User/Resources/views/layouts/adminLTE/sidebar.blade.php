@@ -2,7 +2,7 @@
   <aside class="sidebar-nav-wrapper style-2">
     <div class="navbar-logo">
       <a href="/">
-        <img src="/img/logo-300x90.png" alt="logo" width="175px" height="58px"/>
+        <img src="/adminLTE/images/logo/logo-pyp.png" alt="logo" style="width: 180px;"/>
       </a>
     </div>
     <nav class="sidebar-nav">
@@ -17,62 +17,6 @@
             <span class="text">Dashboard</span>
           </a>
         </li>
-        @can('schedule-list')
-        <li class="nav-item {{ (request()->is('user/schedules')) ? 'active' : '' }}">
-          <a href="/user/schedules">
-            <span class="icon">
-              <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M15,13H16.5V15.82L18.94,17.23L18.19,18.53L15,16.69V13M19,8H5V19H9.67C9.24,18.09 9,17.07 9,16A7,7 0 0,1 16,9C17.07,9 18.09,9.24 19,9.67V8M5,21C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H6V1H8V3H16V1H18V3H19A2,2 0 0,1 21,5V11.1C22.24,12.36 23,14.09 23,16A7,7 0 0,1 16,23C14.09,23 12.36,22.24 11.1,21H5M16,11.15A4.85,4.85 0 0,0 11.15,16C11.15,18.68 13.32,20.85 16,20.85A4.85,4.85 0 0,0 20.85,16C20.85,13.32 18.68,11.15 16,11.15Z" />
-              </svg>
-            </span>
-            <span class="text">Horarios</span>
-          </a>
-        </li>
-        @endcan
-        @can('notification-list')
-        <li class="nav-item {{ (request()->is('user/notifications')) ? 'active' : '' }}">
-          <a href="/user/notifications">
-            <span class="icon">
-              <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M12,23A1,1 0 0,1 11,22V19H7A2,2 0 0,1 5,17V7C5,5.89 5.9,5 7,5H21A2,2 0 0,1 23,7V17A2,2 0 0,1 21,19H16.9L13.2,22.71C13,22.9 12.75,23 12.5,23V23H12M13,17V20.08L16.08,17H21V7H7V17H13M3,15H1V3A2,2 0 0,1 3,1H19V3H3V15Z" />
-              </svg>
-            </span>
-            <span class="text">Avisos</span>
-          </a>
-        </li>
-        @endcan
-        @can('machine-list')
-        <li class="nav-item {{ (request()->is('user/machines/grid_view')) || (request()->is('user/machines/list')) ? 'active' : '' }}">
-          <a href="/user/machines/grid_view">
-            <span class="icon">
-              <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M8,2H16A2,2 0 0,1 18,4V20A2,2 0 0,1 16,22H8A2,2 0 0,1 6,20V4A2,2 0 0,1 8,2M8,4V6H16V4H8M16,8H8V10H16V8M16,18H14V20H16V18Z" />
-              </svg>
-            </span>
-            <span class="text">Máquinas</span>
-          </a>
-        </li>
-        <li class="nav-item {{ (request()->is('user/machines/grid_view_api')) || (request()->is('user/machines/list_api')) ? 'active' : '' }}">
-          <a href="/user/machines/grid_view_api">
-            <span class="icon">
-              <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M8,2H16A2,2 0 0,1 18,4V20A2,2 0 0,1 16,22H8A2,2 0 0,1 6,20V4A2,2 0 0,1 8,2M8,4V6H16V4H8M16,8H8V10H16V8M16,18H14V20H16V18Z" />
-              </svg>
-            </span>
-            <span class="text">Máquinas via API</span>
-          </a>
-        </li>
-        {{-- <li class="nav-item {{ (request()->is('user/posts/grid_view')) ? 'active' : '' }}">
-          <a href="/user/posts">
-            <span class="icon">
-              <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M8,2H16A2,2 0 0,1 18,4V20A2,2 0 0,1 16,22H8A2,2 0 0,1 6,20V4A2,2 0 0,1 8,2M8,4V6H16V4H8M16,8H8V10H16V8M16,18H14V20H16V18Z" />
-              </svg>
-            </span>
-            <span class="text">teste</span>
-          </a>
-        </li> --}}
-        @endcan
         @can('customer-list')
         <li class="nav-item {{ (request()->is('user/customers')) ? 'active' : '' }}">
           <a href="/user/customers">
@@ -99,14 +43,8 @@
             <li >
               <a href="/user/reports/customers" class="{{ (request()->is('user/reports/customers')) ? 'active' : '' }}">Clientes</a>
             </li>
-            {{-- <li >
-              <a href="/user/reports/machines" class="{{ (request()->is('user/reports/machines')) ? 'active' : '' }}">Maquinas</a>
-            </li> --}}
             <li >
               <a href="/user/reports/users" class="{{ (request()->is('user/reports/users')) ? 'active' : '' }}">Usuarios</a>
-            </li>
-            <li >
-              <a href="/user/reports/schedules" class="{{ (request()->is('user/reports/schedules')) ? 'active' : '' }}">Horarios</a>
             </li>
           </ul>
         </li>

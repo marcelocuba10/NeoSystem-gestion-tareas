@@ -18,7 +18,7 @@ class CreateFinancialsTable extends Migration
             $table->integer('customer_id');
             $table->integer('plan_id');
             $table->integer('exp_date_plan');
-            $table->string('status');
+            $table->integer('status')->default(1);
             $table->timestamps();
         });
     }

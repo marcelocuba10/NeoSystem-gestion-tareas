@@ -24,10 +24,10 @@ class CreateUserSuperAdminSeederTableSeeder extends Seeder
         $user = SuperUser::create([
             'name' => 'Super User', 
             'last_name' => 'superadmin', 
-            'ci' => '1234567', 
+            'doc_id' => '1234567', 
             'email' => 'admin@admin.com',
             'password' => 'teste123',
-            'status' => '1',
+            'status' => 1,
             'email_verified_at' => now(),
         ]);
     
@@ -35,7 +35,7 @@ class CreateUserSuperAdminSeederTableSeeder extends Seeder
             'name' => 'SuperAdmin',
             'guard_name' => 'admin',
             'system_role' => '1',
-            'idReference' => 1
+            'idReference' => 000002
         ],);
         
         $permissions = Permission::where('guard_name', '=', 'admin')->pluck('id', 'id')->all();

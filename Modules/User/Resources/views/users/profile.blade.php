@@ -31,12 +31,12 @@
                 <div class="col-xxl-9 col-lg-8">
                   <div class="profile-wrapper mb-30">
                     <div class="profile-cover">
-                      <img src="/assets/images/profile/profile-cover-2.png" alt="cover-image">
+                      <img src="/adminLTE/images/profile/profile-cover-2.png" alt="cover-image">
                     </div>
                     <div class="d-md-flex">
                       <div class="profile-photo">
                         <div class="image">
-                          <img src="/assets/images/profile/profile-2.png" alt="profile">
+                          <img src="/adminLTE/images/profile/profile-2.png" alt="profile">
                           <div class="update-image">
                             <input>
                             <label for=""><i class="lni lni-camera"></i></label>
@@ -49,13 +49,8 @@
                       </div>
                       <div class="profiles-activities w-100 pt-30">
                         <ul class="d-flex align-items-center">
-                          @if ($currentUserRole == 'Admin')
-                            <li class="mr-30"><p><strong>{{ $cant_customers }}</strong> Clientes</p></li>
-                            <li class="mr-30"><p><strong>4</strong> Usuarios</p></li>
-                            <li class="mr-30"><p><strong>200</strong> Máquinas</p></li>
-                          @endif
                           <li class="ms-auto">
-                            <a href="{{ route('users_.edit.profile', $user->id) }}" class="main-btn btn-sm primary-btn btn-hover mb-20">
+                            <a href="/user/users/profile/{{ $user->id }}" class="main-btn btn-sm primary-btn btn-hover mb-20">
                               <i class="lni lni-pencil-alt mr-10"></i>Actualizar Perfil
                             </a>
                           </li>

@@ -8,13 +8,7 @@
         <div class="row align-items-center">
           <div class="col-md-6">
             <div class="title mb-30">
-              <h2>ConectaFarm Dashboard</h2>
-            </div>
-          </div>
-          <!-- end col -->
-          <div class="col-md-6">
-            <div class="breadcrumb-wrapper mb-30">
-
+              <h2>Bienvenido a {{ config('app.name') }}</h2>
             </div>
           </div>
           <!-- end col -->
@@ -55,8 +49,8 @@
               <i class="lni lni-graph"></i>
             </div>
             <div class="content">
-              <h6 class="mb-10">Total Máquinas Registradas</h6>
-              <h3 class="text-bold mb-10">{{ $cant_machines }}</h3>
+              <h6 class="mb-10">Teste teste</h6>
+              <h3 class="text-bold mb-10">121212</h3>
             </div>
           </div>
           <!-- End Icon Cart -->
@@ -112,8 +106,8 @@
                   @foreach ($customers as $customer)
                     <tr>
                         <td><p class="text-sm fw-500 text-gray"><a href="/user/customers/show/{{$customer->id}}">{{ $customer->name ?? old('name') }} {{ $customer->last_name ?? old('last_name') }}</a></p></td>
-                        <td><p class="text-sm fw-500 text-gray">{{ $customer->pool }}</p></td>
-                        <td><p class="text-sm fw-500 text-gray text-end">{{ $customer->total_machines }}</p></td>
+                        <td><p class="text-sm fw-500 text-gray">{{ $customer->doc_id }}</p></td>
+                        <td><p class="text-sm fw-500 text-gray text-end">{{ $customer->phone }}</p></td>
                     </tr>
                   @endforeach
                 </tbody>

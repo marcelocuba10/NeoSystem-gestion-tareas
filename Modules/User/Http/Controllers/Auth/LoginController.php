@@ -7,7 +7,6 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Modules\User\Entities\User;
-use Modules\User\Http\Requests\LoginRequest;
 
 class LoginController extends Controller
 {
@@ -24,7 +23,6 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        //$credentials = $request->getCredentials();
 
         $credentials = $request->validate([
             'email' => 'required|email|min:6|max:100',
@@ -50,18 +48,13 @@ class LoginController extends Controller
         }
 
         /** Check if user is enabled or disabled */
-        if ($user->idMaster == 0) {
+        if ($user->status == 0) {
             return redirect()->to('/user/login')->with('error', 'Usuario inhabilitado');
         } else {
             $user = Auth::getProvider()->retrieveByCredentials($credentials);
             // Auth::login($user);
             Auth::login($user, $request->get('remember'));
-            return $this->authenticated($request, $user);
+            return redirect()->to('/user/dashboard');
         }
-    }
-
-    protected function authenticated(Request $request, $user)
-    {
-        return redirect()->to('/user/dashboard');
     }
 }

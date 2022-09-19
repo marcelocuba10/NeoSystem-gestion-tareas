@@ -10,7 +10,7 @@
             <div class="title d-flex align-items-center flex-wrap mb-30">
               <h2 class="mr-40">Usuarios</h2>
               @can('user-create')
-                <a href="{{ route('users.create') }}" class="main-btn info-btn btn-hover btn-sm"><i class="lni lni-plus mr-5"></i></a>
+                <a href="/user/users/create/" class="main-btn info-btn btn-hover btn-sm"><i class="lni lni-plus mr-5"></i></a>
               @endcan  
             </div>
           </div>
@@ -74,7 +74,7 @@
                             <td class="min-width"><p>{{ $user->name }}</p></td>
                             <td class="min-width"><p>{{ $user->idReference }}</p></td>
                             <td class="min-width">
-                              @if ($user->idMaster == 1)
+                              @if ($user->status == 1)
                                 <p><span class="status-btn success-btn">Activado</span></p>
                               @else
                                 <p><span class="status-btn active-btn">Desactivado</span></p>
@@ -84,7 +84,7 @@
                             <td class="text-right">
                                 <div class="btn-group">
                                     <div class="action">
-                                        <a href="{{ route('users.show', $user->id) }}">
+                                        <a href="/user/users/show{{ $user->id }}">
                                             <button class="text-active">
                                                 <i class="lni lni-eye"></i>
                                             </button>
@@ -93,7 +93,7 @@
                                     @can('user-edit')
                                     <div class="action">
                                         @if ($currentUserId != $user->id)
-                                          <a href="{{ route('users.edit', $user->id) }}">
+                                          <a href="/user/users/edit/{{ $user->id }}">
                                               <button class="text-info">
                                                   <i class="lni lni-pencil"></i>
                                               </button>
@@ -103,7 +103,7 @@
                                     @endcan
                                     {{-- @can('user-delete')
                                     @if ($currentUserId != $user->id)
-                                      <form method="POST" action="{{ route('users.destroy', $user->id) }}">
+                                      <form method="POST" action="/user/users/delete/{{ $user->id }}">
                                           @csrf
                                           <div class="action">
                                               <input name="_method" type="hidden" value="DELETE">

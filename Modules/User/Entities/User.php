@@ -21,21 +21,16 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name',
-        'idMaster',
-        'idReference',
         'last_name',
+        'idReference',
         'phone',
         'address',
+        'doc_id',
         'email',
-        'ci',
         'password',
         'exp_date_plan',
         'plan_id',
-        'terms',
         'company_name',
-        'manager',
-        'ruc',
-        'location_iframe',
     ];
 
     public function grounds()

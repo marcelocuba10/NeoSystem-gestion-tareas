@@ -68,9 +68,9 @@
         <div class="select-style-1">
           <label>(*) Status</label>
           <div class="select-position">
-            <select name="idMaster">
+            <select name="status">
               @foreach ($status as $value)
-                <option value="{{ $value[0] }}" {{ ( $value[0] == $idMaster) ? 'selected' : '' }}> {{ $value[1] }} </option>
+                <option value="{{ $value[0] }}" {{ ( $value[0] == $userStatus) ? 'selected' : '' }}> {{ $value[1] }} </option>
               @endforeach 
             </select>
           </div>
@@ -81,9 +81,9 @@
         <div class="input-style-1">
           <label>(*) Status</label>
           @foreach ($status as $value)
-            @if ($value[0] == $idMaster)
+            @if ($value[0] == $userStatus)
               <input type="text" placeholder="{{ $value[1] }}" readonly >
-              <input type="text" value="{{ $value[0] }}" name="idMaster" readonly style="display: none;">
+              <input type="text" value="{{ $value[0] }}" name="status" readonly style="display: none;">
             @endif
           @endforeach 
         </div>
@@ -114,7 +114,7 @@
     <div class="col-12">
       <div class="button-group d-flex justify-content-center flex-wrap">
         <button type="submit" class="main-btn primary-btn btn-hover m-2">Guardar</button>
-        <a class="main-btn danger-btn-outline m-2" href="{{ route('users.index') }}">Atrás</a>
+        <a class="main-btn danger-btn-outline m-2" href="/user/users/">Atrás</a>
       </div>
     </div>
 </div>

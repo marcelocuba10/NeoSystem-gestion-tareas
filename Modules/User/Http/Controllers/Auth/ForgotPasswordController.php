@@ -29,14 +29,15 @@ class ForgotPasswordController extends Controller
         return view('user::auth.recoveryOptions');
     }
 
-    public function templateEmail(){
+    public function templateEmail()
+    {
         return view('user::layouts.email.forgetPassword');
     }
 
     public function submitForgetPasswordForm(Request $request)
     {
         $request->validate([
-            'email' => 'required|exists:users',
+            'email' => 'required|email|min:6|max:100|exists:users',
         ]);
 
         $token = Str::random(64);
@@ -49,7 +50,7 @@ class ForgotPasswordController extends Controller
 
         Mail::send('user::layouts.email.forgetPassword', ['token' => $token], function ($message) use ($request) {
             $message->to($request->email);
-            $message->subject('Restablecer la contraseña en Conectacode');
+            $message->subject('Restablecer la contraseña');
         });
 
         return back()->with('message', '¡Le hemos enviado por correo electrónico un enlace para restablecimiento de contraseña!');
@@ -62,9 +63,8 @@ class ForgotPasswordController extends Controller
 
     public function submitResetPasswordForm(Request $request)
     {
-
         $request->validate([
-            'email' => 'required|exists:users',
+            'email' => 'required|email|min:6|max:100|exists:users',
             'password' => 'required|string|min:5|confirmed',
             'password_confirmation' => 'required|max:50|min:5|same:password',
         ]);
@@ -80,7 +80,7 @@ class ForgotPasswordController extends Controller
             return back()->withInput()->with('error', 'Email inválido, verifique datos por favor.');
         }
 
-        $user = User::where('email', $request->email)
+        User::where('email', $request->email)
             ->update(['password' => Hash::make($request->password)]);
 
         DB::table('reset_password_users')->where(['email' => $request->email])->delete();

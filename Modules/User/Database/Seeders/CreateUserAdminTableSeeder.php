@@ -22,25 +22,24 @@ class CreateUserAdminTableSeeder extends Seeder
         Model::unguard();
 
         $user =  User::create([
-            'idMaster' => 1,
-            'idReference' => 192004,
-            'name' => 'User teste',
+            'idReference' => 000001,
+            'name' => 'User Admin',
             'last_name' => 'teste',
-            'phone' => '168451212',
+            'phone' => '09855656522',
             'address' => 'av mensu 521',
-            'ci' => '1234567',
+            'doc_id' => '1234567',
             'email' => 'user@user.com',
             'password' => 'teste123',
-            'company_name' => 'empresa one',
-            'status' => '1',
+            'company_name' => 'empresa teste',
+            'status' => 1,
             'exp_date_plan' => 20,
         ]);
 
         $role = Role::create([
             'name' => 'Admin', 
             'guard_name' => 'web',
-            'system_role' => '1',
-            'idReference' => 0
+            'system_role' => 1,
+            'idReference' => 000001
         ],);
         
         $permissions = Permission::where('guard_name', '=', 'web')->pluck('id', 'id')->all();

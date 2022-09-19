@@ -59,10 +59,9 @@ class PermissionsController extends Controller
 
     public function edit($id)
     {
-        $title = 'Permission';
         $permission = Permission::find($id);
 
-        return view('user::permissions.edit', compact('permission', 'title'));
+        return view('user::permissions.edit', compact('permission'));
     }
 
     public function update(Request $request, $id)

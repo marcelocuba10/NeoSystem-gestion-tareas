@@ -9,14 +9,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Modules\User\Entities\Customers;
 use Modules\User\Entities\User;
-use Modules\User\Http\Requests\UpdateRequest;
 
 //spatie
 use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 
 class UserController extends Controller
 {
@@ -39,7 +36,7 @@ class UserController extends Controller
 
         $users = DB::table('users')
             ->where('idReference', '=', $idReference)
-            ->select('id', 'name', 'idReference', 'idMaster', 'email')
+            ->select('id', 'name', 'idReference', 'email','status')
             ->orderBy('created_at', 'DESC')
             ->paginate(10);
 
@@ -58,7 +55,6 @@ class UserController extends Controller
         );
 
         $user = null;
-        $idMaster = null;
 
         $roles = Role::where('guard_name', '=', 'web')
             ->where('name', '!=', 'Admin')
@@ -66,7 +62,7 @@ class UserController extends Controller
             ->all();
 
         $userRole = null; //set null for select form not compare with others roles
-        return view('user::users.create', compact('user', 'roles', 'userRole', 'currentUserRole', 'status', 'idMaster'));
+        return view('user::users.create', compact('user', 'roles', 'userRole', 'currentUserRole', 'status'));
     }
 
     public function store(Request $request)
@@ -76,7 +72,8 @@ class UserController extends Controller
             'last_name' => 'required|max:50|min:5',
             'email' => 'required|email|unique:users,email',
             'phone' => 'nullable|max:20|min:5',
-            'ci' => 'required|max:25|min:5|unique:users,ci',
+            'doc_id' => 'required|max:25|min:5|unique:users,doc_id',
+            'address' => 'nullable|max:255|min:5',
             'password' => 'required|max:50|min:5',
             'confirm_password' => 'required|max:50|min:5|same:password',
             'roles' => 'required'
@@ -85,7 +82,7 @@ class UserController extends Controller
         $input = $request->all();
 
         $user = Auth::user();
-        $input['idMaster'] = 1; //enable login
+        $input['status'] = 1; //enable login
         $input['plan_id'] = $user->plan_id;
         $input['idReference'] = $user->idReference;
 
@@ -154,7 +151,7 @@ class UserController extends Controller
         );
 
         $user = User::find($id);
-        $idMaster = $user->idMaster;
+        $userStatus = $user->status;
         $roles = Role::where('guard_name', '=', 'web')
             ->where('name', '!=', 'Admin')
             ->pluck('name', 'name')
@@ -168,7 +165,7 @@ class UserController extends Controller
             $userRole = $userRoleArray[0]; //get only name of the role
         }
 
-        return view('user::users.edit', compact('user', 'roles', 'userRole', 'currentUserRole', 'status', 'idMaster'));
+        return view('user::users.edit', compact('user', 'roles', 'userRole', 'currentUserRole', 'userStatus'));
     }
 
     public function editProfile($id)
@@ -203,14 +200,15 @@ class UserController extends Controller
         $currentUserRole = $arrayCurrentUserRole[0];
 
         $this->validate($request, [
-            'idMaster' => 'required|integer|between:0,1',
             'name' => 'required|max:50|min:5',
             'last_name' => 'required|max:50|min:5',
             'email' => 'required|email|unique:users,email,' . $id,
-            'phone' => 'nullable|max:50|min:5',
-            'ci' => 'required|max:25|min:5|unique:users,ci,' . $id,
             'password' => 'nullable|max:50|min:5',
             'confirm_password' => 'nullable|max:50|min:5|same:password',
+            'phone' => 'nullable|max:50|min:5',
+            'status' => 'required|integer|between:0,1',
+            'doc_id' => 'required|max:25|min:5|unique:users,doc_id,' . $id,
+            'address' => 'nullable|max:255|min:5',
             'roles' => 'required'
         ]);
 
@@ -226,7 +224,7 @@ class UserController extends Controller
 
         $user = User::find($id);
         if ($currentUserRole != "Admin") {
-            $input['idMaster'] = $user->idMaster;
+            $input['status'] = $user->status;
         }
 
         $user->update($input);
@@ -244,10 +242,11 @@ class UserController extends Controller
             'name' => 'required|max:50|min:5',
             'last_name' => 'required|max:50|min:5',
             'email' => 'required|email|unique:users,email,' . $id,
-            'phone' => 'nullable|max:50|min:5',
-            'ci' => 'required|max:25|min:5|unique:users,ci,' . $id,
             'password' => 'nullable|max:50|min:5',
             'confirm_password' => 'nullable|max:50|min:5|same:password',
+            'phone' => 'nullable|max:50|min:5',
+            'doc_id' => 'required|max:25|min:5|unique:users,doc_id,' . $id,
+            'address' => 'nullable|max:255|min:5',
             'roles' => 'required'
         ]);
 
@@ -282,13 +281,13 @@ class UserController extends Controller
 
         if ($search == '') {
             $users = DB::table('users')
-                ->select('users.id', 'users.name', 'users.idReference', 'users.idMaster', 'users.email')
+                ->select('users.id', 'users.name', 'users.idReference', 'users.status', 'users.email')
                 ->where('users.idReference', '=', $idRefCurrentUser)
                 ->orderBy('created_at', 'DESC')
                 ->paginate(10);
         } else {
             $users = DB::table('users')
-                ->select('users.id', 'users.name', 'users.idReference', 'users.idMaster', 'users.email')
+                ->select('users.id', 'users.name', 'users.idReference', 'users.status', 'users.email')
                 ->where('users.name', 'LIKE', "%{$search}%")
                 ->where('users.idReference', '=', $idRefCurrentUser)
                 ->orderBy('created_at', 'DESC')

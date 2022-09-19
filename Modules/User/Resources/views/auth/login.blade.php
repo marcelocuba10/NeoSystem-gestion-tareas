@@ -10,7 +10,7 @@
             <a href="/admin/login"><button class="ththhf" type="button" class="btn btn-block create-account">Gestión</button></a>
         </div>    
         <div class="login-texto off-mobile">
-            <p class="login-title">Bienvenido a ConectaFarm</p>
+            <p class="login-title">Bienvenido a {{ config('app.name') }}</p>
             <p class="login-message">Facilidades increíbles para tu empresa! :)</p>
         </div>
     </div>    
@@ -21,7 +21,7 @@
     <form method="post" action="/user/login">
 
         <div class="form-icon"><img class="img-logo" src="/adminLTE/images/logo/logo-pyp.png"></div>
-        <p class="login-message2">Iniciar sesión en ConectaFarm</p>
+        <p class="login-message2">Iniciar Sesión</p>
         
         <input type="hidden" name="_token" value="{{ csrf_token() }}" />
 

@@ -29,7 +29,10 @@ class UsersController extends Controller
     public function index()
     {
         $currentUserId = Auth::id();
-        $users = SuperUser::latest()->paginate(10);
+        $users = DB::table('super_users')
+            ->select('name','last_name','phone', 'address', 'doc_id')
+            ->orderBy('created_at', 'DESC')
+            ->get();
 
         return view('admin::users.index', compact('users', 'currentUserId'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
@@ -53,7 +56,7 @@ class UsersController extends Controller
             'last_name' => 'required|max:50|min:5',
             'email' => 'required|email|unique:super_users,email',
             'phone' => 'nullable|max:20|min:5',
-            'ci' => 'required|max:25|min:5',
+            'doc_id' => 'required|max:25|min:5|unique:users,doc_id',
             'password' => 'required|max:50|min:5',
             'confirm_password' => 'required|max:50|min:5|same:password',
             'roles' => 'required'
@@ -64,7 +67,7 @@ class UsersController extends Controller
         $user = SuperUser::create($input);
         $user->assignRole($request->input('roles'));
 
-        return redirect()->to('/admin/users')->with('message', 'User created successfully.');
+        return redirect()->to('/admin/users')->with('message', 'Super User created successfully.');
     }
 
     public function show($id)
@@ -146,7 +149,7 @@ class UsersController extends Controller
             'last_name' => 'required|max:50|min:5',
             'email' => 'required|email|unique:super_users,email,' . $id,
             'phone' => 'nullable|max:20|min:5',
-            'ci' => 'required|max:25|min:5',
+            'doc_id' => 'required|max:25|min:5|unique:super_users,doc_id,' . $id,
             'password' => 'nullable|max:50|min:5',
             'confirm_password' => 'nullable|max:50|min:5|same:password',
             'roles' => 'required'
@@ -184,7 +187,7 @@ class UsersController extends Controller
             'last_name' => 'required|max:50|min:5',
             'email' => 'required|email|unique:super_users,email,' . $id,
             'phone' => 'nullable|max:20|min:5',
-            'ci' => 'required|max:25|min:5',
+            'doc_id' => 'required|max:25|min:5|unique:super_users,doc_id,' . $id,
             'password' => 'nullable|max:50|min:5',
             'confirm_password' => 'nullable|max:50|min:5|same:password',
             'roles' => 'required'
@@ -230,6 +233,6 @@ class UsersController extends Controller
     public function destroy($id)
     {
         SuperUser::find($id)->delete();
-        return redirect()->to('/admin/users')->with('message', 'User deleted successfully');
+        return redirect()->to('/admin/users')->with('message', 'Super User deleted successfully');
     }
 }

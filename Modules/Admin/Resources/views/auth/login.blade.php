@@ -21,7 +21,7 @@
     <form method="post" action="/admin/login">
 
         <div class="form-icon"><img class="img-logo" src="/adminLTE/images/logo/logo-pyp.png"></div>
-        <p class="login-message2">Iniciar sesión en ConectaFarm</p>
+        <p class="login-message2">Iniciar Sesión</p>
         
         <input type="hidden" name="_token" value="{{ csrf_token() }}" />
 

@@ -28,7 +28,7 @@ class RolesController extends Controller
         $roles = DB::table('roles')
             ->where('guard_name', '=', 'web')
             ->where('roles.idReference', '=', $idRefCurrentUser)
-            ->orWhere('roles.idReference', '=', 0) //roles with IdReference = 0 is system role default - module user
+            ->orWhere('roles.idReference', '=', 000001) //roles with IdReference = 000001 is system role default - module user
             ->select('guard_name', 'id', 'name', 'system_role')
             ->orderBy('created_at', 'DESC')
             ->paginate(10);
@@ -120,14 +120,14 @@ class RolesController extends Controller
             $roles = DB::table('roles')
                 ->where('guard_name', '=', 'web')
                 ->where('roles.idReference', '=', $idRefCurrentUser)
-                ->orWhere('roles.idReference', '=', 0) //roles with IdReference = 0 is system role default - module user
+                ->orWhere('roles.idReference', '=', 000001) //roles with IdReference = 000001 is system role default - module user
                 ->select('guard_name', 'id', 'name', 'system_role')
                 ->orderBy('created_at', 'DESC')
                 ->paginate(10);
         } else {
             $roles = DB::table('roles')
                 ->where('roles.idReference', '=', $idRefCurrentUser)
-                ->orWhere('roles.idReference', '=', 0) //roles with IdReference = 0 is system role default - module user
+                ->orWhere('roles.idReference', '=', 000001) //roles with IdReference = 000001 is system role default - module user
                 ->where('roles.name', 'LIKE', "%{$search}%")
                 ->paginate();
         }
