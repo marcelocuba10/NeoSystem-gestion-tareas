@@ -1,0 +1,98 @@
+@csrf
+<div class="row">
+    <div class="col-6">
+      <div class="input-style-1">
+        <label>(*) Nombre</label>
+        <input type="text" class="bg-transparent" value="{{ $user->name ?? old('name') }}" name="name">
+      </div>
+    </div>
+    <!-- end col -->
+    <div class="col-6">
+      <div class="input-style-1">
+        <label>(*) Apellidos</label>
+        <input type="text" class="bg-transparent" value="{{ $user->last_name ?? old('last_name') }}" name="last_name">
+      </div>
+    </div>
+    <!-- end col -->
+    <div class="col-6">
+        <div class="input-style-1">
+            <label>(*) Email</label>
+            <input type="email" class="bg-transparent" value="{{ $user->email ?? old('email') }}" name="email">
+        </div>
+    </div>
+    <!-- end col -->
+    <div class="col-6">
+      <div class="input-style-1">
+          <label>(*) Contraseña</label>
+          <input type="password" name="password" class="bg-transparent">
+          @if ($user)
+            <span class="form-text m-b-none">Déjelo en blanco si no desea cambiar la contraseña</span>
+          @endif
+      </div>
+    </div>
+    <!-- end col -->
+    <div class="col-6">
+      <div class="input-style-1">
+          <label>(*) Confirmar Contraseña</label>
+          <input type="password" name="confirm_password" class="bg-transparent">
+          @if ($user)
+            <span class="form-text m-b-none">Déjelo en blanco si no desea cambiar la contraseña</span>
+          @endif
+      </div>
+    </div>
+    <!-- end col -->
+    <div class="col-4">
+      <div class="input-style-1">
+        <label>Teléfono</label>
+        <input type="text" name="phone" id="phone" value="{{ $user->phone ?? old('phone') }}" class="bg-transparent">
+      </div>
+    </div>
+    <!-- end col -->
+    @if ($currentUserRole == 'SuperAdmin')
+      <div class="col-2">
+        <div class="select-style-1">
+          <label>(*) Status</label>
+          <div class="select-position">
+            <select name="status">
+              @foreach ($status as $value)
+                <option value="{{ $value[0] }}" {{ ( $value[0] == $userStatus) ? 'selected' : '' }}> {{ $value[1] }} </option>
+              @endforeach 
+            </select>
+          </div>
+        </div>
+      </div>
+    @else
+      <div class="col-2">
+        <div class="input-style-1">
+          <label>(*) Status</label>
+          @foreach ($status as $value)
+            @if ($value[0] == $userStatus)
+              <input type="text" placeholder="{{ $value[1] }}" readonly >
+              <input type="text" value="{{ $value[0] }}" name="status" readonly style="display: none;">
+            @endif
+          @endforeach 
+        </div>
+      </div>
+    @endif
+    <!-- end col -->
+    <div class="col-4">
+      <div class="input-style-1">
+        <label>(*) Doc Identidad</label>
+        <input type="text" name="doc_id" value="{{ $user->doc_id ?? old('doc_id') }}" class="bg-transparent">
+      </div>
+    </div>
+    <!-- end col -->
+    <div class="col-8">
+      <div class="input-style-1">
+        <label>Dirección</label>
+        <input type="text" name="address" value="{{ $user->address ?? old('address') }}" class="bg-transparent">
+      </div>
+    </div>
+    <!-- end col -->
+    <div class="col-12">
+      <div class="button-group d-flex justify-content-center flex-wrap">
+        <button type="submit" class="main-btn primary-btn btn-hover m-2">Guardar</button>
+        <a class="main-btn danger-btn-outline m-2" href="/admin/sellers">Atrás</a>
+      </div>
+    </div>
+</div>

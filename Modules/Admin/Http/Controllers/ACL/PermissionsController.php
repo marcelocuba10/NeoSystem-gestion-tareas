@@ -7,7 +7,9 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
+
 //spatie
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
 class PermissionsController extends Controller
@@ -24,8 +26,7 @@ class PermissionsController extends Controller
     public function index()
     {
         $permissions = DB::table('permissions')
-            ->where('guard_name', '=', 'admin')
-            ->select('guard_name', 'id', 'name', 'system_permission')
+            ->select('guard_name', 'id', 'name')
             ->orderBy('created_at', 'DESC')
             ->paginate(10);
 
@@ -39,7 +40,7 @@ class PermissionsController extends Controller
 
         $permissions = DB::table('permissions')
             ->where('guard_name', '=', $guard_name)
-            ->select('guard_name', 'id', 'name', 'system_permission')
+            ->select('guard_name', 'id', 'name')
             ->orderBy('created_at', 'DESC')
             ->get();
 
@@ -49,17 +50,26 @@ class PermissionsController extends Controller
     public function create()
     {
         $guard_name = Auth::getDefaultDriver();
-        return view('admin::permissions.create', compact('guard_name'));
+
+        $guard_names = Role::pluck('guard_name', 'guard_name')->all();
+        $roleGuard = null;
+
+        return view('admin::permissions.create', compact('guard_name', 'guard_names', 'roleGuard'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|unique:permissions,name',
+            'guard_name' => 'required',
         ]);
 
         // Define a `publish articles` permission for the user users belonging to the user guard
-        Permission::create(['name' => $request->input('name'), 'guard_name' => 'admin']);
+        Permission::create([
+            'name' => $request->input('name'),
+            'guard_name' => $request->input('guard_name'),
+        ]);
+
         return redirect()->to('/admin/ACL/permissions')->with('message', 'Permission created successfully!');
     }
 
@@ -75,16 +85,19 @@ class PermissionsController extends Controller
 
     public function edit($id)
     {
-        $guard_name = null;
         $permission = Permission::find($id);
+        $guard_name = $permission->guard_name;
 
-        return view('admin::permissions.edit', compact('permission', 'guard_name'));
+        $guard_names = Role::pluck('guard_name', 'guard_name')->all();
+
+        return view('admin::permissions.edit', compact('permission', 'guard_name', 'guard_names'));
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
             'name' => 'required|unique:permissions,name,' . $id,
+            'guard_name' => 'required'
         ]);
 
         $input = $request->all();

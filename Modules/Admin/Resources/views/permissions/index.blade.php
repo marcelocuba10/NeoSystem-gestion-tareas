@@ -9,6 +9,9 @@
           <div class="col-md-8">
             <div class="title d-flex align-items-center flex-wrap mb-30">
               <h2 class="mr-40">Permisos</h2>
+              @can('permission-sa-create')
+                <a href="/admin/ACL/permissions/create" class="main-btn info-btn btn-hover btn-sm"><i class="lni lni-plus mr-5"></i></a>
+              @endcan  
             </div>
           </div>
           <!-- end col -->

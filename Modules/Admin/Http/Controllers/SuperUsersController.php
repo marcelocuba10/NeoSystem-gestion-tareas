@@ -28,6 +28,7 @@ class UsersController extends Controller
 
     public function index()
     {
+        dd('fdsfdsfsd');
         $currentUserId = Auth::id();
         $users = DB::table('super_users')
             ->select('name','last_name','phone', 'address', 'doc_id')

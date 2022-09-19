@@ -4,6 +4,7 @@ namespace Modules\Admin\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Modules\Admin\Entities\SuperUser;
 
 //spatie
@@ -34,13 +35,24 @@ class CreateUserSuperAdminSeederTableSeeder extends Seeder
         $role = Role::create([
             'name' => 'SuperAdmin',
             'guard_name' => 'admin',
-            'system_role' => '1',
-            'idReference' => 000002
+            'system_role' => 1,
+            'idReference' => $this->generateUniqueCodeRole()
         ],);
         
         $permissions = Permission::where('guard_name', '=', 'admin')->pluck('id', 'id')->all();
         $role->syncPermissions($permissions);
         $user->syncRoles(['SuperAdmin']);
         $user->assignRole([$role->id]);
+    }
+
+    public function generateUniqueCodeRole()
+    {
+        do {
+            $idReference = random_int(100000, 999999);
+        } while (
+            DB::table('roles')->where("idReference", "=", $idReference)->first()
+        );
+
+        return $idReference;
     }
 }

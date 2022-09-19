@@ -81,7 +81,7 @@
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profile">
                   <li>
-                    <a href="{{ route('users.show.profile', Auth::user()->id) }}"><i class="lni lni-user"></i> Mi Perfil</a>
+                    <a href="/admin/users/profile/{{ Auth::user()->id }}"><i class="lni lni-user"></i> Mi Perfil</a>
                   </li>
                   <li>
                     <a href="/admin/notifications"><i class="lni lni-alarm"></i> Avisos</a>

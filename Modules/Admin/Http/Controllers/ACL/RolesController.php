@@ -50,7 +50,7 @@ class RolesController extends Controller
 
         $permissions = DB::table('permissions')
             //->where('guard_name', '=', 'admin')
-            ->select('guard_name', 'id', 'name', 'system_permission')
+            ->select('guard_name', 'id', 'name')
             ->orderBy('created_at', 'DESC')
             ->get();
 
@@ -111,7 +111,7 @@ class RolesController extends Controller
 
         $permissions = DB::table('permissions')
             //->where('guard_name', '=', $role->guard_name)
-            ->select('guard_name', 'id', 'name', 'system_permission')
+            ->select('guard_name', 'id', 'name')
             ->orderBy('created_at', 'DESC')
             ->get();
 

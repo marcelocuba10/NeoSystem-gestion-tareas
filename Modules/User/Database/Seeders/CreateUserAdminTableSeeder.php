@@ -4,6 +4,7 @@ namespace Modules\User\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Modules\User\Entities\User;
 
 //spatie
@@ -22,7 +23,7 @@ class CreateUserAdminTableSeeder extends Seeder
         Model::unguard();
 
         $user =  User::create([
-            'idReference' => 000001,
+            'idReference' => $this->generateUniqueCodeUser(),
             'name' => 'User Admin',
             'last_name' => 'teste',
             'phone' => '09855656522',
@@ -32,19 +33,41 @@ class CreateUserAdminTableSeeder extends Seeder
             'password' => 'teste123',
             'company_name' => 'empresa teste',
             'status' => 1,
-            'exp_date_plan' => 20,
+            'main_user' => 1,
         ]);
 
         $role = Role::create([
-            'name' => 'Admin', 
+            'name' => 'Admin',
             'guard_name' => 'web',
             'system_role' => 1,
-            'idReference' => 000001
+            'idReference' => $this->generateUniqueCodeRole()
         ],);
-        
+
         $permissions = Permission::where('guard_name', '=', 'web')->pluck('id', 'id')->all();
         $role->syncPermissions($permissions);
         $user->syncRoles(['Admin']);
         $user->assignRole([$role->id]);
+    }
+
+    public function generateUniqueCodeUser()
+    {
+        do {
+            $idReference = random_int(100000, 999999);
+        } while (
+            DB::table('users')->where("idReference", "=", $idReference)->first()
+        );
+
+        return $idReference;
+    }
+
+    public function generateUniqueCodeRole()
+    {
+        do {
+            $idReference = random_int(100000, 999999);
+        } while (
+            DB::table('roles')->where("idReference", "=", $idReference)->first()
+        );
+
+        return $idReference;
     }
 }

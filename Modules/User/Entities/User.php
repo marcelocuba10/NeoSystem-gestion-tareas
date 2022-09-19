@@ -28,9 +28,9 @@ class User extends Authenticatable
         'doc_id',
         'email',
         'password',
-        'exp_date_plan',
-        'plan_id',
+        'main_user',
         'company_name',
+        'status'
     ];
 
     public function grounds()

@@ -27,10 +27,10 @@ class PermissionTableSeederTableSeeder extends Seeder
             'permission-sa-edit',
             'permission-sa-delete',
 
-            'plan-sa-list',
-            'plan-sa-create',
-            'plan-sa-edit',
-            'plan-sa-delete',
+            'seller-sa-list',
+            'seller-sa-create',
+            'seller-sa-edit',
+            'seller-sa-delete',
 
             'user-sa-list',
             'user-sa-create',

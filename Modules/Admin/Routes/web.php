@@ -4,22 +4,19 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->group(function () {
 
-    Route::get('/', 'AdminController@index');
+    /** Dashboard */
+    Route::get('/', 'HomeController@index');
 
     Route::group(['middleware' => ['guest']], function () {
 
-        /** CronJob */
+        /** API Pool CronJob Route */
         Route::get('/machines/cron', 'MachinesController@cronjob');
-
-        /*** Register Routes ***/
-        // Route::get('/register', 'Auth\RegisterController@show');
-        // Route::post('/register', 'Auth\RegisterController@register');
 
         /*** Login Routes ***/
         Route::get('/login', 'Auth\LoginController@show');
         Route::post('/login', 'Auth\LoginController@login');
 
-        /*** forgot - reset password ***/
+        /*** Reset Password ***/
         Route::get('recovery-options', 'Auth\ForgotPasswordController@showRecoveryOptionsForm');
         Route::get('forget-password', 'Auth\ForgotPasswordController@showForgetPasswordForm');
         Route::post('forget-password', 'Auth\ForgotPasswordController@submitForgetPasswordForm');
@@ -29,8 +26,9 @@ Route::prefix('admin')->group(function () {
 
     Route::group(['middleware' => ['auth:admin']], function () {
 
+        /** Dashboard */
+        Route::get('/dashboard', 'HomeController@index');
         Route::get('/logout', 'Auth\LogoutController@perform');
-        Route::get('/dashboard', 'AdminController@index');
 
         /*** User Routes ***/
         Route::group(['prefix' => 'users'], function () {
@@ -47,28 +45,16 @@ Route::prefix('admin')->group(function () {
             Route::get('/search', 'SuperUsersController@search');
         });
 
-        /*** Customers Routes ***/
-        Route::group(['prefix' => 'customers'], function () {
-            Route::get('/', 'CustomersController@index');
-            Route::get('/create', 'CustomersController@create');
-            Route::post('/create', 'CustomersController@store');
-            Route::get('/show/{id}', 'CustomersController@show');
-            Route::get('/edit/{id}', 'CustomersController@edit');
-            Route::put('/update/{id}', 'CustomersController@update');
-            Route::delete('/delete/{id}', 'CustomersController@destroy');
-            Route::get('/search', 'CustomersController@search');
-        });
-
-        /*** Plans Routes ***/
-        Route::group(['prefix' => 'plans'], function () {
-            Route::get('/', 'PlansController@index');
-            Route::get('/create', 'PlansController@create');
-            Route::post('/create', 'PlansController@store');
-            Route::get('/show/{id}', 'PlansController@show');
-            Route::get('/edit/{id}', 'PlansController@edit');
-            Route::put('/update/{id}', 'PlansController@update');
-            Route::delete('/delete/{id}', 'PlansController@destroy');
-            Route::get('/search', 'PlansController@search');
+        /*** Sellers Routes ***/
+        Route::group(['prefix' => 'sellers'], function () {
+            Route::get('/', 'SellersController@index');
+            Route::get('/create', 'SellersController@create');
+            Route::post('/create', 'SellersController@store');
+            Route::get('/show/{id}', 'SellersController@show');
+            Route::get('/edit/{id}', 'SellersController@edit');
+            Route::put('/update/{id}', 'SellersController@update');
+            Route::delete('/delete/{id}', 'SellersController@destroy');
+            Route::get('/search', 'SellersController@search');
         });
 
         /*** Financial Routes ***/

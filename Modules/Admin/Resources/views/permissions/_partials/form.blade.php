@@ -8,21 +8,18 @@
       </div>
     </div>
     <!-- end col -->
-    @if ($guard_name)
-      <div class="col-6">
-        <div class="input-style-1">
-            <label>Guard</label>
-            <input type="text" value="{{ $guard_name ?? old('guard_name')}}" readonly>
+    <div class="col-6">
+      <div class="select-style-1">
+        <label>(*) Guard</label>
+        <div class="select-position">
+          <select name="guard_name">
+            @foreach ($guard_names as $guard_name)
+              <option value="{{ $guard_name }}" {{ ( $guard_name == $roleGuard) ? 'selected' : '' }}> {{ $guard_name}} </option>
+            @endforeach 
+          </select>
         </div>
       </div>
-    @else
-      <div class="col-6">
-        <div class="input-style-1">
-            <label>Guard</label>
-            <input type="text" value="{{ $permission->guard_name ?? old('guard_name')}}" readonly>
-        </div>
-      </div> 
-    @endif
+    </div>
     <!-- end col -->
     <div class="col-12">
       <div class="button-group d-flex justify-content-center flex-wrap">

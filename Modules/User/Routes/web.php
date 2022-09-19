@@ -4,19 +4,15 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('user')->group(function () {
 
+    /** Dashboard */
     Route::get('/', 'HomeController@index');
 
+    /*** Login Routes ***/
     Route::group(['middleware' => ['guest']], function () {
 
-        /*** Register Routes ***/
-        // Route::get('/register', 'Auth\RegisterController@show');
-        // Route::post('/register', 'Auth\RegisterController@register');
-
-        /*** Login Routes ***/
         Route::get('/login', 'Auth\LoginController@show');
         Route::post('/login', 'Auth\LoginController@login');
 
-        /*** forgot - reset password ***/
         Route::get('/recovery-options', 'Auth\ForgotPasswordController@showRecoveryOptionsForm');
         Route::get('/forget-password', 'Auth\ForgotPasswordController@showForgetPasswordForm');
         Route::post('/forget-password', 'Auth\ForgotPasswordController@submitForgetPasswordForm');
@@ -26,6 +22,7 @@ Route::prefix('user')->group(function () {
 
     Route::group(['middleware' => ['auth:web']], function () {
 
+        /** Dashboard */
         Route::get('/dashboard', 'HomeController@index');
         Route::get('/logout', 'Auth\LogoutController@perform');
 

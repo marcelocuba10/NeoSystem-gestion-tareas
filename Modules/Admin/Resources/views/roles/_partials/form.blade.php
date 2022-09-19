@@ -59,7 +59,7 @@ $(document).ready(function(){
   var guard_name = document.getElementById("guard_name").value;
   $.ajax({
       type: "POST",
-      url: "{{ route('permissions.admin.getPermissions') }}",
+      url: '/admin/ACL/permissions/get',
       data: { 
         guard_name : guard_name,
         "_token": "{{ csrf_token() }}",
@@ -75,7 +75,7 @@ $(document).ready(function(){
     guard_name = document.getElementById("guard_name").value;
     $.ajax({
       type: "POST",
-      url: "{{ route('permissions.admin.getPermissions') }}",
+      url: '/admin/ACL/permissions/get',
       data: { 
         guard_name : guard_name,
         "_token": "{{ csrf_token() }}",

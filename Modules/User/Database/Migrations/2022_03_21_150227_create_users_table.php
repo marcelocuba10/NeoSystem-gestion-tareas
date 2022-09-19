@@ -23,8 +23,7 @@ class CreateUsersTable extends Migration
             $table->string('address')->nullable();
             $table->string('email')->unique();
             $table->string('doc_id')->unique();
-            $table->integer('plan_id')->nullable();
-            $table->string('exp_date_plan')->nullable();
+            $table->integer('main_user')->default(0);
             $table->string('company_name')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

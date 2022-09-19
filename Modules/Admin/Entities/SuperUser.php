@@ -25,13 +25,10 @@ class SuperUser extends Authenticatable
         'phone',
         'address',
         'email',
-        'ci',
+        'doc_id',
         'password',
 
         'company_name',
-        'manager',
-        'ruc',
-        'location_iframe',
     ];
 
     protected $hidden = [
