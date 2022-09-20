@@ -56,7 +56,7 @@
                             <div class="col-6">
                               <div class="input-style-1">
                                 <label>Teléfono</label>
-                                <input type="text" name="phone" id="phone" value="{{ $user->phone ?? old('phone') }}" readonly>
+                                <input type="text" name="phone" value="{{ $user->phone ?? old('phone') }}" readonly>
                               </div>
                             </div>
                             <!-- end col -->
@@ -70,7 +70,7 @@
                             <div class="col-6">
                               <div class="input-style-1">
                                 <label>Doc Identidad</label>
-                                <input type="text" name="ci" value="{{ $user->ci ?? old('ci') }}"readonly>
+                                <input type="text" name="doc_id" value="{{ $user->doc_id ?? old('doc_id') }}"readonly>
                               </div>
                             </div>
                             <!-- end col -->

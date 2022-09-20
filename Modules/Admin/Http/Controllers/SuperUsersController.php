@@ -13,27 +13,26 @@ use Modules\Admin\Entities\SuperUser;
 //spatie
 use Spatie\Permission\Models\Role;
 
-class UsersController extends Controller
+class SuperUsersController extends Controller
 {
 
     public function __construct()
     {
         $this->middleware('auth:admin', ['except' => ['logout']]);
 
-        $this->middleware('permission:user-sa-list|user-sa-create|user-sa-edit|user-sa-delete', ['only' => ['index']]);
-        $this->middleware('permission:user-sa-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:user-sa-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:user-sa-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:super_user-sa-list|super_user-sa-create|super_user-sa-edit|super_user-sa-delete', ['only' => ['index']]);
+        $this->middleware('permission:super_user-sa-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:super_user-sa-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:super_user-sa-delete', ['only' => ['destroy']]);
     }
 
     public function index()
     {
-        dd('fdsfdsfsd');
         $currentUserId = Auth::id();
         $users = DB::table('super_users')
-            ->select('name','last_name','phone', 'address', 'doc_id')
+            ->select('id', 'name', 'last_name', 'phone', 'address', 'doc_id', 'email')
             ->orderBy('created_at', 'DESC')
-            ->get();
+            ->paginate(10);
 
         return view('admin::users.index', compact('users', 'currentUserId'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
@@ -57,7 +56,7 @@ class UsersController extends Controller
             'last_name' => 'required|max:50|min:5',
             'email' => 'required|email|unique:super_users,email',
             'phone' => 'nullable|max:20|min:5',
-            'doc_id' => 'required|max:25|min:5|unique:users,doc_id',
+            'doc_id' => 'required|max:25|min:5|unique:super_users,doc_id',
             'password' => 'required|max:50|min:5',
             'confirm_password' => 'required|max:50|min:5|same:password',
             'roles' => 'required'
@@ -221,10 +220,13 @@ class UsersController extends Controller
         $search = $request->input('search');
 
         if ($search == '') {
-            $users = DB::table('super_users')->paginate(10);
+            $users = DB::table('super_users')
+                ->orderBy('created_at', 'DESC')
+                ->paginate(10);
         } else {
             $users = DB::table('super_users')
                 ->where('super_users.name', 'LIKE', "%{$search}%")
+                ->orderBy('created_at', 'DESC')
                 ->paginate();
         }
 

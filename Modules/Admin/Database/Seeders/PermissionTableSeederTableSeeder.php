@@ -32,10 +32,10 @@ class PermissionTableSeederTableSeeder extends Seeder
             'seller-sa-edit',
             'seller-sa-delete',
 
-            'user-sa-list',
-            'user-sa-create',
-            'user-sa-edit',
-            'user-sa-delete',
+            'super_user-sa-list',
+            'super_user-sa-create',
+            'super_user-sa-edit',
+            'super_user-sa-delete',
 
             'financial-sa-list',
             'financial-sa-create',
@@ -51,10 +51,13 @@ class PermissionTableSeederTableSeeder extends Seeder
             'customer-sa-create',
             'customer-sa-edit',
             'customer-sa-delete',
-         ];
-      
-         foreach ($permissions as $permission) {
-              Permission::create(['name' => $permission,'guard_name'=>'admin', 'system_permission' => 1]);
-         }
+        ];
+
+        foreach ($permissions as $permission) {
+            Permission::create([
+                'name' => $permission,
+                'guard_name' => 'admin'
+            ]);
+        }
     }
 }

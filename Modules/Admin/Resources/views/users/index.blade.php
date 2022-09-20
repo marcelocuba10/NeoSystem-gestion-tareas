@@ -9,8 +9,8 @@
           <div class="col-md-8">
             <div class="title d-flex align-items-center flex-wrap mb-30">
               <h2 class="mr-40">Usuarios</h2>
-              @can('user-sa-create')
-                <a href="/admin/users/create" class="main-btn info-btn btn-hover btn-sm"><i class="lni lni-plus mr-5"></i> Nuevo</a>
+              @can('super_user-sa-create')
+                <a href="/admin/users/create" class="main-btn info-btn btn-hover btn-sm"><i class="lni lni-plus mr-5"></i></a>
               @endcan  
             </div>
           </div>
@@ -83,7 +83,7 @@
                                             </button>
                                         </a>
                                     </div>
-                                    @can('user-sa-edit')
+                                    @can('super_user-sa-edit')
                                     @if ($currentUserId != $user->id)
                                       <div class="action">
                                           <a href="/admin/users/edit/{{$user->id}}">

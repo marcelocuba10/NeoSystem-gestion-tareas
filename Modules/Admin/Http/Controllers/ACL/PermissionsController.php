@@ -35,16 +35,32 @@ class PermissionsController extends Controller
 
     public function getPermissions(Request $request)
     {
-
         $guard_name = $request->guard_name;
+        $id =  $request->id;
 
-        $permissions = DB::table('permissions')
-            ->where('guard_name', '=', $guard_name)
-            ->select('guard_name', 'id', 'name')
-            ->orderBy('created_at', 'DESC')
-            ->get();
+        /** Edit Role form */
+        if ($id) {
+            $role = Role::find($id);
+            $permissions = DB::table('permissions')
+                ->where('guard_name', '=', $guard_name)
+                ->select('guard_name', 'id', 'name')
+                ->orderBy('created_at', 'DESC')
+                ->get();
 
-        return View::make('admin::roles._partials.data', compact('permissions'));
+            $rolePermission = $role->permissions->pluck('name')->toArray();
+            
+        /** New Role form */
+        } else {
+            $permissions = DB::table('permissions')
+                ->where('guard_name', '=', $guard_name)
+                ->select('guard_name', 'id', 'name')
+                ->orderBy('created_at', 'DESC')
+                ->get();
+
+            $rolePermission = null;
+        }
+
+        return View::make('admin::roles._partials.data', compact('permissions', 'rolePermission'));
     }
 
     public function create()

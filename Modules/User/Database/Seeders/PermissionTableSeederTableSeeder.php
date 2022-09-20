@@ -66,10 +66,13 @@ class PermissionTableSeederTableSeeder extends Seeder
             'what_can_do-create',
             'what_can_do-edit',
             'what_can_do-delete',
-         ];
-      
-         foreach ($permissions as $permission) {
-              Permission::create(['name' => $permission,'guard_name'=>'web', 'system_permission' => 1]);
-         }
+        ];
+
+        foreach ($permissions as $permission) {
+            Permission::create([
+                'name' => $permission,
+                'guard_name' => 'web'
+            ]);
+        }
     }
 }

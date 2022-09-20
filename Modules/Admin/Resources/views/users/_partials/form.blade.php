@@ -24,7 +24,7 @@
     @if ($currentUserRole == 'SuperAdmin')
       <div class="col-6">
         <div class="select-style-1">
-          <label>(*) *Rol</label>
+          <label>(*) Rol</label>
           <div class="select-position">
             <select name="roles">
               @foreach ($roles as $role)
@@ -66,14 +66,14 @@
     <div class="col-6">
       <div class="input-style-1">
         <label>Teléfono</label>
-        <input type="text" name="phone" id="phone" value="{{ $user->phone ?? old('phone') }}" class="bg-transparent">
+        <input type="text" name="phone" value="{{ $user->phone ?? old('phone') }}" class="bg-transparent">
       </div>
     </div>
     <!-- end col -->
     <div class="col-6">
       <div class="input-style-1">
         <label>(*) Doc Identidad</label>
-        <input type="text" name="ci" value="{{ $user->ci ?? old('ci') }}" class="bg-transparent">
+        <input type="text" name="doc_id" value="{{ $user->doc_id ?? old('doc_id') }}" class="bg-transparent">
       </div>
     </div>
     <!-- end col -->

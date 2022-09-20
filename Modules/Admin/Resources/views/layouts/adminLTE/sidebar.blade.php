@@ -54,7 +54,7 @@
             <span class="text">Ajustes</span>
           </a>
           <ul id="ddmenu_2" class="dropdown-nav" style="{{ (request()->is('admin/users')) || (request()->is('admin/ACL/*')) ? '' : 'display:none'}}">
-            @can('user-sa-list')
+            @can('super_user-sa-list')
             <li>
               <a href="/admin/users" class="{{ (request()->is('admin/users')) ? 'active' : '' }}">
                 <span class="text">Usuarios</span>

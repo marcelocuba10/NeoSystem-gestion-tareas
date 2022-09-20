@@ -44,7 +44,7 @@
     <div class="col-4">
       <div class="input-style-1">
         <label>Teléfono</label>
-        <input type="text" name="phone" id="phone" value="{{ $user->phone ?? old('phone') }}" class="bg-transparent">
+        <input type="text" name="phone" value="{{ $user->phone ?? old('phone') }}" class="bg-transparent">
       </div>
     </div>
     <!-- end col -->

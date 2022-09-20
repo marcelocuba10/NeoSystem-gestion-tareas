@@ -11,6 +11,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Modules\User\Entities\User;
+
 //spatie
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -118,18 +119,17 @@ class SellersController extends Controller
         $user = User::find($id);
         $userStatus = $user->status;
 
-        return view('admin::sellers.edit', compact('user', 'currentUserRole', 'userStatus','status'));
+        return view('admin::sellers.edit', compact('user', 'currentUserRole', 'userStatus', 'status'));
     }
 
     public function update(Request $request, $id)
     {
-        dd();
         $this->validate($request, [
-            'status' => 'required|integer|between:0,1',
             'name' => 'required|max:50|min:5',
             'last_name' => 'required|max:50|min:5',
             'email' => 'required|email|unique:users,email,' . $id,
             'phone' => 'nullable|max:50|min:5',
+            'status' => 'required|integer|between:0,1',
             'doc_id' => 'required|max:25|min:5|unique:users,doc_id,' . $id,
             'password' => 'nullable|max:50|min:5',
             'confirm_password' => 'nullable|max:20|min:5|same:password',
@@ -147,6 +147,7 @@ class SellersController extends Controller
             }
         }
 
+
         $user = User::find($id);
         $user->update($input);
 
@@ -158,10 +159,13 @@ class SellersController extends Controller
         $search = $request->input('search');
 
         if ($search == '') {
-            $users = DB::table('users')->paginate(10);
+            $users = DB::table('users')
+                ->orderBy('created_at', 'DESC')
+                ->paginate(10);
         } else {
             $users = DB::table('users')
                 ->where('users.name', 'LIKE', "%{$search}%")
+                ->orderBy('created_at', 'DESC')
                 ->paginate();
         }
 
