@@ -118,11 +118,18 @@
             </span>
             <span class="text">Ajustes</span>
           </a>
-          <ul id="ddmenu_2" class="dropdown-nav" style="{{ (request()->is('user/users')) || (request()->is('user/ACL/*')) ? '' : 'display:none'}}">
+          <ul id="ddmenu_2" class="dropdown-nav" style="{{ (request()->is('user/users')) || (request()->is('user/ACL/*')) || (request()->is('user/parameters')) ? '' : 'display:none'}}">
             @can('user-list')
             <li>
               <a href="/user/users" class="{{ (request()->is('user/users')) ? 'active' : '' }}">
                 <span class="text">Usuarios</span>
+              </a>
+            </li>
+            @endcan
+            @can('parameter-list')
+            <li>
+              <a href="/user/parameters" class="{{ (request()->is('user/parameters')) ? 'active' : '' }}">
+                <span class="text">Parámetros</span>
               </a>
             </li>
             @endcan
@@ -148,6 +155,16 @@
       }else{
         n.style.display = '';
         document.getElementById(ddlink_1).setAttribute('aria-expanded', 'true');
+      }
+    }
+    function toggle(ddmenu_3, ddlink_3) {
+      var n = document.getElementById(ddmenu_3);
+      if (n.style.display != 'none'){
+        n.style.display = 'none';
+        document.getElementById(ddlink_3).setAttribute('aria-expanded', 'false');
+      }else{
+        n.style.display = '';
+        document.getElementById(ddlink_3).setAttribute('aria-expanded', 'true');
       }
     }
   </script>

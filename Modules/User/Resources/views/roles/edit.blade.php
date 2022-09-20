@@ -30,7 +30,7 @@
                 <div class="row">
                   <div class="col-lg-12">
                     <div class="card-style mb-30">
-                        <form method="POST" action="{{ route('roles.user.update', $role->id) }}">
+                        <form method="POST" action="/user/ACL/roles/update/{{ $role->id }}">
                             @csrf
                             @method('PUT') <!-- menciono el metodo PUT, ya que en mi route utilzo Route::put(); -->
                             @include('user::roles._partials.form')

@@ -36,30 +36,30 @@
     </div>
     <!-- end col -->
     <div class="col-3">
-      <div class="select-style-1">
+      <div class="input-style-1">
         <label>(*) Rubro</label>
         <div class="select-position">
-          <select name="category">
+          <select name="category[]" class="select2-multiple_1" multiple="multiple">
             @foreach ($categories as $item)
-              <option value="{{ $item[0] }}" {{ ( $item[0] == $item) ? 'selected' : '' }}> {{ $item[1] }} </option>
+              <option value="{{ $item->id }}" {{ ($item->name  == $category_customer ) ? 'selected' : '' }}> {{ $item->name }} </option>
             @endforeach 
           </select>
         </div>
       </div>
     </div>
     <!-- end col -->
-    <div class="col-3">
-      <div class="select-style-1">
+    {{-- <div class="col-3">
+      <div class="input-style-1">
         <label>(*) Equipos Potenciales</label>
         <div class="select-position">
-          <select name="potential_products">
+          <select name="potential_products[]" class="select2-multiple_2" multiple="multiple">
             @foreach ($potential_products as $item)
               <option value="{{ $item[0] }}" {{ ( $item[0] == $item) ? 'selected' : '' }}> {{ $item[1] }} </option>
             @endforeach 
           </select>
         </div>
       </div>
-    </div>
+    </div> --}}
     <!-- end col -->
     <div class="col-3">
       <div class="input-style-1">
@@ -70,8 +70,8 @@
     <!-- end col -->
     <div class="col-3">
       <div class="form-check checkbox-style mb-30" style="margin-top: 40px;">
-        <input @if(!empty($is_vigia_value)) {{ in_array(0, $is_vigia_value)  ? 'checked' : '' }} @endif class="form-check-input" type="checkbox" id="checkbox-not-robot">
-        <label class="form-check-label" for="checkbox-not-robot" name="is_vigia">¿Es Cliente Vigia?</label>
+        <input name="is_vigia" @if(!empty($customer->is_vigia)) {{ $customer->is_vigia = 'on'  ? 'checked' : '' }} @endif class="form-check-input" type="checkbox" id="checkbox-not-robot">
+        <label class="form-check-label" for="checkbox-not-robot" >¿Es Cliente Vigia?</label>
       </div>
     </div>
     <!-- end col -->
@@ -117,12 +117,31 @@
       </div>
     </div>
     <!-- end col -->
-
     <div class="col-12">
       <div class="button-group d-flex justify-content-center flex-wrap">
         <button type="submit" class="main-btn primary-btn btn-hover m-2">Guardar</button>
         <a class="main-btn danger-btn-outline m-2" href="/user/customers">Atrás</a>
       </div>
     </div>
-
 </div>
+
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    $('.select2-multiple_1').select2({
+      placeholder: "Seleccione Rubro..",
+      allowClear: true,
+      width: '100%',
+    });
+  });
+  $(document).ready(function() {
+    $('.select2-multiple_2').select2({
+      placeholder: "Seleccione Equipos..",
+      allowClear: true,
+      width: '100%',
+    });
+  });
+</script>

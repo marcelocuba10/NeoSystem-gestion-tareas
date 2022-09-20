@@ -1,3 +1,31 @@
+
+span.selection {
+    width: -webkit-fill-available;
+}
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+    border: solid #c9c9c9 1px !important;
+}
+.select2-container--default .select2-selection--multiple {
+    padding-bottom: 12px !important;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #4caf50e3 !important;
+    border: 1px solid #a7a7a7;
+    color: #fff;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    border-right: 1px solid #fff !important;
+    color: #fff !important;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+    border-right: 1px solid #fff !important;
+    color: rgb(68, 65, 65) !important;
+    background-color: #4caf50e3 !important;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__clear {
+    color: #6a6a6a !important;
+}
+
 @media only screen and (min-width: 412px) and (max-width: 600px) {
     .st-input-search {
         margin-top: -9px !important;

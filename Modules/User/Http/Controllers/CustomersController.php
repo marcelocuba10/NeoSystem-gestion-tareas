@@ -56,21 +56,13 @@ class CustomersController extends Controller
         $customer = null;
         $is_vigia_value = null;
 
-        $categories = array(
-            array('0', 'Agricultura'),
-            array('1', 'Ganaderia'),
-            array('2', 'Transporte'),
-            array('3', 'Comercio'),
-            array('4', 'Industria')
-        );
+        $categories = DB::table('parameters')
+            ->where('type', '=', 'Rubro')
+            ->get();
 
-        $potential_products = array(
-            array('0', 'Motor'),
-            array('1', 'Purgue'),
-            array('2', 'Vitran'),
-            array('3', 'Viesa'),
-            array('4', 'Calibrador')
-        );
+        $potential_products = DB::table('parameters')
+            ->where('type', '=', 'Equipos Potenciales')
+            ->get();
 
         return view('user::customers.create', compact('customer', 'categories', 'potential_products', 'is_vigia_value'));
     }
@@ -81,6 +73,8 @@ class CustomersController extends Controller
         $initialDate = '1980-01-01';
         $currentDate = (date('Y') + 1) . '-01-01'; //2023-01-01
 
+
+        dd($request->all());
         $request->validate([
             'name' => 'required|max:50|min:5',
             'last_name' => 'required|max:50|min:4',
@@ -161,25 +155,18 @@ class CustomersController extends Controller
             )
             ->first();
 
-        $is_vigia_value = null;
+        $category_customer = $customer->category;
+        $potential_products_customer = $customer->category;
 
-        $categories = array(
-            array('0', 'Agricultura'),
-            array('1', 'Ganaderia'),
-            array('2', 'Transporte'),
-            array('3', 'Comercio'),
-            array('4', 'Industria')
-        );
+        $categories = DB::table('parameters')
+            ->where('type', '=', 'Rubro')
+            ->get();
 
-        $potential_products = array(
-            array('0', 'Motor'),
-            array('1', 'Purgue'),
-            array('2', 'Vitran'),
-            array('3', 'Viesa'),
-            array('4', 'Calibrador')
-        );
+        $potential_products = DB::table('parameters')
+            ->where('type', '=', 'Equipos Potenciales')
+            ->get();
 
-        return view('user::customers.edit', compact('customer', 'categories', 'potential_products', 'is_vigia_value'));
+        return view('user::customers.edit', compact('customer', 'categories', 'potential_products', 'category_customer', 'potential_products_customer'));
     }
 
     public function update(Request $request, $id)
@@ -206,8 +193,15 @@ class CustomersController extends Controller
             'next_visit_hour' => 'nullable|max:5|min:5',
         ]);
 
+        $input = $request->all();
+
+        /** if checkbox not checked */
+        if ($request->is_vigia == null) {
+            $input['is_vigia'] = null;
+        }
+
         $customer = Customers::find($id);
-        $customer->update($request->all());
+        $customer->update($input);
 
         return redirect()->to('/user/customers')->with('message', 'Customer updated successfully.');
     }

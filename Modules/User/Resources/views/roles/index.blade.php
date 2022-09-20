@@ -74,7 +74,7 @@
                             <td class="text-right">
                                 <div class="btn-group">
                                     <div class="action">
-                                      <a href="{{ route('roles.user.show', $role->id) }}">
+                                      <a href="/user/ACL/roles/show/{{ $role->id }}">
                                           <button class="text-active">
                                               <i class="lni lni-eye"></i>
                                           </button>
@@ -82,7 +82,7 @@
                                     </div>
                                     @can('role-edit')
                                     <div class="action">
-                                        <a href="{{ route('roles.user.edit', $role->id) }}">
+                                        <a href="/user/ACL/roles/edit/{{ $role->id }}">
                                           @if (!$role->system_role)
                                             <button class="text-info">
                                                 <i class="lni lni-pencil"></i>
@@ -92,7 +92,7 @@
                                     </div>
                                     @endcan
                                     @can('role-delete')
-                                    <form method="POST" action="{{ route('roles.user.destroy', $role->id) }}">
+                                    <form method="POST" action="/user/ACL/roles/delete/{{ $role->id }}">
                                         @csrf
                                         <div class="action">
                                             <input name="_method" type="hidden" value="DELETE">

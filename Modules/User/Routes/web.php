@@ -26,16 +26,28 @@ Route::prefix('user')->group(function () {
         Route::get('/dashboard', 'HomeController@index');
         Route::get('/logout', 'Auth\LogoutController@perform');
 
+        /** Parameters Routes */
+        Route::group(['prefix' => 'parameters'], function () {
+            Route::get('/', 'ParametersController@index');
+            Route::get('/create', 'ParametersController@create');
+            Route::post('/create', 'ParametersController@store');
+            Route::get('/show/{id}', 'ParametersController@show');
+            Route::get('/edit/{id}', 'ParametersController@edit');
+            Route::put('/update/{id}', 'ParametersController@update');
+            Route::delete('/delete/{id}', 'ParametersController@destroy');
+            Route::get('/search', 'ParametersController@search');
+        });
+
         /*** ACL Routes ***/
         Route::group(['prefix' => 'ACL'], function () {
             Route::group(['prefix' => 'roles'], function () {
                 Route::get('/', 'ACL\RolesController@index');
                 Route::get('/create', 'ACL\RolesController@create');
                 Route::post('/create', 'ACL\RolesController@store');
-                Route::get('/{id}/show', 'ACL\RolesController@show');
+                Route::get('/show/{id}', 'ACL\RolesController@show');
                 Route::get('/edit/{id}', 'ACL\RolesController@edit');
                 Route::put('/update/{id}', 'ACL\RolesController@update');
-                Route::delete('/{id}/delete', 'ACL\RolesController@destroy');
+                Route::delete('/delete/{id}', 'ACL\RolesController@destroy');
                 Route::get('/search', 'ACL\RolesController@search');
             });
 

@@ -28,7 +28,7 @@ class RolesController extends Controller
         $roles = DB::table('roles')
             ->where('guard_name', '=', 'web')
             ->where('roles.idReference', '=', $idRefCurrentUser)
-            ->orWhere('roles.idReference', '=', 000001) //roles with IdReference = 000001 is system role default - module user
+            ->orWhere('roles.system_role', '=', 1)
             ->select('guard_name', 'id', 'name', 'system_role')
             ->orderBy('created_at', 'DESC')
             ->paginate(10);
@@ -41,7 +41,7 @@ class RolesController extends Controller
         $guard_name = Auth::getDefaultDriver();
         $permissions = DB::table('permissions')
             ->where('guard_name', '=', 'web')
-            ->select('guard_name', 'id', 'name', 'system_permission')
+            ->select('guard_name', 'id', 'name')
             ->orderBy('created_at', 'DESC')
             ->get();
 
@@ -64,7 +64,7 @@ class RolesController extends Controller
 
         $role->syncPermissions($request->input('permission'));
 
-        return redirect()->route('roles.user.index')->with('message', 'Role created successfully');
+        return redirect()->to('/user/ACL/roles/')->with('message', 'Role created successfully');
     }
 
     public function show($id)
@@ -83,7 +83,7 @@ class RolesController extends Controller
 
         $permissions = DB::table('permissions')
             ->where('guard_name', '=', 'web')
-            ->select('guard_name', 'id', 'name', 'system_permission')
+            ->select('guard_name', 'id', 'name')
             ->orderBy('created_at', 'DESC')
             ->get();
 
@@ -108,7 +108,7 @@ class RolesController extends Controller
 
         $role->syncPermissions($request->input('permission'));
 
-        return redirect()->route('roles.user.index')->with('message', 'Role updated successfully');
+        return redirect()->to('/user/ACL/roles/')->with('message', 'Role updated successfully');
     }
 
     public function search(Request $request)
@@ -120,14 +120,14 @@ class RolesController extends Controller
             $roles = DB::table('roles')
                 ->where('guard_name', '=', 'web')
                 ->where('roles.idReference', '=', $idRefCurrentUser)
-                ->orWhere('roles.idReference', '=', 000001) //roles with IdReference = 000001 is system role default - module user
+                ->orWhere('roles.system_role', '=', 1) //roles with IdReference = 000001 is system role default - module user
                 ->select('guard_name', 'id', 'name', 'system_role')
                 ->orderBy('created_at', 'DESC')
                 ->paginate(10);
         } else {
             $roles = DB::table('roles')
                 ->where('roles.idReference', '=', $idRefCurrentUser)
-                ->orWhere('roles.idReference', '=', 000001) //roles with IdReference = 000001 is system role default - module user
+                ->orWhere('roles.system_role', '=', 1) //roles with IdReference = 000001 is system role default - module user
                 ->where('roles.name', 'LIKE', "%{$search}%")
                 ->paginate();
         }
@@ -139,6 +139,6 @@ class RolesController extends Controller
     {
         DB::table('roles')->where('id', $id)->delete();
 
-        return redirect()->route('roles.user.index')->with('message', 'Role deleted successfully');
+        return redirect()->to('/user/ACL/roles/')->with('message', 'Role deleted successfully');
     }
 }

@@ -84,7 +84,7 @@
                             <td class="text-right">
                                 <div class="btn-group">
                                     <div class="action">
-                                        <a href="/user/users/show{{ $user->id }}">
+                                        <a href="/user/users/show/{{ $user->id }}">
                                             <button class="text-active">
                                                 <i class="lni lni-eye"></i>
                                             </button>
