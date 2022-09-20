@@ -30,135 +30,99 @@
     <!-- end col -->
     <div class="col-6">
       <div class="input-style-1">
-        <label>Dirección</label>
-        <input type="text" name="address" value="{{ $customer->address ?? old('address') }}" class="bg-transparent">
-      </div>
-    </div>
-    <!-- end col -->
-    <div class="col-6">
-      <div class="input-style-1">
         <label>Email</label>
         <input type="text" name="email" value="{{ $customer->email ?? old('email') }}" class="bg-transparent">
       </div>
     </div>
     <!-- end col -->
     <div class="col-3">
-      <div class="input-style-1">
-        <label>(*) Cantidad Máquinas</label>
-        <input type="number" min="0" name="total_machines" value="{{ $customer->total_machines ?? old('total_machines') }}" class="bg-transparent">
-      </div>
-    </div>
-    <!-- end col -->
-    <div class="col-sm-3">
       <div class="select-style-1">
-        <label>Pool Name</label>
+        <label>(*) Rubro</label>
         <div class="select-position">
-          @if ($customer)
-            <select name="pool" id="pool">
-              @foreach ($pools_options as $pool)
-                  <option value="{{ $pool }}" {{ ( $pool === $customer->pool) ? 'selected' : '' }}> {{ $pool }} </option>
-              @endforeach 
-            </select> 
-          @else
-            <select name="pool" id="pool">
-              @foreach ($pools_options as $pool)
-                  <option value="{{ $pool }}"> {{ $pool}} </option>
-              @endforeach 
-            </select> 
-          @endif
+          <select name="category">
+            @foreach ($categories as $item)
+              <option value="{{ $item[0] }}" {{ ( $item[0] == $item) ? 'selected' : '' }}> {{ $item[1] }} </option>
+            @endforeach 
+          </select>
         </div>
       </div>
     </div>
     <!-- end col -->
-    <div class="col-6" id="access_key">
-      <div class="input-style-1">
-        <label>Access Key (btc.com)</label>
-        <input type="text" name="access_key" value="{{ $customer->access_key ?? old('access_key') }}" class="bg-transparent">
+    <div class="col-3">
+      <div class="select-style-1">
+        <label>(*) Equipos Potenciales</label>
+        <div class="select-position">
+          <select name="potential_products">
+            @foreach ($potential_products as $item)
+              <option value="{{ $item[0] }}" {{ ( $item[0] == $item) ? 'selected' : '' }}> {{ $item[1] }} </option>
+            @endforeach 
+          </select>
+        </div>
       </div>
     </div>
     <!-- end col -->
-    <div class="col-6" id="puid">
+    <div class="col-3">
       <div class="input-style-1">
-        <label>Puid (btc.com)</label>
-        <input type="text" name="puid" value="{{ $customer->puid ?? old('puid') }}" class="bg-transparent">
+        <label>Cantidad de Unidades</label>
+        <input type="number" min="0" name="unit_quantity" value="{{ $customer->unit_quantity ?? old('unit_quantity') }}" class="bg-transparent">
       </div>
     </div>
     <!-- end col -->
-    <div class="col-4" id="userIdPool">
-      <div class="input-style-1">
-        <label>UserId (antpool.com)</label>
-        <input type="text" name="userIdPool" value="{{ $customer->userIdPool ?? old('userIdPool') }}" class="bg-transparent">
+    <div class="col-3">
+      <div class="form-check checkbox-style mb-30" style="margin-top: 40px;">
+        <input @if(!empty($is_vigia_value)) {{ in_array(0, $is_vigia_value)  ? 'checked' : '' }} @endif class="form-check-input" type="checkbox" id="checkbox-not-robot">
+        <label class="form-check-label" for="checkbox-not-robot" name="is_vigia">¿Es Cliente Vigia?</label>
       </div>
     </div>
     <!-- end col -->
-    <div class="col-4" id="apiKey">
+    <div class="col-6">
       <div class="input-style-1">
-        <label>Api Key (antpool.com)</label>
-        <input type="text" name="apiKey" value="{{ $customer->apiKey ?? old('apiKey') }}" class="bg-transparent">
+        <label>Resultado de la Visita</label>
+        <textarea type="text" name="result_of_the_visit" value="{{ $customer->result_of_the_visit ?? old('result_of_the_visit') }}" class="bg-transparent">{{ $customer->result_of_the_visit ?? old('result_of_the_visit') }}</textarea>
       </div>
     </div>
     <!-- end col -->
-    <div class="col-4" id="secretKey">
+    <div class="col-6">
       <div class="input-style-1">
-        <label>Secret Key (antpool.com)</label>
-        <input type="text" name="secretKey" value="{{ $customer->secretKey ?? old('secretKey') }}" class="bg-transparent">
+        <label>Objetivos</label>
+        <textarea type="text" name="objective" value="{{ $customer->objective ?? old('objective') }}" class="bg-transparent">{{ $customer->objective ?? old('objective') }}</textarea>
       </div>
     </div>
     <!-- end col -->
+    <div class="col-6">
+      <div class="input-style-1">
+        <label>Fecha Próxima Visita</label>
+        <input type="date" name="next_visit_date" id="date" placeholder="DD/MM/YYYY" value="{{ $customer->next_visit_date ?? old('next_visit_date') }}" class="bg-transparent">
+      </div>
+    </div>
+    <!-- end col -->
+    <div class="col-6">
+      <div class="input-style-1">
+        <label>Hora Próxima Visita</label>
+          <input type="time" name="next_visit_hour" value="{{ $customer->next_visit_hour ?? old('next_visit_hour') }}" class="bg-transparent">
+      </div>
+    </div>
+    <!-- end col -->
+    <div class="col-6">
+      <div class="input-style-1">
+        <label>Localidad</label>
+        <input type="text" name="estate" value="{{ $customer->estate ?? old('estate') }}" class="bg-transparent">
+      </div>
+    </div>
+    <!-- end col -->
+    <div class="col-6">
+      <div class="input-style-1">
+        <label>Dirección</label>
+        <input type="text" name="address" value="{{ $customer->address ?? old('address') }}" class="bg-transparent">
+      </div>
+    </div>
+    <!-- end col -->
+
     <div class="col-12">
       <div class="button-group d-flex justify-content-center flex-wrap">
         <button type="submit" class="main-btn primary-btn btn-hover m-2">Guardar</button>
         <a class="main-btn danger-btn-outline m-2" href="/user/customers">Atrás</a>
       </div>
     </div>
+
 </div>
-
-<script>
-
-  $(document).ready(function(){
-  
-    // when starting, it captures the value of the select, to then perform the query
-    var pool = document.getElementById("pool").value;
-    if(pool == "btc.com"){
-      document.getElementById('access_key').style.display = 'initial';
-      document.getElementById('puid').style.display = 'initial';
-
-      document.getElementById('userIdPool').style.display = 'none';
-      document.getElementById('apiKey').style.display = 'none';
-      document.getElementById('secretKey').style.display = 'none';
-    }
-
-    if(pool == "antpool.com"){
-      document.getElementById('access_key').style.display = 'none';
-      document.getElementById('puid').style.display = 'none';
-
-      document.getElementById('userIdPool').style.display = 'initial';
-      document.getElementById('apiKey').style.display = 'initial';
-      document.getElementById('secretKey').style.display = 'initial';
-    }
-  
-    // call the function when an event is generated in the select
-    $('#pool').on( 'change', function(){ 
-        pool = document.getElementById("pool").value;
-
-        if(pool == "btc.com"){
-          document.getElementById('access_key').style.display = 'initial';
-          document.getElementById('puid').style.display = 'initial';
-
-          document.getElementById('userIdPool').style.display = 'none';
-          document.getElementById('apiKey').style.display = 'none';
-          document.getElementById('secretKey').style.display = 'none';
-        }
-
-        if(pool == "antpool.com"){
-          document.getElementById('access_key').style.display = 'none';
-          document.getElementById('puid').style.display = 'none';
-
-          document.getElementById('userIdPool').style.display = 'initial';
-          document.getElementById('apiKey').style.display = 'initial';
-          document.getElementById('secretKey').style.display = 'initial';
-        }
-    });
-  });
-  
-</script>

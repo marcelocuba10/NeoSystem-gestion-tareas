@@ -60,10 +60,9 @@
                       <tr>
                         <th><h6>#</h6></th>
                         <th><h6>Nombre</h6></th>
-                        <th><h6>ID</h6></th>
                         <th><h6>Teléfono</h6></th>
-                        <th><h6>Pool</h6></th>
-                        <th><h6>Máquinas</h6></th>
+                        <th><h6>Cantidad Unidades</h6></th>
+                        <th><h6>Localidad</h6></th>
                         <th><h6>Acciones</h6></th>
                       </tr>
                       <!-- end table row-->
@@ -73,10 +72,9 @@
                         <tr>
                             <td class="text-sm"><h6 class="text-sm">{{ ++$i }}</h6></td>
                             <td class="min-width"><h5 class="text-bold text-dark"><a href="/user/customers/show/{{$customer->id}}">{{ $customer->name }} {{ $customer->last_name ?? old('last_name') }}</a></h5></td>
-                            <td class="min-width"><p>{{ $customer->id }}</p></td>
                             <td class="min-width"><p>{{ $customer->phone }}</p></td>
-                            <td class="min-width"><p>{{ $customer->pool }}</p></td>
-                            <td class="min-width"><p>{{ $customer->total_machines }}</p></td>
+                            <td class="min-width"><p>{{ $customer->unit_quantity }}</p></td>
+                            <td class="min-width"><p>{{ $customer->estate }}</p></td>
                             <td class="text-right">
                                 <div class="btn-group">
                                     <div class="action">

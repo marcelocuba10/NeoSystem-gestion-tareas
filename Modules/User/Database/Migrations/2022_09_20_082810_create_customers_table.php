@@ -24,7 +24,8 @@ class CreateCustomersTable extends Migration
             $table->string('address')->nullable();
             $table->integer('status')->default(1);
 
-            $table->string('localidad')->nullable();
+            $table->string('city')->nullable();
+            $table->string('estate')->nullable();
             $table->string('latitud')->nullable();
             $table->string('longitud')->nullable();
             $table->string('is_vigia')->nullable();
@@ -34,7 +35,7 @@ class CreateCustomersTable extends Migration
             $table->string('result_of_the_visit')->nullable();
             $table->string('objective')->nullable();
             $table->string('next_visit_date')->nullable();
-
+            $table->string('next_visit_hour')->nullable();
             $table->timestamps();
         });
     }

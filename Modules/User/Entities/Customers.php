@@ -17,7 +17,8 @@ class Customers extends Model
         'doc_id',
         'email',
         'address',
-        'localidad',
+        'city',
+        'estate',
         'latitud',
         'longitud',
         'is_vigia',
@@ -27,6 +28,7 @@ class Customers extends Model
         'result_of_the_visit',
         'objective',
         'next_visit_date',
+        'next_visit_hour',
     ];
     
     protected static function newFactory()

@@ -27,8 +27,25 @@ class CustomersController extends Controller
         $idRefCurrentUser = Auth::user()->idReference;
         $customers = DB::table('customers')
             ->where('customers.idReference', '=', $idRefCurrentUser)
-            ->select('customers.id', 'customers.name', 'customers.last_name', 'customers.pool', 'customers.phone', 'customers.total_machines', 'customers.address')
-            ->orderBy('customers.created_at', 'DESC')
+            ->select(
+                'id',
+                'name',
+                'last_name',
+                'category',
+                'potential_products',
+                'is_vigia',
+                'email',
+                'address',
+                'estate',
+                'phone',
+                'objective',
+                'doc_id',
+                'unit_quantity',
+                'result_of_the_visit',
+                'next_visit_date',
+                'next_visit_hour'
+            )
+            ->orderBy('created_at', 'DESC')
             ->paginate(10);
 
         return view('user::customers.index', compact('customers'))->with('i', (request()->input('page', 1) - 1) * 10);
@@ -37,27 +54,49 @@ class CustomersController extends Controller
     public function create()
     {
         $customer = null;
-        $pools_options = ['btc.com', 'antpool.com'];
+        $is_vigia_value = null;
 
-        return view('user::customers.create', compact('pools_options', 'customer'));
+        $categories = array(
+            array('0', 'Agricultura'),
+            array('1', 'Ganaderia'),
+            array('2', 'Transporte'),
+            array('3', 'Comercio'),
+            array('4', 'Industria')
+        );
+
+        $potential_products = array(
+            array('0', 'Motor'),
+            array('1', 'Purgue'),
+            array('2', 'Vitran'),
+            array('3', 'Viesa'),
+            array('4', 'Calibrador')
+        );
+
+        return view('user::customers.create', compact('customer', 'categories', 'potential_products', 'is_vigia_value'));
     }
 
     public function store(Request $request)
     {
+        /** date validation, not less than 1980 and not greater than the current year **/
+        $initialDate = '1980-01-01';
+        $currentDate = (date('Y') + 1) . '-01-01'; //2023-01-01
+
         $request->validate([
             'name' => 'required|max:50|min:5',
             'last_name' => 'required|max:50|min:4',
             'phone' => 'nullable|max:25|min:5',
-            'doc_id' => 'nullable|max:25|min:5',
-            'email' => 'nullable|max:25|min:5|email:rfc,dns',
+            'doc_id' => 'nullable|max:25|min:5|unique:customers,doc_id',
+            'email' => 'nullable|max:25|min:5|email:rfc,dns|unique:customers,email',
             'address' => 'nullable|max:255|min:5',
-            'access_key' => 'nullable|max:25|min:15',
-            'puid' => 'nullable|max:10|min:4',
-            'total_machines' => 'required|integer|between:0,9999|min:0',
-            'pool' => 'nullable|max:50|min:3',
-            'userIdPool' => 'nullable|max:25|min:4',
-            'apiKey' => 'nullable|max:40|min:4',
-            'secretKey' => 'nullable|max:40|min:4',
+            'estate' => 'nullable|max:150|min:3',
+            'is_vigia' => 'nullable',
+            'category' => 'nullable|max:150|min:1',
+            'potential_products' => 'nullable|max:150|min:1',
+            'unit_quantity' => 'nullable|integer|between:0,9999|min:0',
+            'result_of_the_visit' => 'nullable|max:500|min:3',
+            'objective' => 'nullable|max:500|min:3',
+            'next_visit_date' => 'nullable|date_format:Y-m-d|after_or_equal:' . $initialDate . '|before:' . $currentDate,
+            'next_visit_hour' => 'nullable|max:5|min:5',
         ]);
 
         $input = $request->all();
@@ -74,115 +113,97 @@ class CustomersController extends Controller
         $customer = DB::table('customers')
             ->where('customers.id', '=', $id)
             ->select(
-                'customers.id',
-                'customers.name',
-                'customers.last_name',
-                'customers.phone',
-                'customers.address',
-                'customers.email',
-                'customers.doc_id',
-                'customers.pool',
-                'customers.total_machines',
-                'customers.puid',
-                'customers.access_key',
-                'customers.userIdPool',
-                'customers.apiKey',
-                'customers.secretKey',
-                'customers.shares_1m',
-                'customers.shares_5m',
-                'customers.shares_15m',
-                'customers.shares_1h',
-                'customers.shares_1d',
-                'customers.shares_unit',
-
-                'customers.workers_active',
-                'customers.workers_inactive',
-                'customers.workers_dead',
-                'customers.workers_total',
-                'customers.hsLast10m',
-                'customers.hsLast1h',
-                'customers.hsLast1d',
-                'customers.totalAmount',
-                'customers.unpaidAmount',
-                'customers.yesterdayAmount',
-                'customers.inactiveWorkerNum',
-                'customers.activeWorkerNum',
-                'customers.invalidWorkerNum',
-                'customers.totalWorkerNum',
-                'customers.updated_at'
+                'id',
+                'name',
+                'last_name',
+                'phone',
+                'address',
+                'email',
+                'doc_id',
+                'estate',
+                'latitud',
+                'longitud',
+                'is_vigia',
+                'category',
+                'potential_products',
+                'unit_quantity',
+                'result_of_the_visit',
+                'objective',
+                'next_visit_date',
+                'next_visit_hour',
             )
             ->first();
 
-        $machines = DB::table('machines')
-            ->leftjoin('users', 'machines.user_id', '=', 'users.id')
-            ->where('machines.customer_id', '=', $customer->id)
-            ->select('users.name AS user_name', 'machines.total_power', 'machines.id', 'machines.name', 'machines.codeQR', 'machines.customer_id', 'machines.status', 'machines.observation')
-            ->orderBy('machines.created_at', 'DESC')
-            ->get();
-
-        $total_hash_local = DB::table('machines')
-            ->where('machines.customer_id', '=', $customer->id)
-            ->orderBy('created_at', 'DESC')
-            ->sum('machines.total_power');
-
-        $machines_api = DB::table('machines_api')
-            ->select('machines_api.id', 'machines_api.last10m', 'machines_api.worker')
-            ->where('machines_api.customer_id', '=', $customer->id)
-            ->orderBy('created_at', 'DESC')
-            ->take($customer->total_machines)
-            ->get();
-
-        /** Count total hashrate from api antpool */
-        if ($customer->pool == "antpool.com") {
-            $total_hash_pool = DB::table('machines_api')
-                ->where('machines_api.customer_id', '=', $customer->id)
-                ->orderBy('created_at', 'DESC')
-                ->groupBy('created_at')
-                ->take(1)
-                ->sum('machines_api.last10m');
-
-            $total_hash_pool_graph = DB::table('machines_api')
-                ->where('machines_api.customer_id', '=', $customer->id)
-                ->whereDate('created_at', 'LIKE', date('Y-m-d').'%')
-                ->selectRaw("REPLACE(FORMAT(SUM(last10m), 2), ',', '') as totalhash")
-                ->orderBy('created_at', 'DESC')
-                ->groupBy('created_at')
-                ->pluck('totalhash');
-        }
-
-        /** Count total hashrate from api antpool */
-        if ($customer->pool == "btc.com") {
-            $total_hash_pool = null;
-            $total_hash_pool_graph = null;
-        }
-
-        return view('user::customers.show', compact('total_hash_pool_graph', 'customer', 'machines', 'machines_api', 'total_hash_pool', 'total_hash_local'));
+        return view('user::customers.show', compact('customer',));
     }
 
     public function edit($id)
     {
-        $customer = Customers::find($id);
-        $pools_options = ['btc.com', 'antpool.com'];
+        $customer = DB::table('customers')
+            ->where('id', '=', $id)
+            ->select(
+                'id',
+                'name',
+                'last_name',
+                'category',
+                'potential_products',
+                'is_vigia',
+                'email',
+                'address',
+                'estate',
+                'phone',
+                'objective',
+                'doc_id',
+                'unit_quantity',
+                'result_of_the_visit',
+                'next_visit_date',
+                'next_visit_hour'
+            )
+            ->first();
 
-        return view('user::customers.edit', compact('customer', 'pools_options'));
+        $is_vigia_value = null;
+
+        $categories = array(
+            array('0', 'Agricultura'),
+            array('1', 'Ganaderia'),
+            array('2', 'Transporte'),
+            array('3', 'Comercio'),
+            array('4', 'Industria')
+        );
+
+        $potential_products = array(
+            array('0', 'Motor'),
+            array('1', 'Purgue'),
+            array('2', 'Vitran'),
+            array('3', 'Viesa'),
+            array('4', 'Calibrador')
+        );
+
+        return view('user::customers.edit', compact('customer', 'categories', 'potential_products', 'is_vigia_value'));
     }
 
     public function update(Request $request, $id)
     {
+        /** date validation, not less than 1980 and not greater than the current year **/
+        $initialDate = '1980-01-01';
+        $currentDate = (date('Y') + 1) . '-01-01'; //2023-01-01
+
         $request->validate([
             'name' => 'required|max:50|min:5',
-            'last_name' => 'nullable|max:50|min:4',
+            'last_name' => 'required|max:50|min:4',
             'phone' => 'nullable|max:25|min:5',
-            'doc_id' => 'nullable|max:25|min:5',
-            'email' => 'nullable|max:25|min:5|email:rfc,dns',
+            'doc_id' => 'nullable|max:25|min:5|unique:customers,doc_id,' . $id,
+            'email' => 'nullable|max:25|min:5|email:rfc,dns|unique:customers,email,' . $id,
             'address' => 'nullable|max:255|min:5',
-            'access_key' => 'nullable|max:25|min:15',
-            'puid' => 'nullable|max:10|min:4',
-            'total_machines' => 'required|integer|between:0,9999|min:0',
-            'pool' => 'nullable|max:50|min:3',
-            'userIdPool' => 'nullable|max:25|min:4',
-            'apiKey' => 'nullable|max:40|min:4',
-            'secretKey' => 'nullable|max:40|min:4',
+            'estate' => 'nullable|max:150|min:3',
+            'is_vigia' => 'nullable',
+            'category' => 'nullable|max:150|min:1',
+            'potential_products' => 'nullable|max:150|min:1',
+            'unit_quantity' => 'nullable|integer|between:0,9999|min:0',
+            'result_of_the_visit' => 'nullable|max:500|min:3',
+            'objective' => 'nullable|max:500|min:3',
+            'next_visit_date' => 'nullable|date_format:Y-m-d|after_or_equal:' . $initialDate . '|before:' . $currentDate,
+            'next_visit_hour' => 'nullable|max:5|min:5',
         ]);
 
         $customer = Customers::find($id);
