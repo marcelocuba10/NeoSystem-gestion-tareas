@@ -29,7 +29,7 @@
           </a>
         </li>
         @endcan
-        @can('financial-sa-list')
+        {{-- @can('financial-sa-list')
         <li class="nav-item {{ (request()->is('admin/financial')) ? 'active' : '' }}">
           <a href="/admin/financial">
             <span class="icon">
@@ -40,7 +40,7 @@
             <span class="text">Financiero</span>
           </a>
         </li>
-        @endcan
+        @endcan --}}
         <span class="divider">
           <hr />
         </span>
