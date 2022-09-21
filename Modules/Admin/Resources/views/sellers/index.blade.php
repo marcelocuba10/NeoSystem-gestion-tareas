@@ -8,7 +8,7 @@
         <div class="row align-items-center">
           <div class="col-md-8">
             <div class="title d-flex align-items-center flex-wrap mb-30">
-              <h2 class="mr-40">Vendedores</h2>
+              <h2 class="mr-40">Agentes</h2>
               @can('seller-sa-create')
                 <a href="/admin/sellers/create" class="main-btn info-btn btn-hover btn-sm"><i class="lni lni-plus mr-5"></i></a>
               @endcan  
@@ -59,8 +59,9 @@
                     <thead>
                       <tr>
                         <th class="sm"><h6 class="text-sm text-medium"></h6></th>
-                        <th class="md"><h6>Nombre</h6></th>
+                        <th class="md"><h6>Razón Social</h6></th>
                         <th class="md"><h6>Cod Referencia</h6></th>
+                        <th class="md"><h6>Localidad</h6></th>
                         <th class="md"><h6>Status</h6></th>
                         <th class="md"><h6>Email</h6></th>
                         <th class="md"><h6>Acciones</h6></th>
@@ -73,6 +74,7 @@
                             <td class="min-width"><h6 class="text-sm">{{ ++$i }}</h6></td>
                             <td class="min-width"><p>{{ $user->name }}</p></td>
                             <td class="min-width"><p>{{ $user->idReference }}</p></td>
+                            <td class="min-width"><p>{{ $user->estate }}</p></td>
                             <td class="min-width">
                               @if ($user->status == 1)
                                 <p><span class="status-btn success-btn">Activado</span></p>
@@ -99,7 +101,7 @@
                                         </a>
                                     </div>
                                     @endcan
-                                    {{-- @can('seller-sa-delete')
+                                    @can('seller-sa-delete')
                                     <form method="POST" action="/admin/sellers/delete/{{$user->id}}">
                                         @csrf
                                         <div class="action">
@@ -109,7 +111,7 @@
                                             </button>
                                         </div>
                                     </form>
-                                    @endcan --}}
+                                    @endcan
                                 </div>
                             </td>
                         </tr>

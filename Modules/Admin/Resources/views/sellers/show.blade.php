@@ -16,8 +16,8 @@
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/admin/dashboard">Dashboard</a></li>
-                <li class="breadcrumb-item" aria-current="page"><a href="/admin/sellers">Vendedores</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Detalle Vendedor</li>
+                <li class="breadcrumb-item" aria-current="page"><a href="/admin/sellers">Agentes</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Detalle Agentes</li>
               </ol>
             </nav>
           </div>
@@ -34,15 +34,8 @@
               <div class="row">
                   <div class="col-6">
                     <div class="input-style-1">
-                      <label>Nombre</label>
+                      <label>Razón Social</label>
                       <input type="text" value="{{ $user->name ?? old('name') }}" name="name" readonly>
-                    </div>
-                  </div>
-                  <!-- end col -->
-                  <div class="col-6">
-                    <div class="input-style-1">
-                      <label>Apellidos</label>
-                      <input type="text" value="{{ $user->last_name ?? old('last_name') }}" name="last_name" readonly>
                     </div>
                   </div>
                   <!-- end col -->

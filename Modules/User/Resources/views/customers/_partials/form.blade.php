@@ -2,21 +2,14 @@
 <div class="row">
     <div class="col-6">
       <div class="input-style-1">
-        <label>(*) Nombre</label>
+        <label>(*) Razón Social</label>
         <input type="text" name="name" value="{{ $customer->name ?? old('name') }}" class="bg-transparent">
-      </div>
-    </div>
-    <!-- end col -->
-    <div class="col-6">
-      <div class="input-style-1">
-        <label>(*) Apellidos</label>
-        <input type="text" name="last_name" value="{{ $customer->last_name ?? old('last_name') }}" class="bg-transparent">
       </div>
     </div>
     <!-- end col -->
     <div class="col-3">
       <div class="input-style-1">
-        <label>Doc Identidad</label>
+        <label>Doc Identidad / RUC</label>
         <input type="text" name="doc_id" value="{{ $customer->doc_id ?? old('doc_id') }}" class="bg-transparent">
       </div>
     </div>
@@ -61,14 +54,42 @@
       </div>
     </div>
     <!-- end col -->
-    <div class="col-3">
+    <div class="col-2">
       <div class="input-style-1">
         <label>Cantidad de Unidades</label>
         <input type="number" min="0" name="unit_quantity" value="{{ $customer->unit_quantity ?? old('unit_quantity') }}" class="bg-transparent">
       </div>
     </div>
     <!-- end col -->
-    <div class="col-3">
+    <div class="col-5">
+      <div class="input-style-1">
+        <label>Resultado de la Visita</label>
+        <textarea type="text" name="result_of_the_visit" value="{{ $customer->result_of_the_visit ?? old('result_of_the_visit') }}" class="bg-transparent">{{ $customer->result_of_the_visit ?? old('result_of_the_visit') }}</textarea>
+      </div>
+    </div>
+    <!-- end col -->
+    <div class="col-5">
+      <div class="input-style-1">
+        <label>Objetivos</label>
+        <textarea type="text" name="objective" value="{{ $customer->objective ?? old('objective') }}" class="bg-transparent">{{ $customer->objective ?? old('objective') }}</textarea>
+      </div>
+    </div>
+    <!-- end col -->
+    <div class="col-4">
+      <div class="input-style-1">
+        <label>Fecha Próxima Visita</label>
+        <input type="date" name="next_visit_date" id="date" placeholder="DD/MM/YYYY" value="{{ $customer->next_visit_date ?? old('next_visit_date') }}" class="bg-transparent">
+      </div>
+    </div>
+    <!-- end col -->
+    <div class="col-4">
+      <div class="input-style-1">
+        <label>Hora Próxima Visita</label>
+          <input type="time" name="next_visit_hour" value="{{ $customer->next_visit_hour ?? old('next_visit_hour') }}" class="bg-transparent">
+      </div>
+    </div>
+    <!-- end col -->
+    <div class="col-4">
       <div class="form-check checkbox-style mb-30" style="margin-top: 40px;">
         <input name="is_vigia" @if(!empty($customer->is_vigia)) {{ $customer->is_vigia = 'on'  ? 'checked' : '' }} @endif class="form-check-input" type="checkbox" id="checkbox-not-robot">
         <label class="form-check-label" for="checkbox-not-robot" >¿Es Cliente Vigia?</label>
@@ -77,40 +98,25 @@
     <!-- end col -->
     <div class="col-6">
       <div class="input-style-1">
-        <label>Resultado de la Visita</label>
-        <textarea type="text" name="result_of_the_visit" value="{{ $customer->result_of_the_visit ?? old('result_of_the_visit') }}" class="bg-transparent">{{ $customer->result_of_the_visit ?? old('result_of_the_visit') }}</textarea>
+        <label>Ciudad</label>
+        <input name="city" value="{{ $customer->city ?? old('city') }}" type="text" class="bg-transparent">
       </div>
     </div>
     <!-- end col -->
     <div class="col-6">
-      <div class="input-style-1">
-        <label>Objetivos</label>
-        <textarea type="text" name="objective" value="{{ $customer->objective ?? old('objective') }}" class="bg-transparent">{{ $customer->objective ?? old('objective') }}</textarea>
+      <div class="select-style-1">
+        <label>(*) Departamento</label>
+        <div class="select-position">
+          <select name="estate">
+            @foreach ($estates as $key)
+              <option value="{{ $key[1] }}" {{ ( $key[1] == $userEstate) ? 'selected' : '' }}> {{ $key[1] }} </option>
+            @endforeach 
+          </select>
+        </div>
       </div>
     </div>
     <!-- end col -->
-    <div class="col-6">
-      <div class="input-style-1">
-        <label>Fecha Próxima Visita</label>
-        <input type="date" name="next_visit_date" id="date" placeholder="DD/MM/YYYY" value="{{ $customer->next_visit_date ?? old('next_visit_date') }}" class="bg-transparent">
-      </div>
-    </div>
-    <!-- end col -->
-    <div class="col-6">
-      <div class="input-style-1">
-        <label>Hora Próxima Visita</label>
-          <input type="time" name="next_visit_hour" value="{{ $customer->next_visit_hour ?? old('next_visit_hour') }}" class="bg-transparent">
-      </div>
-    </div>
-    <!-- end col -->
-    <div class="col-6">
-      <div class="input-style-1">
-        <label>Localidad</label>
-        <input type="text" name="estate" value="{{ $customer->estate ?? old('estate') }}" class="bg-transparent">
-      </div>
-    </div>
-    <!-- end col -->
-    <div class="col-6">
+    <div class="col-12">
       <div class="input-style-1">
         <label>Dirección</label>
         <input type="text" name="address" value="{{ $customer->address ?? old('address') }}" class="bg-transparent">

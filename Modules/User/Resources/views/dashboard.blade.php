@@ -36,8 +36,8 @@
               <i class="lni lni-user"></i>
             </div>
             <div class="content">
-              <h6 class="mb-10">Total Usuarios</h6>
-              <h3 class="text-bold mb-10">{{$cant_users}}</h3>
+              <h6 class="mb-10">Total Productos</h6>
+              <h3 class="text-bold mb-10">434</h3>
             </div>
           </div>
           <!-- End Icon Cart -->
@@ -49,8 +49,8 @@
               <i class="lni lni-graph"></i>
             </div>
             <div class="content">
-              <h6 class="mb-10">Teste teste</h6>
-              <h3 class="text-bold mb-10">121212</h3>
+              <h6 class="mb-10">Total Ventas</h6>
+              <h3 class="text-bold mb-10">121.212</h3>
             </div>
           </div>
           <!-- End Icon Cart -->
@@ -66,8 +66,8 @@
                 use Modules\User\Entities\Machines;
                 $cant_machines = Machines::count(); 
               @endphp --}}
-              <h6 class="mb-10">Total Máquinas Pool</h6>
-              <h3 class="text-bold mb-10">$24,567</h3>
+              <h6 class="mb-10">Visitas Pendientes</h6>
+              <h3 class="text-bold mb-10">4</h3>
             </div>
           </div>
           <!-- End Icon Cart -->
@@ -95,10 +95,10 @@
                       <h6 class="text-sm fw-500">Nombre</h6>
                     </th>
                     <th>
-                      <h6 class="text-sm fw-500">Pool</h6>
+                      <h6 class="text-sm fw-500">Doc Identidad</h6>
                     </th>
                     <th class="text-end">
-                      <h6 class="text-sm fw-500">Total Máquinas</h6>
+                      <h6 class="text-sm fw-500">Teléfono</h6>
                     </th>
                   </tr>
                 </thead>
@@ -121,7 +121,7 @@
           <div class="card-style mb-30">
             <div class="title d-flex flex-wrap align-items-center justify-content-between mb-10">
               <div class="left">
-                <h6 class="text-medium mb-2">Usuarios Registrados</h6>
+                <h6 class="text-medium mb-2">Productos Registrados</h6>
               </div>
               <div class="right mb-2">
               </div>

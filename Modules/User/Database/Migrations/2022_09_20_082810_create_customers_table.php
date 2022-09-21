@@ -26,14 +26,14 @@ class CreateCustomersTable extends Migration
 
             $table->string('city')->nullable();
             $table->string('estate')->nullable();
-            $table->string('latitud')->nullable();
-            $table->string('longitud')->nullable();
+            $table->string('latitude')->nullable();
+            $table->string('longitude')->nullable();
             $table->string('is_vigia')->nullable();
             $table->string('category')->nullable();
             $table->string('potential_products')->nullable();
             $table->string('unit_quantity')->nullable();
-            $table->string('result_of_the_visit')->nullable();
-            $table->string('objective')->nullable();
+            $table->string('result_of_the_visit',1000)->nullable();
+            $table->string('objective',1000)->nullable();
             $table->string('next_visit_date')->nullable();
             $table->string('next_visit_hour')->nullable();
             $table->timestamps();

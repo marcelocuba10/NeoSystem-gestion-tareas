@@ -23,20 +23,22 @@ class User extends Authenticatable
         'name',
         'last_name',
         'idReference',
-        'phone',
+        'phone_1',
+        'phone_2',
         'address',
         'doc_id',
         'email',
         'password',
         'main_user',
-        'company_name',
-        'status'
+        'status',
+        'seller_contact_1',
+        'seller_contact_2',
+        'city',
+        'estate',
+        'latitude',
+        'longitude',
+        'img_profile',
     ];
-
-    public function grounds()
-    {
-        return $this->hasMany(Ground::class);
-    }
 
     public function reports()
     {

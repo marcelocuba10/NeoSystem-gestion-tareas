@@ -2,15 +2,15 @@
 <div class="row">
     <div class="col-6">
       <div class="input-style-1">
-        <label>(*) Nombre</label>
+        <label>(*) Razón Social</label>
         <input type="text" class="bg-transparent" value="{{ $user->name ?? old('name') }}" name="name">
       </div>
     </div>
     <!-- end col -->
     <div class="col-6">
       <div class="input-style-1">
-        <label>(*) Apellidos</label>
-        <input type="text" class="bg-transparent" value="{{ $user->last_name ?? old('last_name') }}" name="last_name">
+        <label>(*) Nombre del Encargado</label>
+        <input name="seller_contact_1" value="{{ $user->seller_contact_1 ?? old('seller_contact_1') }}" type="text" class="bg-transparent">
       </div>
     </div>
     <!-- end col -->
@@ -43,15 +43,42 @@
     <!-- end col -->
     <div class="col-3">
       <div class="input-style-1">
-        <label>Teléfono</label>
-        <input type="text" name="phone" id="phone" value="{{ $user->phone ?? old('phone') }}" class="bg-transparent">
+        <label>Teléfono 1</label>
+        <input name="phone_1" value="{{ $user->phone_1 ?? old('phone_1') }}" type="text" class="bg-transparent">
       </div>
     </div>
     <!-- end col -->
     <div class="col-3">
       <div class="input-style-1">
-        <label>Doc Identidad</label>
+        <label>Teléfono 2</label>
+        <input name="phone_2" value="{{ $user->phone_2 ?? old('phone_2') }}" type="text" class="bg-transparent">
+      </div>
+    </div>
+    <!-- end col -->
+    <div class="col-3">
+      <div class="input-style-1">
+        <label>Doc Identidad / RUC</label>
         <input type="text" name="doc_id" value="{{ $user->doc_id ?? old('doc_id') }}" class="bg-transparent">
+      </div>
+    </div>
+    <!-- end col -->
+    <div class="col-4">
+      <div class="input-style-1">
+        <label>Ciudad</label>
+        <input name="city" value="{{ $user->city ?? old('city') }}" type="text" class="bg-transparent">
+      </div>
+    </div>
+    <!-- end col -->
+    <div class="col-4">
+      <div class="select-style-1">
+        <label>(*) Departamento</label>
+        <div class="select-position">
+          <select name="estate">
+            @foreach ($estates as $key)
+              <option value="{{ $key[1] }}" {{ ( $key[1] == $userEstate) ? 'selected' : '' }}> {{ $key[1] }} </option>
+            @endforeach 
+          </select>
+        </div>
       </div>
     </div>
     <!-- end col -->

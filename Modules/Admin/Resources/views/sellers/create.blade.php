@@ -8,7 +8,7 @@
                 <div class="row align-items-center">
                     <div class="col-md-6">
                         <div class="titlemb-30">
-                            <h2>Crear Nuevo Vendedor</h2>
+                            <h2>Crear Nuevo Agente</h2>
                         </div>
                     </div>
                     <!-- end col -->
@@ -17,8 +17,8 @@
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="/user/dashboard">Dashboard</a></li>
-                                    <li class="breadcrumb-item" aria-current="page"><a href="/admin/sellers">Vendedores</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Nuevo Vendedor</li>
+                                    <li class="breadcrumb-item" aria-current="page"><a href="/admin/sellers">Agentes</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Nuevo Agente</li>
                                 </ol>
                             </nav>
                         </div>

@@ -30,17 +30,7 @@ class UserController extends Controller
 
     public function index()
     {
-        $currentUser = Auth::user();
-        $currentUserId = $currentUser->id;
-        $idReference = $currentUser->idReference;
-
-        $users = DB::table('users')
-            ->where('idReference', '=', $idReference)
-            ->select('id', 'name', 'idReference', 'email', 'status')
-            ->orderBy('created_at', 'DESC')
-            ->paginate(10);
-
-        return view('user::users.index', compact('users', 'currentUserId'))->with('i', (request()->input('page', 1) - 1) * 10);
+        return redirect()->to('user/dashboard');
     }
 
     public function showProfile($id)
@@ -72,28 +62,48 @@ class UserController extends Controller
             ->pluck('name', 'name')
             ->all();
 
+        $estates = array(
+            array('1', 'Alto Paraná'),
+            array('2', 'Central'),
+            array('3', 'Concepción'),
+            array('4', 'San Pedro'),
+            array('5', 'Cordillera'),
+            array('6', 'Guairá'),
+            array('7', 'Caaguazú'),
+            array('8', 'Caazapá'),
+            array('9', 'Itapúa'),
+            array('10', 'Misiones'),
+            array('11', 'Paraguarí'),
+            array('12', 'Ñeembucú'),
+            array('13', 'Amambay'),
+            array('14', 'Canindeyú'),
+            array('15', 'Presidente Hayes'),
+            array('16', 'Boquerón'),
+            array('17', 'Alto Paraguay')
+        );
+
+        $userEstate = $user->estate;
+
         $userRoleArray = $user->roles->pluck('name')->toArray(); //get user assigned role
 
-        if (empty($userRoleArray)) {
-            $userRole = null;
-        } else {
-            $userRole = $userRoleArray[0]; //get only name of the role
-        }
-
-        return view('user::users.editProfile', compact('user', 'roles', 'userRole', 'currentUserRole'));
+        return view('user::users.editProfile', compact('user', 'roles', 'currentUserRole','estates', 'userEstate'));
     }
 
     public function updateProfile($id, Request $request)
     {
         $this->validate($request, [
             'name' => 'required|max:50|min:5',
-            'last_name' => 'required|max:50|min:5',
+            'seller_contact_1' => 'required|max:50|min:5',
+            'seller_contact_2' => 'nullable|max:50|min:5',
+            'phone_1' => 'nullable|max:50|min:5',
+            'phone_2' => 'nullable|max:50|min:5',
+            'city' => 'nullable|max:50|min:5',
+            'estate' => 'required|max:50|min:5',
+            'address' => 'nullable|max:255|min:5',
             'email' => 'required|max:50|min:5|email:rfc,dns|unique:users,email,' . $id,
             'password' => 'nullable|max:50|min:5',
             'confirm_password' => 'nullable|max:50|min:5|same:password',
-            'phone' => 'nullable|max:50|min:5',
             'doc_id' => 'nullable|max:25|min:5|unique:users,doc_id,' . $id,
-            'address' => 'nullable|max:255|min:5',
         ]);
 
         $input = $request->all();

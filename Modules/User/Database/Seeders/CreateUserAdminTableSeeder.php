@@ -26,12 +26,11 @@ class CreateUserAdminTableSeeder extends Seeder
             'idReference' => $this->generateUniqueCodeUser(),
             'name' => 'User Admin',
             'last_name' => 'teste',
-            'phone' => '09855656522',
+            'phone_1' => '09855656522',
             'address' => 'av mensu 521',
             'doc_id' => '1234567',
             'email' => 'user@user.com',
             'password' => 'teste123',
-            'company_name' => 'empresa teste',
             'status' => 1,
             'main_user' => 1,
         ]);

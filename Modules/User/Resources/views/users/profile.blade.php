@@ -61,36 +61,50 @@
                         <div class="row">
                           <div class="col-6">
                             <div class="input-style-1">
-                              <label>Nombre</label>
-                              <input type="text" placeholder="{{ $user->name }}" readonly>
+                              <label>Razón Social</label>
+                              <input placeholder="{{ $user->name }}" type="text" readonly>
                             </div>
                           </div>
                           <!-- end col -->
                           <div class="col-6">
                             <div class="input-style-1">
-                              <label>Apellidos</label>
-                              <input type="text" placeholder="{{ $user->last_name }}" readonly>
+                              <label>Nombre del Encargado</label>
+                              <input value="{{ $user->seller_contact_1 ?? old('seller_contact_1') }}" type="text" readonly>
                             </div>
                           </div>
                           <!-- end col -->
-                          <div class="col-6">
+                          <div class="col-4">
                             <div class="input-style-1">
                               <label>Teléfono</label>
-                              <input type="text" placeholder="{{ $user->phone }}" readonly>
+                              <input placeholder="{{ $user->phone_1 }}" type="text" readonly>
+                            </div>
+                          </div>
+                          <!-- end col -->
+                          <div class="col-4">
+                            <div class="input-style-1">
+                              <label>Doc Identidad</label>
+                              <input placeholder="{{ $user->doc_id }}" type="text" readonly>
+                            </div>
+                          </div>
+                          <!-- end col -->
+                          <div class="col-4">
+                            <div class="input-style-1">
+                              <label>Ciudad</label>
+                              <input placeholder="{{ $user->city }}" type="text" readonly>
                             </div>
                           </div>
                           <!-- end col -->
                           <div class="col-6">
                             <div class="input-style-1">
-                              <label>Doc Identidad</label>
-                              <input type="text" placeholder="{{ $user->doc_id }}" readonly>
+                              <label>Departamento</label>
+                              <input placeholder="{{ $user->estate }}" type="text" readonly>
                             </div>
                           </div>
                           <!-- end col -->
-                          <div class="col-12">
+                          <div class="col-6">
                             <div class="input-style-1">
                               <label>Dirección</label>
-                              <input type="text" placeholder="{{ $user->address }}" readonly>
+                              <input placeholder="{{ $user->address }}" type="text" readonly>
                             </div>
                           </div>
                           <!-- end col -->
