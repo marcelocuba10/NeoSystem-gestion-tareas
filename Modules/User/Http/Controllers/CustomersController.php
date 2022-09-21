@@ -26,7 +26,7 @@ class CustomersController extends Controller
     {
         $idRefCurrentUser = Auth::user()->idReference;
         $customers = DB::table('customers')
-            ->where('customers.idReference', '=', $idRefCurrentUser)
+            ->where('idReference', '=', $idRefCurrentUser)
             ->select(
                 'id',
                 'name',
@@ -73,19 +73,17 @@ class CustomersController extends Controller
         $initialDate = '1980-01-01';
         $currentDate = (date('Y') + 1) . '-01-01'; //2023-01-01
 
-
-        dd($request->all());
         $request->validate([
             'name' => 'required|max:50|min:5',
             'last_name' => 'required|max:50|min:4',
             'phone' => 'nullable|max:25|min:5',
             'doc_id' => 'nullable|max:25|min:5|unique:customers,doc_id',
-            'email' => 'nullable|max:25|min:5|email:rfc,dns|unique:customers,email',
+            'email' => 'nullable|max:50|min:5|email:rfc,dns|unique:customers,email',
             'address' => 'nullable|max:255|min:5',
             'estate' => 'nullable|max:150|min:3',
             'is_vigia' => 'nullable',
-            'category' => 'nullable|max:150|min:1',
-            'potential_products' => 'nullable|max:150|min:1',
+            'category' => 'required|max:150|min:1',
+            'potential_products' => 'required|max:150|min:1',
             'unit_quantity' => 'nullable|integer|between:0,9999|min:0',
             'result_of_the_visit' => 'nullable|max:500|min:3',
             'objective' => 'nullable|max:500|min:3',
@@ -97,6 +95,7 @@ class CustomersController extends Controller
 
         /** link the customer with the admin user */
         $input['idReference'] = Auth::user()->idReference;
+
         Customers::create($input);
 
         return redirect()->to('/user/customers')->with('message', 'Customer created successfully.');
@@ -104,69 +103,46 @@ class CustomersController extends Controller
 
     public function show($id)
     {
-        $customer = DB::table('customers')
-            ->where('customers.id', '=', $id)
-            ->select(
-                'id',
-                'name',
-                'last_name',
-                'phone',
-                'address',
-                'email',
-                'doc_id',
-                'estate',
-                'latitud',
-                'longitud',
-                'is_vigia',
-                'category',
-                'potential_products',
-                'unit_quantity',
-                'result_of_the_visit',
-                'objective',
-                'next_visit_date',
-                'next_visit_hour',
-            )
-            ->first();
+        $customer = Customers::find($id);
 
-        return view('user::customers.show', compact('customer',));
-    }
-
-    public function edit($id)
-    {
-        $customer = DB::table('customers')
-            ->where('id', '=', $id)
-            ->select(
-                'id',
-                'name',
-                'last_name',
-                'category',
-                'potential_products',
-                'is_vigia',
-                'email',
-                'address',
-                'estate',
-                'phone',
-                'objective',
-                'doc_id',
-                'unit_quantity',
-                'result_of_the_visit',
-                'next_visit_date',
-                'next_visit_hour'
-            )
-            ->first();
-
-        $category_customer = $customer->category;
-        $potential_products_customer = $customer->category;
+        $customerCategories =   $customer->category;
+        $customerPotentialProducts =  $customer->potential_products;
 
         $categories = DB::table('parameters')
             ->where('type', '=', 'Rubro')
+            ->select('id', 'name')
+            ->orderBy('created_at', 'DESC')
             ->get();
 
         $potential_products = DB::table('parameters')
             ->where('type', '=', 'Equipos Potenciales')
+            ->select('id', 'name')
+            ->orderBy('created_at', 'DESC')
             ->get();
 
-        return view('user::customers.edit', compact('customer', 'categories', 'potential_products', 'category_customer', 'potential_products_customer'));
+        return view('user::customers.show', compact('customer', 'categories', 'potential_products', 'customerCategories', 'customerPotentialProducts'));
+    }
+
+    public function edit($id)
+    {
+        $customer = Customers::find($id);
+
+        $customerCategories =   $customer->category;
+        $customerPotentialProducts =  $customer->potential_products;
+
+        $categories = DB::table('parameters')
+            ->where('type', '=', 'Rubro')
+            ->select('id', 'name')
+            ->orderBy('created_at', 'DESC')
+            ->get();
+
+        $potential_products = DB::table('parameters')
+            ->where('type', '=', 'Equipos Potenciales')
+            ->select('id', 'name')
+            ->orderBy('created_at', 'DESC')
+            ->get();
+
+        return view('user::customers.edit', compact('customer', 'categories', 'potential_products', 'customerCategories', 'customerPotentialProducts'));
     }
 
     public function update(Request $request, $id)
@@ -180,12 +156,12 @@ class CustomersController extends Controller
             'last_name' => 'required|max:50|min:4',
             'phone' => 'nullable|max:25|min:5',
             'doc_id' => 'nullable|max:25|min:5|unique:customers,doc_id,' . $id,
-            'email' => 'nullable|max:25|min:5|email:rfc,dns|unique:customers,email,' . $id,
+            'email' => 'nullable|max:50|min:5|email:rfc,dns|unique:customers,email,' . $id,
             'address' => 'nullable|max:255|min:5',
             'estate' => 'nullable|max:150|min:3',
             'is_vigia' => 'nullable',
-            'category' => 'nullable|max:150|min:1',
-            'potential_products' => 'nullable|max:150|min:1',
+            'category' => 'required|max:150|min:1',
+            'potential_products' => 'required|max:150|min:1',
             'unit_quantity' => 'nullable|integer|between:0,9999|min:0',
             'result_of_the_visit' => 'nullable|max:500|min:3',
             'objective' => 'nullable|max:500|min:3',
@@ -213,16 +189,50 @@ class CustomersController extends Controller
 
         if ($search == '') {
             $customers = DB::table('customers')
-                ->select('customers.id', 'customers.name', 'customers.phone', 'customers.pool', 'customers.total_machines')
-                ->where('customers.idReference', '=', $idRefCurrentUser)
-                ->orderBy('customers.created_at', 'DESC')
+                ->where('idReference', '=', $idRefCurrentUser)
+                ->select(
+                    'id',
+                    'name',
+                    'last_name',
+                    'category',
+                    'potential_products',
+                    'is_vigia',
+                    'email',
+                    'address',
+                    'estate',
+                    'phone',
+                    'objective',
+                    'doc_id',
+                    'unit_quantity',
+                    'result_of_the_visit',
+                    'next_visit_date',
+                    'next_visit_hour'
+                )
+                ->orderBy('created_at', 'DESC')
                 ->paginate(10);
         } else {
             $customers = DB::table('customers')
-                ->select('customers.id', 'customers.name', 'customers.phone', 'customers.pool', 'customers.total_machines')
-                ->where('customers.name', 'LIKE', "%{$search}%")
-                ->where('customers.idReference', '=', $idRefCurrentUser)
-                ->orderBy('customers.created_at', 'DESC')
+                ->where('idReference', '=', $idRefCurrentUser)
+                ->where('name', 'LIKE', "%{$search}%")
+                ->select(
+                    'id',
+                    'name',
+                    'last_name',
+                    'category',
+                    'potential_products',
+                    'is_vigia',
+                    'email',
+                    'address',
+                    'estate',
+                    'phone',
+                    'objective',
+                    'doc_id',
+                    'unit_quantity',
+                    'result_of_the_visit',
+                    'next_visit_date',
+                    'next_visit_hour'
+                )
+                ->orderBy('created_at', 'DESC')
                 ->paginate();
         }
 

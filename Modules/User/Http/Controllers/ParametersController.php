@@ -105,7 +105,7 @@ class ParametersController extends Controller
             array('1', 'Equipos Potenciales')
         );
 
-        return view('user::parameters.edit', compact('parameter', 'keys','type_parameter'));
+        return view('user::parameters.edit', compact('parameter', 'keys', 'type_parameter'));
     }
 
     public function update(Request $request, $id)
@@ -129,26 +129,36 @@ class ParametersController extends Controller
         $idRefCurrentUser = Auth::user()->idReference;
 
         if ($search == '') {
-            $customers = DB::table('customers')
-                ->select('customers.id', 'customers.name', 'customers.phone', 'customers.pool', 'customers.total_machines')
-                ->where('customers.idReference', '=', $idRefCurrentUser)
-                ->orderBy('customers.created_at', 'DESC')
+            $parameters = DB::table('parameters')
+                ->where('idReference', '=', $idRefCurrentUser)
+                ->select(
+                    'id',
+                    'name',
+                    'type',
+                    'description',
+                )
+                ->orderBy('created_at', 'DESC')
                 ->paginate(10);
         } else {
-            $customers = DB::table('customers')
-                ->select('customers.id', 'customers.name', 'customers.phone', 'customers.pool', 'customers.total_machines')
-                ->where('customers.name', 'LIKE', "%{$search}%")
-                ->where('customers.idReference', '=', $idRefCurrentUser)
-                ->orderBy('customers.created_at', 'DESC')
-                ->paginate();
+            $parameters = DB::table('parameters')
+            ->where('idReference', '=', $idRefCurrentUser)
+            ->where('name', 'LIKE', "%{$search}%")
+            ->select(
+                'id',
+                'name',
+                'type',
+                'description',
+            )
+            ->orderBy('created_at', 'DESC')
+            ->paginate();
         }
 
-        return view('user::customers.index', compact('customers', 'search'))->with('i', (request()->input('page', 1) - 1) * 10);
+        return view('user::parameters.index', compact('parameters', 'search'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
     public function destroy($id)
     {
-        Customers::find($id)->delete();
-        return redirect()->to('/user/customers')->with('message', 'Customer deleted successfully');
+        Parameters::find($id)->delete();
+        return redirect()->to('/user/parameters')->with('message', 'Parameter deleted successfully');
     }
 }

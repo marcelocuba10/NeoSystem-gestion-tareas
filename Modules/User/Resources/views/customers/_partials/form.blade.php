@@ -41,25 +41,25 @@
         <div class="select-position">
           <select name="category[]" class="select2-multiple_1" multiple="multiple">
             @foreach ($categories as $item)
-              <option value="{{ $item->id }}" {{ ($item->name  == $category_customer ) ? 'selected' : '' }}> {{ $item->name }} </option>
+              <option value="{{ $item->id }}" @if(!empty($customerCategories)) {{ in_array($item->id,$customerCategories)  ? 'selected' : '' }} @endif> {{ $item->name }} </option>
             @endforeach 
           </select>
         </div>
       </div>
     </div>
     <!-- end col -->
-    {{-- <div class="col-3">
+    <div class="col-3">
       <div class="input-style-1">
         <label>(*) Equipos Potenciales</label>
         <div class="select-position">
           <select name="potential_products[]" class="select2-multiple_2" multiple="multiple">
             @foreach ($potential_products as $item)
-              <option value="{{ $item[0] }}" {{ ( $item[0] == $item) ? 'selected' : '' }}> {{ $item[1] }} </option>
+              <option value="{{ $item->id }}" @if(!empty($customerPotentialProducts)) {{ in_array($item->id,$customerPotentialProducts)  ? 'selected' : '' }} @endif> {{ $item->name }} </option>
             @endforeach 
           </select>
         </div>
       </div>
-    </div> --}}
+    </div>
     <!-- end col -->
     <div class="col-3">
       <div class="input-style-1">
@@ -124,7 +124,6 @@
       </div>
     </div>
 </div>
-
 
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>

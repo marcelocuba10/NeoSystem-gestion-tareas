@@ -66,12 +66,12 @@
               </div>
               <!-- end col -->
               <div class="col-3">
-                <div class="select-style-1">
+                <div class="input-style-1">
                   <label>(*) Rubro</label>
                   <div class="select-position">
-                    <select name="category">
+                    <select name="category[]" class="select2-multiple_1" multiple="multiple"  disabled="true">
                       @foreach ($categories as $item)
-                        <option value="{{ $item[0] }}" {{ ( $item[0] == $item) ? 'selected' : '' }}> {{ $item[1] }} </option>
+                        <option value="{{ $item->id }}" @if(!empty($customerCategories)) {{ in_array($item->id,$customerCategories)  ? 'selected' : '' }} @endif> {{ $item->name }} </option>
                       @endforeach 
                     </select>
                   </div>
@@ -79,12 +79,12 @@
               </div>
               <!-- end col -->
               <div class="col-3">
-                <div class="select-style-1">
+                <div class="input-style-1">
                   <label>(*) Equipos Potenciales</label>
                   <div class="select-position">
-                    <select name="potential_products">
+                    <select name="potential_products[]" class="select2-multiple_2" multiple="multiple"  disabled="true">
                       @foreach ($potential_products as $item)
-                        <option value="{{ $item[0] }}" {{ ( $item[0] == $item) ? 'selected' : '' }}> {{ $item[1] }} </option>
+                        <option value="{{ $item->id }}" @if(!empty($customerPotentialProducts)) {{ in_array($item->id,$customerPotentialProducts)  ? 'selected' : '' }} @endif> {{ $item->name }} </option>
                       @endforeach 
                     </select>
                   </div>
@@ -150,7 +150,7 @@
           
               <div class="col-12">
                 <div class="button-groupd-flexjustify-content-centerflex-wrap">
-                  <a class="main-btn danger-btn-outline m-2" href="/admin/sellers">Atrás</a>
+                  <a class="main-btn danger-btn-outline m-2" href="/user/customers">Atrás</a>
                 </div>
               </div>
           </div>
@@ -159,5 +159,25 @@
     </div>
   </div>
 </section>
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    $('.select2-multiple_1').select2({
+      placeholder: "Seleccione Rubro..",
+      allowClear: true,
+      width: '100%',
+    });
+  });
+  $(document).ready(function() {
+    $('.select2-multiple_2').select2({
+      placeholder: "Seleccione Equipos..",
+      allowClear: true,
+      width: '100%',
+    });
+  });
+</script>
 
 @endsection 

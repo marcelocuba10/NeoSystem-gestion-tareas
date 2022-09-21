@@ -66,16 +66,9 @@ Route::prefix('user')->group(function () {
         /*** User Routes ***/
         Route::group(['prefix' => 'users'], function () {
             Route::get('/', 'UserController@index');
-            Route::get('/create', 'UserController@create');
-            Route::post('/create', 'UserController@store');
-            Route::get('/show/{id}', 'UserController@show');
-            Route::get('/edit/{id}', 'UserController@edit');
-            Route::put('/update/{id}', 'UserController@update');
-            Route::delete('/delete/{id}', 'UserController@destroy');
             Route::get('/profile/{id}', 'UserController@showProfile');
             Route::get('/edit/profile/{id}', 'UserController@editProfile');
             Route::put('/update/profile/{id}', 'UserController@updateProfile');
-            Route::get('/search', 'UserController@search');
         });
 
         /** Charts & Graphics Routes */

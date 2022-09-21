@@ -41,35 +41,17 @@
         </div>
     </div>
     <!-- end col -->
-    <div class="col-6">
-        <div class="input-style-1">
-          <label>Rol Asignado</label>
-          <input type="text" value="{{ $userRole ?? old('userRole') }}" name="roles" readonly >
-        </div>
-    </div>
-    <!-- end col -->
-    <div class="col-4">
-      <div class="input-style-1">
-        <label>Plan Asignado</label>
-        @foreach ($plans as $plan)
-          @if( $plan->id == $user->plan_id)
-            <input type="text" value="" placeholder="{{ $plan->name }}" name="plan_id" readonly>   
-          @endif   
-        @endforeach 
-      </div>
-    </div>
-    <!-- end col -->
-    <div class="col-4">
+    <div class="col-3">
       <div class="input-style-1">
         <label>Teléfono</label>
         <input type="text" name="phone" id="phone" value="{{ $user->phone ?? old('phone') }}" class="bg-transparent">
       </div>
     </div>
     <!-- end col -->
-    <div class="col-4">
+    <div class="col-3">
       <div class="input-style-1">
         <label>Doc Identidad</label>
-        <input type="text" name="ci" value="{{ $user->ci ?? old('ci') }}" class="bg-transparent">
+        <input type="text" name="doc_id" value="{{ $user->doc_id ?? old('doc_id') }}" class="bg-transparent">
       </div>
     </div>
     <!-- end col -->
@@ -83,7 +65,7 @@
     <div class="col-12">
       <div class="button-group d-flex justify-content-center flex-wrap">
         <button type="submit" class="main-btn primary-btn btn-hover m-2">Guardar</button>
-        <a class="main-btn danger-btn-outline m-2" href="{{ route('users_.show.profile',$user->id) }}">Atrás</a>
+        <a class="main-btn danger-btn-outline m-2" href="/user/users/profile/{{ $user->id }}">Atrás</a>
       </div>
     </div>
 </div>

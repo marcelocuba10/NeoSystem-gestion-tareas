@@ -88,9 +88,6 @@ class RolesController extends Controller
             ->get();
 
         $rolePermission = $role->permissions->pluck('name')->toArray();
-        //$rolePermission = DB::table('role_has_permissions')->where('role_has_permissions.role_id', $id)
-        //->pluck('role_has_permissions.permission_id', 'role_has_permissions.permission_id')
-        //->all();  
 
         return view('user::roles.edit', compact('role', 'permissions', 'rolePermission', 'guard_name'));
     }
@@ -120,14 +117,14 @@ class RolesController extends Controller
             $roles = DB::table('roles')
                 ->where('guard_name', '=', 'web')
                 ->where('roles.idReference', '=', $idRefCurrentUser)
-                ->orWhere('roles.system_role', '=', 1) //roles with IdReference = 000001 is system role default - module user
+                ->orWhere('roles.system_role', '=', 1)
                 ->select('guard_name', 'id', 'name', 'system_role')
                 ->orderBy('created_at', 'DESC')
                 ->paginate(10);
         } else {
             $roles = DB::table('roles')
                 ->where('roles.idReference', '=', $idRefCurrentUser)
-                ->orWhere('roles.system_role', '=', 1) //roles with IdReference = 000001 is system role default - module user
+                ->orWhere('roles.system_role', '=', 1)
                 ->where('roles.name', 'LIKE', "%{$search}%")
                 ->paginate();
         }

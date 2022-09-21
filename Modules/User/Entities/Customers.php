@@ -30,6 +30,11 @@ class Customers extends Model
         'next_visit_date',
         'next_visit_hour',
     ];
+
+    protected $casts = [
+        'category' => 'array',
+        'potential_products' => 'array',
+    ];
     
     protected static function newFactory()
     {

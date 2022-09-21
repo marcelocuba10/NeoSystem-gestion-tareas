@@ -118,24 +118,17 @@
             </span>
             <span class="text">Ajustes</span>
           </a>
-          <ul id="ddmenu_2" class="dropdown-nav" style="{{ (request()->is('user/users')) || (request()->is('user/ACL/*')) || (request()->is('user/parameters')) ? '' : 'display:none'}}">
-            @can('user-list')
+          <ul id="ddmenu_2" class="dropdown-nav" style="{{ (request()->is('user/users/*')) || (request()->is('user/parameters')) ? '' : 'display:none'}}">
             <li>
-              <a href="/user/users" class="{{ (request()->is('user/users')) ? 'active' : '' }}">
-                <span class="text">Usuarios</span>
+              <a href="/user/users/profile/{{ Auth::user()->id }}" class="{{ (request()->is('user/users/*')) ? 'active' : '' }}">
+                <span class="text">Mi Perfil</span>
               </a>
             </li>
-            @endcan
             @can('parameter-list')
             <li>
               <a href="/user/parameters" class="{{ (request()->is('user/parameters')) ? 'active' : '' }}">
                 <span class="text">Parámetros</span>
               </a>
-            </li>
-            @endcan
-            @can('role-list')
-            <li>
-              <a href="/user/ACL/roles" class="{{ (request()->is('user/ACL/roles')) ? 'active' : '' }}"><span class="text">Roles</span></a>
             </li>
             @endcan
           </ul>

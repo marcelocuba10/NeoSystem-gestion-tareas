@@ -36,81 +36,11 @@ class UserController extends Controller
 
         $users = DB::table('users')
             ->where('idReference', '=', $idReference)
-            ->select('id', 'name', 'idReference', 'email','status')
+            ->select('id', 'name', 'idReference', 'email', 'status')
             ->orderBy('created_at', 'DESC')
             ->paginate(10);
 
         return view('user::users.index', compact('users', 'currentUserId'))->with('i', (request()->input('page', 1) - 1) * 10);
-    }
-
-    public function create()
-    {
-        /** get current user role */
-        $arrayCurrentUserRole = Auth::user()->roles->pluck('name');
-        $currentUserRole = $arrayCurrentUserRole[0];
-
-        $status = array(
-            array('0', 'Inhabilitado'),
-            array('1', 'Habilitado')
-        );
-
-        $user = null;
-
-        $roles = Role::where('guard_name', '=', 'web')
-            ->where('name', '!=', 'Admin')
-            ->pluck('name', 'name')
-            ->all();
-
-        $userRole = null; //set null for select form not compare with others roles
-        return view('user::users.create', compact('user', 'roles', 'userRole', 'currentUserRole', 'status'));
-    }
-
-    public function store(Request $request)
-    {
-        $this->validate($request, [
-            'name' => 'required|max:50|min:5',
-            'last_name' => 'required|max:50|min:5',
-            'email' => 'required|email|unique:users,email',
-            'phone' => 'nullable|max:20|min:5',
-            'doc_id' => 'required|max:25|min:5|unique:users,doc_id',
-            'address' => 'nullable|max:255|min:5',
-            'password' => 'required|max:50|min:5',
-            'confirm_password' => 'required|max:50|min:5|same:password',
-            'roles' => 'required'
-        ]);
-
-        $input = $request->all();
-
-        $user = Auth::user();
-        $input['status'] = 1; //enable login
-        $input['plan_id'] = $user->plan_id;
-        $input['idReference'] = $user->idReference;
-
-        $user = User::create($input);
-        $user->assignRole($request->input('roles'));
-
-        return redirect()->route('users.index')->with('message', 'User created successfully.');
-    }
-
-    public function show($id)
-    {
-        $user = User::find($id);
-        $roles = Role::where('guard_name', '=', 'web')
-            ->where('name', '!=', 'Admin')
-            ->pluck('name', 'name')
-            ->all();
-
-        $userRoleArray = $user->roles->pluck('name')->toArray(); //get user assigned role
-        $plans = DB::table('plans')->get();
-
-        //I use this if to capture only the name of the role, otherwise it would bring me the entire array
-        if (empty($userRoleArray)) {
-            $userRole = null;
-        } else {
-            $userRole = $userRoleArray[0]; //name rol in position [0] of the array
-        }
-
-        return view('user::users.show', compact('user', 'userRole', 'plans'));
     }
 
     public function showProfile($id)
@@ -127,45 +57,7 @@ class UserController extends Controller
         $arrayCurrentUserRole = Auth::user()->roles->pluck('name');
         $currentUserRole = $arrayCurrentUserRole[0];
 
-        $cant_customers = Customers::count();
-
-        //I use this if to capture only the name of the role, otherwise it would bring me the entire array
-        if (empty($userRoleArray)) {
-            $userRole = null;
-        } else {
-            $userRole = $userRoleArray[0]; //name rol in position [0] of the array
-        }
-
-        return view('user::users.profile', compact('user', 'userRole', 'cant_customers', 'currentUserRole'));
-    }
-
-    public function edit($id)
-    {
-        /** get current user role */
-        $arrayCurrentUserRole = Auth::user()->roles->pluck('name');
-        $currentUserRole = $arrayCurrentUserRole[0];
-
-        $status = array(
-            array('0', 'Inhabilitado'),
-            array('1', 'Habilitado')
-        );
-
-        $user = User::find($id);
-        $userStatus = $user->status;
-        $roles = Role::where('guard_name', '=', 'web')
-            ->where('name', '!=', 'Admin')
-            ->pluck('name', 'name')
-            ->all();
-
-        $userRoleArray = $user->roles->pluck('name')->toArray(); //get user assigned role
-
-        if (empty($userRoleArray)) {
-            $userRole = null;
-        } else {
-            $userRole = $userRoleArray[0]; //get only name of the role
-        }
-
-        return view('user::users.edit', compact('user', 'roles', 'userRole', 'currentUserRole', 'userStatus'));
+        return view('user::users.profile', compact('user', 'currentUserRole'));
     }
 
     public function editProfile($id)
@@ -182,58 +74,13 @@ class UserController extends Controller
 
         $userRoleArray = $user->roles->pluck('name')->toArray(); //get user assigned role
 
-        $plans = DB::table('plans')->get();
-
         if (empty($userRoleArray)) {
             $userRole = null;
         } else {
             $userRole = $userRoleArray[0]; //get only name of the role
         }
 
-        return view('user::users.editProfile', compact('user', 'roles', 'userRole', 'currentUserRole', 'plans'));
-    }
-
-    public function update(Request $request, $id)
-    {
-        /** get current user role */
-        $arrayCurrentUserRole = Auth::user()->roles->pluck('name');
-        $currentUserRole = $arrayCurrentUserRole[0];
-
-        $this->validate($request, [
-            'name' => 'required|max:50|min:5',
-            'last_name' => 'required|max:50|min:5',
-            'email' => 'required|email|unique:users,email,' . $id,
-            'password' => 'nullable|max:50|min:5',
-            'confirm_password' => 'nullable|max:50|min:5|same:password',
-            'phone' => 'nullable|max:50|min:5',
-            'status' => 'required|integer|between:0,1',
-            'doc_id' => 'required|max:25|min:5|unique:users,doc_id,' . $id,
-            'address' => 'nullable|max:255|min:5',
-            'roles' => 'required'
-        ]);
-
-        $input = $request->all();
-
-        if (empty($input['password'])) {
-            $input = Arr::except($input, array('password'));
-        } else {
-            if (empty($input['confirm_password'])) {
-                return redirect()->to('/user/users/edit/' . $id)->withErrors('Confirm password')->withInput();
-            }
-        }
-
-        $user = User::find($id);
-        if ($currentUserRole != "Admin") {
-            $input['status'] = $user->status;
-        }
-
-        $user->update($input);
-        DB::table('model_has_roles')->where('model_id', $id)->delete();
-
-        $user->syncRoles($request->input('roles'));
-        $user->assignRole($request->input('roles'));
-
-        return redirect()->route('users.index')->with('message', 'Registro actualizado correctamente');
+        return view('user::users.editProfile', compact('user', 'roles', 'userRole', 'currentUserRole'));
     }
 
     public function updateProfile($id, Request $request)
@@ -241,13 +88,12 @@ class UserController extends Controller
         $this->validate($request, [
             'name' => 'required|max:50|min:5',
             'last_name' => 'required|max:50|min:5',
-            'email' => 'required|email|unique:users,email,' . $id,
+            'email' => 'required|max:50|min:5|email:rfc,dns|unique:users,email,' . $id,
             'password' => 'nullable|max:50|min:5',
             'confirm_password' => 'nullable|max:50|min:5|same:password',
             'phone' => 'nullable|max:50|min:5',
-            'doc_id' => 'required|max:25|min:5|unique:users,doc_id,' . $id,
+            'doc_id' => 'nullable|max:25|min:5|unique:users,doc_id,' . $id,
             'address' => 'nullable|max:255|min:5',
-            'roles' => 'required'
         ]);
 
         $input = $request->all();
@@ -256,50 +102,18 @@ class UserController extends Controller
             $input = Arr::except($input, array('password'));
         } else {
             if (empty($input['confirm_password'])) {
-                return redirect()->route('users_.edit.profile', $id)->withErrors('Confirm password')->withInput();
+                return redirect()->to('user/users/edit/profile/' . $id)->withErrors('Confirm password')->withInput();
             }
         }
 
         $user = User::find($id);
-        /** keep the plan_id assigned */
-        $input['plan_id'] = $user->plan_id;
 
         $user->update($input);
-        DB::table('model_has_roles')->where('model_id', $id)->delete();
 
-        $user->syncRoles($request->input('roles'));
-        $user->assignRole($request->input('roles'));
+        /** Main user is Role Admin */
+        $user->syncRoles('Admin');
+        $user->assignRole('Admin');
 
-        return redirect()->route('users_.show.profile', compact('user'))->with('message', 'User Profile updated successfully');
-    }
-
-    public function search(Request $request)
-    {
-        $currentUserId = Auth::user()->id;
-        $idRefCurrentUser = Auth::user()->idReference;
-        $search = $request->input('search');
-
-        if ($search == '') {
-            $users = DB::table('users')
-                ->select('users.id', 'users.name', 'users.idReference', 'users.status', 'users.email')
-                ->where('users.idReference', '=', $idRefCurrentUser)
-                ->orderBy('created_at', 'DESC')
-                ->paginate(10);
-        } else {
-            $users = DB::table('users')
-                ->select('users.id', 'users.name', 'users.idReference', 'users.status', 'users.email')
-                ->where('users.name', 'LIKE', "%{$search}%")
-                ->where('users.idReference', '=', $idRefCurrentUser)
-                ->orderBy('created_at', 'DESC')
-                ->paginate();
-        }
-
-        return view('user::users.index', compact('users', 'search', 'currentUserId'))->with('i', (request()->input('page', 1) - 1) * 10);
-    }
-
-    public function destroy($id)
-    {
-        User::find($id)->delete();
-        return redirect()->route('users.index')->with('message', 'User deleted successfully');
+        return redirect()->to('user/users/edit/profile/' . $id)->with('message', 'User Profile updated successfully');
     }
 }

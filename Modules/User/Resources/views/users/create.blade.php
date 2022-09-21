@@ -20,7 +20,7 @@
                                     <a href="/user/dashboard">Dashboard</a>
                                     </li>
                                     <li class="breadcrumb-item" aria-current="page">
-                                    <a href="{{ route('users.index') }}">Usuarios</a>
+                                    <a href="/user/users/">Usuarios</a>
                                     </li>
                                     <li class="breadcrumb-item active" aria-current="page">Nuevo Usuario</li>
                                 </ol>
@@ -36,7 +36,7 @@
                 <div class="row">
                   <div class="col-lg-12">
                     <div class="card-style mb-30">
-                        <form method="POST" action="{{ route('users.store') }}">
+                        <form method="POST" action="/user/users/create/">
                             @include('user::users._partials.form')
                       </form>
                     </div>

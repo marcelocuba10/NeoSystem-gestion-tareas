@@ -136,7 +136,6 @@ class SellersController extends Controller
         ]);
 
         $input = $request->all();
-        $input['roles'] = 'Admin';
         $input['main_user'] = 1;
 
         if (empty($input['password'])) {
@@ -150,6 +149,9 @@ class SellersController extends Controller
 
         $user = User::find($id);
         $user->update($input);
+
+        /** Main user is Role Admin */
+        $user->assignRole('Admin');
 
         return redirect()->to('/admin/sellers')->with('message', 'Registro actualizado correctamente');
     }

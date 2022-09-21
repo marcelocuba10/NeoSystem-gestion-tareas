@@ -44,13 +44,12 @@
                         </div>
                         <div class="profile-meta pt-25">
                           <h5 class="text-bold mb-10">{{ $user->name }}</h5>
-                          <p class="text-sm">Rol - {{$userRole}}</p>
                         </div>
                       </div>
                       <div class="profiles-activities w-100 pt-30">
                         <ul class="d-flex align-items-center">
                           <li class="ms-auto">
-                            <a href="/user/users/profile/{{ $user->id }}" class="main-btn btn-sm primary-btn btn-hover mb-20">
+                            <a href="/user/users/edit/profile/{{ $user->id }}" class="main-btn btn-sm primary-btn btn-hover mb-20">
                               <i class="lni lni-pencil-alt mr-10"></i>Actualizar Perfil
                             </a>
                           </li>
@@ -74,13 +73,6 @@
                             </div>
                           </div>
                           <!-- end col -->
-                          <div class="col-12">
-                            <div class="input-style-1">
-                              <label>Dirección</label>
-                              <input type="text" placeholder="{{ $user->address }}" readonly>
-                            </div>
-                          </div>
-                          <!-- end col -->
                           <div class="col-6">
                             <div class="input-style-1">
                               <label>Teléfono</label>
@@ -91,7 +83,14 @@
                           <div class="col-6">
                             <div class="input-style-1">
                               <label>Doc Identidad</label>
-                              <input type="text" placeholder="{{ $user->ci }}" readonly>
+                              <input type="text" placeholder="{{ $user->doc_id }}" readonly>
+                            </div>
+                          </div>
+                          <!-- end col -->
+                          <div class="col-12">
+                            <div class="input-style-1">
+                              <label>Dirección</label>
+                              <input type="text" placeholder="{{ $user->address }}" readonly>
                             </div>
                           </div>
                           <!-- end col -->

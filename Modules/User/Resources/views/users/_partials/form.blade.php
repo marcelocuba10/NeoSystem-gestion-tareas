@@ -99,8 +99,8 @@
     <!-- end col -->
     <div class="col-4">
       <div class="input-style-1">
-        <label>(*) Doc Identidad</label>
-        <input type="text" name="ci" value="{{ $user->ci ?? old('ci') }}" class="bg-transparent">
+        <label>Doc Identidad</label>
+        <input type="text" name="doc_id" value="{{ $user->doc_id ?? old('doc_id') }}" class="bg-transparent">
       </div>
     </div>
     <!-- end col -->
