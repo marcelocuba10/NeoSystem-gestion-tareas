@@ -24,64 +24,66 @@ class ReportsController extends Controller
         $this->middleware('permission:report-delete', ['only' => ['destroy']]);
     }
 
-    public function users(Request $request)
-    {
-        $idRefCurrentUser = Auth::user()->idReference;
-
-        $users = DB::table('users')
-            ->where('idReference', '=', $idRefCurrentUser)
-            ->select('users.id', 'users.name', 'users.last_name', 'users.phone', 'users.address',  'users.idReference', 'users.ci', 'users.email')
-            ->orderBy('created_at', 'DESC')
-            ->paginate(10);
-
-        if ($request->has('download')) {
-            $pdf = PDF::loadView('user::reports.createUsersPDF', compact('users'));
-            return $pdf->stream();
-            // return $pdf->download('pdfview.pdf');
-        }
-
-        return view('user::reports.users', compact('users'))->with('i', (request()->input('page', 1) - 1) * 10);
-    }
-
     public function customers(Request $request)
     {
         $idRefCurrentUser = Auth::user()->idReference;
         $customers = DB::table('customers')
-            ->select('customers.id', 'customers.name','customers.last_name', 'customers.phone', 'customers.address', 'customers.pool', 'customers.total_machines')
-            ->where('customers.idReference', '=', $idRefCurrentUser)
-            ->orderBy('customers.created_at', 'DESC')
-            ->paginate(10);
-
-        if ($request->has('download')) {
-            $pdf = PDF::loadView('user::reports.createCustomersPDF', compact('customers'));
-            return $pdf->stream();
-            // return $pdf->download('pdfview.pdf');
-        }
-
-        return view('user::reports.customers', compact('customers'))->with('i', (request()->input('page', 1) - 1) * 10);
-    }
-
-    public function machines(Request $request)
-    {
-        $machines = DB::table('machines_api')
-            ->leftjoin('customers', 'machines_api.customer_id', '=', 'customers.id')
-            ->select('machines_api.id', 'machines_api.worker_name', 'machines_api.status', 'machines_api.shares_1m', 'machines_api.shares_5m', 'machines_api.shares_15m', 'customers.name AS customer_name')
-            ->orderBy('id', 'DESC')
+            ->where('idReference', '=', $idRefCurrentUser)
+            ->select(
+                'id',
+                'name',
+                'doc_id',
+                'idReference',
+                'email',
+                'estate',
+                'phone',
+                'is_vigia',
+                'next_visit_hour',
+                'next_visit_date'
+            )
+            ->orderBy('created_at', 'DESC')
             ->paginate(30);
 
         if ($request->has('download')) {
-            $machines = DB::table('machines_api')
-                ->leftjoin('customers', 'machines_api.customer_id', '=', 'customers.id')
-                ->select('machines_api.id', 'machines_api.worker_name', 'machines_api.status', 'machines_api.shares_1m', 'machines_api.shares_5m', 'machines_api.shares_15m', 'customers.name AS customer_name')
-                ->orderBy('id', 'DESC')
-                ->get();
-
-            $pdf = PDF::loadView('user::reports.createMachinesPDF', compact('machines'));
+            $pdf = PDF::loadView('user::reports.customersPrintPDF', compact('customers'));
             return $pdf->stream();
             // return $pdf->download('pdfview.pdf');
         }
 
-        return view('user::reports.machines', compact('machines'))->with('i', (request()->input('page', 1) - 1) * 30);
+        return view('user::reports.customers', compact('customers'))->with('i', (request()->input('page', 1) - 1) * 30);
+    }
+
+    public function products(Request $request)
+    {
+        $products = DB::table('products')
+            ->select(
+                'id',
+                'name',
+                'code',
+                'sale_price',
+                'quantity',
+            )
+            ->orderBy('created_at', 'DESC')
+            ->paginate(30);
+
+        if ($request->has('download')) {
+            $products = DB::table('products')
+                ->select(
+                    'id',
+                    'name',
+                    'code',
+                    'sale_price',
+                    'quantity',
+                )
+                ->orderBy('code', 'DESC')
+                ->get();
+
+            $pdf = PDF::loadView('user::reports.productsPrintPDF', compact('products'));
+            return $pdf->stream();
+            // return $pdf->download('pdfview.pdf');
+        }
+
+        return view('user::reports.products', compact('products'))->with('i', (request()->input('page', 1) - 1) * 30);
     }
 
     public function schedules(Request $request)

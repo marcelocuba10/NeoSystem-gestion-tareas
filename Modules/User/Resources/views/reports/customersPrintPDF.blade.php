@@ -1,6 +1,6 @@
 <html>
   <head>
-      <title>Print PDF</title>
+      <title>Reporte Clientes</title>
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
       <style>
           table {
@@ -22,10 +22,10 @@
               border: black 1px solid;
               padding-left: 5px;
               padding-right: 5px;
-              /**min-width: 150px;**/
+              text-align: center;
           }
           @page {
-              size: legal portrait;
+              size: a4 landscape;
               margin: 1cm;
           }
       </style>
@@ -35,21 +35,34 @@
     <table class="table table-bordered mb-5">
         <thead>
             <tr class="table-danger">
-                <th style="width: 30%" scope="col">Nombre Completo</th>
+                <th style="width: 30%" scope="col">Cod Agente</th>
+                <th style="width: 30%" scope="col">Razón Social</th>
+                <th style="width: 30%" scope="col">Doc/RUC</th>
                 <th style="width: 15%" scope="col">Teléfono</th>
-                <th style="width: 15%" scope="col">Máquinas</th>
-                <th style="width: 15%" scope="col">Pool</th>
-                <th style="width: 40%" scope="col">Dirección</th>
+                <th style="width: 15%" scope="col">Email</th>
+                <th style="width: 15%" scope="col">¿Es Vigia?</th>
+                <th style="width: 15%" scope="col">Localidad</th>
+                <th style="width: 40%" scope="col">Próxima Visita</th>
+                <th style="width: 40%" scope="col">Hora Prox Visita</th>
             </tr>
         </thead>
         <tbody>
             @foreach($customers as $customer)
             <tr>
-                <td>{{ $customer->name }} {{ $customer->last_name }}</td>
+                <td>{{ $customer->idReference }}</td>
+                <td>{{ $customer->name }}</td>
+                <td>{{ $customer->doc_id }}</td>
                 <td>{{ $customer->phone }}</td>
-                <td>{{ $customer->total_machines }}</td>
-                <td>{{ $customer->pool }}</td>
-                <td>{{ $customer->address }}</td>
+                <td>{{ $customer->email }}</td>
+                <td>                      
+                    @if ($customer->is_vigia == "on")
+                        Sí
+                    @else
+                        No
+                    @endif
+                <td>{{ $customer->estate }}</td>
+                <td>{{ $customer->next_visit_date }}</td>
+                <td>{{ $customer->next_visit_hour }}</td>
             </tr>
             @endforeach
         </tbody>

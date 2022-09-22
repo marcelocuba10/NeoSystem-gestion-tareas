@@ -104,7 +104,7 @@
               <a href="/user/reports/customers" class="{{ (request()->is('user/reports/customers')) ? 'active' : '' }}">Clientes</a>
             </li>
             <li >
-              <a href="/user/reports/users" class="{{ (request()->is('user/reports/users')) ? 'active' : '' }}">Usuarios</a>
+              <a href="/user/reports/products" class="{{ (request()->is('user/reports/products')) ? 'active' : '' }}">Productos</a>
             </li>
           </ul>
         </li>

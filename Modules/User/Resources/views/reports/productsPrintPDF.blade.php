@@ -1,6 +1,6 @@
 <html>
   <head>
-      <title>Print PDF</title>
+      <title>Lista de Precios</title>
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
       <style>
           table {
@@ -18,39 +18,39 @@
               display:table-header-group;
               background-color: black;
               color: #ffffff; 
+              text-align: center;
           }
           th, td {
               border: black 1px solid;
               padding-left: 5px;
               padding-right: 5px;
               /**min-width: 150px;**/
+              text-align: center;
           }
           @page {
-              size: legal portrait;
+              size: a4 portrait;
               margin: 1cm;
           }
       </style>
   </head>
 <body>
-    <h2>Reporte de Funcionarios - {{ date("d/m/Y") }}</h2>
+    <h2>Productos - Lista de Precios - {{ date("d/m/Y") }}</h2>
     <table class="table table-bordered mb-5">
         <thead>
             <tr class="table-danger">
-                <th style="width: 20%" scope="col">Nombre Completo</th>
-                <th style="width: 20%" scope="col">ID Referencia</th>
-                <th style="width: 15%" scope="col">Teléfono</th>
-                <th style="width: 20%" scope="col">Email</th>
-                <th style="width: 25%" scope="col">Doc Identidad</th>
+                <th style="width: 20%" scope="col">Código</th>
+                <th style="width: 20%" scope="col">Nombre</th>
+                <th style="width: 15%" scope="col">Precio</th>
+                <th style="width: 20%" scope="col">Stock</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($users as $user)
+            @foreach($products as $product)
             <tr>
-                <td>{{ $user->name }} {{ $user->last_name }}</td>
-                <td>{{ $user->idReference }}</td>
-                <td>{{ $user->phone }}</td>
-                <td>{{ $user->email }}</td>
-                <td>{{ $user->ci }}</td>
+                <td>{{ $product->code }}</td>
+                <td>{{ $product->name }}</td>
+                <td>G$ {{number_format($product->sale_price, 0)}}</td>
+                <td>{{ $product->quantity }}</td>
             </tr>
             @endforeach
         </tbody>
