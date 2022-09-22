@@ -24,9 +24,8 @@ class HomeController extends Controller
             ->limit(7)
             ->get();
 
-        $users = DB::table('users')
-            ->select('users.id', 'users.name', 'users.status', 'users.email')
-            ->where('users.idReference', '=', $idRefCurrentUser)
+        $products = DB::table('products')
+            ->select('id', 'name', 'quantity')
             ->orderBy('created_at', 'DESC')
             ->paginate(7);
 
@@ -34,10 +33,9 @@ class HomeController extends Controller
             ->where('customers.idReference', '=', $idRefCurrentUser)
             ->count();
 
-        $cant_users = DB::table('users')
-            ->where('users.idReference', '=', $idRefCurrentUser)
+        $cant_products = DB::table('products')
             ->count();
 
-        return view('user::dashboard', compact('users', 'customers', 'cant_customers', 'cant_users'));
+        return view('user::dashboard', compact('products', 'customers', 'cant_customers', 'cant_products'));
     }
 }

@@ -36,8 +36,8 @@
               <i class="lni lni-user"></i>
             </div>
             <div class="content">
-              <h6 class="mb-10">Total Usuarios</h6>
-              <h3 class="text-bold mb-10">{{$cant_users}}</h3>
+              <h6 class="mb-10">Total Productos</h6>
+              <h3 class="text-bold mb-10">{{$cant_products}}</h3>
             </div>
           </div>
           <!-- End Icon Cart -->
@@ -80,7 +80,7 @@
           <div class="card-style mb-30">
             <div class="title d-flex flex-wrap align-items-center justify-content-between mb-10">
               <div class="left">
-                <h6 class="text-medium mb-2">Vendedores Registrados</h6>
+                <h6 class="text-medium mb-2">Agentes Registrados</h6>
               </div>
               <div class="right mb-2">
               </div>
@@ -121,7 +121,7 @@
           <div class="card-style mb-30">
             <div class="title d-flex flex-wrap align-items-center justify-content-between mb-10">
               <div class="left">
-                <h6 class="text-medium mb-2">Usuarios Registrados</h6>
+                <h6 class="text-medium mb-2">Productos Registrados</h6>
               </div>
               <div class="right mb-2">
               </div>
@@ -136,20 +136,20 @@
                       <h6 class="text-sm fw-500">Nombre</h6>
                     </th>
                     <th>
-                      <h6 class="text-sm fw-500">Email</h6>
+                      <h6 class="text-sm fw-500">Stock</h6>
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  @foreach ($users as $user)
+                  @foreach ($products as $product)
                     <tr>
-                        <td><p class="text-sm fw-500 text-gray"><a href="/admin/users/{{$user->id}}/show">{{ $user->name ?? old('name') }} {{ $user->last_name ?? old('last_name') }}</a></p></td>
-                        <td><p class="text-sm fw-500 text-gray">{{ $user->email }}</p></td>
+                      <td><p class="text-sm fw-500 text-gray"><a href="/admin/products/show/{{$product->id}}">{{ $product->name ?? old('name') }}</a></p></td>
+                      <td><p class="text-sm fw-500 text-gray">{{ $product->quantity }}</p></td>
                     </tr>
                   @endforeach
                 </tbody>
               </table>
-              <a href="/admin/users"><p class="text-sm mb-20">Ver más..</p></a>
+              <a href="/admin/products"><p class="text-sm mb-20">Ver más..</p></a>
             </div>
           </div>
         </div>

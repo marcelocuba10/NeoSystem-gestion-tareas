@@ -37,7 +37,7 @@
             </div>
             <div class="content">
               <h6 class="mb-10">Total Productos</h6>
-              <h3 class="text-bold mb-10">434</h3>
+              <h3 class="text-bold mb-10">{{ $cant_products }}</h3>
             </div>
           </div>
           <!-- End Icon Cart -->
@@ -136,20 +136,20 @@
                       <h6 class="text-sm fw-500">Nombre</h6>
                     </th>
                     <th>
-                      <h6 class="text-sm fw-500">Email</h6>
+                      <h6 class="text-sm fw-500">Stock</h6>
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  @foreach ($users as $user)
+                  @foreach ($products as $product)
                     <tr>
-                        <td><p class="text-sm fw-500 text-gray"><a href="/user/users/{{$user->id}}/show">{{ $user->name ?? old('name') }} {{ $user->last_name ?? old('last_name') }}</a></p></td>
-                        <td><p class="text-sm fw-500 text-gray">{{ $user->email }}</p></td>
+                      <td><p class="text-sm fw-500 text-gray"><a href="/user/products/show/{{$product->id}}">{{ $product->name ?? old('name') }}</a></p></td>
+                      <td><p class="text-sm fw-500 text-gray">{{ $product->quantity }}</p></td>
                     </tr>
                   @endforeach
                 </tbody>
               </table>
-              <a href="/user/users"><p class="text-sm mb-20">Ver más..</p></a>
+              <a href="/user/products"><p class="text-sm mb-20">Ver más..</p></a>
             </div>
           </div>
         </div>

@@ -27,8 +27,8 @@ class HomeController extends Controller
             ->limit(7)
             ->get();
 
-        $users = DB::table('super_users')
-            ->select('id', 'name', 'last_name', 'email')
+        $products = DB::table('products')
+            ->select('id', 'name', 'quantity')
             ->orderBy('created_at', 'DESC')
             ->limit(7)
             ->get();
@@ -37,9 +37,9 @@ class HomeController extends Controller
             ->where('main_user', '=', 1)
             ->count();
 
-        $cant_users = DB::table('super_users')
+        $cant_products = DB::table('products')
             ->count();
 
-        return view('admin::dashboard', compact('users', 'sellers', 'cant_sellers', 'cant_users'));
+        return view('admin::dashboard', compact('products', 'sellers', 'cant_sellers', 'cant_products'));
     }
 }
