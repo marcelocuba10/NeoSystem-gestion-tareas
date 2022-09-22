@@ -70,7 +70,12 @@
 
     /** ========= InputMask Currency ======== **/
     $(function() {
-        $('#currency').maskMoney({
+        $('#currency_1').maskMoney({
+          precision: 3,
+          thousands: '.',
+          decimal: '.'
+        });
+        $('#currency_2').maskMoney({
           precision: 3,
           thousands: '.',
           decimal: '.'

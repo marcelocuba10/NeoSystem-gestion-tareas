@@ -29,12 +29,7 @@ Route::prefix('user')->group(function () {
         /** Products Routes */
         Route::group(['prefix' => 'products'], function () {
             Route::get('/', 'ProductsController@index');
-            Route::get('/create', 'ProductsController@create');
-            Route::post('/create', 'ProductsController@store');
             Route::get('/show/{id}', 'ProductsController@show');
-            Route::get('/edit/{id}', 'ProductsController@edit');
-            Route::put('/update/{id}', 'ProductsController@update');
-            Route::delete('/delete/{id}', 'ProductsController@destroy');
             Route::get('/search', 'ProductsController@search');
         });
 

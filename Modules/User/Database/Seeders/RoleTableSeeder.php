@@ -59,6 +59,11 @@ class RoleTableSeeder extends Seeder
         $role->givePermissionTo('role-create');
         $role->givePermissionTo('role-edit');
         $role->givePermissionTo('report-list');
+
+        $role->givePermissionTo('parameter-list');
+        $role->givePermissionTo('parameter-create');
+        $role->givePermissionTo('parameter-edit');
+        $role->givePermissionTo('parameter-delete');
     }
 
     public function generateUniqueCodeRole()

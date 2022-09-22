@@ -5,8 +5,8 @@ namespace Modules\User\Http\Controllers;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Modules\User\Entities\Products;
 
 class ProductsController extends Controller
 {
@@ -22,9 +22,7 @@ class ProductsController extends Controller
 
     public function index()
     {
-        $idRefCurrentUser = Auth::user()->idReference;
         $products = DB::table('products')
-            ->where('idReference', '=', $idRefCurrentUser)
             ->select(
                 'id',
                 'name',
@@ -36,5 +34,44 @@ class ProductsController extends Controller
             ->paginate(10);
 
         return view('user::products.index', compact('products'))->with('i', (request()->input('page', 1) - 1) * 10);
+    }
+
+    public function show($id)
+    {
+        $product = Products::find($id);
+
+        return view('user::products.show', compact('product'));
+    }
+
+    public function search(Request $request)
+    {
+        $search = $request->input('search');
+
+        if ($search == '') {
+            $products = DB::table('products')
+                ->select(
+                    'id',
+                    'name',
+                    'sale_price',
+                    'quantity',
+                    'description',
+                )
+                ->orderBy('created_at', 'DESC')
+                ->paginate(10);
+        } else {
+            $products = DB::table('products')
+                ->where('name', 'LIKE', "%{$search}%")
+                ->select(
+                    'id',
+                    'name',
+                    'sale_price',
+                    'quantity',
+                    'description',
+                )
+                ->orderBy('created_at', 'DESC')
+                ->paginate();
+        }
+
+        return view('user::products.index', compact('products', 'search'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 }

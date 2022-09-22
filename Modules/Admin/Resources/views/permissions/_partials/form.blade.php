@@ -14,7 +14,7 @@
         <div class="select-position">
           <select name="guard_name">
             @foreach ($guard_names as $guard_name)
-              <option value="{{ $guard_name }}" {{ ( $guard_name == $roleGuard) ? 'selected' : '' }}> {{ $guard_name}} </option>
+              <option value="{{ $guard_name }}" {{ ( $guard_name == $permissionGuard) ? 'selected' : '' }}> {{ $guard_name}} </option>
             @endforeach 
           </select>
         </div>

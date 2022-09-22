@@ -48,8 +48,8 @@ class PermissionsController extends Controller
                 ->get();
 
             $rolePermission = $role->permissions->pluck('name')->toArray();
-            
-        /** New Role form */
+
+            /** New Role form */
         } else {
             $permissions = DB::table('permissions')
                 ->where('guard_name', '=', $guard_name)
@@ -65,12 +65,11 @@ class PermissionsController extends Controller
 
     public function create()
     {
+        $guard_names = Role::pluck('guard_name', 'guard_name')->all();
+        $permissionGuard = null;
         $guard_name = Auth::getDefaultDriver();
 
-        $guard_names = Role::pluck('guard_name', 'guard_name')->all();
-        $roleGuard = null;
-
-        return view('admin::permissions.create', compact('guard_name', 'guard_names', 'roleGuard'));
+        return view('admin::permissions.create', compact('guard_name', 'guard_names', 'permissionGuard'));
     }
 
     public function store(Request $request)
@@ -102,11 +101,11 @@ class PermissionsController extends Controller
     public function edit($id)
     {
         $permission = Permission::find($id);
-        $guard_name = $permission->guard_name;
+        $permissionGuard = $permission->guard_name;
 
         $guard_names = Role::pluck('guard_name', 'guard_name')->all();
 
-        return view('admin::permissions.edit', compact('permission', 'guard_name', 'guard_names'));
+        return view('admin::permissions.edit', compact('permission', 'permissionGuard', 'guard_names'));
     }
 
     public function update(Request $request, $id)
@@ -128,10 +127,13 @@ class PermissionsController extends Controller
         $search = $request->input('search');
 
         if ($search == '') {
-            $permissions = DB::table('permissions')->paginate(10);
+            $permissions = DB::table('permissions')
+                ->orderBy('created_at', 'DESC')
+                ->paginate(10);
         } else {
             $permissions = DB::table('permissions')
                 ->where('permissions.name', 'LIKE', "%{$search}%")
+                ->orderBy('created_at', 'DESC')
                 ->paginate();
         }
 
