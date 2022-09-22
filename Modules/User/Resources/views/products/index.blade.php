@@ -9,9 +9,6 @@
         <div class="col-md-8">
           <div class="title d-flex align-items-center flex-wrap mb-30">
             <h2 class="mr-40">Productos</h2>
-            <div class="off-mobile">
-              <a style="margin-left: 17px;" href="/user/reports/products?download=pdf" target="_blank"><i class="hthtg lni lni-control-panel"></i></a>
-            </div>
           </div>
         </div>
         <!-- end col -->
