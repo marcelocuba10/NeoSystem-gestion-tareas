@@ -50,7 +50,8 @@ class ImageGalleryProductController extends Controller
 
     public function destroy($id)
     {
-        ImagesProduct::find($id)->delete();
+        $res=ImagesProduct::where('image',$id)->delete();
+        //ImagesProduct::find($id)->delete();
 
         // $image_path = "/images/products/filename.ext";  // Value is not URL but directory file path
         // if (File::exists($image_path)) {

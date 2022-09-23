@@ -127,27 +127,33 @@
     {{-- <button type="submit" class="btn btn-primary" style="margin-top:10px">Submit</button> --}}
   {{-- </form>     --}}
 
-  {{-- <div class="row">
+  @if ($array_images)
+  <div class="row">
     <div class='list-group gallery'>
-        @if($images->count())
-            @foreach($images as $image)
-            <div class='col-sm-4 col-xs-6 col-md-3 col-lg-3'>
-                <a class="thumbnail fancybox" rel="ligthbox" href="/images/{{ $image->image }}">
-                    <img class="img-responsive" alt="" src="/images/products/{{ $image->image }}" />
-                    <div class='text-center'>
-                        <small class='text-muted'>{{ $image->title }}</small>
-                    </div> 
-                </a>
-                <form action="/admin/products/image-gallery/{{ $image->id }}" method="POST">
-                <input type="hidden" name="_method" value="delete">
-                {!! csrf_field() !!}
-                <button type="submit" class="close-icon btn btn-danger"><i class="glyphicon glyphicon-remove"></i></button>
-                </form>
-            </div> 
-            @endforeach
-        @endif
+      @foreach($array_images as $image)
+      <div class='col-sm-4 col-xs-6 col-md-3 col-lg-3'>
+
+        <div class="artist-collection-photo">
+          <button class="close" type="button">×</button>
+          <a data-target="#photo-fields-5-0" data-toggle="modal">
+            <img src="/images/products/{{ $image }}"  width="120" height="120" alt="image.jpg" class="img-thumbnail">
+            </a>
+          </div>
+
+          {{-- <a class="thumbnail fancybox" rel="ligthbox" href="/images/products/{{ $image }}">
+              <img class="img-responsive" alt="" src="/images/products/{{ $image }}" /> 
+          </a>
+          <form action="/admin/products/image-gallery/{{ $image }}" method="POST">
+            <input type="hidden" name="_method" value="delete">
+            {!! csrf_field() !!}
+            <button type="submit" class="close-icon btn btn-danger"><i class="glyphicon glyphicon-remove"></i></button>
+          </form> --}}
+      </div> 
+      @endforeach
     </div> 
-  </div>  --}}
+  </div> 
+  @endif
+
   
   <div class="col-12">
     <div class="button-group d-flex justify-content-center flex-wrap">
@@ -174,4 +180,14 @@
   });
 
 </script>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+      $(".fancybox").fancybox({
+          openEffect: "none",
+          closeEffect: "none"
+      });
+  });
+</script>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>

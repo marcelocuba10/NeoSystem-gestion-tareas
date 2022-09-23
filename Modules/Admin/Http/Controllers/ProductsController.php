@@ -41,12 +41,16 @@ class ProductsController extends Controller
     {
         $code_product = $this->generateUniqueCode();
         $product = null;
+        $images = null;
+        $array_images = null;
 
-        return view('admin::products.create', compact('product', 'code_product'));
+        return view('admin::products.create', compact('product', 'code_product', 'images', 'array_images'));
     }
 
     public function store(Request $request)
     {
+        $code_product = $this->generateUniqueCode();
+
         $request->validate([
             'name' => 'required|max:50|min:5|unique:products,name',
             'sale_price' => 'required|max:12|min:6',
@@ -65,46 +69,25 @@ class ProductsController extends Controller
         if ($request->hasfile('image')) {
 
             foreach ($request->file('image') as $image) {
-                $name = date('Ymd') . '-' . $image->getClientOriginalName();
+                $name = date('Ymd') . '-' . str_replace(' ', '-', $image->getClientOriginalName());
                 $image->move(public_path('images/products'), $name);
                 $data[] = $name;
             }
         }
 
-        $form = new ImagesProduct();
-        $form->image = json_encode($data);
-        $form->save();
+        $input['image'] = $data;
+        $input['code_product'] = $code_product;
+        ImagesProduct::create($input);
 
         //remove the separator thousands
         $input = $request->all();
         $input['sale_price'] = str_replace('.', '', $input['sale_price']);
         $input['purchase_price'] = str_replace('.', '', $input['purchase_price']);
-
-        $input['code'] = $this->generateUniqueCode();
+        $input['code'] = $code_product;
         $input['type'] = 'Equipos Potenciales';
         Products::create($input);
 
         return redirect()->to('/admin/products')->with('message', 'Product created successfully.');
-    }
-
-    public function upload(Request $request)
-    {
-        $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
-
-        $file = $request->file('image');
-
-        $input['image'] = date('Ymd') . '-' . $file->getClientOriginalName();
-        //$input['image'] = $filename . '.' . $file->getClientOriginalExtension();
-        $file->move(public_path('images/products'), $input['image']);
-
-        $input['code'] = $this->generateUniqueCode();
-
-        ImagesProduct::create($input);
-
-
-        return back()->with('success', 'Image Uploaded successfully.');
     }
 
     public function generateUniqueCode()
@@ -129,7 +112,13 @@ class ProductsController extends Controller
     {
         $product = Products::find($id);
 
-        return view('admin::products.edit', compact('product'));
+        $images = DB::table('images_products')
+            ->where('code_product', '=', $product->code)
+            ->get();
+
+        $array_images = json_decode($images[0]->image);
+
+        return view('admin::products.edit', compact('product', 'array_images'));
     }
 
     public function update(Request $request, $id)
@@ -144,9 +133,26 @@ class ProductsController extends Controller
             'model' => 'nullable|max:50|min:3',
             'supplier' => 'nullable|max:50|min:3',
             'phone_supplier' => 'nullable|max:50|min:3',
+
+            'image' => 'required',
+            'image.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 
         $input = $request->all();
+
+        if ($request->hasfile('image')) {
+
+            foreach ($request->file('image') as $image) {
+                $name = date('Ymd') . '-' . $image->getClientOriginalName();
+                $image->move(public_path('images/products'), $name);
+                $data[] = $name;
+            }
+        }
+
+        $input['image'] = $data;
+        ImagesProduct::create($input);
+
+
         $input['sale_price'] = str_replace('.', '', $input['sale_price']);
         $input['purchase_price'] = str_replace('.', '', $input['purchase_price']);
 

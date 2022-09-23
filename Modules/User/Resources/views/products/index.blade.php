@@ -34,10 +34,8 @@
         <div class="col-lg-12">
           <div class="card-style mb-30">
             <div class="d-flex flex-wrap justify-content-between align-items-center py-3">
-              <div class="left">
-              </div>
-              <div class="right">
-              </div>
+              <div class="left"></div>
+              <div class="right"></div>
             </div>
             <div class="table-wrapper table-responsive">
               <table class="table">
