@@ -15,8 +15,8 @@
     <link rel="canonical" href="https://website107854.nicepage.io/Page-2.html">
     <meta property="og:url" content="https://website107854.nicepage.io/Page-2.html">
 
-    <link rel="stylesheet" href="/site/css/nicepage.css" media="screen">
-    <link rel="stylesheet" href="/site/css/custom-style.css" media="screen">
+    <link rel="stylesheet" href="{{ asset('/public/site/css/nicepage.css') }}" media="screen">
+    <link rel="stylesheet" href="{{ asset('/public/site/css/custom-style.css') }}" media="screen">
 
     <script class="u-script" type="text/javascript" src="//static.nicepage.com/shared/assets/jquery-1.9.1.min.js" defer=""></script>
     <script class="u-script" type="text/javascript" src="//capp.nicepage.com/db56a7a5b6da0ea8a26d65edbfbdeaabc1befa0f/nicepage.js" defer=""></script>
@@ -32,8 +32,7 @@
     <header class="u-clearfix u-header u-header" id="sec-648d">
         <div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
             <a href="/" class="u-image u-logo u-image-1">
-                <img src="/site/imgs/logo-pyp.jpg"
-                    class="u-logo-image u-logo-image-1">
+                <img src="{{ asset('/public/site/imgs/logo-pyp.jpg') }}" class="u-logo-image u-logo-image-1">
             </a>
             <nav class="u-menu u-menu-dropdown u-offcanvas u-menu-1">
                 <div class="menu-collapse" style="font-size: 1rem; letter-spacing: 0px;" wfd-invisible="true">
@@ -70,7 +69,7 @@
                         </li>
                         <li class="u-nav-item"><a
                                 class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base"
-                                href="/user/login" data-page-id="108240" style="padding: 10px 20px;">Iniciar Sesión</a>
+                                href="{{ url('user/login') }}" data-page-id="108240" style="padding: 10px 20px;">Iniciar Sesión</a>
                         </li>
                     </ul>
                 </div>
@@ -88,7 +87,7 @@
                                 <li class="u-nav-item"><a class="u-button-style u-nav-link" href="#"
                                         data-page-id="107875">Contacto</a>
                                 </li>
-                                <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/user/login"
+                                <li class="u-nav-item"><a class="u-button-style u-nav-link" href="{{ url('user/login') }}"
                                         data-page-id="108240">Iniciar Sesión</a>
                                 </li>
                             </ul>

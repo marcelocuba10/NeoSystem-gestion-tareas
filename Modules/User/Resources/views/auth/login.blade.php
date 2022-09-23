@@ -6,8 +6,8 @@
     <div class="left"></div>
     <div class="right">
         <div class="ergts" style="display: flex;">
-            <a href="/"><button class="ththhf" type="button" class="btn btn-block create-account">Página Web</button></a>
-            <a href="/admin/login"><button class="ththhf" type="button" class="btn btn-block create-account">Gestión</button></a>
+            <a href="{{ url('/') }}"><button class="ththhf" type="button" class="btn btn-block create-account">Página Web</button></a>
+            <a href="{{ url('/admin/login') }}"><button class="ththhf" type="button" class="btn btn-block create-account">Gestión</button></a>
         </div>    
         <div class="login-texto off-mobile">
             <p class="login-title">Bienvenido a {{ config('app.name') }}</p>
@@ -18,9 +18,9 @@
 
 <div class="registration-form">
     
-    <form method="post" action="/user/login">
+    <form method="post" action="{{ url('/user/login') }}">
 
-        <div class="form-icon"><img class="img-logo" src="/adminLTE/images/logo/logo-pyp.png"></div>
+        <div class="form-icon"><img class="img-logo" src="{{ asset('/public/adminLTE/images/logo/logo-pyp.png') }}"></div>
         <p class="login-message2">Iniciar Sesión</p>
         
         <input type="hidden" name="_token" value="{{ csrf_token() }}" />
@@ -63,7 +63,7 @@
             </div>
             <div class="col-sm-8">
                 <div class="text-md-end text-lg-end text-xxl-end mb-30">
-                  <a href="/user/forget-password" style="color: #212529;" class="hover-underline">
+                  <a href="{{ url('/user/forget-password') }} " style="color: #212529;" class="hover-underline">
                     <small>¿Has olvidado tu contraseña?</small>
                   </a>
                 </div>

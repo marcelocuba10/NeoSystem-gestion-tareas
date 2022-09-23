@@ -75,7 +75,7 @@
   </div>
   <!-- end col -->
 
-  <h3>Laravel - Image Gallery CRUD Example</h3>
+  <h3>Imágenes del Producto</h3>
   {{-- <form action="/admin/products/image-gallery" class="form-image-upload" method="POST" enctype="multipart/form-data">
       {!! csrf_field() !!}
       @if (count($errors) > 0)
@@ -134,9 +134,9 @@
       <div class='col-sm-4 col-xs-6 col-md-3 col-lg-3'>
 
         <div class="artist-collection-photo">
-          <button class="close" type="button">×</button>
+          <button class="close btn-close-btn" type="button">×</button>
           <a data-target="#photo-fields-5-0" data-toggle="modal">
-            <img src="/images/products/{{ $image }}"  width="120" height="120" alt="image.jpg" class="img-thumbnail">
+            <img src="/images/products/{{ $image }}"  width="500" height="500" alt="image.jpg" class="img-thumbnail">
             </a>
           </div>
 
