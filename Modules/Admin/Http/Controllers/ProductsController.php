@@ -6,6 +6,7 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
+use Modules\Admin\Entities\ImagesProduct;
 use Modules\Admin\Entities\Products;
 
 class ProductsController extends Controller
@@ -56,7 +57,23 @@ class ProductsController extends Controller
             'model' => 'nullable|max:50|min:3',
             'supplier' => 'nullable|max:50|min:3',
             'phone_supplier' => 'nullable|max:50|min:3',
+
+            'image' => 'required',
+            'image.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
+
+        if ($request->hasfile('image')) {
+
+            foreach ($request->file('image') as $image) {
+                $name = date('Ymd') . '-' . $image->getClientOriginalName();
+                $image->move(public_path('images/products'), $name);
+                $data[] = $name;
+            }
+        }
+
+        $form = new ImagesProduct();
+        $form->image = json_encode($data);
+        $form->save();
 
         //remove the separator thousands
         $input = $request->all();
@@ -68,6 +85,26 @@ class ProductsController extends Controller
         Products::create($input);
 
         return redirect()->to('/admin/products')->with('message', 'Product created successfully.');
+    }
+
+    public function upload(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        $file = $request->file('image');
+
+        $input['image'] = date('Ymd') . '-' . $file->getClientOriginalName();
+        //$input['image'] = $filename . '.' . $file->getClientOriginalExtension();
+        $file->move(public_path('images/products'), $input['image']);
+
+        $input['code'] = $this->generateUniqueCode();
+
+        ImagesProduct::create($input);
+
+
+        return back()->with('success', 'Image Uploaded successfully.');
     }
 
     public function generateUniqueCode()

@@ -40,6 +40,10 @@ Route::prefix('admin')->group(function () {
             Route::put('/update/{id}', 'ProductsController@update');
             Route::delete('/delete/{id}', 'ProductsController@destroy');
             Route::get('/search', 'ProductsController@search');
+
+            Route::get('image-gallery', 'ImageGalleryProductController@index');
+            Route::post('image-gallery', 'ImageGalleryProductController@upload');
+            Route::delete('image-gallery/{id}', 'ImageGalleryProductController@destroy');
         });
 
         /*** User Routes ***/
