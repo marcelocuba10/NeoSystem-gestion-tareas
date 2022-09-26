@@ -9,14 +9,14 @@
             <div class="title d-flex align-items-center flex-wrap mb-30">
               <h2 class="mr-40">Permisos</h2>
               @can('permission-sa-create')
-                <a href="/admin/ACL/permissions/create" class="main-btn info-btn btn-hover btn-sm"><i class="lni lni-plus mr-5"></i></a>
+                <a href="{{ url('/admin/ACL/permissions/create') }}" class="main-btn info-btn btn-hover btn-sm"><i class="lni lni-plus mr-5"></i></a>
               @endcan  
             </div>
           </div>
           <div class="col-md-4">
             <div class="right">
               <div class="table-search d-flex" style="margin-top: -35px;float: right;">
-                <form action="/admin/ACL/permissions/search">
+                <form action="{{ url('/admin/ACL/permissions/search') }}">
                   <input style="background-color: #fff;" id="search" type="text" name="search" value="{{ $search ?? '' }}" placeholder="Buscar Permiso..">
                   <button type="submit"><i class="lni lni-search-alt"></i></button>
                 </form>
@@ -53,7 +53,7 @@
                       <div class="btn-group">
                         @can('permission-sa-edit')
                         <div class="action">
-                          <a href="/admin/ACL/permissions/edit/{{$permission->id}}">
+                          <a href="{{ url('/admin/ACL/permissions/edit/'.$permission->id) }}">
                             <button class="text-info">
                               <i class="lni lni-pencil"></i>
                             </button>
@@ -61,7 +61,7 @@
                         </div>
                         @endcan
                         @can('permission-sa-delete')
-                        <form method="POST" action="/admin/ACL/permissions/delete/{{$permission->id}}">
+                        <form method="POST" action="{{ url('/admin/ACL/permissions/delete/'.$permission->id) }}">
                           @csrf
                           <div class="action">
                             <input name="_method" type="hidden" value="DELETE">

@@ -1,5 +1,5 @@
-@csrf
-<div class="row">
+  @csrf
+  <div class="row">
     <div class="col-6">
       <div class="input-style-1">
         <label>(*) Nombre</label>
@@ -24,7 +24,7 @@
     <div class="col-12">
       <div class="button-group d-flex justify-content-center flex-wrap">
         <button type="submit" class="main-btn primary-btn btn-hover m-2">Guardar</button>
-        <a class="main-btn danger-btn-outline m-2" href="/admin/ACL/permissions">Atrás</a>
+        <a class="main-btn danger-btn-outline m-2" href="{{ url('/admin/ACL/permissions') }}">Atrás</a>
       </div>
     </div>
-</div>
+  </div>
