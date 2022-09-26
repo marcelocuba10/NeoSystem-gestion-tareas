@@ -105,14 +105,14 @@
                 <tbody>
                   @foreach ($sellers as $seller)
                     <tr>
-                        <td><p class="text-sm fw-500 text-gray"><a href="/admin/sellers/show/{{$seller->id}}">{{ $seller->name ?? old('name') }} {{ $seller->last_name ?? old('last_name') }}</a></p></td>
+                        <td><p class="text-sm fw-500 text-gray"><a href="{{ url('/admin/sellers/show/'.$seller->id) }}">{{ $seller->name ?? old('name') }} {{ $seller->last_name ?? old('last_name') }}</a></p></td>
                         <td><p class="text-sm fw-500 text-gray">{{ $seller->idReference }}</p></td>
                         <td><p class="text-sm fw-500 text-gray text-end">{{ $seller->status }}</p></td>
                     </tr>
                   @endforeach
                 </tbody>
               </table>
-              <a href="/admin/sellers"><p class="text-sm mb-20">Ver más..</p></a>
+              <a href="{{ url('/admin/sellers') }}"><p class="text-sm mb-20">Ver más..</p></a>
             </div>
           </div>
         </div>
@@ -143,13 +143,13 @@
                 <tbody>
                   @foreach ($products as $product)
                     <tr>
-                      <td><p class="text-sm fw-500 text-gray"><a href="/admin/products/show/{{$product->id}}">{{ $product->name ?? old('name') }}</a></p></td>
+                      <td><p class="text-sm fw-500 text-gray"><a href="{{ url('/admin/products/show/'.$product->id) }}">{{ $product->name ?? old('name') }}</a></p></td>
                       <td><p class="text-sm fw-500 text-gray">{{ $product->quantity }}</p></td>
                     </tr>
                   @endforeach
                 </tbody>
               </table>
-              <a href="/admin/products"><p class="text-sm mb-20">Ver más..</p></a>
+              <a href="{{ url('/admin/products') }}"><p class="text-sm mb-20">Ver más..</p></a>
             </div>
           </div>
         </div>

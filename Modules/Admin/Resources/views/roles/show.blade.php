@@ -8,16 +8,16 @@
             <div class="row align-items-center">
                 <div class="col-md-6">
                     <div class="titlemb-30">
-                        <h2>Detalle del Rol</h2>
+                        <h2>Detalle Rol</h2>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="breadcrumb-wrapper mb-30">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="/admin/dashboard">Dashboard</a></li>
-                                <li class="breadcrumb-item" aria-current="page"><a href="/admin/ACL/roles">Roles</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Detalle del Rol</li>
+                                <li class="breadcrumb-item"><a href="{{ url('/admin/dashboard') }}">Dashboard</a></li>
+                                <li class="breadcrumb-item" aria-current="page"><a href="{{ url('/admin/ACL/roles') }}">Roles</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Detalle Rol</li>
                             </ol>
                         </nav>
                     </div>
@@ -25,6 +25,7 @@
             </div>
         </div>
         <!-- ========== title-wrapper end ========== -->
+
         <div class="form-layout-wrapper">
             <div class="row">
                 <div class="col-lg-12">
@@ -71,16 +72,14 @@
                                 <!-- end col -->
                                 <div class="col-12">
                                     <div class="button-groupd-flexjustify-content-centerflex-wrap">
-                                        <a class="main-btn danger-btn-outline m-2" href="/admin/ACL/roles">Atrás</a>
+                                        <a class="main-btn danger-btn-outline m-2" href="{{ url('/admin/ACL/roles') }}">Atrás</a>
                                     </div>
                                 </div>
                             </div>
                         </form>
                     </div>
                 </div>
-                <!-- end col -->
             </div>
-            <!-- end row -->
         </div>
     </div>
 </section>
