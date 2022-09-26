@@ -32,7 +32,7 @@
                       <div class="col-md-3">
                         <div class="input-style-1">
                           <label>Cliente</label>
-                          <form action="/user/reports/customers/search">
+                          <form action="{{ url('/user/reports/customers/search') }}">
                             <input disabled class="bg-gray" style="background-color: #fff;" id="search" type="text" name="search" value="{{ $search ?? '' }}" placeholder="Buscar cliente..">
                           </form>
                         </div>
@@ -52,7 +52,7 @@
                       <div class="col-md-3"style="margin-top: 35px;">
                         <div class="input-style-1">
                           <a href="#" class="btn btn-lg info-btn rounded-md btn-hover disabled" role="button" aria-disabled="true"><i class="lni lni-search"></i></a>
-                          <a href="/user/reports/customers?download=pdf" class="btn btn-lg success-btn rounded-md btn-hover" target="_blank"><i class="lni lni-printer"></i></a>
+                          <a href="{{ url('/user/reports/customers?download=pdf') }}" class="btn btn-lg success-btn rounded-md btn-hover" target="_blank"><i class="lni lni-printer"></i></a>
                         </div>
                       </div>
                     </div>

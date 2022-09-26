@@ -15,7 +15,7 @@
         <div class="col-md-4">
           <div class="right">
             <div class="table-search d-flex st-input-search">
-              <form action="/user/products/search">
+              <form action="{{ url('/user/products/search') }}">
                 <input style="background-color: #fff;" id="search" type="text" name="search" value="{{ $search ?? '' }}" placeholder="Buscar producto..">
                 <button type="submit"><i class="lni lni-search-alt"></i></button>
               </form>
@@ -54,7 +54,7 @@
                   @foreach ($products as $product)
                   <tr>
                     <td class="text-sm"><h6 class="text-sm">{{ ++$i }}</h6></td>
-                    <td class="min-width"><h5 class="text-bold text-dark"><a href="/user/products/show/{{$product->id}}">{{ $product->name }}</a></h5></td>
+                    <td class="min-width"><h5 class="text-bold text-dark"><a href="{{ url('/user/products/show/'.$product->id) }}">{{ $product->name }}</a></h5></td>
                     <td class="min-width"><p>{{ $product->description }}</p></td>
                     <td class="min-width"><p>G$ {{number_format($product->sale_price, 0)}}</p></td>
                     <td class="min-width">
@@ -67,7 +67,7 @@
                     <td class="text-right">
                       <div class="btn-group">
                         <div class="action">
-                          <a href="/user/products/show/{{$product->id}}">
+                          <a href="{{ url('/user/products/show/'.$product->id) }}">
                             <button class="text-active"><i class="lni lni-eye"></i></button>
                           </a>
                         </div>
