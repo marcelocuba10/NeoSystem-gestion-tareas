@@ -10,7 +10,7 @@
           <div class="title d-flex align-items-center flex-wrap mb-30">
             <h2 class="mr-40">Productos</h2>
             @can('product-sa-create')
-              <a href="/admin/products/create" class="main-btn info-btn btn-hover btn-sm"><i class="lni lni-plus mr-5"></i></a>
+              <a href="{{ url('/admin/products/create') }}" class="main-btn info-btn btn-hover btn-sm"><i class="lni lni-plus mr-5"></i></a>
             @endcan  
           </div>
         </div>
@@ -18,7 +18,7 @@
         <div class="col-md-4">
           <div class="right">
             <div class="table-search d-flex st-input-search">
-              <form action="/admin/products/search">
+              <form action="{{ url('/admin/products/search') }}">
                 <input style="background-color: #fff;" id="search" type="text" name="search" value="{{ $search ?? '' }}" placeholder="Buscar producto..">
                 <button type="submit"><i class="lni lni-search-alt"></i></button>
               </form>
@@ -59,7 +59,7 @@
                   @foreach ($products as $product)
                   <tr>
                     <td class="text-sm"><h6 class="text-sm">{{ ++$i }}</h6></td>
-                    <td class="min-width"><h5 class="text-bold text-dark"><a href="/admin/products/show/{{$product->id}}">{{ $product->name }}</a></h5></td>
+                    <td class="min-width"><h5 class="text-bold text-dark"><a href="{{ url('/admin/products/show/'.$product->id) }}">{{ $product->name }}</a></h5></td>
                     <td class="min-width"><p>{{ $product->description }}</p></td>
                     <td class="min-width"><p>G$ {{number_format($product->sale_price, 0)}}</p></td>
                     <td class="min-width">
@@ -72,19 +72,19 @@
                     <td class="text-right">
                       <div class="btn-group">
                         <div class="action">
-                          <a href="/admin/products/show/{{$product->id}}">
+                          <a href="{{ url('/admin/products/show/'.$product->id) }}">
                             <button class="text-active"><i class="lni lni-eye"></i></button>
                           </a>
                         </div>
                         @can('product-sa-edit')
                           <div class="action">
-                            <a href="/admin/products/edit/{{$product->id}}">
+                            <a href="{{ url('/admin/products/edit/'.$product->id) }}">
                               <button class="text-info"><i class="lni lni-pencil"></i></button>
                             </a>
                           </div>
                         @endcan
                         @can('product-sa-delete')
-                          <form method="POST" action="/admin/products/delete/{{$product->id}}">
+                          <form method="POST" action="{{ '/admin/products/delete/'.$product->id }}">
                             @csrf
                             <div class="action">
                               <input name="_method" type="hidden" value="DELETE">

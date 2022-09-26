@@ -15,8 +15,8 @@
           <div class="breadcrumb-wrapper mb-30">
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/admin/dashboard">Dashboard</a></li>
-                <li class="breadcrumb-item" aria-current="page"><a href="/admin/products">Productos</a></li>
+                <li class="breadcrumb-item"><a href="{{ url('/admin/dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item" aria-current="page"><a href="{{ url('/admin/products') }}">Productos</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Detalle Producto</li>
               </ol>
             </nav>
@@ -104,7 +104,7 @@
           
               <div class="col-12">
                 <div class="button-groupd-flexjustify-content-centerflex-wrap">
-                  <a class="main-btn danger-btn-outline m-2" href="/admin/products">Atrás</a>
+                  <a class="main-btn danger-btn-outline m-2" href="{{ url('/admin/products') }}">Atrás</a>
                 </div>
               </div>
             </div>

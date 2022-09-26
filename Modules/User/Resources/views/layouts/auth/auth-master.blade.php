@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="shortcut icon" href="{{ asset('/public/adminLTE/images/favicon.png') }}" type="image/x-icon" />
 
-        <title>Conectacode - Login</title>
+        <title>{{ config('app.name')}} - Login</title>
 
         <link href="{{ asset('/public/adminLTE/css/bootstrap.min.css') }}" rel="stylesheet">
         <link href="{{ asset('/public/css/login_register.css') }}" rel="stylesheet">

@@ -5,8 +5,8 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="shortcut icon" href="{{ asset('/adminLTE/images/favicon.png') }}" type="image/x-icon" />
-  <title>Conectacode | {{ config('app.name')}}</title>
+  <link rel="shortcut icon" href="{{ asset('/public/adminLTE/images/favicon.png') }}" type="image/x-icon" />
+  <title>{{ config('app.name')}}</title>
 
   <!-- ========== All CSS files linkup ========= -->
   <link rel="stylesheet" href="{{ asset('public/adminLTE/css/bootstrap.min.css') }}" />
@@ -86,6 +86,22 @@
         width: '100%',
       });
     });
+  </script>
+
+  <script>
+    /** ========= InputMask Currency ======== **/
+    $(function() {
+      $('#currency_1').maskMoney({
+        precision: 3,
+        thousands: '.',
+        decimal: '.'
+      });
+      $('#currency_2').maskMoney({
+        precision: 3,
+        thousands: '.',
+        decimal: '.'
+      });
+    })
   </script>
   
   <script>

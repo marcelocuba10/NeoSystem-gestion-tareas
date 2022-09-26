@@ -24,7 +24,7 @@
                   <li>
                     <a href="#0">
                       <div class="image">
-                        <img src="/adminLTE/images/lead/lead-6.png" alt="" />
+                        <img src="{{ asset('/public/adminLTE/images/lead/lead-1.png') }}" alt="" />
                       </div>
                       <div class="content">
                         <h6>
@@ -44,7 +44,7 @@
                   <li>
                     <a href="#0">
                       <div class="image">
-                        <img src="/adminLTE/images/lead/lead-1.png" alt="" />
+                        <img src="{{ asset('/public/adminLTE/images/lead/lead-1.png') }}" alt="" />
                       </div>
                       <div class="content">
                         <h6>
@@ -72,7 +72,7 @@
                     <div class="info">
                       <h6>@if(Auth::check()) {{Auth::user()->name}} @endif</h6>
                       <div class="image">
-                        <img src="/adminLTE/images/profile/profile-2.png" alt="" />
+                        <img src="{{ asset('/public/adminLTE/images/profile/profile-2.png') }}" alt="" />
                         <span class="status"></span>
                       </div>
                     </div>
@@ -81,16 +81,13 @@
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profile">
                   <li>
-                    <a href="/admin/users/profile/{{ Auth::user()->id }}"><i class="lni lni-user"></i> Mi Perfil</a>
+                    <a href="{{ url('/admin/users/profile/'.Auth::user()->id ) }}"><i class="lni lni-user"></i> Mi Perfil</a>
                   </li>
                   <li>
-                    <a href="/admin/notifications"><i class="lni lni-alarm"></i> Avisos</a>
+                    <a href="#"> <i class="lni lni-cog"></i> Configuraciones </a>
                   </li>
                   <li>
-                    <a href="#0"> <i class="lni lni-cog"></i> Configuraciones </a>
-                  </li>
-                  <li>
-                    <a href="/admin/logout/"> <i class="lni lni-exit"></i> Cerrar Sesión </a>
+                    <a href="{{ url('/admin/logout/') }}"> <i class="lni lni-exit"></i> Cerrar Sesión </a>
                   </li>
                 </ul>
               </div>

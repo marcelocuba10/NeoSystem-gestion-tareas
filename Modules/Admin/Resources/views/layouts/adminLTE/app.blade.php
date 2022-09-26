@@ -5,23 +5,23 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="shortcut icon" href="/adminLTE/images/favicon.png" type="image/x-icon" />
-  <title>Conectacode | {{ config('app.name')}}</title>
+  <link rel="shortcut icon" href="{{ asset('/public/adminLTE/images/favicon.png') }}" type="image/x-icon" />
+  <title>{{ config('app.name')}}</title>
 
   <!-- ========== All CSS files linkup ========= -->
-  <link rel="stylesheet" href="/adminLTE/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="/adminLTE/css/lineicons.css" />
-  <link rel="stylesheet" href="/adminLTE/css/LineIcons.css" />
-  <link rel="stylesheet" href="/adminLTE/css/quill/bubble.css" />
-  <link rel="stylesheet" href="/adminLTE/css/quill/snow.css" />
-  <link rel="stylesheet" href="/adminLTE/css/materialdesignicons.min.css" />
-  <link rel="stylesheet" href="/adminLTE/css/fullcalendar.css" />
-  <link rel="stylesheet" href="/adminLTE/css/main.css" />
-  <link rel="stylesheet" href="/adminLTE/css/morris.css" />
-  <link rel="stylesheet" href="/adminLTE/css/datatable.css" />
-  <link rel="stylesheet" href="/adminLTE/css/vanilla-dataTables.min.css" />
+  <link rel="stylesheet" href="{{ asset('public/adminLTE/css/bootstrap.min.css') }}" />
+  <link rel="stylesheet" href="{{ asset('public/adminLTE/css/lineicons.css') }}" />
+  <link rel="stylesheet" href="{{ asset('public/adminLTE/css/LineIcons.css') }}" />
+  <link rel="stylesheet" href="{{ asset('public/adminLTE/css/quill/bubble.css') }}" />
+  <link rel="stylesheet" href="{{ asset('public/adminLTE/css/quill/snow.css') }}" />
+  <link rel="stylesheet" href="{{ asset('public/adminLTE/css/materialdesignicons.min.css') }}" />
+  <link rel="stylesheet" href="{{ asset('public/adminLTE/css/fullcalendar.css') }}" />
+  <link rel="stylesheet" href="{{ asset('public/adminLTE/css/main.css') }}" />
+  <link rel="stylesheet" href="{{ asset('public/adminLTE/css/morris.css') }}" />
+  <link rel="stylesheet" href="{{ asset('public/adminLTE/css/datatable.css') }}" />
+  <link rel="stylesheet" href="{{ asset('public/adminLTE/css/vanilla-dataTables.min.css') }}" />
   <link rel="stylesheet" href="https://unpkg.com/placeholder-loading/dist/css/placeholder-loading.min.css">
-  <link rel="stylesheet" href="/css/custom-style.css">
+  <link rel="stylesheet" href="{{ asset('public/css/custom-style.css') }}" />
 
   <!-- ========= All Javascript files linkup ======== -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
@@ -33,13 +33,11 @@
   <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script> 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
 
-      <!-- Latest compiled and minified CSS -->
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-      <!-- References: https://github.com/fancyapps/fancyBox -->
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
-      {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> --}}
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
   <style type="text/css">
     .gallery
     {
@@ -72,21 +70,21 @@
   </main>
 
   <!-- ========= All Javascript files linkup ======== -->
-  <script src="/adminLTE/js/bootstrap.bundle.min.js"></script>
-  <script src="/adminLTE/js/Chart.min.js"></script>
-  <script src="/adminLTE/js/dynamic-pie-chart.js"></script>
-  <script src="/adminLTE/js/moment.min.js"></script>
-  <script src="/adminLTE/js/fullcalendar.js"></script>
-  <script src="/adminLTE/js/jvectormap.min.js"></script>
-  <script src="/adminLTE/js/world-merc.js"></script>
-  <script src="/adminLTE/js/polyfill.js"></script>
-  <script src="/adminLTE/js/main.js"></script>
-  <script src="/js/custom.js"></script>
-  <script src="/js/vanilla-masker.min.js"></script>
-  <script src="/adminLTE/js/apexcharts.min.js"></script>
-  <script src="/adminLTE/js/quill.min.js"></script>
-  <script src="/adminLTE/js/datatable.js"></script>
-  <script src="/adminLTE/js/Sortable.min.js"></script>
+  <script src="{{ asset('public/adminLTE/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ asset('public/adminLTE/js/Chart.min.js') }}"></script>
+  <script src="{{ asset('public/adminLTE/js/dynamic-pie-chart.js') }}"></script>
+  <script src="{{ asset('public/adminLTE/js/moment.min.js') }}"></script>
+  <script src="{{ asset('public/adminLTE/js/fullcalendar.js') }}"></script>
+  <script src="{{ asset('public/adminLTE/js/jvectormap.min.js') }}"></script>
+  <script src="{{ asset('public/adminLTE/js/world-merc.js') }}"></script>
+  <script src="{{ asset('public/adminLTE/js/polyfill.js') }}"></script>
+  <script src="{{ asset('public/adminLTE/js/main.js') }}"></script>
+  <script src="{{ asset('public/js/custom.js') }}"></script>
+  <script src="{{ asset('public/js/vanilla-masker.min.js') }}"></script>
+  <script src="{{ asset('public/adminLTE/js/apexcharts.min.js') }}"></script>
+  <script src="{{ asset('public/adminLTE/js/quill.min.js') }}"></script>
+  <script src="{{ asset('public/adminLTE/js/datatable.js') }}"></script>
+  <script src="{{ asset('public/adminLTE/js/Sortable.min.js') }}"></script>
 
   <!-- ========= Maskmoney files linkup ======== -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js" type="text/javascript"></script>
