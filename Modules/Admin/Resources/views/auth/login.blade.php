@@ -6,8 +6,8 @@
     <div class="left-admin"></div>
     <div class="right">
         <div class="ergts" style="display: flex;">
-            <a href="/"><button class="ththhf" type="button" class="btn btn-block create-account">Página Web</button></a>
-            <a href="/user/login"><button class="ththhf" type="button" class="btn btn-block create-account">Usuarios</button></a>
+            <a href="{{ url('/') }}"><button class="ththhf" type="button" class="btn btn-block create-account">Página Web</button></a>
+            <a href="{{ url('/user/login') }}"><button class="ththhf" type="button" class="btn btn-block create-account">Usuarios</button></a>
         </div>    
         <div class="login-texto off-mobile">
             <p class="login-title">Panel Administrativo</p>
@@ -18,9 +18,9 @@
 
 <div class="registration-form">
     
-    <form method="post" action="/admin/login">
+    <form method="post" action="{{ url('/admin/login') }}">
 
-        <div class="form-icon"><img class="img-logo" src="/adminLTE/images/logo/logo-pyp.png"></div>
+        <div class="form-icon"><img class="img-logo" src="{{ asset('/public/adminLTE/images/logo/logo-pyp.png') }}"></div>
         <p class="login-message2">Iniciar Sesión</p>
         
         <input type="hidden" name="_token" value="{{ csrf_token() }}" />

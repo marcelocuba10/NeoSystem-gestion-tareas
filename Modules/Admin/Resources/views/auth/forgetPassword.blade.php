@@ -6,13 +6,13 @@
 
         <div class="col-md-12">
             <div class="gYHxjZ">
-                <a href="/">
-                    <img src="/adminLTE/images/logo/logo-pyp.png" class="huRTra" color="auto" width="auto">
+                <a href="{{ url('/') }}">
+                    <img src="{{ asset('/public/adminLTE/images/logo/logo-pyp.png') }}" class="huRTra" color="auto" width="auto">
                 </a>
             </div>
             <div class="ibox-content recovery-ibox">
                 <div class="grfsd">
-                    <a href="/admin/recovery-options"><i class="fa fa-arrow-left" aria-hidden="true"></i> <span class="dfdfdf">Back</span></a>
+                    <a href="{{ url('/admin/recovery-options') }}"><i class="fa fa-arrow-left" aria-hidden="true"></i> <span class="dfdfdf">Back</span></a>
                 </div>
                 <h2 class="font-bold">Forgot password</h2>
                 <p>Enter your email address and your password will be reset and emailed to you.</p>
@@ -24,7 +24,7 @@
                                 {{ Session::get('message') }}
                             </div>
                         @endif
-                        <form class="m-t" role="form" action="/admin/forget-password" method="POST">
+                        <form class="m-t" role="form" action="{{ url('/admin/forget-password') }}" method="POST">
                             @csrf
                             <div class="form-group">
                                 <input type="email" id="email_address" name="email" class="form-control" placeholder="Email address" required autofocus>
