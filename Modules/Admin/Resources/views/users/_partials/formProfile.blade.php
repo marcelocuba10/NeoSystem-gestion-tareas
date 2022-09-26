@@ -1,5 +1,5 @@
-@csrf
-<div class="row">
+  @csrf
+  <div class="row">
     <div class="col-6">
       <div class="input-style-1">
         <label>(*) Nombre</label>
@@ -58,7 +58,7 @@
     <div class="col-6">
       <div class="input-style-1">
         <label>Doc Identidad</label>
-        <input type="text" name="ci" value="{{ $user->ci ?? old('ci') }}" class="bg-transparent">
+        <input type="text" name="doc_id" value="{{ $user->ci ?? old('doc_id') }}" class="bg-transparent">
       </div>
     </div>
     <!-- end col -->
@@ -72,7 +72,7 @@
     <div class="col-12">
       <div class="button-group d-flex justify-content-center flex-wrap">
         <button type="submit" class="main-btn primary-btn btn-hover m-2">Guardar</button>
-        <a class="main-btn danger-btn-outline m-2" href="/admin/users/profile/{{$user->id}}">Atrás</a>
+        <a class="main-btn danger-btn-outline m-2" href="{{ url('/admin/users/profile/'.$user->id) }}">Atrás</a>
       </div>
     </div>
-</div>
+  </div>

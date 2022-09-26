@@ -16,7 +16,7 @@
                   <div class="breadcrumb-wrapper mb-30">
                     <nav aria-label="breadcrumb">
                       <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/admin/dashboard">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url('/admin/dashboard') }}">Dashboard</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Perfil</li>
                       </ol>
                     </nav>
@@ -31,12 +31,12 @@
                 <div class="col-xxl-9 col-lg-8">
                   <div class="profile-wrapper mb-30">
                     <div class="profile-cover">
-                      <img src="/assets/images/profile/profile-cover-2.png" alt="cover-image">
+                      <img src="{{ asset('/public/adminLTE/images/profile/profile-cover-2.png') }}" alt="cover-image">
                     </div>
                     <div class="d-md-flex">
                       <div class="profile-photo">
                         <div class="image">
-                          <img src="/assets/images/profile/profile-2.png" alt="profile">
+                          <img src="{{ asset('/public/adminLTE/images/profile/profile-2.png') }}" alt="profile">
                           <div class="update-image">
                             <input>
                             <label for=""><i class="lni lni-camera"></i></label>
@@ -52,7 +52,7 @@
                           <li class="mr-30"></li>
                           <li class="mr-30"></li>
                           <li class="ms-auto">
-                            <a href="/admin/users/edit/profile/{{$user->id}}" class="main-btn btn-sm primary-btn btn-hover mb-20">
+                            <a href="{{ url('/admin/users/edit/profile/'.$user->id) }}" class="main-btn btn-sm primary-btn btn-hover mb-20">
                               <i class="lni lni-pencil-alt mr-10"></i>Actualizar Perfil
                             </a>
                           </li>
@@ -93,7 +93,7 @@
                           <div class="col-6">
                             <div class="input-style-1">
                               <label>Doc Identidad</label>
-                              <input type="text" placeholder="{{ $user->ci }}" readonly>
+                              <input type="text" placeholder="{{ $user->doc_id }}" readonly>
                             </div>
                           </div>
                           <!-- end col -->
