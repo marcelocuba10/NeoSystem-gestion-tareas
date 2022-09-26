@@ -120,7 +120,7 @@
           </a>
           <ul id="ddmenu_2" class="dropdown-nav" style="{{ (request()->is('user/users/*')) || (request()->is('user/parameters')) ? '' : 'display:none'}}">
             <li>
-              <a href="/user/users/profile/{{ Auth::user()->id }}" class="{{ (request()->is('user/users/*')) ? 'active' : '' }}">
+              <a href="{{ url('/user/users/profile/'.Auth::user()->id) }}" class="{{ (request()->is('user/users/*')) ? 'active' : '' }}">
                 <span class="text">Mi Perfil</span>
               </a>
             </li>

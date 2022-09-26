@@ -16,8 +16,8 @@
                         <div class="breadcrumb-wrapper mb-30">
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="/user/dashboard">Dashboard</a></li>
-                                    <li class="breadcrumb-item" aria-current="page"><a href="/user/customers">Clientes</a></li>
+                                    <li class="breadcrumb-item"><a href="{{ url('/user/dashboard') }}">Dashboard</a></li>
+                                    <li class="breadcrumb-item" aria-current="page"><a href="{{ url('/user/customers') }}">Clientes</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">Nuevo Cliente</li>
                                 </ol>
                             </nav>
@@ -32,7 +32,7 @@
                 <div class="row">
                   <div class="col-lg-12">
                     <div class="card-style mb-30">
-                        <form method="POST" action="/user/customers/create">
+                        <form method="POST" action="{{ url('/user/customers/create') }}">
                             @include('user::customers._partials.form')
                         </form>
                     </div>

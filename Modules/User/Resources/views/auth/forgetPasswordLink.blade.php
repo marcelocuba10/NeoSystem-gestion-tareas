@@ -6,7 +6,7 @@
     <div class="left"></div>
     <div class="right">
         <div class="ergts">
-            <a href="/"><button class="ththhf" type="button" class="btn btn-block create-account">Página Web</button></a>
+            <a href="{{ url('/') }}"><button class="ththhf" type="button" class="btn btn-block create-account">Página Web</button></a>
         </div>    
         <div class="login-texto off-mobile">
             <p class="login-title">Bienvenido a {{ config('app.name') }}</p>
@@ -17,11 +17,11 @@
 
 <div class="registration-form">
     
-    <form method="post" action="/user/reset-password">
+    <form method="post" action="{{ url('/user/reset-password') }}">
         @csrf
         <input type="hidden" name="token" value="{{ $token }}">
 
-        <div class="form-icon"><img class="img-logo" src="/img/conectacode.png"></div>
+        <div class="form-icon"><img class="img-logo" src="{{ asset('/public/img/conectacode.png') }}"></div>
         <p class="login-message2">Restablecer la Contraseña</p>
 
         @if (Session::has('message'))
@@ -63,7 +63,7 @@
         </div>
 
         <p class="text-muted text-center" style="margin-bottom: 0px;margin-top: 15px;"><small>¿Ya tienes una cuenta?</small></p>
-        <p class="text-muted text-center"><a style="color: #212529;text-decoration: underline;" href="/user/login">Iniciar Sesión</a><p>
+        <p class="text-muted text-center"><a style="color: #212529;text-decoration: underline;" href="{{ url('/user/login') }}">Iniciar Sesión</a><p>
     </form>
 </div>
 

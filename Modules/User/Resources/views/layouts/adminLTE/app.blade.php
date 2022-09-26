@@ -65,7 +65,29 @@
   <!-- ========= Maskmoney files linkup ======== -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js" type="text/javascript"></script>
 
+  <!-- ========= MultiSelect linkup ======== -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
   <!-- ========= Scripts ======== -->
+
+  <script>
+    $(document).ready(function() {
+      $('.select2-multiple_1').select2({
+        placeholder: "Seleccione Rubro..",
+        allowClear: true,
+        width: '100%',
+      });
+    });
+    $(document).ready(function() {
+      $('.select2-multiple_2').select2({
+        placeholder: "Seleccione Equipos..",
+        allowClear: true,
+        width: '100%',
+      });
+    });
+  </script>
+  
   <script>
 
     /** ========= Alert hide ======== **/

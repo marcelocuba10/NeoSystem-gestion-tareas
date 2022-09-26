@@ -6,8 +6,8 @@
         <div class="left"></div>
         <div style="right">
             <div class="rwedrt">
-                <a href="/user/login/"><button class="ththhf" type="button" class="btn btn-block create-account">Iniciar Sesión</button></a>
-                <a href="/"><button class="ththhf" type="button" class="btn btn-block create-account">Página Web</button></a>
+                <a href="{{ url('/user/login/') }}"><button class="ththhf" type="button" class="btn btn-block create-account">Iniciar Sesión</button></a>
+                <a href="{{ url('/') }}"><button class="ththhf" type="button" class="btn btn-block create-account">Página Web</button></a>
             </div>
             <div class="register-texto">
                 <p class="login-title">Sea parte de ConectaCode</p>
@@ -20,7 +20,7 @@
         
         <form class="m-t" role="form" method="post" action="#">
             <div class="form-icon">
-                <img class="img-logo" src="/img/conectacode.png">
+                <img class="img-logo" src="{{ asset('/public/img/conectacode.png') }}">
             </div>
             <p class="login-message2">Registrarse en Conectacode</p>
             <input type="hidden" name="_token" value="{{ csrf_token() }}" />
@@ -67,7 +67,7 @@
             </div>
             
             <p class="text-muted text-center" style="margin-bottom: 0px;margin-top: 15px;"><small>¿Ya tienes una cuenta?</small></p>
-            <a class="btn btn-sm btn-white btn-block" style="text-decoration: underline;" href="/user/login">Iniciar Sesión</a>
+            <a class="btn btn-sm btn-white btn-block" style="text-decoration: underline;" href="{{ url('/user/login') }}">Iniciar Sesión</a>
         </form>
     </div>
     

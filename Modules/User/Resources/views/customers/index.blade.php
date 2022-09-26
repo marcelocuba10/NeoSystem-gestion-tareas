@@ -10,7 +10,7 @@
             <div class="title d-flex align-items-center flex-wrap mb-30">
               <h2 class="mr-40">Listado de Clientes</h2>
               @can('customer-create')
-                <a href="/user/customers/create" class="main-btn info-btn btn-hover btn-sm"><i class="lni lni-plus mr-5"></i></a>
+                <a href="{{ url('/user/customers/create') }}" class="main-btn info-btn btn-hover btn-sm"><i class="lni lni-plus mr-5"></i></a>
               @endcan  
             </div>
           </div>
@@ -18,7 +18,7 @@
           <div class="col-md-4">
             <div class="right">
               <div class="table-search d-flex st-input-search">
-                <form action="/user/customers/search">
+                <form action="{{ url('/user/customers/search') }}">
                   <input style="background-color: #fff;" id="search" type="text" name="search" value="{{ $search ?? '' }}" placeholder="Buscar cliente..">
                   <button type="submit"><i class="lni lni-search-alt"></i></button>
                 </form>
@@ -71,26 +71,26 @@
                         @foreach ($customers as $customer)
                         <tr>
                             <td class="text-sm"><h6 class="text-sm">{{ ++$i }}</h6></td>
-                            <td class="min-width"><h5 class="text-bold text-dark"><a href="/user/customers/show/{{$customer->id}}">{{ $customer->name }} {{ $customer->last_name ?? old('last_name') }}</a></h5></td>
+                            <td class="min-width"><h5 class="text-bold text-dark"><a href="{{ url('/user/customers/show/'.$customer->id ) }}">{{ $customer->name }} {{ $customer->last_name ?? old('last_name') }}</a></h5></td>
                             <td class="min-width"><p>{{ $customer->phone }}</p></td>
                             <td class="min-width"><p>{{ $customer->email }}</p></td>
                             <td class="min-width"><p>{{ $customer->estate }}</p></td>
                             <td class="text-right">
                                 <div class="btn-group">
                                     <div class="action">
-                                      <a href="/user/customers/show/{{$customer->id}}">
+                                      <a href="{{ url('/user/customers/show/'.$customer->id) }}">
                                           <button class="text-active"><i class="lni lni-eye"></i></button>
                                       </a>
                                     </div>
                                     @can('customer-edit')
                                     <div class="action">
-                                        <a href="/user/customers/edit/{{$customer->id}}">
+                                        <a href="{{ url('/user/customers/edit/'.$customer->id) }}">
                                             <button class="text-info"><i class="lni lni-pencil"></i></button>
                                         </a>
                                     </div>
                                     @endcan
                                     @can('customer-delete')
-                                    <form method="POST" action="/user/customers/delete/{{$customer->id}}">
+                                    <form method="POST" action="{{ url('/user/customers/delete/'.$customer->id) }}">
                                         @csrf
                                         <div class="action">
                                             <input name="_method" type="hidden" value="DELETE">

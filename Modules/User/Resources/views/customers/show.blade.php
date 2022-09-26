@@ -15,8 +15,8 @@
           <div class="breadcrumb-wrapper mb-30">
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/user/dashboard">Dashboard</a></li>
-                <li class="breadcrumb-item" aria-current="page"><a href="/user/customers">Clientes</a></li>
+                <li class="breadcrumb-item"><a href="{{ url('/user/dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item" aria-current="page"><a href="{{ url('/user/customers') }}">Clientes</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Detalle Cliente</li>
               </ol>
             </nav>
@@ -150,7 +150,7 @@
           
               <div class="col-12">
                 <div class="button-groupd-flexjustify-content-centerflex-wrap">
-                  <a class="main-btn danger-btn-outline m-2" href="/user/customers">Atrás</a>
+                  <a class="main-btn danger-btn-outline m-2" href="{{ url('/user/customers') }}">Atrás</a>
                 </div>
               </div>
           </div>
@@ -159,25 +159,5 @@
     </div>
   </div>
 </section>
-
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-<script>
-  $(document).ready(function() {
-    $('.select2-multiple_1').select2({
-      placeholder: "Seleccione Rubro..",
-      allowClear: true,
-      width: '100%',
-    });
-  });
-  $(document).ready(function() {
-    $('.select2-multiple_2').select2({
-      placeholder: "Seleccione Equipos..",
-      allowClear: true,
-      width: '100%',
-    });
-  });
-</script>
 
 @endsection 

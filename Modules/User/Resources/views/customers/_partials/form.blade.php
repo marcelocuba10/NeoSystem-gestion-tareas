@@ -126,27 +126,7 @@
     <div class="col-12">
       <div class="button-group d-flex justify-content-center flex-wrap">
         <button type="submit" class="main-btn primary-btn btn-hover m-2">Guardar</button>
-        <a class="main-btn danger-btn-outline m-2" href="/user/customers">Atrás</a>
+        <a class="main-btn danger-btn-outline m-2" href="{{ url('/user/customers') }}">Atrás</a>
       </div>
     </div>
 </div>
-
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-<script>
-  $(document).ready(function() {
-    $('.select2-multiple_1').select2({
-      placeholder: "Seleccione Rubro..",
-      allowClear: true,
-      width: '100%',
-    });
-  });
-  $(document).ready(function() {
-    $('.select2-multiple_2').select2({
-      placeholder: "Seleccione Equipos..",
-      allowClear: true,
-      width: '100%',
-    });
-  });
-</script>

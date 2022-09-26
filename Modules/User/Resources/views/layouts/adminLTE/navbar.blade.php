@@ -80,7 +80,7 @@
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profile" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate3d(0px, 48px, 0px);" data-popper-placement="bottom-end">
                   <li>
-                    <a href="{{ url('/user/users/profile/{{ Auth::user()->id }}') }} "><i class="lni lni-user"></i> Mi Perfil</a>
+                    <a href="{{ url('/user/users/profile/'.Auth::user()->id) }} "><i class="lni lni-user"></i> Mi Perfil</a>
                   </li>
                   <li>
                     <a href="#0"> <i class="lni lni-cog"></i> Configuraciones </a>
