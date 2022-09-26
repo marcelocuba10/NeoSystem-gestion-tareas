@@ -10,7 +10,7 @@
             <div class="title d-flex align-items-center flex-wrap mb-30">
               <h2 class="mr-40">Parámetros</h2>
               @can('parameter-create')
-                <a href="/user/parameters/create" class="main-btn info-btn btn-hover btn-sm"><i class="lni lni-plus mr-5"></i></a>
+                <a href="{{ url('/user/parameters/create') }}" class="main-btn info-btn btn-hover btn-sm"><i class="lni lni-plus mr-5"></i></a>
               @endcan  
             </div>
           </div>
@@ -18,7 +18,7 @@
           <div class="col-md-4">
             <div class="right">
               <div class="table-search d-flex st-input-search">
-                <form action="/user/parameters/search">
+                <form action="{{ url('/user/parameters/search') }}">
                   <input style="background-color: #fff;" id="search" type="text" name="search" value="{{ $search ?? '' }}" placeholder="Buscar Parámetro..">
                   <button type="submit"><i class="lni lni-search-alt"></i></button>
                 </form>
@@ -59,7 +59,7 @@
                         <td class="text-right">
                             <div class="btn-group">
                               <div class="action">
-                                <a href="/user/parameters/show/{{ $parameter->id }}">
+                                <a href="{{ url('/user/parameters/show/'.$parameter->id) }}">
                                     <button class="text-active">
                                         <i class="lni lni-eye"></i>
                                     </button>
@@ -67,7 +67,7 @@
                               </div>
                               @can('parameter-edit')
                               <div class="action">
-                                  <a href="/user/parameters/edit/{{ $parameter->id }}">
+                                  <a href="{{ url('/user/parameters/edit/'.$parameter->id) }}">
                                       <button class="text-info">
                                           <i class="lni lni-pencil"></i>
                                       </button>
@@ -75,14 +75,14 @@
                               </div>
                               @endcan
                               @can('parameter-delete')
-                              <form method="POST" action="/user/parameters/delete/{{ $parameter->id }}">
-                                  @csrf
-                                  <div class="action">
-                                      <input name="_method" type="hidden" value="DELETE">
-                                        <button type="submit" class="text-danger">
-                                          <i class="lni lni-trash-can"></i>
-                                        </button>
-                                  </div>
+                              <form method="POST" action="{{'/user/parameters/delete/'.$parameter->id}}">
+                                @csrf
+                                <div class="action">
+                                  <input name="_method" type="hidden" value="DELETE">
+                                  <button type="submit" class="text-danger">
+                                    <i class="lni lni-trash-can"></i>
+                                  </button>
+                                </div>
                               </form>
                               @endcan
                             </div>
