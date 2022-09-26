@@ -131,36 +131,51 @@
   <div class="row">
     <div class='list-group gallery'>
       @foreach($array_images as $image)
-      <div class='col-sm-4 col-xs-6 col-md-3 col-lg-3'>
-
-        <div class="artist-collection-photo">
-          <button class="close btn-close-img" type="button">×</button>
-          <a data-target="#photo-fields-5-0" data-toggle="modal">
-            <img src="{{ asset('/public/images/products/'.$image) }}"  width="500" height="500" alt="image.jpg" class="img-thumbnail">
+        <div class='col-3'>
+          {{-- <div class="artist-collection-photo">
+            <button class="close btn-close-img" type="button">×</button>
+            <a data-target="#photo-fields-5-0" data-toggle="modal">
+              <img src="{{ asset('/public/images/products/'.$image) }}"  width="500" height="500" alt="image.jpg" class="img-thumbnail">
             </a>
-          </div>
-
-          {{-- <a class="thumbnail fancybox" rel="ligthbox" href="/images/products/{{ $image }}">
-              <img class="img-responsive" alt="" src="/images/products/{{ $image }}" /> 
+          </div> --}}
+          <button class="close btn-close-img" type="button">×</button>
+          <a class="thumbnail fancybox" rel="ligthbox" href="{{ asset('/public/images/products/'.$image) }}">
+            <img class="img-responsive" alt="" src="{{ asset('/public/images/products/'.$image) }}" /> 
           </a>
-          <form action="/admin/products/image-gallery/{{ $image }}" method="POST">
+
+          <form action="{{ url('/admin/products/delete-product'.$image) }}" method="POST">
             <input type="hidden" name="_method" value="delete">
             {!! csrf_field() !!}
             <button type="submit" class="close-icon btn btn-danger"><i class="glyphicon glyphicon-remove"></i></button>
-          </form> --}}
-      </div> 
+          </form>
+        </div> 
       @endforeach
+
+
+
+      {{-- @foreach($array_images as $image)
+      <div class='col-sm-4 col-xs-6 col-md-3 col-lg-3'>
+          <a class="thumbnail fancybox" rel="ligthbox"href="{{ asset('/public/images/products/'.$image) }}">
+              <img class="img-responsive" alt="" src="{{ asset('/public/images/products/'.$image) }}" />
+          </a>
+          <form action="{{ url('/admin/products/delete-product'.$image) }}" method="POST">
+          <input type="hidden" name="_method" value="delete">
+          {!! csrf_field() !!}
+          <button type="submit" class="close-icon btn btn-danger"><i class="glyphicon glyphicon-remove"></i></button>
+          </form>
+      </div> <!-- col-6 / end -->
+      @endforeach --}}
     </div> 
   </div> 
   @endif
 
-  
   <div class="col-12">
     <div class="button-group d-flex justify-content-center flex-wrap">
       <button type="submit" class="main-btn primary-btn btn-hover m-2">Guardar</button>
       <a class="main-btn danger-btn-outline m-2" href="{{ url('/admin/products') }}">Atrás</a>
     </div>
   </div>
+
 </div>
 
 <script type="text/javascript">

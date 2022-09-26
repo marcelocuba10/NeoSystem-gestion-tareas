@@ -10,13 +10,13 @@ class ImagesProduct extends Model
     use HasFactory;
 
     protected $fillable = [
-        'image',
+        'filename',
         'code_product'
     ];
     
-    protected $casts = [
-        'image' => 'array',
-    ];
+    // protected $casts = [
+    //     'image' => 'array',
+    // ];
 
     protected static function newFactory()
     {

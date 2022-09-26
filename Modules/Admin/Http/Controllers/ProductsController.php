@@ -62,7 +62,7 @@ class ProductsController extends Controller
             'supplier' => 'nullable|max:50|min:3',
             'phone_supplier' => 'nullable|max:50|min:3',
 
-            'image' => 'nullable',
+            'image' => 'nullable|max:500|min:5|unique:images_products,image',
             'image.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 
@@ -134,7 +134,7 @@ class ProductsController extends Controller
             'supplier' => 'nullable|max:50|min:3',
             'phone_supplier' => 'nullable|max:50|min:3',
 
-            'image' => 'nullable',
+            'image' => 'nullable|max:500|min:5|unique:images_products,image,' . $id,
             'image.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 
@@ -160,6 +160,19 @@ class ProductsController extends Controller
         $product->update($input);
 
         return redirect()->to('/admin/products')->with('message', 'Producto actualizado correctamente');
+    }
+
+    public function destroy_product($id)
+    {
+        $res=ImagesProduct::where('image',$id)->delete();
+        //ImagesProduct::find($id)->delete();
+
+        // $image_path = "/images/products/filename.ext";  // Value is not URL but directory file path
+        // if (File::exists($image_path)) {
+        //     File::delete($image_path);
+        // }
+
+        return back()->with('success', 'Image removed successfully.');
     }
 
     public function search(Request $request)
