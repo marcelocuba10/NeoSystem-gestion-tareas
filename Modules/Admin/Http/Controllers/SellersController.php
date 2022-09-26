@@ -125,10 +125,33 @@ class SellersController extends Controller
 
         $status = array(
             array('1', 'Habilitado'),
-            array('0', 'Inhabilitado')
+            array('0', 'Inhabilitado'),
         );
 
-        return view('admin::sellers.show', compact('user', 'status'));
+        $estates = array(
+            array('1', 'Alto Paraná'),
+            array('2', 'Central'),
+            array('3', 'Concepción'),
+            array('4', 'San Pedro'),
+            array('5', 'Cordillera'),
+            array('6', 'Guairá'),
+            array('7', 'Caaguazú'),
+            array('8', 'Caazapá'),
+            array('9', 'Itapúa'),
+            array('10', 'Misiones'),
+            array('11', 'Paraguarí'),
+            array('12', 'Ñeembucú'),
+            array('13', 'Amambay'),
+            array('14', 'Canindeyú'),
+            array('15', 'Presidente Hayes'),
+            array('16', 'Boquerón'),
+            array('17', 'Alto Paraguay')
+        );
+
+        $userStatus = $user->status;
+        $userEstate = $user->estate;
+
+        return view('admin::sellers.show', compact('user', 'status','userEstate','estates'));
     }
 
     public function edit($id)

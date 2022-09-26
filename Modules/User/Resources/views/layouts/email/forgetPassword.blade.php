@@ -104,7 +104,7 @@
                                                         <tr>
                                                             <td class="pad" style="padding-bottom:10px;width:100%;padding-right:0;padding-left:0">
                                                                 <div class="alignment" align="center" style="line-height:10px;margin-top:20px">
-                                                                    <img src="https://conectaclock.badrobotspy.com/img/conectacode.png" style="display:block;height:auto;border:0;max-width:100%;width: 190px;margin-top: 20px;padding-top:20px;" width="190" alt="your-logo" title="your-logo">
+                                                                    <img src="{{ asset('/public/adminLTE/images/logo/logo-pyp.png') }}" style="display:block;height:auto;border:0;max-width:100%;width: 190px;margin-top: 20px;padding-top:20px;" width="190" alt="your-logo" title="your-logo">
                                                                 </div>
                                                             </td>
                                                         </tr>

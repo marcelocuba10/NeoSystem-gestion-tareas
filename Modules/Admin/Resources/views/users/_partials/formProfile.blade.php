@@ -57,7 +57,7 @@
     <!-- end col -->
     <div class="col-6">
       <div class="input-style-1">
-        <label>Doc Identidad</label>
+        <label>(*) Doc Identidad</label>
         <input type="text" name="doc_id" value="{{ $user->ci ?? old('doc_id') }}" class="bg-transparent">
       </div>
     </div>

@@ -104,7 +104,7 @@
                                                         <tr>
                                                             <td class="pad" style="padding-bottom:10px;width:100%;padding-right:0;padding-left:0">
                                                                 <div class="alignment" align="center" style="line-height:10px;margin-top:20px">
-                                                                    <img src="https://conectaclock.badrobotspy.com/img/conectacode.png" style="display:block;height:auto;border:0;max-width:100%;width: 190px;margin-top: 20px;padding-top:20px;" width="190" alt="your-logo" title="your-logo">
+                                                                    <img src="{{ asset('/public/adminLTE/images/logo/logo-pyp.png') }}" style="display:block;height:auto;border:0;max-width:100%;width: 190px;margin-top: 20px;padding-top:20px;" width="190" alt="your-logo" title="your-logo">
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -163,7 +163,7 @@
                                                         <tr>
                                                             <td class="pad">
                                                                 <div class="alignment" align="center">
-                                                                    <a href="{{ route('user.reset.password.get', $token) }}" target="_blank" style="text-decoration:none;display:inline-block;color:#393d47;background-color:#ffc727;border-radius:20px;width:auto;border-top:1px solid #FFC727;font-weight:undefined;border-right:1px solid #FFC727;border-bottom:1px solid #FFC727;border-left:1px solid #FFC727;padding-top:10px;padding-bottom:10px;font-family:Tahoma, Verdana, Segoe, sans-serif;text-align:center;mso-border-alt:none;word-break:keep-all;">
+                                                                    <a href="{{ url('/admin/reset-password/'. $token) }}" target="_blank" style="text-decoration:none;display:inline-block;color:#393d47;background-color:#ffc727;border-radius:20px;width:auto;border-top:1px solid #FFC727;font-weight:undefined;border-right:1px solid #FFC727;border-bottom:1px solid #FFC727;border-left:1px solid #FFC727;padding-top:10px;padding-bottom:10px;font-family:Tahoma, Verdana, Segoe, sans-serif;text-align:center;mso-border-alt:none;word-break:keep-all;">
                                                                         <span style="padding-left:50px;padding-right:50px;font-size:18px;display:inline-block;letter-spacing:normal;">
                                                                             <span style="font-size: 16px; line-height: 2; word-break: break-word; font-family: Tahoma, Verdana, Segoe, sans-serif; mso-line-height-alt: 32px;">
                                                                                 <span style="padding:10px;font-size: 18px; line-height: 36px;" data-mce-style="font-size: 18px; line-height: 36px;">
