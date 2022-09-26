@@ -34,28 +34,9 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
   <!-- Latest compiled and minified CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  {{-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> --}}
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
-
-  <style type="text/css">
-    .gallery
-    {
-        display: inline-block;
-        margin-top: 20px;
-    }
-    .close-icon{
-    	border-radius: 50%;
-        position: absolute;
-        right: 5px;
-        top: -10px;
-        padding: 5px 8px;
-    }
-    .form-image-upload{
-        background: #e8e8e8 none repeat scroll 0 0;
-        padding: 15px;
-    }
-    </style>
 </head>
 
 <body>

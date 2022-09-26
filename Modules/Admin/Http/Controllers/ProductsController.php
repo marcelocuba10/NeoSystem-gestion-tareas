@@ -55,14 +55,14 @@ class ProductsController extends Controller
             'name' => 'required|max:50|min:5|unique:products,name',
             'sale_price' => 'required|max:12|min:6',
             'purchase_price' => 'required|max:12|min:6',
-            'description' => 'nullable|max:150|min:5',
+            'description' => 'nullable|max:250|min:5',
             'quantity' => 'required|integer|between:0,9999|min:0',
             'brand' => 'nullable|max:50|min:3',
             'model' => 'nullable|max:50|min:3',
             'supplier' => 'nullable|max:50|min:3',
             'phone_supplier' => 'nullable|max:50|min:3',
 
-            'image' => 'required',
+            'image' => 'nullable',
             'image.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 
@@ -127,14 +127,14 @@ class ProductsController extends Controller
             'name' => 'required|max:50|min:5|unique:products,name,' . $id,
             'sale_price' => 'required|max:12|min:6',
             'purchase_price' => 'required|max:12|min:6',
-            'description' => 'nullable|max:150|min:5',
+            'description' => 'nullable|max:250|min:5',
             'quantity' => 'required|integer|between:0,9999|min:0',
             'brand' => 'nullable|max:50|min:3',
             'model' => 'nullable|max:50|min:3',
             'supplier' => 'nullable|max:50|min:3',
             'phone_supplier' => 'nullable|max:50|min:3',
 
-            'image' => 'required',
+            'image' => 'nullable',
             'image.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 

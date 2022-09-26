@@ -16,8 +16,8 @@
                         <div class="breadcrumb-wrapper mb-30">
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="/admin/dashboard">Dashboard</a></li>
-                                    <li class="breadcrumb-item" aria-current="page"><a href="/admin/sellers">Agentes</a></li>
+                                    <li class="breadcrumb-item"><a href="{{ url('/admin/dashboard') }}">Dashboard</a></li>
+                                    <li class="breadcrumb-item" aria-current="page"><a href="{{ url('/admin/sellers') }}">Agentes</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">Editar Agente</li>
                                 </ol>
                             </nav>
@@ -32,7 +32,7 @@
                 <div class="row">
                   <div class="col-lg-12">
                     <div class="card-style mb-30">
-                        <form method="POST" action="/admin/sellers/update/{{$user->id}}">
+                        <form method="POST" action="{{ url('/admin/sellers/update/'.$user->id) }}">
                             @csrf
                             @method('PUT') <!-- menciono el metodo PUT, ya que en mi route utilzo Route::put(); -->
                             @include('admin::sellers._partials.form')

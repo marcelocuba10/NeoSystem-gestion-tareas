@@ -134,9 +134,9 @@
       <div class='col-sm-4 col-xs-6 col-md-3 col-lg-3'>
 
         <div class="artist-collection-photo">
-          <button class="close btn-close-btn" type="button">×</button>
+          <button class="close btn-close-img" type="button">×</button>
           <a data-target="#photo-fields-5-0" data-toggle="modal">
-            <img src="/images/products/{{ $image }}"  width="500" height="500" alt="image.jpg" class="img-thumbnail">
+            <img src="{{ asset('/public/images/products/'.$image) }}"  width="500" height="500" alt="image.jpg" class="img-thumbnail">
             </a>
           </div>
 
@@ -189,5 +189,3 @@
       });
   });
 </script>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>

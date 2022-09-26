@@ -10,7 +10,7 @@
             <div class="title d-flex align-items-center flex-wrap mb-30">
               <h2 class="mr-40">Agentes</h2>
               @can('seller-sa-create')
-                <a href="/admin/sellers/create" class="main-btn info-btn btn-hover btn-sm"><i class="lni lni-plus mr-5"></i></a>
+                <a href="{{ url('/admin/sellers/create') }}" class="main-btn info-btn btn-hover btn-sm"><i class="lni lni-plus mr-5"></i></a>
               @endcan  
             </div>
           </div>
@@ -18,7 +18,7 @@
           <div class="col-md-4">
             <div class="right">
               <div class="table-search d-flex" style="margin-top: -35px;float: right;">
-                <form action="/admin/sellers/search">
+                <form action="{{ url('/admin/sellers/search') }}">
                   <input style="background-color: #fff;" id="search" type="text" name="search" value="{{ $search ?? '' }}" placeholder="Buscar vendedor..">
                   {{-- <button type="submit"><i class="lni lni-search-alt"></i></button> --}}
                 </form>
@@ -69,54 +69,53 @@
                       <!-- end table row-->
                     </thead>
                     <tbody>
-                        @foreach ($users as $user)
-                        <tr>
-                            <td class="min-width"><h6 class="text-sm">{{ ++$i }}</h6></td>
-                            <td class="min-width"><p>{{ $user->name }}</p></td>
-                            <td class="min-width"><p>{{ $user->idReference }}</p></td>
-                            <td class="min-width"><p>{{ $user->estate }}</p></td>
-                            <td class="min-width">
-                              @if ($user->status == 1)
-                                <p><span class="status-btn success-btn">Activado</span></p>
-                              @else
-                                <p><span class="status-btn active-btn">Desactivado</span></p>
-                              @endif
-                            </td>
-                            <td class="min-width"><p><i class="lni lni-envelope mr-10"></i>{{ $user->email }}</p></td>
-                            <td class="text-right">
-                                <div class="btn-group">
-                                    <div class="action">
-                                        <a href="/admin/sellers/show/{{$user->id}}">
-                                            <button class="text-active">
-                                                <i class="lni lni-eye"></i>
-                                            </button>
-                                        </a>
-                                    </div>
-                                    @can('seller-sa-edit')
-                                    <div class="action">
-                                        <a href="/admin/sellers/edit/{{$user->id}}">
-                                            <button class="text-info">
-                                                <i class="lni lni-pencil"></i>
-                                            </button>
-                                        </a>
-                                    </div>
-                                    @endcan
-                                    @can('seller-sa-delete')
-                                    <form method="POST" action="/admin/sellers/delete/{{$user->id}}">
-                                        @csrf
-                                        <div class="action">
-                                            <input name="_method" type="hidden" value="DELETE">
-                                            <button type="submit" class="text-danger">
-                                              <i class="lni lni-trash-can"></i>
-                                            </button>
-                                        </div>
-                                    </form>
-                                    @endcan
-                                </div>
-                            </td>
-                        </tr>
-                        @endforeach
-                      <!-- end table row -->
+                      @foreach ($users as $user)
+                      <tr>
+                        <td class="min-width"><h6 class="text-sm">{{ ++$i }}</h6></td>
+                        <td class="min-width"><p>{{ $user->name }}</p></td>
+                        <td class="min-width"><p>{{ $user->idReference }}</p></td>
+                        <td class="min-width"><p>{{ $user->estate }}</p></td>
+                        <td class="min-width">
+                          @if ($user->status == 1)
+                            <p><span class="status-btn success-btn">Activado</span></p>
+                          @else
+                            <p><span class="status-btn active-btn">Desactivado</span></p>
+                          @endif
+                        </td>
+                        <td class="min-width"><p><i class="lni lni-envelope mr-10"></i>{{ $user->email }}</p></td>
+                        <td class="text-right">
+                          <div class="btn-group">
+                            <div class="action">
+                              <a href="{{ url('/admin/sellers/show/'.$user->id) }}">
+                                <button class="text-active">
+                                  <i class="lni lni-eye"></i>
+                                </button>
+                              </a>
+                            </div>
+                            @can('seller-sa-edit')
+                            <div class="action">
+                              <a href="{{ url('/admin/sellers/edit/'.$user->id) }}">
+                                <button class="text-info">
+                                  <i class="lni lni-pencil"></i>
+                                </button>
+                              </a>
+                            </div>
+                            @endcan
+                            @can('seller-sa-delete')
+                            <form method="POST" action="{{ url('/admin/sellers/delete/'.$user->id) }}">
+                              @csrf
+                              <div class="action">
+                                <input name="_method" type="hidden" value="DELETE">
+                                <button type="submit" class="text-danger">
+                                  <i class="lni lni-trash-can"></i>
+                                </button>
+                              </div>
+                            </form>
+                            @endcan
+                          </div>
+                        </td>
+                      </tr>
+                      @endforeach
                     </tbody>
                   </table>
                   <!-- end table -->
