@@ -39,8 +39,11 @@ class ProductsController extends Controller
     public function show($id)
     {
         $product = Products::find($id);
+        $images = DB::table('images_products')
+            ->where('code_product', '=', $product->code)
+            ->get();
 
-        return view('user::products.show', compact('product'));
+        return view('user::products.show', compact('product','images'));
     }
 
     public function search(Request $request)

@@ -49,7 +49,7 @@
               <i class="lni lni-graph"></i>
             </div>
             <div class="content">
-              <h6 class="mb-10">Teste teste</h6>
+              <h6 class="mb-10">Información AA</h6>
               <h3 class="text-bold mb-10">121212</h3>
             </div>
           </div>
@@ -66,7 +66,7 @@
                 use Modules\User\Entities\Machines;
                 $cant_machines = Machines::count(); 
               @endphp --}}
-              <h6 class="mb-10">Total Máquinas Pool</h6>
+              <h6 class="mb-10">Información DD</h6>
               <h3 class="text-bold mb-10">$24,567</h3>
             </div>
           </div>

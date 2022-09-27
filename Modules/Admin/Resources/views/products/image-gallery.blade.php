@@ -36,8 +36,8 @@
                     @foreach($images as $image)
                     <div class="col-lg-3 col-md-6">
                         <div class="card">
-                            <a class="thumbnail fancybox" rel="ligthbox" href="{{ asset('/public/images/products/'.$image->filename) }}">
-                                <img class="card-img-top"  width="350" height="350" style="max-width: 100%;max-height: 100%;" src="{{ asset('/public/images/products/'.$image->filename) }}" alt="{{ Str::limit($image->filename, 15) }}">
+                            <a class="thumbnail fancybox" rel="ligthbox" href="{{ asset('/images/products/'.$image->filename) }}">
+                                <img class="card-img-top"  width="350" height="350" style="max-width: 100%;max-height: 100%;" src="{{ asset('/images/products/'.$image->filename) }}" alt="{{ Str::limit($image->filename, 15) }}">
                             </a>
                             <div class="card-body">
                             <h5 class="card-title">{{ Str::limit($image->filename, 15) }}</h5>
@@ -118,7 +118,7 @@
 
                 if(imageName !== undefined) {
                     $(".modal-title").text("Update Image");
-                    $(".file-input").after("<div class='form-group old-img' style='margin-top: 15px;'><img src='/public/images/products/"+imageName+"' style='height:100px;'></div>");
+                    $(".file-input").after("<div class='form-group old-img' style='margin-top: 15px;'><img src='/images/products/"+imageName+"' style='height:100px;'></div>");
                 }
           });
 

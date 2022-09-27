@@ -49,20 +49,6 @@
     <!-- end col -->
     <div class="col-6">
       <div class="input-style-1">
-        <label>Nombre del Proveedor</label>
-        <input name="supplier" value="{{ $product->supplier ?? old('supplier') }}" type="text" class="bg-transparent">
-      </div>
-    </div>
-    <!-- end col -->
-    <div class="col-6">
-      <div class="input-style-1">
-        <label>Teléfono del Proveedor</label>
-        <input name="phone_supplier" value="{{ $product->phone_supplier ?? old('phone_supplier') }}" type="text" class="bg-transparent">
-      </div>
-    </div>
-    <!-- end col -->
-    <div class="col-6">
-      <div class="input-style-1">
         <label>Marca</label>
         <input name="brand" value="{{ $product->brand ?? old('brand') }}" type="text" class="bg-transparent">
       </div>
@@ -72,6 +58,20 @@
       <div class="input-style-1">
         <label>Modelo</label>
         <input name="model" value="{{ $product->model ?? old('model') }}" type="text" class="bg-transparent">
+      </div>
+    </div>
+    <!-- end col -->
+    <div class="col-6">
+      <div class="input-style-1">
+        <label>Nombre del Proveedor</label>
+        <input name="supplier" value="{{ $product->supplier ?? old('supplier') }}" type="text" class="bg-transparent">
+      </div>
+    </div>
+    <!-- end col -->
+    <div class="col-6">
+      <div class="input-style-1">
+        <label>Teléfono del Proveedor</label>
+        <input name="phone_supplier" value="{{ $product->phone_supplier ?? old('phone_supplier') }}" type="text" class="bg-transparent">
       </div>
     </div>
     <!-- end col -->
@@ -102,12 +102,12 @@
 </div>
 
 <div class="row">
-  <div class="col-lg-12">
+  <div class="col-md-12">
     <div class="card-style mb-30">
       @if ($images)
         <div class="row">
           @foreach($images as $image)
-          <div class="col-lg-3 col-md-6">
+          <div class="col-md-4">
             <div class="card">
               <a class="thumbnail fancybox" rel="ligthbox" href="{{ asset('/public/images/products/'.$image->filename) }}">
                 <img class="card-img-top"  width="350" height="350" style="max-width: 100%;max-height: 100%;" src="{{ asset('/public/images/products/'.$image->filename) }}" alt="{{ Str::limit($image->filename, 15) }}">

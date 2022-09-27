@@ -100,7 +100,11 @@ class ProductsController extends Controller
     {
         $product = Products::find($id);
 
-        return view('admin::products.show', compact('product'));
+        $images = DB::table('images_products')
+            ->where('code_product', '=', $product->code)
+            ->get();
+
+        return view('admin::products.show', compact('product','images'));
     }
 
     public function uploadImage(Request $request)
@@ -112,7 +116,7 @@ class ProductsController extends Controller
 
         $file = $request->file('filename');
         $filename = str_replace(' ', '-', $file->getClientOriginalName());
-        $file->move(public_path('/public/images/products'), $filename);
+        $file->move(public_path('/images/products/'), $filename);
 
         if ($request->imageId) {
             $imageStatus = ImagesProduct::where('id', $request->imageId)
@@ -120,7 +124,7 @@ class ProductsController extends Controller
                     'filename' => str_replace('"', '', $filename),
                 ]);
 
-            $image_path = public_path("\public\images\products\\") . $request->oldImage;
+            $image_path = public_path("/images/products/") . $request->oldImage;
 
             if (File::exists($image_path) && $request->oldImage != $filename) {
                 File::delete($image_path);
