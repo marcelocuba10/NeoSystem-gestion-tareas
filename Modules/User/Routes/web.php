@@ -26,6 +26,18 @@ Route::prefix('user')->group(function () {
         Route::get('/dashboard', 'HomeController@index');
         Route::get('/logout', 'Auth\LogoutController@perform');
 
+        /*** Customer Visits Routes ***/
+        Route::group(['prefix' => 'customer_visits'], function () {
+            Route::get('/', 'CustomerVisitController@index');
+            Route::get('/create', 'CustomerVisitController@create');
+            Route::post('/create', 'CustomerVisitController@store');
+            Route::get('/show/{id}', 'CustomerVisitController@show');
+            Route::get('/edit/{id}', 'CustomerVisitController@edit');
+            Route::put('/update/{id}', 'CustomerVisitController@update');
+            Route::delete('/delete/{id}', 'CustomerVisitController@destroy');
+            Route::get('/search', 'CustomerVisitController@search');
+        });
+
         /** Products Routes */
         Route::group(['prefix' => 'products'], function () {
             Route::get('/', 'ProductsController@index');

@@ -42,10 +42,10 @@ class PermissionTableSeederTableSeeder extends Seeder
             'customer-edit',
             'customer-delete',
 
-            'visit_customer-list',
-            'visit_customer-create',
-            'visit_customer-edit',
-            'visit_customer-delete',
+            'customer_visit-list',
+            'customer_visit-create',
+            'customer_visit-edit',
+            'customer_visit-delete',
 
             'schedule-list',
             'schedule-create',
