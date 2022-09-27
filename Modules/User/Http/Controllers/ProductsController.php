@@ -22,16 +22,25 @@ class ProductsController extends Controller
 
     public function index()
     {
+        // $products = DB::table('products')
+        //     ->select(
+        //         'id',
+        //         'name',
+        //         'description',
+        //         'sale_price',
+        //         'quantity',
+        //     )
+        //     ->orderBy('created_at', 'DESC')
+        //     ->paginate(10);
+
         $products = DB::table('products')
-            ->select(
-                'id',
-                'name',
-                'description',
-                'sale_price',
-                'quantity',
-            )
-            ->orderBy('created_at', 'DESC')
+            ->leftjoin('images_products', 'images_products.code_product', '=', 'products.code')
+            ->select(DB::raw('images_products.code_product, max(images_products.created_at) as created_at'))
+            ->orderBy('products.created_at', 'DESC')
+            ->groupBy('images_products.code_product','filename')
             ->paginate(10);
+
+        dd($products);
 
         return view('user::products.index', compact('products'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
@@ -43,7 +52,7 @@ class ProductsController extends Controller
             ->where('code_product', '=', $product->code)
             ->get();
 
-        return view('user::products.show', compact('product','images'));
+        return view('user::products.show', compact('product', 'images'));
     }
 
     public function search(Request $request)
