@@ -31,7 +31,7 @@
             <div class="form-layout-wrapper">
                 <div class="row">
                   <div class="col-lg-12">
-                    <div class="card-style mb-30">
+                    <div class="mb-30">
                         <form method="POST" action="{{ url('/admin/products/create') }}" enctype="multipart/form-data">
                             @include('admin::products._partials.form')
                         </form>

@@ -29,7 +29,7 @@
             <div class="form-layout-wrapper">
                 <div class="row">
                     <div class="col-lg-12">
-                        <div class="card-style mb-30">
+                        <div class="mb-30">
                             <form method="POST" action="{{ url('/admin/products/update/'.$product->id) }}">
                                 @csrf
                                 @method('PUT') <!-- menciono el metodo PUT, ya que en mi route utilzo Route::put(); -->

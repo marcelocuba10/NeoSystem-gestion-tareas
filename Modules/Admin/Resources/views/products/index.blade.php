@@ -72,6 +72,11 @@
                     <td class="text-right">
                       <div class="btn-group">
                         <div class="action">
+                          <a href="{{ url('/admin/products/image-gallery/'.$product->id) }}">
+                            <button class="text-success"><i class="lni lni-image"></i></button>
+                          </a>
+                        </div>
+                        <div class="action">
                           <a href="{{ url('/admin/products/show/'.$product->id) }}">
                             <button class="text-active"><i class="lni lni-eye"></i></button>
                           </a>
@@ -96,10 +101,8 @@
                     </td>
                   </tr>
                   @endforeach
-                  <!-- end table row -->
                 </tbody>
               </table>
-              <!-- end table -->
               @if (isset($search))
                   {!! $products-> appends($search)->links() !!} <!-- appends envia variable en la paginacion-->
               @else
@@ -107,15 +110,10 @@
               @endif
             </div>
           </div>
-          <!-- end card -->
         </div>
-        <!-- end col -->
       </div>
-      <!-- end row -->
     </div>
-    <!-- ========== tables-wrapper end ========== -->
   </div>
-  <!-- end container -->
 </section>
 
 @endsection

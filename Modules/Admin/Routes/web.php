@@ -42,10 +42,9 @@ Route::prefix('admin')->group(function () {
             Route::delete('/delete-product/{id}', 'ProductsController@destroy_product');
             Route::get('/search', 'ProductsController@search');
 
-            Route::get('image-gallery', 'ImageGalleryProductController@index');
-            Route::delete('image-delete/{id}', 'ImageGalleryProductController@destroy');
-
-            Route::post('upload-image',  'ImageGalleryProductController@uploadImage');
+            Route::get('image-gallery/{id}', 'ProductsController@imageGallery');
+            Route::post('upload-image/', 'ProductsController@uploadImage');
+            Route::delete('image-delete/{id}', 'ProductsController@destroyImage');
         });
 
         /*** User Routes ***/

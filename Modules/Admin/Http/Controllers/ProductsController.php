@@ -8,6 +8,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Modules\Admin\Entities\ImagesProduct;
 use Modules\Admin\Entities\Products;
+use Illuminate\Support\Facades\File;
 
 class ProductsController extends Controller
 {
@@ -37,6 +38,16 @@ class ProductsController extends Controller
         return view('admin::products.index', compact('products'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
+    public function imageGallery($id)
+    {
+        $product = Products::find($id);
+        $images = DB::table('images_products')
+            ->where('code_product', '=', $product->code)
+            ->get();
+
+        return view('admin::products.image-gallery', compact('images', 'product'));
+    }
+
     public function create()
     {
         $code_product = $this->generateUniqueCode();
@@ -61,23 +72,7 @@ class ProductsController extends Controller
             'model' => 'nullable|max:50|min:3',
             'supplier' => 'nullable|max:50|min:3',
             'phone_supplier' => 'nullable|max:50|min:3',
-
-            'image' => 'nullable|max:500|min:5|unique:images_products,image',
-            'image.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
-
-        if ($request->hasfile('image')) {
-
-            foreach ($request->file('image') as $image) {
-                $name = date('Ymd') . '-' . str_replace(' ', '-', $image->getClientOriginalName());
-                $image->move(public_path('images/products'), $name);
-                $data[] = $name;
-            }
-        }
-
-        $input['image'] = $data;
-        $input['code_product'] = $code_product;
-        ImagesProduct::create($input);
 
         //remove the separator thousands
         $input = $request->all();
@@ -108,6 +103,52 @@ class ProductsController extends Controller
         return view('admin::products.show', compact('product'));
     }
 
+    public function uploadImage(Request $request)
+    {
+        $request->validate([
+            'filename' => 'required|unique:images_products,filename',
+            'filename.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+        ]);
+
+        $file = $request->file('filename');
+        $filename = str_replace(' ', '-', $file->getClientOriginalName());
+        $file->move(public_path('/public/images/products'), $filename);
+
+        if ($request->imageId) {
+            $imageStatus = ImagesProduct::where('id', $request->imageId)
+                ->update([
+                    'filename' => str_replace('"', '', $filename),
+                ]);
+
+            $image_path = public_path("\public\images\products\\") . $request->oldImage;
+
+            if (File::exists($image_path) && $request->oldImage != $filename) {
+                File::delete($image_path);
+            }
+        } else {
+            /** if the name already exists in the db  */
+            $product = DB::table('images_products')
+                ->where('filename', '=', $filename)
+                ->get();
+
+            if (count($product) > 0) {
+                return back()->with('error', 'Ya existe una imagen con ese nombre.');
+            } else {
+                $product = Products::find($request->productId);
+                $imageStatus = ImagesProduct::create([
+                    'filename' => str_replace('"', '', $filename),
+                    'code_product' => $product->code
+                ]);
+            }
+        }
+
+        if (!is_null($imageStatus)) {
+            return back()->with("message", "Image uploaded successfully.");
+        } else {
+            return back()->with("error", "Failed to upload image.");
+        }
+    }
+
     public function edit($id)
     {
         $product = Products::find($id);
@@ -116,9 +157,7 @@ class ProductsController extends Controller
             ->where('code_product', '=', $product->code)
             ->get();
 
-        $array_images = json_decode($images[0]->image);
-
-        return view('admin::products.edit', compact('product', 'array_images'));
+        return view('admin::products.edit', compact('product', 'images'));
     }
 
     public function update(Request $request, $id)
@@ -133,26 +172,9 @@ class ProductsController extends Controller
             'model' => 'nullable|max:50|min:3',
             'supplier' => 'nullable|max:50|min:3',
             'phone_supplier' => 'nullable|max:50|min:3',
-
-            'image' => 'nullable|max:500|min:5|unique:images_products,image,' . $id,
-            'image.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 
         $input = $request->all();
-
-        if ($request->hasfile('image')) {
-
-            foreach ($request->file('image') as $image) {
-                $name = date('Ymd') . '-' . $image->getClientOriginalName();
-                $image->move(public_path('images/products'), $name);
-                $data[] = $name;
-            }
-        }
-
-        $input['image'] = $data;
-        ImagesProduct::create($input);
-
-
         $input['sale_price'] = str_replace('.', '', $input['sale_price']);
         $input['purchase_price'] = str_replace('.', '', $input['purchase_price']);
 
@@ -162,15 +184,22 @@ class ProductsController extends Controller
         return redirect()->to('/admin/products')->with('message', 'Producto actualizado correctamente');
     }
 
-    public function destroy_product($id)
+    public function destroy($id)
     {
-        $res=ImagesProduct::where('image',$id)->delete();
-        //ImagesProduct::find($id)->delete();
+        Products::find($id)->delete();
+        return redirect()->to('/admin/products')->with('message', 'Producto Eliminado Correctamente');
+    }
 
-        // $image_path = "/images/products/filename.ext";  // Value is not URL but directory file path
-        // if (File::exists($image_path)) {
-        //     File::delete($image_path);
-        // }
+    public function destroyImage($id)
+    {
+        $image = ImagesProduct::find($id);
+        ImagesProduct::where('id', $id)->delete();
+
+        $image_path = public_path("\public\images\products\\") . $image->filename;
+
+        if (File::exists($image_path)) {
+            File::delete($image_path);
+        }
 
         return back()->with('success', 'Image removed successfully.');
     }
