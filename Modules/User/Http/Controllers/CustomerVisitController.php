@@ -146,6 +146,17 @@ class CustomerVisitController extends Controller
             ->orderBy('customer_visits.created_at', 'DESC')
             ->first();
 
+        $products = DB::table('products')
+            ->select(
+                'id',
+                'name',
+                'sale_price',
+                'quantity',
+                'description',
+            )
+            ->orderBy('created_at', 'DESC')
+            ->get();
+
         $currentDate = Carbon::now();
         $currentDate = $currentDate->toDateTimeString();
 
@@ -161,7 +172,7 @@ class CustomerVisitController extends Controller
             'Cancelado'
         ];
 
-        return view('user::customer_visits.edit', compact('customers', 'customer_visit', 'currentDate', 'status'));
+        return view('user::customer_visits.edit', compact('customers', 'customer_visit', 'currentDate', 'status','products'));
     }
 
     public function update(Request $request, $id)
@@ -189,7 +200,7 @@ class CustomerVisitController extends Controller
         if ($input['next_visit_hour'] == null) {
             $input['next_visit_hour'] = 'No marcado';
         }
-        
+
         $customer_visit = CustomerVisit::find($id);
         $customer_visit->update($input);
 

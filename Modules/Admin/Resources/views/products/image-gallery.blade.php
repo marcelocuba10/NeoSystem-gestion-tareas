@@ -90,6 +90,36 @@
                 <div class="card-style mb-30">
                     <h5 class="text-medium">Sin imágenes en este producto..</h5>
                 </div>
+                
+                <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <form action="{{ url('/admin/products/upload-image/') }}" class="w-100" method="post" enctype="multipart/form-data">
+                            @csrf
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title font-weight-bold">Upload Image</h5>
+                                    <button type="button" class="btn-close-img" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="col-xl-12 m-auto">
+                                        <input type="hidden" name="productId" id="productId">
+                                        <input type="hidden" name="imageId" id="imageId">
+                                        <input type="hidden" name="oldImage" id="oldImage">
+                                        <div class="form-group file-input">
+                                            <input type="file" name="filename" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-success">Upload</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             @endif
         </div>
     </div>

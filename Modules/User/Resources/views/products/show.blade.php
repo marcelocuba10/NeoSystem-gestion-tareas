@@ -125,7 +125,7 @@
       <div class="row">
         <div class="col-md-12">
           <div class="card-style mb-30">
-            @if ($images)
+            @if (count($images) > 0)
               <div class="row">
                 @foreach($images as $image)
                 <div class="col-md-4">
@@ -138,7 +138,7 @@
                 @endforeach
               </div>
             @else
-              <h4 class="text-danger text-center">Guarde el producto para cargar las imágenes.</h4>
+              <h5 class="text-medium">Sin imágenes en este producto..</h5>
             @endif
           </div>
         </div>

@@ -107,7 +107,7 @@ class ProductsController extends Controller
             ->where('code_product', '=', $product->code)
             ->get();
 
-        return view('admin::products.show', compact('product','images'));
+        return view('admin::products.show', compact('product', 'images'));
     }
 
     public function uploadImage(Request $request)
@@ -217,26 +217,32 @@ class ProductsController extends Controller
 
         if ($search == '') {
             $products = DB::table('products')
+                ->leftjoin('images_products', 'images_products.code_product', '=', 'products.code')
                 ->select(
-                    'id',
-                    'name',
-                    'sale_price',
-                    'quantity',
-                    'description',
+                    'products.id',
+                    'products.name',
+                    'products.description',
+                    'products.sale_price',
+                    'products.quantity',
+                    'images_products.filename'
                 )
-                ->orderBy('created_at', 'DESC')
+                ->orderBy('products.created_at', 'DESC')
+                ->groupBy('code')
                 ->paginate(10);
         } else {
             $products = DB::table('products')
                 ->where('name', 'LIKE', "%{$search}%")
+                ->leftjoin('images_products', 'images_products.code_product', '=', 'products.code')
                 ->select(
-                    'id',
-                    'name',
-                    'sale_price',
-                    'quantity',
-                    'description',
+                    'products.id',
+                    'products.name',
+                    'products.description',
+                    'products.sale_price',
+                    'products.quantity',
+                    'images_products.filename'
                 )
-                ->orderBy('created_at', 'DESC')
+                ->orderBy('products.created_at', 'DESC')
+                ->groupBy('code')
                 ->paginate();
         }
 
