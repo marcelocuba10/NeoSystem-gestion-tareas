@@ -11,7 +11,6 @@
             <h2 class="mr-40">Productos</h2>
           </div>
         </div>
-        <!-- end col -->
         <div class="col-md-4">
           <div class="right">
             <div class="table-search d-flex st-input-search">
@@ -22,9 +21,7 @@
             </div>
           </div>
         </div>
-        <!-- end col -->
       </div>
-      <!-- end row -->
     </div>
     <!-- ========== title-wrapper end ========== -->
 
@@ -38,29 +35,33 @@
               <div class="right"></div>
             </div>
             <div class="table-wrapper table-responsive">
-              <table class="table">
+              <table class="table top-selling-table">
                 <thead>
                   <tr>
                     <th><h6>#</h6></th>
-                    <th><h6>Imagen</h6></th>
-                    <th><h6>Nombre</h6></th>
+                    <th><h6>Producto</h6></th>
                     <th><h6>Descripción</h6></th>
                     <th><h6>Precio</h6></th>
                     <th><h6>Cantidad</h6></th>
                     <th><h6>Acciones</h6></th>
                   </tr>
-                  <!-- end table row-->
                 </thead>
                 <tbody>
                   @foreach ($products as $product)
                   <tr>
                     <td class="text-sm"><h6 class="text-sm">{{ ++$i }}</h6></td>
                     <td>
-                      <div class="employee-image">
-                        <img src="{{ asset('/public/images/products/'.$product->filename) }}" alt="">
+                      <div class="product">
+                        <div class="image">
+                          @if ($product->filename)
+                            <img src="{{ asset('/public/images/products/'.$product->filename) }}" alt="{{ Str::limit($product->filename, 15) }}">
+                          @else
+                            <img src="{{ asset('/public/adminLTE/images/products/no-image.jpg') }}" alt="{{ Str::limit($product->filename, 15) }}">
+                          @endif
+                        </div>
+                        <p class="text-sm"><a href="{{ url('/user/products/show/'.$product->id) }}">{{ $product->name }}</a></p>
                       </div>
                     </td>
-                    <td class="min-width"><h5 class="text-bold text-dark"><a href="{{ url('/user/products/show/'.$product->id) }}">{{ $product->name }}</a></h5></td>
                     <td class="min-width"><p>{{ $product->description }}</p></td>
                     <td class="min-width"><p>G$ {{number_format($product->sale_price, 0)}}</p></td>
                     <td class="min-width">
@@ -81,10 +82,8 @@
                     </td>
                   </tr>
                   @endforeach
-                  <!-- end table row -->
                 </tbody>
               </table>
-              <!-- end table -->
               @if (isset($search))
                   {!! $products-> appends($search)->links() !!} <!-- appends envia variable en la paginacion-->
               @else
@@ -92,15 +91,10 @@
               @endif
             </div>
           </div>
-          <!-- end card -->
         </div>
-        <!-- end col -->
       </div>
-      <!-- end row -->
     </div>
-    <!-- ========== tables-wrapper end ========== -->
   </div>
-  <!-- end container -->
 </section>
 
 @endsection

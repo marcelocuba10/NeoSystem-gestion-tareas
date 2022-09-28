@@ -43,11 +43,11 @@
               </div>
             </div>
             <div class="table-wrapper table-responsive">
-              <table class="table">
+              <table class="table top-selling-table">
                 <thead>
                   <tr>
                     <th><h6>#</h6></th>
-                    <th><h6>Nombre</h6></th>
+                    <th><h6>Producto</h6></th>
                     <th><h6>Descripción</h6></th>
                     <th><h6>Precio Venta</h6></th>
                     <th><h6>Stock</h6></th>
@@ -59,7 +59,18 @@
                   @foreach ($products as $product)
                   <tr>
                     <td class="text-sm"><h6 class="text-sm">{{ ++$i }}</h6></td>
-                    <td class="min-width"><h5 class="text-bold text-dark"><a href="{{ url('/admin/products/show/'.$product->id) }}">{{ $product->name }}</a></h5></td>
+                    <td>
+                      <div class="product">
+                        <div class="image">
+                          @if ($product->filename)
+                            <img src="{{ asset('/public/images/products/'.$product->filename) }}" alt="{{ Str::limit($product->filename, 15) }}">
+                          @else
+                            <img src="{{ asset('/public/adminLTE/images/products/no-image.jpg') }}" alt="{{ Str::limit($product->filename, 15) }}">
+                          @endif
+                        </div>
+                        <p class="text-sm"><a href="{{ url('/admin/products/show/'.$product->id) }}">{{ $product->name }}</a></p>
+                      </div>
+                    </td>
                     <td class="min-width"><p>{{ $product->description }}</p></td>
                     <td class="min-width"><p>G$ {{number_format($product->sale_price, 0)}}</p></td>
                     <td class="min-width">

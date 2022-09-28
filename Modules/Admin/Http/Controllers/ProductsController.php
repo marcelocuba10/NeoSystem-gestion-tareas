@@ -25,14 +25,17 @@ class ProductsController extends Controller
     public function index()
     {
         $products = DB::table('products')
+            ->leftjoin('images_products', 'images_products.code_product', '=', 'products.code')
             ->select(
-                'id',
-                'name',
-                'description',
-                'sale_price',
-                'quantity',
+                'products.id',
+                'products.name',
+                'products.description',
+                'products.sale_price',
+                'products.quantity',
+                'images_products.filename'
             )
-            ->orderBy('created_at', 'DESC')
+            ->orderBy('products.created_at', 'DESC')
+            ->groupBy('code')
             ->paginate(10);
 
         return view('admin::products.index', compact('products'))->with('i', (request()->input('page', 1) - 1) * 10);

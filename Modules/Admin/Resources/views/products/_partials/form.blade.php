@@ -117,7 +117,7 @@
           @endforeach
         </div>
       @else
-        <h4 class="text-danger text-center">Guarde el producto para cargar las imágenes.</h4>
+        <h5 class="text-medium">Guarde el producto para luego cargar las imágenes.</h5>
       @endif
     </div>
   </div>

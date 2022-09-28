@@ -22,25 +22,19 @@ class ProductsController extends Controller
 
     public function index()
     {
-        // $products = DB::table('products')
-        //     ->select(
-        //         'id',
-        //         'name',
-        //         'description',
-        //         'sale_price',
-        //         'quantity',
-        //     )
-        //     ->orderBy('created_at', 'DESC')
-        //     ->paginate(10);
-
         $products = DB::table('products')
             ->leftjoin('images_products', 'images_products.code_product', '=', 'products.code')
-            ->select(DB::raw('images_products.code_product, max(images_products.created_at) as created_at'))
+            ->select(
+                'products.id',
+                'products.name',
+                'products.description',
+                'products.sale_price',
+                'products.quantity',
+                'images_products.filename'
+            )
             ->orderBy('products.created_at', 'DESC')
-            ->groupBy('images_products.code_product','filename')
+            ->groupBy('code')
             ->paginate(10);
-
-        dd($products);
 
         return view('user::products.index', compact('products'))->with('i', (request()->input('page', 1) - 1) * 10);
     }

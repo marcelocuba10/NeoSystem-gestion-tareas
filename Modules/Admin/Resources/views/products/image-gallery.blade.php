@@ -31,7 +31,7 @@
 
         <!-- Project Wrapper Start -->
         <div class="projects-wrapper">
-            @if ($images)
+            @if (count($images) > 0)
                 <div class="row">
                     @foreach($images as $image)
                     <div class="col-lg-3 col-md-6">
@@ -87,7 +87,9 @@
                     </div>
                 </div>
             @else
-                <h4 class="text-danger text-center">No image found.</h4>
+                <div class="card-style mb-30">
+                    <h5 class="text-medium">Sin imágenes en este producto..</h5>
+                </div>
             @endif
         </div>
     </div>
