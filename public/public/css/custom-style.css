@@ -1,3 +1,7 @@
+#map {
+    height: 400px;
+  }
+
 .img-product {
     transition:transform 0.25s ease;
 }

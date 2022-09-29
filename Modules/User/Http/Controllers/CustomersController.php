@@ -116,6 +116,16 @@ class CustomersController extends Controller
     {
         $customer = Customers::find($id);
 
+        //latitude convert in number
+        $latitude = json_encode($customer->latitude);
+        $latitude = str_replace('"', '', $latitude);
+        $latitude = doubleval($latitude);
+
+        //longitude convert in number
+        $longitude = json_encode($customer->longitude);
+        $longitude = str_replace('"', '', $longitude);
+        $longitude = doubleval($longitude);
+
         $customerCategories =   $customer->category;
         $customerPotentialProducts =  $customer->potential_products;
 
@@ -131,7 +141,7 @@ class CustomersController extends Controller
             ->orderBy('created_at', 'DESC')
             ->get();
 
-        return view('user::customers.show', compact('customer', 'categories', 'potential_products', 'customerCategories', 'customerPotentialProducts'));
+        return view('user::customers.show', compact('customer', 'categories', 'potential_products', 'customerCategories', 'customerPotentialProducts', 'latitude', 'longitude'));
     }
 
     public function edit($id)

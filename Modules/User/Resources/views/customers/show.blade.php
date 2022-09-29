@@ -108,14 +108,14 @@
               <div class="col-4">
                 <div class="input-style-1">
                   <label>Fecha Próxima Visita</label>
-                  <input type="date" id="date" placeholder="DD/MM/YYYY" value="{{ $customer->next_visit_date ?? old('next_visit_date') }}" readonly>
+                  <input type="date" id="date" class="bg-gray" placeholder="DD/MM/YYYY" value="{{ $customer->next_visit_date ?? old('next_visit_date') }}" readonly>
                 </div>
               </div>
               <!-- end col -->
               <div class="col-4">
                 <div class="input-style-1">
                   <label>Hora Próxima Visita</label>
-                    <input type="time" value="{{ $customer->next_visit_hour ?? old('next_visit_hour') }}" readonly>
+                    <input type="time" class="bg-gray" value="{{ $customer->next_visit_hour ?? old('next_visit_hour') }}" readonly>
                 </div>
               </div>
               <!-- end col -->
@@ -147,17 +147,69 @@
                 </div>
               </div>
               <!-- end col -->
-          
+
+              <div id="map"></div>
+
               <div class="col-12">
                 <div class="button-groupd-flexjustify-content-centerflex-wrap">
                   <a class="main-btn danger-btn-outline m-2" href="{{ url('/user/customers') }}">Atrás</a>
                 </div>
               </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
+
+<script type="text/javascript">
+  function initMap() {
+    const myLatLng = { lat: {!! $latitude !!}, lng: {!! $longitude !!}};
+    const map = new google.maps.Map(document.getElementById("map"), {
+      zoom: 15,
+      center: myLatLng,
+    });
+
+    new google.maps.Marker({
+      position: myLatLng,
+      map,
+      title: "Hello Rajkot!",
+    });
+  }
+
+  window.initMap = initMap;
+</script>
+
+{{-- <script type="text/javascript">
+  function initMap() {
+    const myLatLng = { lat: -25.4831371, lng:-54.6204737};
+    const map = new google.maps.Map(document.getElementById("map"), {
+      zoom: 15,
+      center: myLatLng,
+    });
+
+    var locations = {!! json_encode($locations) !!};
+    var infowindow = new google.maps.InfoWindow();
+    var marker, i;
+          
+    for (i = 0; i < locations.length; i++) {  
+      marker = new google.maps.Marker({
+        position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+        map: map
+      });
+            
+      google.maps.event.addListener(marker, 'click', (function(marker, i) {
+        return function() {
+          infowindow.setContent(locations[i][0]);
+          infowindow.open(map, marker);
+        }
+      })(marker, i));
+    }
+  }
+
+  window.initMap = initMap;
+</script> --}}
+<script type="text/javascript" src="https://maps.google.com/maps/api/js?key=AIzaSyA8kdDnbu_w0TBIJPPk5JTwgQMXwsLuNBY&callback=initMap"></script>
 
 @endsection 
