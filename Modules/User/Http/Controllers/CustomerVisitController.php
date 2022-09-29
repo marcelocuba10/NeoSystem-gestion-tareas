@@ -9,6 +9,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Modules\User\Entities\CustomerVisit;
+use Modules\User\Entities\itemOrderVisit;
 
 class CustomerVisitController extends Controller
 {
@@ -177,8 +178,6 @@ class CustomerVisitController extends Controller
 
     public function update(Request $request, $id)
     {
-
-        dd($request->all());
         /** date validation, not less than 1980 and not greater than the current year **/
         $initialDate = '1980-01-01';
         $currentDate = (date('Y') + 1) . '-01-01'; //2023-01-01
@@ -205,6 +204,25 @@ class CustomerVisitController extends Controller
 
         $customer_visit = CustomerVisit::find($id);
         $customer_visit->update($input);
+
+        if ($input['setOrder'] == 'on') {
+            $request->validate([
+                'product_id' => 'required',
+                'qty' => 'required|min:0',
+                'price' => 'required',
+                'amount' => 'required',
+            ]);
+    
+            foreach ( $request->product_id as $key => $product_id){
+                $item_order_visit = new itemOrderVisit();
+                $item_order_visit->quantity = $request->qty[$key];
+                $item_order_visit->price = $request->price[$key];
+                $item_order_visit->amount = $request->amount[$key];
+                $item_order_visit->product_id = $request->product_id[$key];
+                $item_order_visit->visit_id = $customer_visit->id;
+                $item_order_visit->save();
+             }
+        }
 
         return redirect()->to('/user/customer_visits')->with('message', 'Visita Cliente actualizada correctamente.');
     }

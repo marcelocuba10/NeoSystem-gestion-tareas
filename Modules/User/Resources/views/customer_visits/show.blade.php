@@ -81,14 +81,16 @@
                 </div>
               </div>
               <!-- end col -->
+
+              
           
               <div class="col-12">
                 <div class="button-groupd-flexjustify-content-centerflex-wrap">
                   <a class="main-btn danger-btn-outline m-2" href="{{ url('/user/customer_visits') }}">Atrás</a>
                 </div>
               </div>
-            </div>
 
+            </div>
           </div>
         </div>
       </div>
