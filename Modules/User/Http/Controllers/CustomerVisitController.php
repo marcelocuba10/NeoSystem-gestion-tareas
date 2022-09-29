@@ -177,6 +177,8 @@ class CustomerVisitController extends Controller
 
     public function update(Request $request, $id)
     {
+
+        dd($request->all());
         /** date validation, not less than 1980 and not greater than the current year **/
         $initialDate = '1980-01-01';
         $currentDate = (date('Y') + 1) . '-01-01'; //2023-01-01

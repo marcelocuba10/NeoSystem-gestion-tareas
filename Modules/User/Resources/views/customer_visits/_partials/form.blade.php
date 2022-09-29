@@ -86,10 +86,9 @@
     </div>
     <!-- end col -->
 
-    {{-- <form  method="POST" action="">
-      @csrf      
+
       <div class="table-wrapper table-responsive">
-        <table class="table top-selling-table">
+        {{-- <table class="table top-selling-table">
           <thead>
             <tr>
               <th><h6>Producto</h6></th>
@@ -112,7 +111,7 @@
               </td>
               <td><input type="text" name="qty_av[]" id="qty_av" class="form-control qty_av" readonly></td>
               <td><input type="text" name="price[]" id="price" class="form-control price" readonly></td>
-              <td><input type="text" name="qty[]" class="form-control qty"></td>
+              <td><input type="text" name="qty[]" id="qty" class="form-control qty"></td>
               <td><input type="text" name="amount[]" class="form-control amount" readonly></td>
               <td><a class="btn btn-danger remove"><i class="lni lni-trash-can"></i></a></td>
             </tr>
@@ -128,11 +127,12 @@
             </tr>
           </tfoot>
         </table>
-      </div>
-      <div >
-        <button class="btn btn-primary" type="submit">Submit</button>
-      </div>
-    </form> --}}
+      </div> --}}
+
+
+
+
+
 
     <div class="col-12">
       <div class="button-group d-flex justify-content-center flex-wrap">
@@ -142,53 +142,129 @@
     </div>
   </div>
 
+
+  <div class="table-wrapper table-responsive">
+    <table class="table top-selling-table">
+      <thead>
+        <tr>
+          <th><h6>Producto</h6></th>
+          <th><h6>Stock</h6></th>
+          <th><h6>Precio</h6></th>
+          <th><h6>Cantidad</h6></th>
+          <th><h6>Accion</h6></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <select name="product_id[]" class="form-control product">
+              <option>Select Product</option>
+              @foreach($products as $product)
+                <option name="product_id[]" data-qty_av="{{ $product->quantity }}" data-price="{{ $product->sale_price }}" value="{{ $product->id }}">{{ $product->name }}</option>
+              @endforeach
+            </select>
+          </td>
+          <td><input type="text" name="qty_av[]" id="qty_av" class="form-control qty_av" readonly></td>
+          <td><input type="text" name="price[]" id="price" class="form-control price" readonly></td>
+          <td><input type="text" name="qty[]" id="qty" class="form-control qty"></td>
+          <td><button type="button" class="btn btn-success" id="add_btn"><i class="lni lni-plus"></i></button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script type="text/javascript">
+
+  $(document).ready(function(){
+    $('#add_btn').on('click',function(){
+      var html = '';
+      html += '<tr>';
+      html += '<td> <select name="product_id[]" class="form-control product"> <option>Select Product</option> @foreach($products as $product) <option name="product_id[]" data-qty_av="{{ $product->quantity }}" data-price="{{ $product->sale_price }}" value="{{ $product->id }}">{{ $product->name }}</option> @endforeach </select> </td>';
+      html += '<td><input type="text" name="qty_av[]" id="qty_av"  value='+qty_av.value+' class="form-control qty_av"></td>';
+      html += '<td><input type="text" name="price[]" id="price" class="form-control price"></td>';
+      html += '<td><input type="text" name="qty[]" id="qty" class="form-control qty"></td>';
+      html += '<td><button type="button" class="btn btn-danger" id="remove"><i class="lni lni-trash-can"></i></button></td>';
+      html += '</tr>';
+      $('tbody').append(html);
+    })
+
+    $('tbody').delegate('.product', 'change', function () {
+      alert('op');
+      var  tr = $(this).parent().parent();
+      tr.find('.qty').focus();
+
+      var tr =$(this).parent().parent();
+      var qty=1;
+      var price = $('.product option:selected').attr('data-price');
+      var qty_av = $('.product option:selected').attr('data-qty_av');
+
+      $("#qty").val(qty); 
+      $("#price").val(price);
+      $("#qty_av").val(qty_av);  
+
+      var amount = (qty * price);
+      tr.find('.amount').val(amount);
+      var total = 0;
+      $('.amount').each(function (i,e) {
+          var amount =$(this).val()-0;
+          total += amount;
+      })
+      $('.total').html(total);
+
+    });
+
+  });
+
+  $(document).on('click', '#remove', function () {
+    $(this).closest('tr').remove();
+  });
+
+</script>   
+
   <script type="text/javascript">
     $(document).ready(function(){
 
         $('tbody').delegate('.productname', 'change', function () {
             var  tr = $(this).parent().parent();
             tr.find('.qty').focus();
-        })
 
-        $('tbody').delegate('.productname', 'change', function () {
             var tr =$(this).parent().parent();
             var id = tr.find('.productname').val();
             var dataId = {'id':id};
+            var qty=1;
             var price = $('.productname option:selected').attr('data-price');
             var qty_av = $('.productname option:selected').attr('data-qty_av');
-            $("#price").val(price); 
+            $("#qty").val(qty); 
+            $("#price").val(price);
             $("#qty_av").val(qty_av);  
-            $.ajax({
-                type    : 'GET',
-                url: '/user/products/getItemProduct',
-                dataType: 'json',
-                data: {
-                  "_token": $('meta[name="csrf-token"]').attr('content'),
-                  'id':id
-                },
-                success:function (data) {
-                    tr.find('.price').val(data.price);
-                }
-            });
-        });
 
-        $('tbody').delegate('.qty,.price', 'keyup', function () {
-            var tr = $(this).parent().parent();
-            var qty = tr.find('.qty').val();
-            var price = tr.find('.price').val();
             var amount = (qty * price);
             tr.find('.amount').val(amount);
-            total();
-        });
-
-        function total(){
             var total = 0;
             $('.amount').each(function (i,e) {
                 var amount =$(this).val()-0;
                 total += amount;
             })
             $('.total').html(total);
-        }
+
+        });
+
+        $('tbody').delegate('.qty,.price', 'keyup', function () {
+            
+            var tr = $(this).parent().parent();
+            var qty = tr.find('.qty').val() - 0;
+            var price = tr.find('.price').val() - 0;
+            var amount = (qty * price);
+            tr.find('.amount').val(amount);
+            var total = 0;
+            $('.amount').each(function (i,e) {
+                var amount =$(this).val()-0;
+                total += amount;
+            })
+            $('.total').html(total);
+        });
 
         $('.addRow').on('click', function () {
             addRow();
@@ -196,22 +272,22 @@
 
         function addRow() {
             var addRow = '<tr>\n' +
-                '         <td><select name="product_id[]" class="form-control productname">\n' +
-                '         <option value="0" selected="true" disabled="true">Select Product</option>\n' +
-'                                        @foreach($products as $product)\n' +
-'                                            <option name="product_id[]" data-qty_av="{{ $product->quantity }}" data-price="{{ $product->sale_price }}" value="{{ $product->id }}">{{ $product->name }}</option>\n' +
-'                                        @endforeach\n' +
-                '               </select></td>\n' +
-'                                <td><input type="text" name="qty_av[]" id="qty_av" class="form-control qty_av" readonly></td>\n' +
-'                                <td><input type="text" name="price[]" id="price" value='+price.value+' class="form-control price" readonly></td>\n' +
-'                                <td><input type="text" name="qty[]" class="form-control qty" ></td>\n' +
-'                                <td><input type="text" name="amount[]" class="form-control amount" readonly></td>\n' +
-'                                <td><a class="btn btn-danger remove"><i class="lni lni-trash-can"></i></a></td>\n' +
-'                             </tr>';
+                '<td><select name="product_id[]" class="form-control productname">\n' +
+                '<option value="0" selected="true" disabled="true">Select Product</option>\n' +
+                '@foreach($products as $product)\n' +
+                '<option name="product_id[]" data-qty_av="{{ $product->quantity }}" data-price="{{ $product->sale_price }}" value="{{ $product->id }}">{{ $product->name }}</option>\n' +
+'@endforeach\n' +
+                '</select></td>\n' +
+'<td><input type="text" name="qty_av[]"  class="form-control qty_av" value='+qty_av.value+' readonly></td>\n' +
+'<td><input type="text" name="price[]"  class="form-control price" value='+price.value+' readonly></td>\n' +
+'<td><input type="text" name="qty[]" class="form-control qty" ></td>\n' +
+'<td><input type="text" name="amount[]" class="form-control amount" readonly></td>\n' +
+'<td><a class="btn btn-danger remove"><i class="lni lni-trash-can"></i></a></td>\n' +
+'</tr>';
             $('tbody').append(addRow);
         };
 
-        $('.remove').on('click', function () {
+        $('.remove').live('click', function () {
             var l =$('tbody tr').length;
             if(l==1){
                 alert('you cant delete last one')
@@ -221,5 +297,7 @@
         });
 
     });
-</script>
+  </script>
+
+
   
