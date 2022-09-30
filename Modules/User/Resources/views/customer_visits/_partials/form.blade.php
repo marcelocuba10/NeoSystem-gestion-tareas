@@ -104,8 +104,9 @@
               <td>
                 <select name="product_id[]" class="form-control product">
                   <option>Seleccione Producto</option>
-                  @foreach($products as $product)
+                  @foreach($products as $product)  
                     <option name="product_id[]" data-qty_av="{{ $product->quantity }}" data-price="{{ $product->sale_price }}" value="{{ $product->id }}">{{ $product->name }}</option>
+                    {{-- {{ str_replace(',','.',number_format($product->sale_price, 0)) }} --}}
                   @endforeach
                 </select>
               </td>
@@ -208,7 +209,7 @@
       $('.total').html(total);
     });
 
-    $('tbody').delegate('.qty,.price', 'keyup', function () {
+    $('tbody').delegate('.qty', 'keyup', function () {
       var tr = $(this).parent().parent();
       var qty = tr.find('.qty').val() - 0;
       var price = tr.find('.price').val() - 0;

@@ -39,7 +39,7 @@
               <!-- end col -->
               <div class="col-5">
                 <div class="input-style-1">
-                  <label>(*) Nombre</label>
+                  <label>Nombre</label>
                   <input value="{{ $product->name ?? old('name') }}" type="text">
                 </div>
               </div>
@@ -53,47 +53,40 @@
               <!-- end col -->
               <div class="col-4">
                 <div class="input-style-1">
-                  <label>(*) Precio Compra</label>
-                  <input id="currency_1" value="{{number_format($product->purchase_price, 0)}}" type="text">
-                </div>
-              </div>
-              <!-- end col -->
-              <div class="col-4">
-                <div class="input-style-1">
-                  <label>(*) Precio Venta</label>
+                  <label>Precio Venta</label>
                   <input id="currency_2" value="{{number_format($product->sale_price, 0)}}" type="text">
                 </div>
               </div>
               <!-- end col -->
               <div class="col-4">
                 <div class="input-style-1">
-                  <label>(*) Stock</label>
+                  <label>Inventario</label>
                   <input value="{{ $product->quantity ?? old('quantity') }}" type="text">
                 </div>
               </div>
               <!-- end col -->
-              <div class="col-6">
+              <div class="col-4">
                 <div class="input-style-1">
                   <label>Marca</label>
                   <input value="{{ $product->brand ?? old('brand') }}" type="text">
                 </div>
               </div>
               <!-- end col -->
-              <div class="col-6">
+              <div class="col-4">
                 <div class="input-style-1">
                   <label>Modelo</label>
                   <input value="{{ $product->model ?? old('model') }}" type="text">
                 </div>
               </div>
               <!-- end col -->
-              <div class="col-6">
+              <div class="col-4">
                 <div class="input-style-1">
                   <label>Nombre del Proveedor</label>
                   <input value="{{ $product->supplier ?? old('supplier') }}" type="text">
                 </div>
               </div>
               <!-- end col -->
-              <div class="col-6">
+              <div class="col-4">
                 <div class="input-style-1">
                   <label>Teléfono del Proveedor</label>
                   <input value="{{ $product->phone_supplier ?? old('phone_supplier') }}" type="text">

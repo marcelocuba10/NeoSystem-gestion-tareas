@@ -42,7 +42,7 @@
                     <th><h6>Producto</h6></th>
                     <th><h6>Descripción</h6></th>
                     <th><h6>Precio</h6></th>
-                    <th><h6>Cantidad</h6></th>
+                    <th><h6>Inventario</h6></th>
                     <th><h6>Acciones</h6></th>
                   </tr>
                 </thead>
