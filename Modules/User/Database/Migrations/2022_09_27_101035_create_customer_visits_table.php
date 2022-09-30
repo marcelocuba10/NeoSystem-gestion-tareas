@@ -23,6 +23,7 @@ class CreateCustomerVisitsTable extends Migration
             $table->string('result_of_the_visit')->nullable();
             $table->string('objective')->nullable();
             $table->string('status');
+            $table->string('type');
             $table->timestamps();
         });
     }

@@ -80,7 +80,7 @@
     
     <div class="col-12">
       <div class="form-check checkbox-style mb-30">
-        <input name="setOrder"   class="form-check-input" type="checkbox" id="chkbox_setOrder">
+        <input name="setOrder" class="form-check-input" type="checkbox" id="chkbox_setOrder">
         <label class="form-check-label" for="checkbox-setOrder">¿Crear Presupuesto?</label>
       </div>
     </div>

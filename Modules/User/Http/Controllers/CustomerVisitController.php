@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Modules\User\Entities\CustomerVisit;
 use Modules\User\Entities\OrderVisit;
+use Modules\User\Entities\Sales;
 use Symfony\Component\Console\Input\Input;
 
 class CustomerVisitController extends Controller
@@ -39,6 +40,7 @@ class CustomerVisitController extends Controller
                 'customer_visits.result_of_the_visit',
                 'customer_visits.objective',
                 'customer_visits.status',
+                'customer_visits.type',
                 'users.name AS seller_name',
                 'customers.name AS customer_name',
                 'customers.estate'
@@ -116,6 +118,7 @@ class CustomerVisitController extends Controller
                 return back()->with('error', 'Por favor, adicione un producto.');
             } else {
 
+                $input['type'] = 'Order';
                 $input['seller_id'] = Auth::user()->idReference;
                 $customer_visit = CustomerVisit::create($input);
 
@@ -127,15 +130,23 @@ class CustomerVisitController extends Controller
                 ]);
 
                 foreach ($request->product_id as $key => $product_id) {
-                    // $item_order_visit = new OrderVisit();
                     $input['quantity'] = $request->qty[$key];
                     $input['price'] = $request->price[$key];
                     $input['amount'] = $request->amount[$key];
                     $input['product_id'] = $request->product_id[$key];
                     $input['visit_id'] = $customer_visit->id;
-                    // $item_order_visit->save();
                     $item_order_visit = OrderVisit::create($input);
                 }
+
+                $total_order = DB::table('order_visits')
+                    ->where('order_visits.visit_id', '=',$customer_visit->id)
+                    ->sum('amount');
+
+                $input['visit_id'] = $customer_visit->id;
+                $input['type'] = 'Order';
+                $input['status'] = 'Pendiente';
+                $input['total'] = $total_order;
+                $sales = Sales::create($input);
             }
         } else {
 
@@ -169,7 +180,7 @@ class CustomerVisitController extends Controller
         $order_visits = DB::table('order_visits')
             ->where('order_visits.visit_id', '=', $id)
             ->leftjoin('products', 'products.id', '=', 'order_visits.product_id')
-            ->select('products.name','products.code', 'order_visits.price', 'order_visits.quantity', 'order_visits.amount')
+            ->select('products.name', 'products.code', 'order_visits.price', 'order_visits.quantity', 'order_visits.amount')
             ->orderBy('order_visits.created_at', 'DESC')
             ->get();
 
@@ -177,7 +188,7 @@ class CustomerVisitController extends Controller
             ->where('order_visits.visit_id', '=', $id)
             ->sum('amount');
 
-        return view('user::customer_visits.show', compact('customer_visit', 'order_visits','total_order'));
+        return view('user::customer_visits.show', compact('customer_visit', 'order_visits', 'total_order'));
     }
 
     public function edit($id)
@@ -309,6 +320,7 @@ class CustomerVisitController extends Controller
                     'customer_visits.result_of_the_visit',
                     'customer_visits.objective',
                     'customer_visits.status',
+                    'customer_visits.type',
                     'customers.name AS customer_name',
                     'customers.estate'
                 )
@@ -327,6 +339,7 @@ class CustomerVisitController extends Controller
                     'customer_visits.result_of_the_visit',
                     'customer_visits.objective',
                     'customer_visits.status',
+                    'customer_visits.type',
                     'customers.name AS customer_name',
                     'customers.estate'
                 )

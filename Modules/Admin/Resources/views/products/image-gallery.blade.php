@@ -150,7 +150,7 @@
 
                 if(imageName !== undefined) {
                     $(".modal-title").text("Update Image");
-                    $(".file-input").after("<div class='form-group old-img' style='margin-top: 15px;'><img src='/images/products/"+imageName+"' style='height:100px;'></div>");
+                    $(".file-input").after("<div class='form-group old-img' style='margin-top: 15px;'><img src='/public/images/products/"+imageName+"' style='height:100px;'></div>");
                 }
           });
 

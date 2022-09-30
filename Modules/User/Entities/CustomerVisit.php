@@ -17,7 +17,8 @@ class CustomerVisit extends Model
         'next_visit_hour',
         'result_of_the_visit',
         'objective',
-        'status'
+        'status',
+        'type'
     ];
     
     protected static function newFactory()

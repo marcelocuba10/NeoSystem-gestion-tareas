@@ -44,6 +44,7 @@
                       <th><h6>#</h6></th>
                       <th><h6>Cliente</h6></th>
                       <th><h6>Estado</h6></th>
+                      <th><h6>Presupuesto?</h6></th>
                       <th><h6>Fecha de Visita</h6></th>
                       <th><h6>Fecha Prox Visita</h6></th>
                       <th><h6>Localidad</h6></th>
@@ -65,6 +66,11 @@
                             {{ $customer_visit->status }}
                           </span>
                         </td>
+                        @if ($customer_visit->type == 'Order')
+                          <td class="min-width"><p>Sí</p></td>
+                        @else
+                          <td class="min-width"><p>No</p></td>
+                        @endif
                         <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ $customer_visit->visit_date }}</p></td>
                         <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ $customer_visit->next_visit_date }}</p></td>
                         <td class="min-width"><p>{{ $customer_visit->estate }}</p></td>
