@@ -86,6 +86,9 @@
                 <table class="invoice-table table">
                   <thead style="background-color: #3f51b566;">
                     <tr>
+                      <th class="qty">
+                        <h6 class="text-sm text-medium">Cod</h6>
+                      </th>
                       <th class="service">
                         <h6 class="text-sm text-medium">Producto</h6>
                       </th>
@@ -101,95 +104,26 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>
-                        <p class="text-sm">Admin Dashboard</p>
-                      </td>
-                      <td>
-                        <p class="text-sm">
-                          Design and Development Service
-                        </p>
-                      </td>
-                      <td>
-                        <p class="text-sm">3</p>
-                      </td>
-                      <td>
-                        <p class="text-sm">$700</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p class="text-sm">Landing Page</p>
-                      </td>
-                      <td>
-                        <p class="text-sm">
-                          Landing Page Ui kit design and Development
-                        </p>
-                      </td>
-                      <td>
-                        <p class="text-sm">1</p>
-                      </td>
-                      <td>
-                        <p class="text-sm">$1000</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p class="text-sm">Web design</p>
-                      </td>
-                      <td>
-                        <p class="text-sm">
-                          Web Design and Development and Seo
-                        </p>
-                      </td>
-                      <td>
-                        <p class="text-sm">2</p>
-                      </td>
-                      <td>
-                        <p class="text-sm">$4000</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                      <td></td>
-                      <td>
-                        <h6 class="text-sm text-medium">Subtotal</h6>
-                      </td>
-                      <td>
-                        <h6 class="text-sm text-bold">$5700</h6>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                      <td></td>
-                      <td>
-                        <h6 class="text-sm text-medium">Discount</h6>
-                      </td>
-                      <td>
-                        <h6 class="text-sm text-bold">45%</h6>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                      <td></td>
-                      <td>
-                        <h6 class="text-sm text-medium">Shipping Charge</h6>
-                      </td>
-                      <td>
-                        <h6 class="text-sm text-bold">Free</h6>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                      <td></td>
-                      <td>
-                        <h4>Total</h4>
-                      </td>
-                      <td>
-                        <h4>$3135</h4>
-                      </td>
-                    </tr>
+                    @foreach ($item_order_visits as $item_order)
+                      <tr>
+                        <td><p class="text-sm">{{ $item_order->code }}</td>
+                        <td><p class="text-sm">{{ $item_order->name }}</p></td>
+                        <td><p class="text-sm">G$ {{number_format($item_order->price, 0)}}</p></td>
+                        <td><p class="text-sm">{{ $item_order->quantity }}</p></td>
+                        <td><p class="text-sm">G$ {{number_format($item_order->amount, 0)}}</p></td>
+                      </tr>
+                    @endforeach
                   </tbody>
+                  <tfoot>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td><h4>Total</h4></td>
+                      <td><h4>G$ {{number_format($item_order->total, 0)}}</h4></td>
+                      <td></td>
+                    </tr>
+                  </tfoot>
                 </table>
               </div>
           

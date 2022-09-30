@@ -165,7 +165,15 @@ class CustomerVisitController extends Controller
             ->orderBy('customer_visits.created_at', 'DESC')
             ->first();
 
-        return view('user::customer_visits.show', compact('customer_visit'));
+        $item_order_visits = DB::table('item_order_visits')
+            ->where('item_order_visits.visit_id', '=', $id)
+            ->leftjoin('products', 'products.id', '=', 'item_order_visits.product_id')
+            ->select(DB::raw("SUM(amount) as total, products.name, products.code, item_order_visits.price, item_order_visits.quantity, item_order_visits.amount"))
+            ->groupBy('products.name')
+            ->orderBy('item_order_visits.created_at', 'DESC')
+            ->get();
+
+        return view('user::customer_visits.show', compact('customer_visit', 'item_order_visits'));
     }
 
     public function edit($id)
