@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Modules\User\Entities\CustomerVisit;
 use Modules\User\Entities\itemOrderVisit;
+use Symfony\Component\Console\Input\Input;
 
 class CustomerVisitController extends Controller
 {
@@ -68,7 +69,18 @@ class CustomerVisitController extends Controller
             'Cancelado'
         ];
 
-        return view('user::customer_visits.create', compact('customers', 'customer_visit', 'currentDate', 'status'));
+        $products = DB::table('products')
+            ->select(
+                'id',
+                'name',
+                'sale_price',
+                'quantity',
+                'description',
+            )
+            ->orderBy('created_at', 'DESC')
+            ->get();
+
+        return view('user::customer_visits.create', compact('customers', 'customer_visit', 'currentDate', 'status', 'products'));
     }
 
     public function store(Request $request)
@@ -79,8 +91,8 @@ class CustomerVisitController extends Controller
 
         $request->validate([
             'customer_id' => 'required',
-            'visit_date' => 'nullable|date|after_or_equal:' . $initialDate . '|before:' . $currentDate,
-            'next_visit_date' => 'nullable|date_format:Y-m-d|after_or_equal:' . $initialDate . '|before:' . $currentDate,
+            'visit_date' => 'nullable|date|after_or_equal:today|before:' . $currentDate,
+            'next_visit_date' => 'nullable|date_format:Y-m-d|after_or_equal:today|before:' . $currentDate,
             'next_visit_hour' => 'nullable|max:5|min:5',
             'status' => 'required|max:30|min:5',
             'result_of_the_visit' => 'nullable|max:1000|min:3',
@@ -97,8 +109,38 @@ class CustomerVisitController extends Controller
             $input['next_visit_hour'] = 'No marcado';
         }
 
-        $input['seller_id'] = Auth::user()->idReference;
-        CustomerVisit::create($input);
+        /** check if checkbox is checked */
+        if (isset($request->setOrder)) {
+            /** If not select any product */
+            if (strlen($request->product_id[0]) > 10) {
+                return back()->with('error', 'Por favor, adicione un producto.');
+            } else {
+
+                $input['seller_id'] = Auth::user()->idReference;
+                $customer_visit = CustomerVisit::create($input);
+
+                $request->validate([
+                    'product_id' => 'required',
+                    'qty' => 'required|min:0',
+                    'price' => 'required',
+                    'amount' => 'required',
+                ]);
+
+                foreach ($request->product_id as $key => $product_id) {
+                    $item_order_visit = new itemOrderVisit();
+                    $item_order_visit->quantity = $request->qty[$key];
+                    $item_order_visit->price = $request->price[$key];
+                    $item_order_visit->amount = $request->amount[$key];
+                    $item_order_visit->product_id = $request->product_id[$key];
+                    $item_order_visit->visit_id = $customer_visit->id;
+                    $item_order_visit->save();
+                }
+            }
+        } else {
+
+            $input['seller_id'] = Auth::user()->idReference;
+            $customer_visit = CustomerVisit::create($input);
+        }
 
         return redirect()->to('/user/customer_visits')->with('message', 'Visita Cliente Creada Correctamente');
     }
@@ -173,7 +215,7 @@ class CustomerVisitController extends Controller
             'Cancelado'
         ];
 
-        return view('user::customer_visits.edit', compact('customers', 'customer_visit', 'currentDate', 'status','products'));
+        return view('user::customer_visits.edit', compact('customers', 'customer_visit', 'currentDate', 'status', 'products'));
     }
 
     public function update(Request $request, $id)
@@ -184,8 +226,8 @@ class CustomerVisitController extends Controller
 
         $request->validate([
             'customer_id' => 'required',
-            'visit_date' => 'nullable|date|after_or_equal:' . $initialDate . '|before:' . $currentDate,
-            'next_visit_date' => 'nullable|date_format:Y-m-d|after_or_equal:' . $initialDate . '|before:' . $currentDate,
+            'visit_date' => 'nullable|date|after_or_equal:today|before:' . $currentDate,
+            'next_visit_date' => 'nullable|date_format:Y-m-d|after_or_equal:today|before:' . $currentDate,
             'next_visit_hour' => 'nullable|max:5|min:5',
             'status' => 'required|max:30|min:5',
             'result_of_the_visit' => 'nullable|max:1000|min:3',
@@ -205,23 +247,28 @@ class CustomerVisitController extends Controller
         $customer_visit = CustomerVisit::find($id);
         $customer_visit->update($input);
 
-        if ($input['setOrder'] == 'on') {
-            $request->validate([
-                'product_id' => 'required',
-                'qty' => 'required|min:0',
-                'price' => 'required',
-                'amount' => 'required',
-            ]);
-    
-            foreach ( $request->product_id as $key => $product_id){
-                $item_order_visit = new itemOrderVisit();
-                $item_order_visit->quantity = $request->qty[$key];
-                $item_order_visit->price = $request->price[$key];
-                $item_order_visit->amount = $request->amount[$key];
-                $item_order_visit->product_id = $request->product_id[$key];
-                $item_order_visit->visit_id = $customer_visit->id;
-                $item_order_visit->save();
-             }
+        if (isset($request->setOrder)) {
+            /** If not select any product */
+            if (strlen($request->product_id[0]) > 10) {
+                return back()->with('error', 'Por favor, adicione un producto.');
+            } else {
+                $request->validate([
+                    'product_id' => 'required',
+                    'qty' => 'required|min:0',
+                    'price' => 'required',
+                    'amount' => 'required',
+                ]);
+
+                foreach ($request->product_id as $key => $product_id) {
+                    $item_order_visit = new itemOrderVisit();
+                    $item_order_visit->quantity = $request->qty[$key];
+                    $item_order_visit->price = $request->price[$key];
+                    $item_order_visit->amount = $request->amount[$key];
+                    $item_order_visit->product_id = $request->product_id[$key];
+                    $item_order_visit->visit_id = $input['customer_id'];
+                    $item_order_visit->save();
+                }
+            }
         }
 
         return redirect()->to('/user/customer_visits')->with('message', 'Visita Cliente actualizada correctamente.');

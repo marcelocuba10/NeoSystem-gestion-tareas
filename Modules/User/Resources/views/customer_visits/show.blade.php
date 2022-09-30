@@ -82,7 +82,116 @@
               </div>
               <!-- end col -->
 
-              
+              <div class="table-responsive">
+                <table class="invoice-table table">
+                  <thead style="background-color: #3f51b566;">
+                    <tr>
+                      <th class="service">
+                        <h6 class="text-sm text-medium">Producto</h6>
+                      </th>
+                      <th class="price">
+                        <h6 class="text-sm text-medium">Precio</h6>
+                      </th>
+                      <th class="qty">
+                        <h6 class="text-sm text-medium">Cantidad</h6>
+                      </th>
+                      <th class="amount">
+                        <h6 class="text-sm text-medium">Amounts</h6>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <p class="text-sm">Admin Dashboard</p>
+                      </td>
+                      <td>
+                        <p class="text-sm">
+                          Design and Development Service
+                        </p>
+                      </td>
+                      <td>
+                        <p class="text-sm">3</p>
+                      </td>
+                      <td>
+                        <p class="text-sm">$700</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p class="text-sm">Landing Page</p>
+                      </td>
+                      <td>
+                        <p class="text-sm">
+                          Landing Page Ui kit design and Development
+                        </p>
+                      </td>
+                      <td>
+                        <p class="text-sm">1</p>
+                      </td>
+                      <td>
+                        <p class="text-sm">$1000</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p class="text-sm">Web design</p>
+                      </td>
+                      <td>
+                        <p class="text-sm">
+                          Web Design and Development and Seo
+                        </p>
+                      </td>
+                      <td>
+                        <p class="text-sm">2</p>
+                      </td>
+                      <td>
+                        <p class="text-sm">$4000</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td>
+                        <h6 class="text-sm text-medium">Subtotal</h6>
+                      </td>
+                      <td>
+                        <h6 class="text-sm text-bold">$5700</h6>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td>
+                        <h6 class="text-sm text-medium">Discount</h6>
+                      </td>
+                      <td>
+                        <h6 class="text-sm text-bold">45%</h6>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td>
+                        <h6 class="text-sm text-medium">Shipping Charge</h6>
+                      </td>
+                      <td>
+                        <h6 class="text-sm text-bold">Free</h6>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td>
+                        <h4>Total</h4>
+                      </td>
+                      <td>
+                        <h4>$3135</h4>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
           
               <div class="col-12">
                 <div class="button-groupd-flexjustify-content-centerflex-wrap">

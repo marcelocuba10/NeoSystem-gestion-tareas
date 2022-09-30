@@ -15,12 +15,16 @@ class CreateItemOrderVisitsTable extends Migration
     {
         Schema::create('item_order_visits', function (Blueprint $table) {
             $table->id();
-            $table->integer('visit_id');
+            $table->unsignedBigInteger('visit_id');
             $table->integer('product_id');
             $table->decimal('price', 12, 0);
             $table->integer('quantity');
             $table->decimal('amount', 12, 0);
             $table->timestamps();
+
+            $table->foreign('visit_id')
+                ->references('id')->on('customer_visits')
+                ->onDelete('cascade');
         });
     }
 
