@@ -11,7 +11,6 @@ class Parameters extends Model
 
     protected $fillable = [
         'name',
-        'idReference',
         'type',
         'description'
     ];

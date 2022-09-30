@@ -65,7 +65,14 @@
             </span>
             <span class="text">Ajustes</span>
           </a>
-          <ul id="ddmenu_2" class="dropdown-nav" style="{{ (request()->is('admin/users')) || (request()->is('admin/ACL/*')) ? '' : 'display:none'}}">
+          <ul id="ddmenu_2" class="dropdown-nav" style="{{ (request()->is('admin/users')) || (request()->is('admin/ACL/*')) || (request()->is('admin/parameters')) ? '' : 'display:none'}}">
+            @can('parameter-sa-list')
+            <li>
+              <a href="{{ url('/admin/parameters') }}" class="{{ (request()->is('admin/parameters')) ? 'active' : '' }}">
+                <span class="text">Parámetros</span>
+              </a>
+            </li>
+            @endcan
             @can('super_user-sa-list')
             <li>
               <a href="{{ url('/admin/users') }}" class="{{ (request()->is('admin/users')) ? 'active' : '' }}">

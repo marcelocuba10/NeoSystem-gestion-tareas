@@ -14,19 +14,17 @@ class ParametersController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:web', ['except' => ['logout']]);
+        $this->middleware('auth:admin', ['except' => ['logout']]);
 
-        $this->middleware('permission:parameter-list|parameter-create|parameter-edit|parameter-delete', ['only' => ['index']]);
-        $this->middleware('permission:parameter-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:parameter-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:parameter-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:parameter-sa-list|parameter-sa-create|parameter-sa-edit|parameter-sa-delete', ['only' => ['index']]);
+        $this->middleware('permission:parameter-sa-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:parameter-sa-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:parameter-sa-delete', ['only' => ['destroy']]);
     }
 
     public function index()
     {
-        $idRefCurrentUser = Auth::user()->idReference;
         $parameters = DB::table('parameters')
-            ->where('idReference', '=', $idRefCurrentUser)
             ->select(
                 'id',
                 'name',
@@ -36,7 +34,7 @@ class ParametersController extends Controller
             ->orderBy('created_at', 'DESC')
             ->paginate(10);
 
-        return view('user::parameters.index', compact('parameters'))->with('i', (request()->input('page', 1) - 1) * 10);
+        return view('admin::parameters.index', compact('parameters'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
     public function create()
@@ -49,7 +47,7 @@ class ParametersController extends Controller
             array('1', 'Equipos Potenciales')
         );
 
-        return view('user::parameters.create', compact('parameter', 'keys', 'type_parameter'));
+        return view('admin::parameters.create', compact('parameter', 'keys', 'type_parameter'));
     }
 
     public function store(Request $request)
@@ -61,9 +59,6 @@ class ParametersController extends Controller
         ]);
 
         $input = $request->all();
-
-        /** relationship parameter with the current user IDreference */
-        $input['idReference'] = Auth::user()->idReference;
         Parameters::create($input);
 
         return redirect()->to('/admin/parameters')->with('message', 'Parameter created successfully.');
@@ -126,11 +121,9 @@ class ParametersController extends Controller
     public function search(Request $request)
     {
         $search = $request->input('search');
-        $idRefCurrentUser = Auth::user()->idReference;
 
         if ($search == '') {
             $parameters = DB::table('parameters')
-                ->where('idReference', '=', $idRefCurrentUser)
                 ->select(
                     'id',
                     'name',
@@ -141,7 +134,6 @@ class ParametersController extends Controller
                 ->paginate(10);
         } else {
             $parameters = DB::table('parameters')
-            ->where('idReference', '=', $idRefCurrentUser)
             ->where('name', 'LIKE', "%{$search}%")
             ->select(
                 'id',

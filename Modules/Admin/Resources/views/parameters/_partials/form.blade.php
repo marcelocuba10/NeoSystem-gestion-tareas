@@ -31,7 +31,7 @@
     <div class="col-12">
       <div class="button-group d-flex justify-content-center flex-wrap">
         <button type="submit" class="main-btn primary-btn btn-hover m-2">Guardar</button>
-        <a class="main-btn danger-btn-outline m-2" href="{{ url('/user/parameters') }}">Atrás</a>
+        <a class="main-btn danger-btn-outline m-2" href="{{ url('/admin/parameters') }}">Atrás</a>
       </div>
     </div>
 </div>
