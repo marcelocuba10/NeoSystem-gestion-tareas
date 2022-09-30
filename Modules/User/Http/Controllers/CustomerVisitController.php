@@ -9,7 +9,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Modules\User\Entities\CustomerVisit;
-use Modules\User\Entities\itemOrderVisit;
+use Modules\User\Entities\OrderVisit;
 use Symfony\Component\Console\Input\Input;
 
 class CustomerVisitController extends Controller
@@ -127,13 +127,14 @@ class CustomerVisitController extends Controller
                 ]);
 
                 foreach ($request->product_id as $key => $product_id) {
-                    $item_order_visit = new itemOrderVisit();
-                    $item_order_visit->quantity = $request->qty[$key];
-                    $item_order_visit->price = $request->price[$key];
-                    $item_order_visit->amount = $request->amount[$key];
-                    $item_order_visit->product_id = $request->product_id[$key];
-                    $item_order_visit->visit_id = $customer_visit->id;
-                    $item_order_visit->save();
+                    // $item_order_visit = new OrderVisit();
+                    $input['quantity'] = $request->qty[$key];
+                    $input['price'] = $request->price[$key];
+                    $input['amount'] = $request->amount[$key];
+                    $input['product_id'] = $request->product_id[$key];
+                    $input['visit_id'] = $customer_visit->id;
+                    // $item_order_visit->save();
+                    $item_order_visit = OrderVisit::create($input);
                 }
             }
         } else {
@@ -165,15 +166,18 @@ class CustomerVisitController extends Controller
             ->orderBy('customer_visits.created_at', 'DESC')
             ->first();
 
-        $item_order_visits = DB::table('item_order_visits')
-            ->where('item_order_visits.visit_id', '=', $id)
-            ->leftjoin('products', 'products.id', '=', 'item_order_visits.product_id')
-            ->select(DB::raw("SUM(amount) as total, products.name, products.code, item_order_visits.price, item_order_visits.quantity, item_order_visits.amount"))
-            ->groupBy('products.name')
-            ->orderBy('item_order_visits.created_at', 'DESC')
+        $order_visits = DB::table('order_visits')
+            ->where('order_visits.visit_id', '=', $id)
+            ->leftjoin('products', 'products.id', '=', 'order_visits.product_id')
+            ->select('products.name','products.code', 'order_visits.price', 'order_visits.quantity', 'order_visits.amount')
+            ->orderBy('order_visits.created_at', 'DESC')
             ->get();
 
-        return view('user::customer_visits.show', compact('customer_visit', 'item_order_visits'));
+        $total_order = DB::table('order_visits')
+            ->where('order_visits.visit_id', '=', $id)
+            ->sum('amount');
+
+        return view('user::customer_visits.show', compact('customer_visit', 'order_visits','total_order'));
     }
 
     public function edit($id)
@@ -252,14 +256,16 @@ class CustomerVisitController extends Controller
             $input['next_visit_hour'] = 'No marcado';
         }
 
-        $customer_visit = CustomerVisit::find($id);
-        $customer_visit->update($input);
-
+        /** check if checkbox is checked */
         if (isset($request->setOrder)) {
             /** If not select any product */
             if (strlen($request->product_id[0]) > 10) {
                 return back()->with('error', 'Por favor, adicione un producto.');
             } else {
+
+                $input['seller_id'] = Auth::user()->idReference;
+                $customer_visit = CustomerVisit::create($input);
+
                 $request->validate([
                     'product_id' => 'required',
                     'qty' => 'required|min:0',
@@ -268,15 +274,19 @@ class CustomerVisitController extends Controller
                 ]);
 
                 foreach ($request->product_id as $key => $product_id) {
-                    $item_order_visit = new itemOrderVisit();
+                    $item_order_visit = new OrderVisit();
                     $item_order_visit->quantity = $request->qty[$key];
                     $item_order_visit->price = $request->price[$key];
                     $item_order_visit->amount = $request->amount[$key];
                     $item_order_visit->product_id = $request->product_id[$key];
-                    $item_order_visit->visit_id = $input['customer_id'];
-                    $item_order_visit->save();
+                    $item_order_visit->visit_id = $customer_visit->id;
+                    $item_order_visit->update();
                 }
             }
+        } else {
+
+            $customer_visit = CustomerVisit::find($id);
+            $customer_visit->update($input);
         }
 
         return redirect()->to('/user/customer_visits')->with('message', 'Visita Cliente actualizada correctamente.');

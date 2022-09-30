@@ -46,18 +46,6 @@ Route::prefix('user')->group(function () {
             Route::get('/search', 'ProductsController@search');
         });
 
-        /** Parameters Routes */
-        Route::group(['prefix' => 'parameters'], function () {
-            Route::get('/', 'ParametersController@index');
-            Route::get('/create', 'ParametersController@create');
-            Route::post('/create', 'ParametersController@store');
-            Route::get('/show/{id}', 'ParametersController@show');
-            Route::get('/edit/{id}', 'ParametersController@edit');
-            Route::put('/update/{id}', 'ParametersController@update');
-            Route::delete('/delete/{id}', 'ParametersController@destroy');
-            Route::get('/search', 'ParametersController@search');
-        });
-
         /*** ACL Routes ***/
         Route::group(['prefix' => 'ACL'], function () {
             Route::group(['prefix' => 'roles'], function () {

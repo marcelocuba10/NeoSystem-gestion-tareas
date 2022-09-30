@@ -39,7 +39,7 @@
                       <div class="col-md-3" style="margin-top: 35px;">
                         <div class="input-style-1">
                           <a href="#" class="btn btn-lg info-btn rounded-md btn-hover disabled" role="button" aria-disabled="true"><i class="lni lni-search"></i></a>
-                          <a href="{{ url('/user/reports/price-list-products?download=pdf') }}" class="btn btn-lg success-btn rounded-md btn-hover" target="_blank"><i class="lni lni-printer"></i></a>
+                          <a href="{{ url('/user/reports/products?download=pdf') }}" class="btn btn-lg success-btn rounded-md btn-hover" target="_blank"><i class="lni lni-printer"></i></a>
                         </div>
                       </div>
                     </div>
@@ -71,33 +71,25 @@
                   <tbody>
                     @foreach ($products as $product)
                     <tr>
-                        <td class="text-sm"><h6 class="text-sm">{{ ++$i }}</h6></td>
-                        <td class="text-sm"><p>{{ $product->code }}</p></td>
-                        <td class="text-sm"><p>{{ $product->name }}</p></td>
-                        <td class="text-sm"><p>{{ $product->sale_price }}</p></td>
-                        <td class="text-sm"><p>{{ $product->quantity }}</p></td>
+                      <td class="text-sm"><h6 class="text-sm">{{ ++$i }}</h6></td>
+                      <td class="text-sm"><p>{{ $product->code }}</p></td>
+                      <td class="text-sm"><p>{{ $product->name }}</p></td>
+                      <td class="text-sm"><p>{{ $product->sale_price }}</p></td>
+                      <td class="text-sm"><p>{{ $product->quantity }}</p></td>
                     </tr>
                     @endforeach
-                  <!-- end table row -->
                 </tbody>
                 </table>
                 @if (isset($filter))
-                {{-- {{ $machines->appends(['sort' =>$filter])->links() }}  --}}
-                {{-- {!! $machines->appends(Request::except('page'))->render() !!} --}}
                   {!! $products-> appends($filter)->links() !!} <!-- appends envia variable en la paginacion-->
                 @else
                   {!! $products-> links() !!}    
                 @endif
               </div>
             </div>
-            <!-- End Card -->
           </div>
-          <!-- ENd Col -->
         </div>
-        <!-- End Row -->
       </div>
-
     </div>
-    <!-- end container -->
   </section>
 @endsection

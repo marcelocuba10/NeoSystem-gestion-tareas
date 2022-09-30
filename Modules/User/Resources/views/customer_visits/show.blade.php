@@ -104,7 +104,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    @foreach ($item_order_visits as $item_order)
+                    @foreach ($order_visits as $item_order)
                       <tr>
                         <td><p class="text-sm">{{ $item_order->code }}</td>
                         <td><p class="text-sm">{{ $item_order->name }}</p></td>
@@ -120,7 +120,7 @@
                       <td></td>
                       <td></td>
                       <td><h4>Total</h4></td>
-                      <td><h4>G$ {{number_format($item_order->total, 0)}}</h4></td>
+                      <td><h4>G$ {{number_format($total_order, 0)}}</h4></td>
                       <td></td>
                     </tr>
                   </tfoot>
