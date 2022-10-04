@@ -11,7 +11,10 @@ class Sales extends Model
 
     protected $fillable = [
         'visit_id',
+        'seller_id',
+        'customer_id',
         'sale_date',
+        'order_date',
         'type',
         'status',
         'total'

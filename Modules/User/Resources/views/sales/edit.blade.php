@@ -7,15 +7,15 @@
             <div class="title-wrapper pt-30">
                 <div class="row align-items-center">
                     <div class="col-md-6">
-                        <div class="title mb-30"><h2>Editar Visita Cliente</h2></div>
+                        <div class="title mb-30"><h2>Editar Venta</h2></div>
                     </div>
                     <div class="col-md-6">
                         <div class="breadcrumb-wrapper mb-30">
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="{{ url('/user/dashboard') }}">Dashboard</a></li>
-                                    <li class="breadcrumb-item" aria-current="page"><a href="{{ url('/user/customer_visits') }}">Visita Clientes</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Editar Visita Cliente</li>
+                                    <li class="breadcrumb-item" aria-current="page"><a href="{{ url('/user/sales') }}">Ventas</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Editar Venta</li>
                                 </ol>
                             </nav>
                         </div>
@@ -28,10 +28,10 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="card-style mb-30">
-                            <form method="POST" action="{{ url('/user/customer_visits/update/'.$customer_visit->id) }}">
+                            <form method="POST" action="{{ url('/user/sales/update/'.$sale->id) }}">
                                 @csrf
                                 @method('PUT')
-                                @include('user::customer_visits._partials.form')
+                                @include('user::sales._partials.form')
                             </form>
                         </div>
                     </div>

@@ -22,7 +22,7 @@ class CreateProductsTable extends Migration
             $table->decimal('sale_price', 12, 0);
             $table->decimal('purchase_price', 12, 0)->nullable();
             $table->string('img_product')->nullable();
-            $table->integer('quantity');
+            $table->integer('inventory');
             $table->string('supplier')->nullable();
             $table->string('phone_supplier')->nullable();
             $table->string('brand')->nullable();

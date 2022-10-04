@@ -68,7 +68,7 @@
               <div class="col-4">
                 <div class="input-style-1">
                   <label>(*) Stock</label>
-                  <input value="{{ $product->quantity ?? old('quantity') }}" type="text">
+                  <input value="{{ $product->inventory ?? old('inventory') }}" type="text">
                 </div>
               </div>
               <!-- end col -->

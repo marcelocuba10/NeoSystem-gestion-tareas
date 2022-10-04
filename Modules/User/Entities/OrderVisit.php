@@ -11,6 +11,7 @@ class OrderVisit extends Model
 
     protected $fillable = [
         'visit_id',
+        'sale_id',
         'product_id',
         'price',
         'quantity',

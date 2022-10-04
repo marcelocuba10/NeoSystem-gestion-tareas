@@ -29,7 +29,7 @@ class ProductsController extends Controller
                 'products.name',
                 'products.description',
                 'products.sale_price',
-                'products.quantity',
+                'products.inventory',
                 'images_products.filename'
             )
             ->orderBy('products.created_at', 'DESC')
@@ -56,10 +56,9 @@ class ProductsController extends Controller
 
     public function findPrice(Request $request)
     {
-
         $product = DB::table('products')
             ->where('id', '=', $request->id)
-            ->select('id','sale_price','quantity')
+            ->select('id','sale_price','inventory')
             ->first();
 
         if ($request->ajax()) {
@@ -79,7 +78,7 @@ class ProductsController extends Controller
                     'products.name',
                     'products.description',
                     'products.sale_price',
-                    'products.quantity',
+                    'products.inventory',
                     'images_products.filename'
                 )
                 ->orderBy('products.created_at', 'DESC')
@@ -94,7 +93,7 @@ class ProductsController extends Controller
                     'products.name',
                     'products.description',
                     'products.sale_price',
-                    'products.quantity',
+                    'products.inventory',
                     'images_products.filename'
                 )
                 ->orderBy('products.created_at', 'DESC')

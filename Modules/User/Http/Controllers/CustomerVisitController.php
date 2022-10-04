@@ -29,19 +29,14 @@ class CustomerVisitController extends Controller
     {
         $idRefCurrentUser = Auth::user()->idReference;
         $customer_visits = DB::table('customer_visits')
-            ->leftjoin('users', 'users.idReference', '=', 'customer_visits.seller_id')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
             ->select(
                 'customer_visits.id',
                 'customer_visits.visit_date',
                 'customer_visits.next_visit_date',
-                'customer_visits.next_visit_hour',
-                'customer_visits.result_of_the_visit',
-                'customer_visits.objective',
                 'customer_visits.status',
                 'customer_visits.type',
-                'users.name AS seller_name',
                 'customers.name AS customer_name',
                 'customers.estate'
             )
@@ -65,7 +60,6 @@ class CustomerVisitController extends Controller
             ->get();
 
         $status = [
-            'Pendiente',
             'Visitado',
             'No Atendido',
             'Cancelado'
@@ -76,7 +70,7 @@ class CustomerVisitController extends Controller
                 'id',
                 'name',
                 'sale_price',
-                'quantity',
+                'inventory',
                 'description',
             )
             ->orderBy('created_at', 'DESC')
@@ -129,17 +123,19 @@ class CustomerVisitController extends Controller
                     'amount' => 'required',
                 ]);
 
-                foreach ($request->product_id as $key => $product_id) {
-                    $input['quantity'] = $request->qty[$key];
-                    $input['price'] = $request->price[$key];
-                    $input['amount'] = $request->amount[$key];
-                    $input['product_id'] = $request->product_id[$key];
-                    $input['visit_id'] = $customer_visit->id;
-                    $item_order_visit = OrderVisit::create($input);
+                foreach ($request->product_id as $key => $value) {
+                    $order = new OrderVisit();
+                    $order->quantity = $request->qty[$key];
+                    $order->inventory = $request->qty_av[$key];
+                    $order->price = $request->price[$key];
+                    $order->amount = $request->amount[$key];
+                    $order->product_id = $request->product_id[$key];
+                    $order->visit_id = $customer_visit->id;
+                    $order->save();
                 }
 
                 $total_order = DB::table('order_visits')
-                    ->where('order_visits.visit_id', '=',$customer_visit->id)
+                    ->where('order_visits.visit_id', '=', $customer_visit->id)
                     ->sum('amount');
 
                 $input['visit_id'] = $customer_visit->id;
@@ -180,7 +176,7 @@ class CustomerVisitController extends Controller
         $order_visits = DB::table('order_visits')
             ->where('order_visits.visit_id', '=', $id)
             ->leftjoin('products', 'products.id', '=', 'order_visits.product_id')
-            ->select('products.name', 'products.code', 'order_visits.price', 'order_visits.quantity', 'order_visits.amount')
+            ->select('products.name', 'products.code', 'order_visits.price', 'order_visits.quantity','order_visits.inventory', 'order_visits.amount')
             ->orderBy('order_visits.created_at', 'DESC')
             ->get();
 
@@ -207,7 +203,8 @@ class CustomerVisitController extends Controller
                 'customer_visits.objective',
                 'customer_visits.status',
                 'customers.name AS customer_name',
-                'customers.estate'
+                'customers.estate',
+                'customer_visits.type'
             )
             ->orderBy('customer_visits.created_at', 'DESC')
             ->first();
@@ -217,7 +214,7 @@ class CustomerVisitController extends Controller
                 'id',
                 'name',
                 'sale_price',
-                'quantity',
+                'inventory',
                 'description',
             )
             ->orderBy('created_at', 'DESC')
@@ -238,7 +235,18 @@ class CustomerVisitController extends Controller
             'Cancelado'
         ];
 
-        return view('user::customer_visits.edit', compact('customers', 'customer_visit', 'currentDate', 'status', 'products'));
+        $order_visits = DB::table('order_visits')
+            ->where('order_visits.visit_id', '=', $id)
+            ->leftjoin('products', 'products.id', '=', 'order_visits.product_id')
+            ->select('products.name', 'products.code', 'order_visits.price', 'order_visits.quantity', 'order_visits.inventory', 'order_visits.amount', 'order_visits.product_id')
+            ->orderBy('order_visits.created_at', 'DESC')
+            ->get();
+
+        $total_order = DB::table('order_visits')
+            ->where('order_visits.visit_id', '=', $id)
+            ->sum('amount');
+
+        return view('user::customer_visits.edit', compact('customers', 'customer_visit', 'currentDate', 'status', 'products', 'order_visits', 'total_order'));
     }
 
     public function update(Request $request, $id)
@@ -275,7 +283,9 @@ class CustomerVisitController extends Controller
             } else {
 
                 $input['seller_id'] = Auth::user()->idReference;
-                $customer_visit = CustomerVisit::create($input);
+
+                $customer_visit = CustomerVisit::find($id);
+                $customer_visit->update($input);
 
                 $request->validate([
                     'product_id' => 'required',
@@ -284,9 +294,10 @@ class CustomerVisitController extends Controller
                     'amount' => 'required',
                 ]);
 
-                foreach ($request->product_id as $key => $product_id) {
+                foreach ($request->product_id as $key => $value) {
                     $item_order_visit = new OrderVisit();
                     $item_order_visit->quantity = $request->qty[$key];
+                    $item_order_visit->inventory = $request->qty_av[$key];
                     $item_order_visit->price = $request->price[$key];
                     $item_order_visit->amount = $request->amount[$key];
                     $item_order_visit->product_id = $request->product_id[$key];

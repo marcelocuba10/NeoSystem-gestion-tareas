@@ -9,9 +9,9 @@
           <div class="col-md-8">
             <div class="title d-flex align-items-center flex-wrap mb-30">
               <h2 class="mr-40">Ventas</h2>
-              {{-- @can('sales-create')
+              @can('sales-create')
                 <a href="{{ url('/user/sales/create') }}" class="main-btn info-btn btn-hover btn-sm"><i class="lni lni-plus mr-5"></i></a>
-              @endcan   --}}
+              @endcan  
             </div>
           </div>
           <div class="col-md-4">
@@ -45,7 +45,7 @@
                       <th><h6>Cliente</h6></th>
                       <th><h6>Localidad</h6></th>
                       <th><h6>Estado</h6></th>
-                      <th><h6>Fecha de Visita</h6></th>
+                      <th><h6>Fecha</h6></th>
                       <th><h6>Total</h6></th>
                       <th><h6>Acciones</h6></th>
                     </tr>
@@ -57,23 +57,23 @@
                         <td class="min-width"><h5 class="text-bold text-dark"><a href="#">{{ $sale->customer_name }}</a></h5></td>
                         <td class="min-width"><p>{{ $sale->estate }}</p></td>
                         @if ($sale->type == 'Order')
-                          <td class="min-width"><p><b>Presupuesto</b></p></td>
-                        @else
-                          <td class="min-width"><p><b>Venta</b></p></td>
+                          <td class="min-width"><span class="status-btn btn-custom-attention">Presupuesto</span></td>
+                        @elseIf($sale->type == 'Sale')
+                          <td class="min-width"><span class="status-btn btn-custom-enabled">Procesado</span></td>
                         @endif
-                        <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ $sale->visit_date }}</p></td>
+                        <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ $sale->sale_date }}</p></td>
                         <td class="min-width"><p><b>G$ {{number_format($sale->total, 0)}}</b></p></td>
                         <td class="text-right">
                           <div class="btn-group">
                             <div class="action">
-                              <a href="#">
+                              <a href="{{ url('/user/sales/show/'.$sale->id) }}">
                                 <button class="text-active"><i class="lni lni-eye"></i></button>
                               </a>
                             </div>
                             @can('sales-edit')
                             <div class="action">
-                              <a href="#">
-                                <button class="text-info"><i class="lni lni-pencil"></i></button>
+                              <a href="{{ url('/user/sales/edit/'.$sale->id) }}">
+                                <button class="text-info"><i class="lni lni-coin"></i></button>
                               </a>
                             </div>
                             @endcan

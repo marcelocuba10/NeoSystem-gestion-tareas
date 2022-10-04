@@ -7,7 +7,7 @@
             <div class="title-wrapper pt-30">
                 <div class="row align-items-center">
                     <div class="col-md-6">
-                        <div class="titlemb-30"><h2>Nueva Visita Cliente</h2></div>
+                        <div class="title mb-30"><h2>Nueva Visita Cliente</h2></div>
                     </div>
                     <div class="col-md-6">
                         <div class="breadcrumb-wrapper mb-30">

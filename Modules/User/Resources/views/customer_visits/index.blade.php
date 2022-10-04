@@ -45,7 +45,7 @@
                       <th><h6>Cliente</h6></th>
                       <th><h6>Estado</h6></th>
                       <th><h6>Presupuesto?</h6></th>
-                      <th><h6>Fecha de Visita</h6></th>
+                      <th><h6>Fecha Visita</h6></th>
                       <th><h6>Fecha Prox Visita</h6></th>
                       <th><h6>Localidad</h6></th>
                       <th><h6>Acciones</h6></th>
@@ -58,10 +58,9 @@
                         <td class="min-width"><h5 class="text-bold text-dark"><a href="{{ url('/user/customer_visits/show/'.$customer_visit->id ) }}">{{ $customer_visit->customer_name }}</a></h5></td>
                         <td class="min-width">
                           <span class="status-btn 
-                          @if($customer_visit->status == 'Pendiente') btn-custom-attention
-                          @elseIf($customer_visit->status == 'Visitado') btn-custom-enabled
-                          @elseIf($customer_visit->status == 'No Atendido') btn-custom-error
-                          @elseIf($customer_visit->status == 'Cancelado') btn-custom-disabled
+                          @if($customer_visit->status == 'Visitado') btn-custom-enabled
+                          @elseIf($customer_visit->status == 'No Atendido') btn-custom-attention
+                          @elseIf($customer_visit->status == 'Cancelado') btn-custom-error
                           @endif">
                             {{ $customer_visit->status }}
                           </span>

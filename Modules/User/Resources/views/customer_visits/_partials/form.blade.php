@@ -80,69 +80,126 @@
     
     <div class="col-12">
       <div class="form-check checkbox-style mb-30">
-        <input name="setOrder" class="form-check-input" type="checkbox" id="chkbox_setOrder">
+        <input name="setOrder" class="form-check-input" type="checkbox" id="chkbox_setOrder" @if(!empty($customer_visit)) {{ ($customer_visit->type == 'Order') ? 'checked' : '' }} onclick="return false;" @endif>
         <label class="form-check-label" for="checkbox-setOrder">¿Crear Presupuesto?</label>
       </div>
     </div>
-    <!-- end col -->
 
-    <div class="col-12" id="setOrder" style="display: none">
-      <div class="table-wrapper table-responsive">
-        
-        <table class="table top-selling-table mb-50">
-          <thead style="background-color: #3f51b566;">
-            <tr>
-              <th><h6>Producto</h6></th>
-              <th><h6>Inventario</h6></th>
-              <th><h6>Precio</h6></th>
-              <th><h6>Cantidad</h6></th>
-              <th><h6>Subtotal</h6></th>
-              <th><h6>Acción</h6></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <select name="product_id[]" class="form-control product">
-                  <option>Seleccione Producto</option>
-                  @foreach($products as $product)  
-                    <option name="product_id[]" value="{{ $product->id }}">{{ $product->name }}</option>
-                    {{-- {{ str_replace(',','.',number_format($product->sale_price, 0)) }} --}}
-                  @endforeach
-                </select>
-              </td>
-              <td><input type="text" name="qty_av[]" class="form-control qty_av" readonly></td>
-              <td><input type="text" name="price[]" class="form-control price" readonly></td>
-              {{-- <td>
-                <div class="value-button" id="decrease" onclick="decreaseValue()" value="Decrease Value">-</div>
-                <input type="number" name="qty[]" id="number" class="qty"/>
-                <div class="value-button" id="increase" onclick="increaseValue()" value="Increase Value">+</div>
-              </td> --}}
-              <td><input type="text" name="qty[]" class="form-control qty"></td>
-              <td><input type="text" name="amount[]" class="form-control amount" readonly></td>
-              <td><button type="button" class="btn btn-success" id="add_btn"><i class="lni lni-plus"></i></button></td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td><b>Total</b></td>
-              <td><b class="total"></b></td>
-              <td></td>
-            </tr>
-          </tfoot>
-        </table>
+    @if ($customer_visit)
+      <div class="col-12" id="setOrder">
+        <div class="table-wrapper table-responsive">
+          <table class="table top-selling-table mb-50">
+            <thead style="background-color: #3f51b566;">
+              <tr>
+                <th><h6>Producto</h6></th>
+                <th><h6>Inventario</h6></th>
+                <th><h6>Precio</h6></th>
+                <th><h6>Cantidad</h6></th>
+                <th><h6>Subtotal</h6></th>
+                <th><h6>Acción</h6></th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach ($order_visits as $item_order)
+                <tr>
+                  <td>
+                    <select name="product_id[]" class="form-control product">
+                      <option>Seleccione Producto</option>
+                      @foreach($products as $product)  
+                        <option value="{{ $product->id }}" name="product_id[]" {{ ( $product->id == $item_order->product_id) ? 'selected' : '' }}> {{ $product->name}} </option>
+                      @endforeach
+                    </select>
+                  </td>
+                  <td><input type="text" name="qty_av[]" value="{{ $item_order->inventory }}" class="form-control qty_av" readonly></td>
+                  <td><input type="text" name="price[]" value="{{ $item_order->price }}" class="form-control price" readonly></td>
+                  {{-- <td>
+                    <div class="value-button" id="decrease" onclick="decreaseValue()" value="Decrease Value">-</div>
+                    <input type="number" name="qty[]" id="number" class="qty"/>
+                    <div class="value-button" id="increase" onclick="increaseValue()" value="Increase Value">+</div>
+                  </td> --}}
+                  <td><input type="text" name="qty[]" value="{{ $item_order->quantity }}" class="form-control qty"></td>
+                  <td><input type="text" name="amount[]" class="form-control amount" value="{{ $item_order->amount }}" readonly></td>
+                  <td><button type="button" class="btn btn-success" id="add_btn"><i class="lni lni-plus"></i></button></td>
+                </tr>
+              @endforeach
+            </tbody>
+            <tfoot>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b>Total</b></td>
+                <td><b class="total" id="total"></b></td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
       </div>
-    </div>
+      <div class="col-12">
+        <div class="button-group d-flex justify-content-center flex-wrap">
+          <button type="submit" class="main-btn primary-btn btn-hover m-2">Guardar</button>
+          <a class="main-btn danger-btn-outline m-2" href="{{ url('/user/customer_visits') }}">Atrás</a>
+        </div>
+      </div>
+    @else
+      <div class="col-12" id="setOrder" style="display: none">
+        <div class="table-wrapper table-responsive">
+          <table class="table top-selling-table mb-50">
+            <thead style="background-color: #3f51b566;">
+              <tr>
+                <th><h6>Producto</h6></th>
+                <th><h6>Inventario</h6></th>
+                <th><h6>Precio</h6></th>
+                <th><h6>Cantidad</h6></th>
+                <th><h6>Subtotal</h6></th>
+                <th><h6>Acción</h6></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <select name="product_id[]" class="form-control product">
+                    <option>Seleccione Producto</option>
+                    @foreach($products as $product)  
+                      <option name="product_id[]" value="{{ $product->id }}">{{ $product->name }}</option>
+                      {{-- {{ str_replace(',','.',number_format($product->sale_price, 0)) }} --}}
+                    @endforeach
+                  </select>
+                </td>
+                <td><input type="text" name="qty_av[]" class="form-control qty_av" readonly></td>
+                <td><input type="text" name="price[]" class="form-control price" readonly></td>
+                {{-- <td>
+                  <div class="value-button" id="decrease" onclick="decreaseValue()" value="Decrease Value">-</div>
+                  <input type="number" name="qty[]" id="number" class="qty"/>
+                  <div class="value-button" id="increase" onclick="increaseValue()" value="Increase Value">+</div>
+                </td> --}}
+                <td><input type="text" name="qty[]" class="form-control qty"></td>
+                <td><input type="text" name="amount[]" class="form-control amount" readonly></td>
+                <td><button type="button" class="btn btn-success" id="add_btn"><i class="lni lni-plus"></i></button></td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b>Total</b></td>
+                <td><b class="total"></b></td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="button-group d-flex justify-content-center flex-wrap">
+          <button type="submit" class="main-btn primary-btn btn-hover m-2">Guardar</button>
+          <a class="main-btn danger-btn-outline m-2" href="{{ url('/user/customer_visits') }}">Atrás</a>
+        </div>
+      </div>
+    @endif
 
-    <div class="col-12">
-      <div class="button-group d-flex justify-content-center flex-wrap">
-        <button type="submit" class="main-btn primary-btn btn-hover m-2">Guardar</button>
-        <a class="main-btn danger-btn-outline m-2" href="{{ url('/user/customer_visits') }}">Atrás</a>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -167,6 +224,7 @@
   //   document.getElementById('number').value = value;
   // }
 
+  //if SetOrder is checked, show order item table;
   var checkbox = document.getElementById('chkbox_setOrder')
   checkbox.addEventListener('change', (event) => {
     if (event.currentTarget.checked) {
@@ -178,11 +236,21 @@
 
   $(document).ready(function(){
 
+    //When get data from Edit, calculate Total;
+    var tr = $(this).parent().parent();
+    var qty = tr.find('.qty').val();
+    var price = tr.find('.price').val();
+    var amount = (qty * price);
+    tr.find('.amount').val(amount);
+    total();
+
+    //When select product, focus on input quantity;
     $('tbody').delegate('.product', 'change', function () {
       var  tr = $(this).parent().parent();
       tr.find('.qty').focus();
     })
 
+    //Get product Data and calculate the amount, total;
     $('tbody').delegate('.product', 'change', function () {
       var tr =$(this).parent().parent();
       var id = tr.find('.product').val();
@@ -196,7 +264,7 @@
           var data = response;
           var string_data = JSON.stringify(data); 
           tr.find('.price').val(data.sale_price);
-          tr.find('.qty_av').val(data.quantity);
+          tr.find('.qty_av').val(data.inventory);
 
           var qty = 1;
           var amount = (qty * data.sale_price);
@@ -207,6 +275,7 @@
       });
     });
 
+    //when write the quantity, calculate amount, total;
     $('tbody').delegate('.qty', 'keyup', function () {
       var tr = $(this).parent().parent();
       var qty = tr.find('.qty').val();
@@ -229,9 +298,10 @@
   }
 
   $('#add_btn').on('click',function(){
+    console.log('add_btn');
     var html = '';
     html += '<tr>';
-    html += '<td> <select name="product_id[]" class="form-control product"> <option>Seleccione Producto</option> @foreach($products as $product) <option name="product_id[]" data-qty_av="{{ $product->quantity }}" data-price="{{ $product->sale_price }}" value="{{ $product->id }}">{{ $product->name }}</option> @endforeach </select> </td>';
+    html += '<td> <select name="product_id[]" class="form-control product"> <option>Seleccione Producto</option> @foreach($products as $product) <option name="product_id[]" data-qty_av="{{ $product->inventory }}" data-price="{{ $product->sale_price }}" value="{{ $product->id }}">{{ $product->name }}</option> @endforeach </select> </td>';
     html += '<td><input type="text" name="qty_av[]" class="form-control qty_av" readonly></td>';
     html += '<td><input type="text" name="price[]" class="form-control price" readonly></td>';
     html += '<td><input type="text" type="text" name="qty[]" class="form-control qty"></td>';

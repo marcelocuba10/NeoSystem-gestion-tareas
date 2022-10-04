@@ -17,7 +17,7 @@ class Products extends Model
         'purchase_price',
         'sale_price',
         'img_product',
-        'quantity',
+        'inventory',
         'supplier',
         'phone_supplier',
         'brand',

@@ -15,10 +15,12 @@ class CreateOrderVisitsTable extends Migration
     {
         Schema::create('order_visits', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('visit_id');
+            $table->unsignedBigInteger('visit_id')->nullable();
+            $table->unsignedBigInteger('sale_id')->nullable();
             $table->integer('product_id');
             $table->decimal('price', 12, 0);
             $table->integer('quantity');
+            $table->integer('inventory');
             $table->decimal('amount', 12, 0);
             $table->timestamps();
 

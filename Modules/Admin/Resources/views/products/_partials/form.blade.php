@@ -42,8 +42,8 @@
     <!-- end col -->
     <div class="col-4">
       <div class="input-style-1">
-        <label>(*) Stock</label>
-        <input name="quantity" value="{{ $product->quantity ?? old('quantity') }}" type="text" class="bg-transparent">
+        <label>(*) Inventario</label>
+        <input name="inventory" value="{{ $product->inventory ?? old('inventory') }}" type="text" class="bg-transparent">
       </div>
     </div>
     <!-- end col -->

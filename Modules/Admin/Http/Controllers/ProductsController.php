@@ -31,7 +31,7 @@ class ProductsController extends Controller
                 'products.name',
                 'products.description',
                 'products.sale_price',
-                'products.quantity',
+                'products.inventory',
                 'images_products.filename'
             )
             ->orderBy('products.created_at', 'DESC')
@@ -70,7 +70,7 @@ class ProductsController extends Controller
             'sale_price' => 'required|max:12|min:6',
             'purchase_price' => 'required|max:12|min:6',
             'description' => 'nullable|max:250|min:5',
-            'quantity' => 'required|integer|between:0,9999|min:0',
+            'inventory' => 'required|integer|between:0,9999|min:0',
             'brand' => 'nullable|max:50|min:3',
             'model' => 'nullable|max:50|min:3',
             'supplier' => 'nullable|max:50|min:3',
@@ -174,7 +174,7 @@ class ProductsController extends Controller
             'sale_price' => 'required|max:12|min:6',
             'purchase_price' => 'required|max:12|min:6',
             'description' => 'nullable|max:250|min:5',
-            'quantity' => 'required|integer|between:0,9999|min:0',
+            'inventory' => 'required|integer|between:0,9999|min:0',
             'brand' => 'nullable|max:50|min:3',
             'model' => 'nullable|max:50|min:3',
             'supplier' => 'nullable|max:50|min:3',
@@ -223,7 +223,7 @@ class ProductsController extends Controller
                     'products.name',
                     'products.description',
                     'products.sale_price',
-                    'products.quantity',
+                    'products.inventory',
                     'images_products.filename'
                 )
                 ->orderBy('products.created_at', 'DESC')
@@ -238,7 +238,7 @@ class ProductsController extends Controller
                     'products.name',
                     'products.description',
                     'products.sale_price',
-                    'products.quantity',
+                    'products.inventory',
                     'images_products.filename'
                 )
                 ->orderBy('products.created_at', 'DESC')

@@ -42,7 +42,7 @@
         </li>
         @endcan
         @can('sales-list')
-        <li class="nav-item {{ (request()->is('user/sales')) ? 'active' : '' }}">
+        <li class="nav-item {{ (request()->is('user/sales')) || (request()->is('user/sales/*')) ? 'active' : '' }}">
           <a href="{{ url('/user/sales') }}">
             <span class="icon">
               <svg style="width:24px;height:24px" viewBox="0 0 24 24">
