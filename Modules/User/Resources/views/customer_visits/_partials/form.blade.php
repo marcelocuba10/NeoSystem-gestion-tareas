@@ -173,6 +173,10 @@
 
   $(document).ready(function(){
 
+    function formatNumber(num) {
+        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+    }
+
     $('#add_btn').on('click',function(){
       var html = '';
       html += '<tr>';
@@ -187,25 +191,38 @@
     })
 
     $('tbody').delegate('.product', 'change', function () {
+
       var  tr = $(this).parent().parent();
       tr.find('.qty').focus();
 
       var tr = $(this).parent().parent();
       var qty = 1;
-      var price = $('.product option:selected').attr('data-price');
       var qty_av = $('.product option:selected').attr('data-qty_av');
+      var price = $('.product option:selected').attr('data-price');
  
       tr.find('.qty').val(qty);
-      tr.find('.price').val(price);
       tr.find('.qty_av').val(qty_av);
 
+      // var price = formatNumber(price);
+      // var price = price.replaceAll(",", ".");
+      tr.find('.price').val(price);
+      // var price = price.replaceAll(".", "");
+
       var amount = (qty * price);
+
+      // var amount = formatNumber(amount);
+      // var amount = amount.replaceAll(",", ".");
       tr.find('.amount').val(amount);
+      // var amount = amount.replaceAll(".", "");
+
       var total = 0;
       $('.amount').each(function (i,e) {
           var amount =$(this).val()-0;
+          console.log(amount);
           total += amount;
       })
+      var total = formatNumber(total);
+      var total = total.replaceAll(",", ".");
       $('.total').html(total);
     });
 
@@ -214,13 +231,24 @@
       var qty = tr.find('.qty').val() - 0;
       var price = tr.find('.price').val() - 0;
       var amount = (qty * price);
+      console.log(price );
+      // var amount = amount.toLocaleString('es-PY', {
+      //   style: 'currency',
+      //   currency: 'PYG',
+      //   minimumFractionDigits: 3
+      // })
+
+      // var locale = 'py';
+      // var options = {style: 'currency', currency: 'pyg',minimumFractionDigits: 3, maximumFractionDigits: 3};
+      // var formatter = new Intl.NumberFormat(locale, options);
+
       tr.find('.amount').val(amount);
       var total = 0;
       $('.amount').each(function (i,e) {
           var amount =$(this).val()-0;
           total += amount;
       })
-      $('.total').html(total);
+      $('.total').html(formatNumber(total));
     });
 
   });
