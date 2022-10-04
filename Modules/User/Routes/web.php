@@ -56,6 +56,7 @@ Route::prefix('user')->group(function () {
             Route::get('/show/{id}', 'ProductsController@show');
             Route::get('/getItemProduct', 'ProductsController@getItemProduct');
             Route::get('/search', 'ProductsController@search');
+            Route::get('/findPrice', 'ProductsController@findPrice');
         });
 
         /*** ACL Routes ***/

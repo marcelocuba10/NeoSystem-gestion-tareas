@@ -39,7 +39,8 @@ class ProductsController extends Controller
         return view('user::products.index', compact('products'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
-    public function getItemProduct(){
+    public function getItemProduct()
+    {
         dd('fdfdfdf');
     }
 
@@ -51,6 +52,19 @@ class ProductsController extends Controller
             ->get();
 
         return view('user::products.show', compact('product', 'images'));
+    }
+
+    public function findPrice(Request $request)
+    {
+
+        $product = DB::table('products')
+            ->where('id', '=', $request->id)
+            ->select('id','sale_price','quantity')
+            ->first();
+
+        if ($request->ajax()) {
+            return response()->json($product);
+        }
     }
 
     public function search(Request $request)
@@ -73,19 +87,19 @@ class ProductsController extends Controller
                 ->paginate(10);
         } else {
             $products = DB::table('products')
-            ->where('products.name', 'LIKE', "%{$search}%")
-            ->leftjoin('images_products', 'images_products.code_product', '=', 'products.code')
-            ->select(
-                'products.id',
-                'products.name',
-                'products.description',
-                'products.sale_price',
-                'products.quantity',
-                'images_products.filename'
-            )
-            ->orderBy('products.created_at', 'DESC')
-            ->groupBy('code')
-            ->paginate();
+                ->where('products.name', 'LIKE', "%{$search}%")
+                ->leftjoin('images_products', 'images_products.code_product', '=', 'products.code')
+                ->select(
+                    'products.id',
+                    'products.name',
+                    'products.description',
+                    'products.sale_price',
+                    'products.quantity',
+                    'images_products.filename'
+                )
+                ->orderBy('products.created_at', 'DESC')
+                ->groupBy('code')
+                ->paginate();
         }
 
         return view('user::products.index', compact('products', 'search'))->with('i', (request()->input('page', 1) - 1) * 10);

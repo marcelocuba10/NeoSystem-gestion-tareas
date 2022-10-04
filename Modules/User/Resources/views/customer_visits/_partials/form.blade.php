@@ -88,6 +88,7 @@
 
     <div class="col-12" id="setOrder" style="display: none">
       <div class="table-wrapper table-responsive">
+        
         <table class="table top-selling-table mb-50">
           <thead style="background-color: #3f51b566;">
             <tr>
@@ -105,7 +106,7 @@
                 <select name="product_id[]" class="form-control product">
                   <option>Seleccione Producto</option>
                   @foreach($products as $product)  
-                    <option name="product_id[]" data-qty_av="{{ $product->quantity }}" data-price="{{ $product->sale_price }}" value="{{ $product->id }}">{{ $product->name }}</option>
+                    <option name="product_id[]" value="{{ $product->id }}">{{ $product->name }}</option>
                     {{-- {{ str_replace(',','.',number_format($product->sale_price, 0)) }} --}}
                   @endforeach
                 </select>
@@ -147,6 +148,10 @@
 
 <script type="text/javascript">
 
+  function formatNumber(num) {
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+  }
+
   // function increaseValue() {
   //   var value = parseInt(document.getElementById('number').value, 10);
   //   value = isNaN(value) ? 0 : value;
@@ -173,167 +178,74 @@
 
   $(document).ready(function(){
 
-    function formatNumber(num) {
-        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
-    }
-
-    $('#add_btn').on('click',function(){
-      var html = '';
-      html += '<tr>';
-      html += '<td> <select name="product_id[]" class="form-control product"> <option>Seleccione Producto</option> @foreach($products as $product) <option name="product_id[]" data-qty_av="{{ $product->quantity }}" data-price="{{ $product->sale_price }}" value="{{ $product->id }}">{{ $product->name }}</option> @endforeach </select> </td>';
-      html += '<td><input type="text" name="qty_av[]" class="form-control qty_av"></td>';
-      html += '<td><input type="text" name="price[]" class="form-control price"></td>';
-      html += '<td><input type="text" type="text" name="qty[]" class="form-control qty"></td>';
-      html += '<td><input type="text" name="amount[]" class="form-control amount" readonly></td>';
-      html += '<td><button type="button" class="btn btn-danger" id="remove"><i class="lni lni-trash-can"></i></button></td>';
-      html += '</tr>';
-      $('tbody').append(html);
+    $('tbody').delegate('.product', 'change', function () {
+      var  tr = $(this).parent().parent();
+      tr.find('.qty').focus();
     })
 
     $('tbody').delegate('.product', 'change', function () {
+      var tr =$(this).parent().parent();
+      var id = tr.find('.product').val();
+      var dataId = {'id':id};
+      $.ajax({
+        type    : 'GET',
+        url     :"{{ URL::to('/user/products/findPrice') }}",
+        dataType: 'json',
+        data: {"_token": $('meta[name="csrf-token"]').attr('content'), 'id':id},
+        success:function (response) {
+          var data = response;
+          var string_data = JSON.stringify(data); 
+          tr.find('.price').val(data.sale_price);
+          tr.find('.qty_av').val(data.quantity);
 
-      var  tr = $(this).parent().parent();
-      tr.find('.qty').focus();
-
-      var tr = $(this).parent().parent();
-      var qty = 1;
-      var qty_av = $('.product option:selected').attr('data-qty_av');
-      var price = $('.product option:selected').attr('data-price');
- 
-      tr.find('.qty').val(qty);
-      tr.find('.qty_av').val(qty_av);
-
-      // var price = formatNumber(price);
-      // var price = price.replaceAll(",", ".");
-      tr.find('.price').val(price);
-      // var price = price.replaceAll(".", "");
-
-      var amount = (qty * price);
-
-      // var amount = formatNumber(amount);
-      // var amount = amount.replaceAll(",", ".");
-      tr.find('.amount').val(amount);
-      // var amount = amount.replaceAll(".", "");
-
-      var total = 0;
-      $('.amount').each(function (i,e) {
-          var amount =$(this).val()-0;
-          console.log(amount);
-          total += amount;
-      })
-      var total = formatNumber(total);
-      var total = total.replaceAll(",", ".");
-      $('.total').html(total);
+          var qty = 1;
+          var amount = (qty * data.sale_price);
+          tr.find('.qty').val(qty);
+          tr.find('.amount').val(amount);
+          total();
+        }
+      });
     });
 
     $('tbody').delegate('.qty', 'keyup', function () {
       var tr = $(this).parent().parent();
-      var qty = tr.find('.qty').val() - 0;
-      var price = tr.find('.price').val() - 0;
+      var qty = tr.find('.qty').val();
+      var price = tr.find('.price').val();
       var amount = (qty * price);
-      console.log(price );
-      // var amount = amount.toLocaleString('es-PY', {
-      //   style: 'currency',
-      //   currency: 'PYG',
-      //   minimumFractionDigits: 3
-      // })
-
-      // var locale = 'py';
-      // var options = {style: 'currency', currency: 'pyg',minimumFractionDigits: 3, maximumFractionDigits: 3};
-      // var formatter = new Intl.NumberFormat(locale, options);
-
       tr.find('.amount').val(amount);
-      var total = 0;
-      $('.amount').each(function (i,e) {
-          var amount =$(this).val()-0;
-          total += amount;
-      })
-      $('.total').html(formatNumber(total));
+      total();
     });
-
   });
+
+  function total(){
+    var total = 0;
+    $('.amount').each(function (i,e) {
+      var amount =$(this).val()-0;
+      total += amount;
+    })
+    var total = formatNumber(total);
+    var total = total.replaceAll(",", ".");
+    $('.total').html(total);
+  }
+
+  $('#add_btn').on('click',function(){
+    var html = '';
+    html += '<tr>';
+    html += '<td> <select name="product_id[]" class="form-control product"> <option>Seleccione Producto</option> @foreach($products as $product) <option name="product_id[]" data-qty_av="{{ $product->quantity }}" data-price="{{ $product->sale_price }}" value="{{ $product->id }}">{{ $product->name }}</option> @endforeach </select> </td>';
+    html += '<td><input type="text" name="qty_av[]" class="form-control qty_av" readonly></td>';
+    html += '<td><input type="text" name="price[]" class="form-control price" readonly></td>';
+    html += '<td><input type="text" type="text" name="qty[]" class="form-control qty"></td>';
+    html += '<td><input type="text" name="amount[]" class="form-control amount" readonly></td>';
+    html += '<td><button type="button" class="btn btn-danger" id="remove"><i class="lni lni-trash-can"></i></button></td>';
+    html += '</tr>';
+    $('tbody').append(html);
+  })
 
   $(document).on('click', '#remove', function () {
     $(this).closest('tr').remove();
+    total();
   });
 
 </script>   
-
-  {{-- <script type="text/javascript">
-    $(document).ready(function(){
-
-        $('tbody').delegate('.productname', 'change', function () {
-            var  tr = $(this).parent().parent();
-            tr.find('.qty').focus();
-
-            var tr =$(this).parent().parent();
-            var id = tr.find('.productname').val();
-            var dataId = {'id':id};
-            var qty=1;
-            var price = $('.productname option:selected').attr('data-price');
-            var qty_av = $('.productname option:selected').attr('data-qty_av');
-            $("#qty").val(qty); 
-            $("#price").val(price);
-            $("#qty_av").val(qty_av);  
-
-            var amount = (qty * price);
-            tr.find('.amount').val(amount);
-            var total = 0;
-            $('.amount').each(function (i,e) {
-                var amount =$(this).val()-0;
-                total += amount;
-            })
-            $('.total').html(total);
-
-        });
-
-        $('tbody').delegate('.qty,.price', 'keyup', function () {
-            
-            var tr = $(this).parent().parent();
-            var qty = tr.find('.qty').val() - 0;
-            var price = tr.find('.price').val() - 0;
-            var amount = (qty * price);
-            tr.find('.amount').val(amount);
-            var total = 0;
-            $('.amount').each(function (i,e) {
-                var amount =$(this).val()-0;
-                total += amount;
-            })
-            $('.total').html(total);
-        });
-
-        $('.addRow').on('click', function () {
-            addRow();
-        });
-
-        function addRow() {
-            var addRow = '<tr>\n' +
-                '<td><select name="product_id[]" class="form-control productname">\n' +
-                '<option value="0" selected="true" disabled="true">Select Product</option>\n' +
-                '@foreach($products as $product)\n' +
-                '<option name="product_id[]" data-qty_av="{{ $product->quantity }}" data-price="{{ $product->sale_price }}" value="{{ $product->id }}">{{ $product->name }}</option>\n' +
-'@endforeach\n' +
-                '</select></td>\n' +
-'<td><input type="text" name="qty_av[]"  class="form-control qty_av" value='+qty_av.value+' readonly></td>\n' +
-'<td><input type="text" name="price[]"  class="form-control price" value='+price.value+' readonly></td>\n' +
-'<td><input type="text" name="qty[]" class="form-control qty" ></td>\n' +
-'<td><input type="text" name="amount[]" class="form-control amount" readonly></td>\n' +
-'<td><a class="btn btn-danger remove"><i class="lni lni-trash-can"></i></a></td>\n' +
-'</tr>';
-            $('tbody').append(addRow);
-        };
-
-        $('.remove').live('click', function () {
-            var l =$('tbody tr').length;
-            if(l==1){
-                alert('you cant delete last one')
-            }else{
-                $(this).parent().parent().remove();
-            }
-        });
-
-    });
-  </script> --}}
-
 
   
