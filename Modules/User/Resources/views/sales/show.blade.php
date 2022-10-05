@@ -39,49 +39,60 @@
                 </div>
               </div>
               <!-- end col -->
-              <div class="col-3">
-                <div class="input-style-1">
-                  <label>Fecha/Hora de Visita</label>
-                  <input type="text" value="{{ $sale->visit_date ?? old('visit_date') }}" readonly>
-                </div>
-              </div>
-              <!-- end col -->
-              <div class="col-3">
-                <div class="input-style-1">
-                  <label>Fecha Próxima Visita</label>
-                  <input type="text" value="{{ $sale->next_visit_date ?? old('next_visit_date') }}" readonly>
-                </div>
-              </div>
-              <!-- end col -->
-              <div class="col-2">
-                <div class="input-style-1">
-                  <label>Hora Próxima Visita</label>
-                    <input type="text" value="{{ $sale->next_visit_hour ?? old('next_visit_hour') }}" readonly>
-                </div>
-              </div>
-              <!-- end col -->
-              <div class="col-2">
-                <div class="input-style-1">
-                  <label>Estado</label>
-                  <input type="text" value="{{ $sale->status ?? old('status') }}" readonly>
-                </div>
-              </div>
-              <!-- end col -->
-              <div class="col-5">
-                <div class="input-style-1">
-                  <label>Resultado de la Visita</label>
-                  <textarea type="text" value="{{ $sale->result_of_the_visit }}" readonly>{{ $sale->result_of_the_visit }}</textarea>
-                </div>
-              </div>
-              <!-- end col -->
-              <div class="col-5">
-                <div class="input-style-1">
-                  <label>Objetivos</label>
-                  <textarea type="text" value="{{ $sale->objective ?? old('objective') }}" readonly>{{ $sale->objective ?? old('objective') }}</textarea>
-                </div>
-              </div>
-              <!-- end col -->
 
+              @if ($sale->type == 'Sale')
+                <div class="col-3">
+                  <div class="input-style-1">
+                    <label>Fecha/Hora</label>
+                    <input type="text" value="{{ $sale->sale_date ?? old('sale_date') }}" readonly>
+                  </div>
+                </div>
+                <!-- end col -->
+              @elseif($sale->type == 'Order')
+                <div class="col-3">
+                  <div class="input-style-1">
+                    <label>Fecha/Hora de Visita</label>
+                    <input type="text" value="{{ $sale->visit_date ?? old('visit_date') }}" readonly>
+                  </div>
+                </div>
+                <!-- end col -->
+                <div class="col-3">
+                  <div class="input-style-1">
+                    <label>Fecha Próxima Visita</label>
+                    <input type="text" value="{{ $sale->next_visit_date ?? old('next_visit_date') }}" readonly>
+                  </div>
+                </div>
+                <!-- end col -->
+                <div class="col-2">
+                  <div class="input-style-1">
+                    <label>Hora Próxima Visita</label>
+                      <input type="text" value="{{ $sale->next_visit_hour ?? old('next_visit_hour') }}" readonly>
+                  </div>
+                </div>
+                <!-- end col -->
+                <div class="col-2">
+                  <div class="input-style-1">
+                    <label>Estado</label>
+                    <input type="text" value="{{ $sale->status ?? old('status') }}" readonly>
+                  </div>
+                </div>
+                <!-- end col -->
+                <div class="col-5">
+                  <div class="input-style-1">
+                    <label>Resultado de la Visita</label>
+                    <textarea type="text" value="{{ $sale->result_of_the_visit }}" readonly>{{ $sale->result_of_the_visit }}</textarea>
+                  </div>
+                </div>
+                <!-- end col -->
+                <div class="col-5">
+                  <div class="input-style-1">
+                    <label>Objetivos</label>
+                    <textarea type="text" value="{{ $sale->objective ?? old('objective') }}" readonly>{{ $sale->objective ?? old('objective') }}</textarea>
+                  </div>
+                </div>
+                <!-- end col -->
+              @endif
+              
               <div class="table-responsive">
                 <table class="invoice-table table">
                   <thead style="background-color: #3f51b566;">

@@ -65,7 +65,7 @@ $(document).ready(function(){
   if(id){
     $.ajax({
       type: "POST",
-      url: '/admin/ACL/permissions/get',
+      url: "{{ URL::to('/admin/ACL/permissions/get') }}",
       data: { 
         id : id,
         guard_name : guard_name,
@@ -82,7 +82,7 @@ $(document).ready(function(){
       guard_name = document.getElementById("guard_name").value;
       $.ajax({
         type: "POST",
-        url: '/admin/ACL/permissions/get',
+        url: "{{ URL::to('/admin/ACL/permissions/get') }}",
         data: { 
           id : id,
           guard_name : guard_name,
@@ -97,7 +97,7 @@ $(document).ready(function(){
   }else{
     $.ajax({
       type: "POST",
-      url: '/admin/ACL/permissions/get',
+      url: "{{ URL::to('/admin/ACL/permissions/get') }}",
       data: { 
         guard_name : guard_name,
         "_token": "{{ csrf_token() }}",
@@ -113,7 +113,7 @@ $(document).ready(function(){
     guard_name = document.getElementById("guard_name").value;
     $.ajax({
       type: "POST",
-      url: '/admin/ACL/permissions/get',
+      url: "{{ URL::to('/admin/ACL/permissions/get') }}",
       data: { 
         guard_name : guard_name,
         "_token": "{{ csrf_token() }}",
