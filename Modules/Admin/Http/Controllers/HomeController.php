@@ -28,7 +28,7 @@ class HomeController extends Controller
             ->get();
 
         $products = DB::table('products')
-            ->select('id', 'name', 'quantity')
+            ->select('id', 'name', 'inventory')
             ->orderBy('created_at', 'DESC')
             ->limit(7)
             ->get();

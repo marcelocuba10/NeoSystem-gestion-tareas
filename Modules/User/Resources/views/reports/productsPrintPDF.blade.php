@@ -50,7 +50,7 @@
                 <td>{{ $product->code }}</td>
                 <td>{{ $product->name }}</td>
                 <td>G$ {{number_format($product->sale_price, 0)}}</td>
-                <td>{{ $product->quantity }}</td>
+                <td>{{ $product->inventory }}</td>
             </tr>
             @endforeach
         </tbody>

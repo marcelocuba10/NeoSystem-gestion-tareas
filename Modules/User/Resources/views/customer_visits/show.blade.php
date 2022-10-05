@@ -82,51 +82,59 @@
               </div>
               <!-- end col -->
 
-              <div class="table-responsive">
-                <table class="invoice-table table">
-                  <thead style="background-color: #3f51b566;">
-                    <tr>
-                      <th class="qty">
-                        <h6 class="text-sm text-medium">Cod</h6>
-                      </th>
-                      <th class="service">
-                        <h6 class="text-sm text-medium">Producto</h6>
-                      </th>
-                      <th class="price">
-                        <h6 class="text-sm text-medium">Precio</h6>
-                      </th>
-                      <th class="qty">
-                        <h6 class="text-sm text-medium">Cantidad</h6>
-                      </th>
-                      <th class="amount">
-                        <h6 class="text-sm text-medium">Amounts</h6>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @foreach ($order_visits as $item_order)
+              @if ($customer_visit->type == 'Order')
+                <div class="table-responsive">
+                  <table class="invoice-table table">
+                    <thead style="background-color: #3f51b566;">
                       <tr>
-                        <td><p class="text-sm">{{ $item_order->code }}</td>
-                        <td><p class="text-sm">{{ $item_order->name }}</p></td>
-                        <td><p class="text-sm">G$ {{number_format($item_order->price, 0)}}</p></td>
-                        <td><p class="text-sm">{{ $item_order->quantity }}</p></td>
-                        <td><p class="text-sm">G$ {{number_format($item_order->amount, 0)}}</p></td>
+                        <th class="qty">
+                          <h6 class="text-sm text-medium">Cod</h6>
+                        </th>
+                        <th class="service">
+                          <h6 class="text-sm text-medium">Producto</h6>
+                        </th>
+                        <th class="price">
+                          <h6 class="text-sm text-medium">Precio</h6>
+                        </th>
+                        <th class="qty">
+                          <h6 class="text-sm text-medium">Cantidad</h6>
+                        </th>
+                        <th class="amount">
+                          <h6 class="text-sm text-medium">Amounts</h6>
+                        </th>
                       </tr>
-                    @endforeach
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td><h4>Total</h4></td>
-                      <td><h4>G$ {{number_format($total_order, 0)}}</h4></td>
-                      <td></td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-          
+                    </thead>
+                    <tbody>
+                      @foreach ($order_details as $item_order)
+                        <tr>
+                          <td><p class="text-sm">{{ $item_order->code }}</td>
+                          <td><p class="text-sm">{{ $item_order->name }}</p></td>
+                          <td><p class="text-sm">G$ {{number_format($item_order->price, 0)}}</p></td>
+                          <td><p class="text-sm">{{ $item_order->quantity }}</p></td>
+                          <td><p class="text-sm">G$ {{number_format($item_order->amount, 0)}}</p></td>
+                        </tr>
+                      @endforeach
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><h4>Total</h4></td>
+                        <td><h4>G$ {{number_format($total_order, 0)}}</h4></td>
+                        <td></td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              @else
+                <div class="title mb-30">
+                  <hr>
+                  <h6>Sin presupuesto.</h6>
+                  <hr>
+                </div>
+              @endif
+
               <div class="col-12">
                 <div class="button-groupd-flexjustify-content-centerflex-wrap">
                   <a class="main-btn danger-btn-outline m-2" href="{{ url('/user/customer_visits') }}">Atrás</a>

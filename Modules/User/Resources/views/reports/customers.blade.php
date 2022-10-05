@@ -1,7 +1,7 @@
 @extends('user::layouts.adminLTE.app')
 @section('content')
 
-<section class="table-components">
+  <section class="table-components">
     <div class="container-fluid">
       <!-- ========== title-wrapper start ========== -->
       <div class="title-wrapper pt-30">
@@ -11,14 +11,8 @@
               <h2 class="mr-40">Relatorio de Clientes</h2>
             </div>
           </div>
-          <!-- end col -->
-          <div class="col-md-4">
-          </div>
-          <!-- end col -->
         </div>
-        <!-- end row -->
       </div>
-
       <!-- ========== title-wrapper end ========== -->
 
       <div class="invoice-wrapper">
@@ -89,7 +83,7 @@
                   </thead>
                   <tbody>
                     @foreach ($customers as $customer)
-                    <tr>
+                      <tr>
                         <td class="text-sm"><h6 class="text-sm">{{ ++$i }}</h6></td>
                         <td class="text-sm"><p>{{ $customer->name }}</p></td>
                         <td class="text-sm"><p><i class="lni lni-phone mr-10"></i>{{ $customer->phone }}</p></td>
@@ -103,10 +97,9 @@
                         </td>
                         <td class="text-sm"><p>{{ $customer->estate }}</p></td>
                         <td class="text-sm"><p>{{ $customer->next_visit_date }}</p></td>
-                    </tr>
+                      </tr>
                     @endforeach
-                  <!-- end table row -->
-                </tbody>
+                  </tbody>
                 </table>
                 @if (isset($filter))
                 {{-- {{ $machines->appends(['sort' =>$filter])->links() }}  --}}
@@ -117,15 +110,10 @@
                 @endif
               </div>
             </div>
-            <!-- End Card -->
           </div>
-          <!-- ENd Col -->
         </div>
-        <!-- End Row -->
       </div>
-
     </div>
-    <!-- end container -->
   </section>
 
 @endsection

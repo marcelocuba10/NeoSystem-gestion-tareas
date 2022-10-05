@@ -25,7 +25,7 @@ class HomeController extends Controller
             ->get();
 
         $products = DB::table('products')
-            ->select('id', 'name', 'quantity')
+            ->select('id', 'name', 'inventory')
             ->orderBy('created_at', 'DESC')
             ->paginate(7);
 
@@ -36,6 +36,15 @@ class HomeController extends Controller
         $cant_products = DB::table('products')
             ->count();
 
-        return view('user::dashboard', compact('products', 'customers', 'cant_customers', 'cant_products'));
+        $total_sales = DB::table('sales')
+            ->where('sales.seller_id', '=', $idRefCurrentUser)
+            ->where('sales.type', '=', 'Sale')
+            ->sum('total');
+
+        $total_visits = DB::table('customer_visits')
+            ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+            ->count();
+
+        return view('user::dashboard', compact('products', 'customers', 'cant_customers', 'cant_products', 'total_sales', 'total_visits'));
     }
 }

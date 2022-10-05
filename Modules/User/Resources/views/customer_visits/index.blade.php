@@ -58,7 +58,7 @@
                         <td class="min-width"><h5 class="text-bold text-dark"><a href="{{ url('/user/customer_visits/show/'.$customer_visit->id ) }}">{{ $customer_visit->customer_name }}</a></h5></td>
                         <td class="min-width">
                           <span class="status-btn 
-                          @if($customer_visit->status == 'Visitado') btn-custom-enabled
+                          @if($customer_visit->status == 'Visitado') btn-custom-secondary
                           @elseIf($customer_visit->status == 'No Atendido') btn-custom-attention
                           @elseIf($customer_visit->status == 'Cancelado') btn-custom-error
                           @endif">
@@ -67,7 +67,7 @@
                         </td>
                         @if ($customer_visit->type == 'Order')
                           <td class="min-width"><p>Sí</p></td>
-                        @else
+                        @elseIf($customer_visit->type == 'NoOrder')
                           <td class="min-width"><p>No</p></td>
                         @endif
                         <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ $customer_visit->visit_date }}</p></td>

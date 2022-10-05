@@ -10,7 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Modules\Admin\Entities\User;
+use Modules\User\Entities\User;
 
 //spatie
 use Spatie\Permission\Models\Role;

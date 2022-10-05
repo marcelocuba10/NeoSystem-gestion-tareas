@@ -9,7 +9,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Modules\User\Entities\CustomerVisit;
-use Modules\User\Entities\OrderVisit;
+use Modules\User\Entities\OrderDetail;
 use Modules\User\Entities\Sales;
 use Symfony\Component\Console\Input\Input;
 
@@ -49,6 +49,7 @@ class CustomerVisitController extends Controller
     public function create()
     {
         $customer_visit = null;
+        $customer_visit_type = null;
         $currentDate = Carbon::now();
         $currentDate = $currentDate->toDateTimeString();
 
@@ -76,7 +77,7 @@ class CustomerVisitController extends Controller
             ->orderBy('created_at', 'DESC')
             ->get();
 
-        return view('user::customer_visits.create', compact('customers', 'customer_visit', 'currentDate', 'status', 'products'));
+        return view('user::customer_visits.create', compact('customers', 'customer_visit', 'currentDate', 'status', 'products', 'customer_visit_type'));
     }
 
     public function store(Request $request)
@@ -124,7 +125,7 @@ class CustomerVisitController extends Controller
                 ]);
 
                 foreach ($request->product_id as $key => $value) {
-                    $order = new OrderVisit();
+                    $order = new OrderDetail();
                     $order->quantity = $request->qty[$key];
                     $order->inventory = $request->qty_av[$key];
                     $order->price = $request->price[$key];
@@ -134,18 +135,22 @@ class CustomerVisitController extends Controller
                     $order->save();
                 }
 
-                $total_order = DB::table('order_visits')
-                    ->where('order_visits.visit_id', '=', $customer_visit->id)
+                $total_order = DB::table('order_details')
+                    ->where('order_details.visit_id', '=', $customer_visit->id)
                     ->sum('amount');
 
-                $input['visit_id'] = $customer_visit->id;
-                $input['type'] = 'Order';
-                $input['status'] = 'Pendiente';
-                $input['total'] = $total_order;
-                $sales = Sales::create($input);
+                $sale['visit_id'] = $customer_visit->id;
+                $sale['seller_id'] = Auth::user()->idReference;
+                $sale['customer_id'] = $customer_visit->customer_id;
+                $sale['order_date'] = $customer_visit->visit_date;
+                $sale['type'] = 'Order';
+                $sale['status'] = 'Pendiente';
+                $sale['total'] = $total_order;
+                Sales::create($sale);
             }
         } else {
 
+            $input['type'] = 'NoOrder';
             $input['seller_id'] = Auth::user()->idReference;
             $customer_visit = CustomerVisit::create($input);
         }
@@ -158,7 +163,7 @@ class CustomerVisitController extends Controller
         $idRefCurrentUser = Auth::user()->idReference;
         $customer_visit = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-            ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+            ->where('customer_visits.id', '=', $id)
             ->select(
                 'customer_visits.id',
                 'customer_visits.visit_date',
@@ -167,32 +172,36 @@ class CustomerVisitController extends Controller
                 'customer_visits.result_of_the_visit',
                 'customer_visits.objective',
                 'customer_visits.status',
+                'customer_visits.type',
                 'customers.name AS customer_name',
                 'customers.estate'
             )
             ->orderBy('customer_visits.created_at', 'DESC')
             ->first();
 
-        $order_visits = DB::table('order_visits')
-            ->where('order_visits.visit_id', '=', $id)
-            ->leftjoin('products', 'products.id', '=', 'order_visits.product_id')
-            ->select('products.name', 'products.code', 'order_visits.price', 'order_visits.quantity','order_visits.inventory', 'order_visits.amount')
-            ->orderBy('order_visits.created_at', 'DESC')
+        $order_details = DB::table('order_details')
+            ->where('order_details.visit_id', '=', $id)
+            ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+            ->select('products.name', 'products.code', 'order_details.price', 'order_details.quantity', 'order_details.inventory', 'order_details.amount')
+            ->orderBy('order_details.created_at', 'DESC')
             ->get();
 
-        $total_order = DB::table('order_visits')
-            ->where('order_visits.visit_id', '=', $id)
+        $total_order = DB::table('order_details')
+            ->where('order_details.visit_id', '=', $id)
             ->sum('amount');
 
-        return view('user::customer_visits.show', compact('customer_visit', 'order_visits', 'total_order'));
+        return view('user::customer_visits.show', compact('customer_visit', 'order_details', 'total_order'));
     }
 
     public function edit($id)
     {
         $idRefCurrentUser = Auth::user()->idReference;
+        $currentDate = Carbon::now();
+        $currentDate = $currentDate->toDateTimeString();
+
         $customer_visit = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-            ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+            ->where('customer_visits.id', '=', $id)
             ->select(
                 'customer_visits.id',
                 'customer_visits.customer_id',
@@ -209,6 +218,8 @@ class CustomerVisitController extends Controller
             ->orderBy('customer_visits.created_at', 'DESC')
             ->first();
 
+        $customer_visit_type = $customer_visit->type;
+
         $products = DB::table('products')
             ->select(
                 'id',
@@ -220,33 +231,29 @@ class CustomerVisitController extends Controller
             ->orderBy('created_at', 'DESC')
             ->get();
 
-        $currentDate = Carbon::now();
-        $currentDate = $currentDate->toDateTimeString();
-
         $customers = DB::table('customers')
             ->where('customers.idReference', '=', $idRefCurrentUser)
             ->select('customers.id', 'customers.name')
             ->get();
 
         $status = [
-            'Pendiente',
             'Visitado',
             'No Atendido',
             'Cancelado'
         ];
 
-        $order_visits = DB::table('order_visits')
-            ->where('order_visits.visit_id', '=', $id)
-            ->leftjoin('products', 'products.id', '=', 'order_visits.product_id')
-            ->select('products.name', 'products.code', 'order_visits.price', 'order_visits.quantity', 'order_visits.inventory', 'order_visits.amount', 'order_visits.product_id')
-            ->orderBy('order_visits.created_at', 'DESC')
+        $order_details = DB::table('order_details')
+            ->where('order_details.visit_id', '=', $id)
+            ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+            ->select('products.name', 'products.code', 'order_details.price', 'order_details.quantity', 'order_details.inventory', 'order_details.amount', 'order_details.product_id')
+            ->orderBy('order_details.created_at', 'DESC')
             ->get();
 
-        $total_order = DB::table('order_visits')
-            ->where('order_visits.visit_id', '=', $id)
+        $total_order = DB::table('order_details')
+            ->where('order_details.visit_id', '=', $id)
             ->sum('amount');
 
-        return view('user::customer_visits.edit', compact('customers', 'customer_visit', 'currentDate', 'status', 'products', 'order_visits', 'total_order'));
+        return view('user::customer_visits.edit', compact('customers', 'customer_visit', 'currentDate', 'status', 'products', 'order_details', 'total_order', 'customer_visit_type'));
     }
 
     public function update(Request $request, $id)
@@ -281,12 +288,6 @@ class CustomerVisitController extends Controller
             if (strlen($request->product_id[0]) > 10) {
                 return back()->with('error', 'Por favor, adicione un producto.');
             } else {
-
-                $input['seller_id'] = Auth::user()->idReference;
-
-                $customer_visit = CustomerVisit::find($id);
-                $customer_visit->update($input);
-
                 $request->validate([
                     'product_id' => 'required',
                     'qty' => 'required|min:0',
@@ -294,19 +295,60 @@ class CustomerVisitController extends Controller
                     'amount' => 'required',
                 ]);
 
-                foreach ($request->product_id as $key => $value) {
-                    $item_order_visit = new OrderVisit();
-                    $item_order_visit->quantity = $request->qty[$key];
-                    $item_order_visit->inventory = $request->qty_av[$key];
-                    $item_order_visit->price = $request->price[$key];
-                    $item_order_visit->amount = $request->amount[$key];
-                    $item_order_visit->product_id = $request->product_id[$key];
-                    $item_order_visit->visit_id = $customer_visit->id;
-                    $item_order_visit->update();
+                $customer_visit = CustomerVisit::find($id);
+
+                if ($customer_visit->type == 'NoOrder') {
+                    foreach ($request->product_id as $key => $value) {
+                        $order = new OrderDetail();
+                        $order->quantity = $request->qty[$key];
+                        $order->inventory = $request->qty_av[$key];
+                        $order->price = $request->price[$key];
+                        $order->amount = $request->amount[$key];
+                        $order->product_id = $request->product_id[$key];
+                        $order->visit_id = $customer_visit->id;
+                        $order->save();
+                    }
+
+                    $total_order = DB::table('order_details')
+                        ->where('order_details.visit_id', '=', $customer_visit->id)
+                        ->sum('amount');
+
+                    $sale['visit_id'] = $customer_visit->id;
+                    $sale['seller_id'] = Auth::user()->idReference;
+                    $sale['customer_id'] = $customer_visit->customer_id;
+                    $sale['order_date'] = $customer_visit->visit_date;
+                    $sale['type'] = 'Order';
+                    $sale['status'] = 'Pendiente';
+                    $sale['total'] = $total_order;
+                    Sales::create($sale);
+                } else {
+
+                    foreach ($request->product_id as $key => $value) {
+                        $order = new OrderDetail();
+                        $order->quantity = $request->qty[$key];
+                        $order->inventory = $request->qty_av[$key];
+                        $order->price = $request->price[$key];
+                        $order->amount = $request->amount[$key];
+                        $order->product_id = $request->product_id[$key];
+                        $order->visit_id = $customer_visit->id;
+                        $order->update();
+                    }
+
+                    $total_order = DB::table('order_details')
+                        ->where('order_details.visit_id', '=', $customer_visit->id)
+                        ->sum('amount');
+
+                    Sales::where('sales.visit_id', '=', $customer_visit->id)
+                        ->update([
+                            'total' => $total_order
+                        ]);
                 }
+
+                $input['type'] = 'Order';
+                $input['seller_id'] = Auth::user()->idReference;
+                $customer_visit->update($input);
             }
         } else {
-
             $customer_visit = CustomerVisit::find($id);
             $customer_visit->update($input);
         }
@@ -322,7 +364,7 @@ class CustomerVisitController extends Controller
         if ($search == '') {
             $customer_visits = DB::table('customer_visits')
                 ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-                ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+                ->where('customers.idReference', '=', $idRefCurrentUser)
                 ->select(
                     'customer_visits.id',
                     'customer_visits.visit_date',
@@ -340,7 +382,7 @@ class CustomerVisitController extends Controller
         } else {
             $customer_visits = DB::table('customer_visits')
                 ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-                ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+                ->where('customers.idReference', '=', $idRefCurrentUser)
                 ->where('customers.name', 'LIKE', "%{$search}%")
                 ->select(
                     'customer_visits.id',

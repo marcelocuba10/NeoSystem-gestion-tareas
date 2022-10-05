@@ -144,7 +144,7 @@
                   @foreach ($products as $product)
                     <tr>
                       <td><p class="text-sm fw-500 text-gray"><a href="{{ url('/admin/products/show/'.$product->id) }}">{{ $product->name ?? old('name') }}</a></p></td>
-                      <td><p class="text-sm fw-500 text-gray">{{ $product->quantity }}</p></td>
+                      <td><p class="text-sm fw-500 text-gray">{{ $product->inventory }}</p></td>
                     </tr>
                   @endforeach
                 </tbody>

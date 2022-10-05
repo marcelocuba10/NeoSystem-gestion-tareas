@@ -80,12 +80,12 @@
     
     <div class="col-12">
       <div class="form-check checkbox-style mb-30">
-        <input name="setOrder" class="form-check-input" type="checkbox" id="chkbox_setOrder" @if(!empty($customer_visit)) {{ ($customer_visit->type == 'Order') ? 'checked' : '' }} onclick="return false;" @endif>
+        <input name="setOrder" class="form-check-input" type="checkbox" id="chkbox_setOrder" @if(!empty($customer_visit)) {{ ($customer_visit->type == 'Order') ? 'checked' : '' }} @endif>
         <label class="form-check-label" for="checkbox-setOrder">¿Crear Presupuesto?</label>
       </div>
     </div>
 
-    @if ($customer_visit)
+    @if ($customer_visit_type == 'Order')
       <div class="col-12" id="setOrder">
         <div class="table-wrapper table-responsive">
           <table class="table top-selling-table mb-50">
@@ -100,7 +100,7 @@
               </tr>
             </thead>
             <tbody>
-              @foreach ($order_visits as $item_order)
+              @foreach ($order_details as $item_order)
                 <tr>
                   <td>
                     <select name="product_id[]" class="form-control product">
@@ -199,7 +199,6 @@
         </div>
       </div>
     @endif
-
   </div>
 </div>
 

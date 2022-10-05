@@ -104,7 +104,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    @foreach ($order_visits as $item_order)
+                    @foreach ($order_detail as $item_order)
                       <tr>
                         <td><p class="text-sm">{{ $item_order->code }}</td>
                         <td><p class="text-sm">{{ $item_order->name }}</p></td>

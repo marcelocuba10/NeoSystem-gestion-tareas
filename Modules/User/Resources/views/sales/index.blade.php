@@ -54,14 +54,19 @@
                     @foreach ($sales as $sale)
                       <tr>
                         <td class="text-sm"><h6 class="text-sm">{{ ++$i }}</h6></td>
-                        <td class="min-width"><h5 class="text-bold text-dark"><a href="#">{{ $sale->customer_name }}</a></h5></td>
+                        <td class="min-width"><h5 class="text-bold text-dark"><a href="{{ url('/user/sales/show/'.$sale->id) }}">{{ $sale->customer_name }}</a></h5></td>
                         <td class="min-width"><p>{{ $sale->estate }}</p></td>
                         @if ($sale->type == 'Order')
                           <td class="min-width"><span class="status-btn btn-custom-attention">Presupuesto</span></td>
                         @elseIf($sale->type == 'Sale')
                           <td class="min-width"><span class="status-btn btn-custom-enabled">Procesado</span></td>
                         @endif
-                        <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ $sale->sale_date }}</p></td>
+                        @if ($sale->visit_date)
+                          <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ $sale->visit_date }}</p></td>
+                        @else
+                          <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ $sale->sale_date }}</p></td>
+                        @endif
+                        
                         <td class="min-width"><p><b>G$ {{number_format($sale->total, 0)}}</b></p></td>
                         <td class="text-right">
                           <div class="btn-group">

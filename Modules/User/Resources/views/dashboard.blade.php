@@ -11,11 +11,10 @@
               <h2>Bienvenido a {{ config('app.name') }}</h2>
             </div>
           </div>
-          <!-- end col -->
         </div>
-        <!-- end row -->
       </div>
       <!-- ========== title-wrapper end ========== -->
+
       <div class="row">
         <div class="col-xl-3 col-lg-4 col-sm-6">
           <div class="icon-card mb-30">
@@ -27,54 +26,41 @@
               <h3 class="text-bold mb-10">{{ $cant_customers }}</h3>
             </div>
           </div>
-          <!-- End Icon Cart -->
         </div>
-        <!-- End Col -->
         <div class="col-xl-3 col-lg-4 col-sm-6">
           <div class="icon-card mb-30">
             <div class="icon orange">
-              <i class="lni lni-user"></i>
+              <i class="lni lni-grid-alt"></i>
             </div>
             <div class="content">
               <h6 class="mb-10">Total Productos</h6>
               <h3 class="text-bold mb-10">{{ $cant_products }}</h3>
             </div>
           </div>
-          <!-- End Icon Cart -->
         </div>
-        <!-- End Col -->
         <div class="col-xl-3 col-lg-4 col-sm-6">
           <div class="icon-card mb-30">
             <div class="icon success">
-              <i class="lni lni-graph"></i>
-            </div>
-            <div class="content">
-              <h6 class="mb-10">Total Ventas</h6>
-              <h3 class="text-bold mb-10">121.212</h3>
-            </div>
-          </div>
-          <!-- End Icon Cart -->
-        </div>
-        <!-- End Col -->
-        <div class="col-xl-3 col-lg-4 col-sm-6">
-          <div class="icon-card mb-30">
-            <div class="icon primary">
               <i class="lni lni-credit-cards"></i>
             </div>
             <div class="content">
-              {{-- @php
-                use Modules\User\Entities\Machines;
-                $cant_machines = Machines::count(); 
-              @endphp --}}
-              <h6 class="mb-10">Visitas Pendientes</h6>
-              <h3 class="text-bold mb-10">4</h3>
+              <h6 class="mb-10">Total Ventas</h6>
+              <h3 class="text-bold mb-10">G$ {{number_format($total_sales, 0)}}</h3>
             </div>
           </div>
-          <!-- End Icon Cart -->
         </div>
-        <!-- End Col -->
+        <div class="col-xl-3 col-lg-4 col-sm-6">
+          <div class="icon-card mb-30">
+            <div class="icon primary">
+              <i class="lni lni-hand"></i>
+            </div>
+            <div class="content">
+              <h6 class="mb-10">Total Visitas</h6>
+              <h3 class="text-bold mb-10">{{ $total_visits }}</h3>
+            </div>
+          </div>
+        </div>
       </div>
-      <!-- End Row -->
       <div class="row">
         <div class="col-md-6 col-lg-3 col-xl-6 col-xxl-3">
           <div class="card-style mb-30">
@@ -85,21 +71,14 @@
               <div class="right mb-2">
               </div>
             </div>
-            <!-- End Title -->
 
             <div class="table-responsive">
               <table class="table sell-order-table">
                 <thead>
                   <tr>
-                    <th>
-                      <h6 class="text-sm fw-500">Nombre</h6>
-                    </th>
-                    <th>
-                      <h6 class="text-sm fw-500">Doc Identidad</h6>
-                    </th>
-                    <th class="text-end">
-                      <h6 class="text-sm fw-500">Teléfono</h6>
-                    </th>
+                    <th><h6 class="text-sm fw-500">Nombre</h6></th>
+                    <th><h6 class="text-sm fw-500">Doc Identidad</h6></th>
+                    <th class="text-end"><h6 class="text-sm fw-500">Teléfono</h6></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -116,7 +95,6 @@
             </div>
           </div>
         </div>
-        <!-- End Col -->
         <div class="col-md-6 col-lg-3 col-xl-6 col-xxl-3">
           <div class="card-style mb-30">
             <div class="title d-flex flex-wrap align-items-center justify-content-between mb-10">
@@ -126,7 +104,6 @@
               <div class="right mb-2">
               </div>
             </div>
-            <!-- End Title -->
 
             <div class="table-responsive">
               <table class="table sell-order-table">
@@ -136,7 +113,7 @@
                       <h6 class="text-sm fw-500">Nombre</h6>
                     </th>
                     <th>
-                      <h6 class="text-sm fw-500">Stock</h6>
+                      <h6 class="text-sm fw-500">Inventario</h6>
                     </th>
                   </tr>
                 </thead>
@@ -144,7 +121,13 @@
                   @foreach ($products as $product)
                     <tr>
                       <td><p class="text-sm fw-500 text-gray"><a href="{{ url('/user/products/show/'.$product->id) }}">{{ $product->name ?? old('name') }}</a></p></td>
-                      <td><p class="text-sm fw-500 text-gray">{{ $product->quantity }}</p></td>
+                      <td class="min-width">
+                        @if ($product->inventory > 5)
+                        <p><span class="status-btn info-btn">{{ $product->inventory }}</span></p>
+                        @else
+                          <p><span class="status-btn orange-btn">{{ $product->inventory }}</span></p>
+                        @endif
+                      </td>
                     </tr>
                   @endforeach
                 </tbody>
@@ -158,11 +141,7 @@
             <div id="calendar-mini"></div>
           </div>
         </div>
-        <!-- End Col -->
       </div>
-      <!-- End Row -->
-
     </div>
-    <!-- end container -->
 </section>
 @endsection

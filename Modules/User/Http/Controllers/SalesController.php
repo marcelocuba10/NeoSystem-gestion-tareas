@@ -9,7 +9,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Modules\User\Entities\CustomerVisit;
-use Modules\User\Entities\OrderVisit;
+use Modules\User\Entities\OrderDetail;
 use Modules\User\Entities\Sales;
 
 class SalesController extends Controller
@@ -29,8 +29,8 @@ class SalesController extends Controller
         $idRefCurrentUser = Auth::user()->idReference;
 
         $sales = DB::table('sales')
-            ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
             ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+            ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
             ->where('sales.seller_id', '=', $idRefCurrentUser)
             ->orWhere('customer_visits.seller_id', '=', $idRefCurrentUser)
             ->select(
@@ -41,7 +41,7 @@ class SalesController extends Controller
                 'sales.total',
                 'customers.name AS customer_name',
                 'customers.estate',
-                'customer_visits.date',
+                'customer_visits.visit_date',
             )
             ->orderBy('sales.created_at', 'DESC')
             ->paginate(10);
@@ -63,7 +63,6 @@ class SalesController extends Controller
             ->get();
 
         $status = [
-            'Pendiente',
             'Visitado',
             'No Atendido',
             'Cancelado'
@@ -107,7 +106,7 @@ class SalesController extends Controller
         ]);
 
         foreach ($request->product_id as $key => $value) {
-            $order = new OrderVisit();
+            $order = new OrderDetail();
             $order->quantity = $request->qty[$key];
             $order->inventory = $request->qty_av[$key];
             $order->price = $request->price[$key];
@@ -117,8 +116,8 @@ class SalesController extends Controller
             $order->save();
         }
 
-        $total_order = DB::table('order_visits')
-            ->where('order_visits.sale_id', '=', $sale->id)
+        $total_order = DB::table('order_details')
+            ->where('order_details.sale_id', '=', $sale->id)
             ->sum('amount');
 
         $input['total'] = $total_order;
@@ -133,7 +132,7 @@ class SalesController extends Controller
         $idRefCurrentUser = Auth::user()->idReference;
         $sale = DB::table('sales')
             ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
-            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+            ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
             ->where('sales.id', '=', $id)
             ->select(
                 'customer_visits.id',
@@ -150,18 +149,18 @@ class SalesController extends Controller
             ->orderBy('sales.created_at', 'DESC')
             ->first();
 
-        $order_visits = DB::table('order_visits')
-            ->where('order_visits.visit_id', '=', $sale->visit_id)
-            ->leftjoin('products', 'products.id', '=', 'order_visits.product_id')
-            ->select('products.name', 'products.code', 'order_visits.price', 'order_visits.quantity', 'order_visits.inventory', 'order_visits.amount')
-            ->orderBy('order_visits.created_at', 'DESC')
+        $order_detail = DB::table('order_details')
+            ->where('order_details.visit_id', '=', $sale->visit_id)
+            ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+            ->select('products.name', 'products.code', 'order_details.price', 'order_details.quantity', 'order_details.inventory', 'order_details.amount')
+            ->orderBy('order_details.created_at', 'DESC')
             ->get();
 
-        $total_order = DB::table('order_visits')
-            ->where('order_visits.visit_id', '=', $sale->visit_id)
+        $total_order = DB::table('order_details')
+            ->where('order_details.visit_id', '=', $sale->visit_id)
             ->sum('amount');
 
-        return view('user::sales.show', compact('sale', 'order_visits', 'total_order'));
+        return view('user::sales.show', compact('sale', 'order_detail', 'total_order'));
     }
 
     public function edit($id)
@@ -211,7 +210,7 @@ class SalesController extends Controller
             'Cancelado'
         ];
 
-        return view('user::customer_visits.edit', compact('customers', 'customer_visit', 'currentDate', 'status', 'products'));
+        return view('user::sales.edit', compact('customers', 'customer_visit', 'currentDate', 'status', 'products'));
     }
 
     public function update(Request $request, $id)
@@ -258,7 +257,7 @@ class SalesController extends Controller
                 ]);
 
                 foreach ($request->product_id as $key => $product_id) {
-                    $item_order_visit = new OrderVisit();
+                    $item_order_visit = new OrderDetail();
                     $item_order_visit->quantity = $request->qty[$key];
                     $item_order_visit->price = $request->price[$key];
                     $item_order_visit->amount = $request->amount[$key];
@@ -273,7 +272,7 @@ class SalesController extends Controller
             $customer_visit->update($input);
         }
 
-        return redirect()->to('/user/customer_visits')->with('message', 'Visita Cliente actualizada correctamente.');
+        return redirect()->to('/user/sales')->with('message', 'Visita Cliente actualizada correctamente.');
     }
 
     public function search(Request $request)
@@ -282,48 +281,48 @@ class SalesController extends Controller
         $idRefCurrentUser = Auth::user()->idReference;
 
         if ($search == '') {
-            $customer_visits = DB::table('customer_visits')
-                ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-                ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+            $sales = DB::table('sales')
+                ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+                ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+                ->Where('customers.idReference', '=', $idRefCurrentUser)
                 ->select(
-                    'customer_visits.id',
-                    'customer_visits.visit_date',
-                    'customer_visits.next_visit_date',
-                    'customer_visits.next_visit_hour',
-                    'customer_visits.result_of_the_visit',
-                    'customer_visits.objective',
-                    'customer_visits.status',
+                    'sales.id',
+                    'sales.sale_date',
+                    'sales.type',
+                    'sales.status',
+                    'sales.total',
                     'customers.name AS customer_name',
-                    'customers.estate'
+                    'customers.estate',
+                    'customer_visits.visit_date',
                 )
-                ->orderBy('customer_visits.created_at', 'DESC')
+                ->orderBy('sales.created_at', 'DESC')
                 ->paginate(10);
         } else {
-            $customer_visits = DB::table('customer_visits')
-                ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-                ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+            $sales = DB::table('sales')
+                ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+                ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
                 ->where('customers.name', 'LIKE', "%{$search}%")
+                ->Where('customers.idReference', '=', $idRefCurrentUser)
                 ->select(
-                    'customer_visits.id',
-                    'customer_visits.visit_date',
-                    'customer_visits.next_visit_date',
-                    'customer_visits.next_visit_hour',
-                    'customer_visits.result_of_the_visit',
-                    'customer_visits.objective',
-                    'customer_visits.status',
+                    'sales.id',
+                    'sales.sale_date',
+                    'sales.type',
+                    'sales.status',
+                    'sales.total',
                     'customers.name AS customer_name',
-                    'customers.estate'
+                    'customers.estate',
+                    'customer_visits.visit_date',
                 )
-                ->orderBy('customer_visits.created_at', 'DESC')
+                ->orderBy('sales.created_at', 'DESC')
                 ->paginate();
         }
 
-        return view('user::customer_visits.index', compact('customer_visits', 'search'))->with('i', (request()->input('page', 1) - 1) * 10);
+        return view('user::sales.index', compact('sales', 'search'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
     public function destroy($id)
     {
-        CustomerVisit::find($id)->delete();
-        return redirect()->to('/user/customer_visits')->with('message', 'Customer deleted successfully');
+        Sales::find($id)->delete();
+        return redirect()->to('/user/sales')->with('message', 'Venta eliminada correctamente');
     }
 }

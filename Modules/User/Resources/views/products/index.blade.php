@@ -65,10 +65,10 @@
                     <td class="min-width"><p>{{ $product->description }}</p></td>
                     <td class="min-width"><p>G$ {{number_format($product->sale_price, 0)}}</p></td>
                     <td class="min-width">
-                      @if ($product->quantity > 5)
-                      <p><span class="status-btn info-btn">{{ $product->quantity }}</span></p>
+                      @if ($product->inventory > 5)
+                      <p><span class="status-btn info-btn">{{ $product->inventory }}</span></p>
                       @else
-                        <p><span class="status-btn orange-btn">{{ $product->quantity }}</span></p>
+                        <p><span class="status-btn orange-btn">{{ $product->inventory }}</span></p>
                       @endif
                     </td>
                     <td class="text-right">

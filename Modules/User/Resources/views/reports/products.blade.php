@@ -1,17 +1,16 @@
 @extends('user::layouts.adminLTE.app')
 @section('content')
 
-<section class="table-components">
+  <section class="table-components">
     <div class="container-fluid">
       <!-- ========== title-wrapper start ========== -->
       <div class="title-wrapper pt-30">
         <div class="row align-items-center">
           <div class="col-md-8">
             <div class="title d-flex align-items-center flex-wrap mb-30">
-              <h2 class="mr-40">Relatorio de Precios</h2>
+              <h2 class="mr-40">Relatorio de Productos</h2>
             </div>
           </div>
-          <div class="col-md-4"></div>
         </div>
       </div>
       <!-- ========== title-wrapper end ========== -->
@@ -27,7 +26,7 @@
                       <div class="col-md-3">
                         <div class="input-style-1">
                           <label>Fecha Desde</label>
-                            <input type="date" name="date" id="date" value="" readonly class="bg-gray">  
+                          <input type="date" name="date" id="date" value="" readonly class="bg-gray">  
                         </div>
                       </div>
                       <div class="col-md-3">
@@ -64,7 +63,7 @@
                         <h6 class="text-sm text-medium">Precio</h6>
                       </th>
                       <th>
-                        <h6 class="text-sm text-medium">Stock</h6>
+                        <h6 class="text-sm text-medium">Inventario</h6>
                       </th>
                     </tr>
                   </thead>
@@ -75,10 +74,10 @@
                       <td class="text-sm"><p>{{ $product->code }}</p></td>
                       <td class="text-sm"><p>{{ $product->name }}</p></td>
                       <td class="text-sm"><p>{{ $product->sale_price }}</p></td>
-                      <td class="text-sm"><p>{{ $product->quantity }}</p></td>
+                      <td class="text-sm"><p>{{ $product->inventory }}</p></td>
                     </tr>
                     @endforeach
-                </tbody>
+                  </tbody>
                 </table>
                 @if (isset($filter))
                   {!! $products-> appends($filter)->links() !!} <!-- appends envia variable en la paginacion-->

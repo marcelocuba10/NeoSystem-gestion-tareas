@@ -485,8 +485,8 @@ span.selection {
 .btn-custom-enabled {
     background-color: #4caf50;
 }
-.btn-custom-maintenance {
-    background-color: #03a9f4;
+.btn-custom-secondary {
+    background-color: #03a9f487;
 }
 .btn-custom-error {
     background-color: #f44336;
