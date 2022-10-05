@@ -26,6 +26,18 @@ Route::prefix('user')->group(function () {
         Route::get('/dashboard', 'HomeController@index');
         Route::get('/logout', 'Auth\LogoutController@perform');
 
+        /*** Appointments Routes ***/
+        Route::group(['prefix' => 'appointments'], function () {
+            Route::get('/', 'AppointmentController@index');
+            Route::get('/create', 'AppointmentController@create');
+            Route::post('/create', 'AppointmentController@store');
+            Route::get('/show/{id}', 'AppointmentController@show');
+            Route::get('/edit/{id}', 'AppointmentController@edit');
+            Route::put('/update/{id}', 'AppointmentController@update');
+            Route::delete('/delete/{id}', 'AppointmentController@destroy');
+            Route::get('/search', 'AppointmentController@search');
+        });
+
         /*** Customer Visits Routes ***/
         Route::group(['prefix' => 'sales'], function () {
             Route::get('/', 'SalesController@index');
