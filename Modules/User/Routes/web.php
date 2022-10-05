@@ -26,6 +26,18 @@ Route::prefix('user')->group(function () {
         Route::get('/dashboard', 'HomeController@index');
         Route::get('/logout', 'Auth\LogoutController@perform');
 
+        /*** WhatCanDo Routes ***/
+        Route::group(['prefix' => 'whatdo'], function () {
+            Route::get('/', 'WhatDoController@index');
+            Route::get('/create', 'WhatDoController@create');
+            Route::post('/create', 'WhatDoController@store');
+            Route::get('/show/{id}', 'WhatDoController@show');
+            Route::get('/edit/{id}', 'WhatDoController@edit');
+            Route::put('/update/{id}', 'WhatDoController@update');
+            Route::delete('/delete/{id}', 'WhatDoController@destroy');
+            Route::get('/search', 'WhatDoController@search');
+        });
+
         /*** Appointments Routes ***/
         Route::group(['prefix' => 'appointments'], function () {
             Route::get('/', 'AppointmentController@index');

@@ -76,19 +76,19 @@
                         <td class="text-right">
                           <div class="btn-group">
                             <div class="action">
-                              <a href="#">
+                              <a href="{{ url('/user/customer_visits/show/'.$customer_visit->id) }}">
                                 <button class="text-active"><i class="lni lni-eye"></i></button>
                               </a>
                             </div>
                             @can('appointment-edit')
                             <div class="action">
-                              <a href="#">
+                              <a href="{{ url('/user/customer_visits/edit/'.$customer_visit->id) }}">
                                 <button class="text-info"><i class="lni lni-pencil"></i></button>
                               </a>
                             </div>
                             @endcan
                             @can('appointment-delete')
-                            <form method="POST" action="#">
+                            <form method="POST" action="{{ url('/user/customer_visits/delete/'.$customer_visit->id) }}">
                               @csrf
                               <div class="action">
                                 <input name="_method" type="hidden" value="DELETE">

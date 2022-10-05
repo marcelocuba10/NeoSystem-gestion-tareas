@@ -78,7 +78,7 @@
         </li>
         @endcan
         @can('what_can_do-list')
-        <li class="nav-item {{ (request()->is('user/what_can_do')) ? 'active' : '' }}">
+        <li class="nav-item {{ (request()->is('user/whatdo')) ? 'active' : '' }}">
           <a href="#">
             <span class="icon">
               <svg style="width:24px;height:24px" viewBox="0 0 24 24">
