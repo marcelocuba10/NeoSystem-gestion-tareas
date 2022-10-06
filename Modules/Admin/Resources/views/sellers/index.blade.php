@@ -76,7 +76,7 @@
                         <td class="min-width"><p>{{ $user->name }}</p></td>
                         <td class="min-width"><p>{{ $user->city }}</p></td>
                         <td class="min-width"><p>{{ $user->estate }}</p></td>
-                        <td class="min-width"><p><i class="lni lni-envelope mr-10"></i>{{ $user->phone_1 }}</p></td>
+                        <td class="min-width"><p><i class="lni lni-phone mr-10"></i>{{ $user->phone_1 }}</p></td>
                         <td class="min-width">
                           @if ($user->status == 1)
                             <p><span class="status-btn success-btn">Activado</span></p>

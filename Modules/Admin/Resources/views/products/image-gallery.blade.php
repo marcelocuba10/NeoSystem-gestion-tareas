@@ -42,14 +42,14 @@
                             <div class="card-body">
                             <h5 class="card-title">{{ Str::limit($image->filename, 15) }}</h5>
                             <div class="btn-group">
-                                <a href="javascript:void(0)" data-toggle="modal" data-target="#imageModal" data-id="{{$image->id}}" data-image="{{$image->filename}}" class="btn btn-sm success-btn btn-edit">Edit</a>
+                                <a href="javascript:void(0)" data-toggle="modal" data-target="#imageModal" data-id="{{$image->id}}" data-image="{{$image->filename}}" class="btn btn-sm success-btn btn-edit">Cambiar</a>
                             </div>
                             <div class="btn-group">
                                 <form action="{{ url('/admin/products/image-delete/'.$image->id) }}" method="post">
                                     @csrf
                                     @method('DELETE')
                                     <input type="hidden" name="id" value="{{$image->id}}"/>
-                                    <button type="submit" class="btn btn-sm danger-btn ml-2">Delete</button>
+                                    <button type="submit" class="btn btn-sm danger-btn ml-2">Eliminar</button>
                                 </form>
                             </div>
                             </div>
@@ -63,7 +63,7 @@
                             @csrf
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title font-weight-bold">Upload Image</h5>
+                                    <h5 class="modal-title font-weight-bold">Agregar imagen</h5>
                                     <button type="button" class="btn-close-img" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -79,8 +79,8 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-success">Upload</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                    <button type="submit" class="btn btn-success">Subir</button>
                                 </div>
                             </div>
                         </form>
@@ -97,7 +97,7 @@
                             @csrf
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title font-weight-bold">Upload Image</h5>
+                                    <h5 class="modal-title font-weight-bold">Agregar imagen</h5>
                                     <button type="button" class="btn-close-img" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -113,8 +113,8 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-success">Upload</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                    <button type="submit" class="btn btn-success">Subir</button>
                                 </div>
                             </div>
                         </form>
@@ -149,7 +149,7 @@
                 $("#oldImage").val(imageName);
 
                 if(imageName !== undefined) {
-                    $(".modal-title").text("Update Image");
+                    $(".modal-title").text("Subir imagen");
                     $(".file-input").after("<div class='form-group old-img' style='margin-top: 15px;'><img src='/public/images/products/"+imageName+"' style='height:100px;'></div>");
                 }
           });

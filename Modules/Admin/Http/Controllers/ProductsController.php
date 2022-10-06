@@ -30,6 +30,7 @@ class ProductsController extends Controller
                 'products.id',
                 'products.name',
                 'products.description',
+                'products.purchase_price',
                 'products.sale_price',
                 'products.inventory',
                 'images_products.filename'
@@ -222,6 +223,7 @@ class ProductsController extends Controller
                     'products.id',
                     'products.name',
                     'products.description',
+                    'products.purchase_price',
                     'products.sale_price',
                     'products.inventory',
                     'images_products.filename'
@@ -237,6 +239,7 @@ class ProductsController extends Controller
                     'products.id',
                     'products.name',
                     'products.description',
+                    'products.purchase_price',
                     'products.sale_price',
                     'products.inventory',
                     'images_products.filename'

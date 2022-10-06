@@ -49,8 +49,9 @@
                     <th><h6>#</h6></th>
                     <th><h6>Producto</h6></th>
                     <th><h6>Descripción</h6></th>
+                    <th><h6>Precio Compra</h6></th>
                     <th><h6>Precio Venta</h6></th>
-                    <th><h6>Stock</h6></th>
+                    <th><h6>Inventario</h6></th>
                     <th><h6>Acciones</h6></th>
                   </tr>
                   <!-- end table row-->
@@ -72,6 +73,7 @@
                       </div>
                     </td>
                     <td class="min-width"><p>{{ $product->description }}</p></td>
+                    <td class="min-width"><p>G$ {{number_format($product->purchase_price, 0)}}</p></td>
                     <td class="min-width"><p>G$ {{number_format($product->sale_price, 0)}}</p></td>
                     <td class="min-width">
                       @if ($product->inventory > 5)
