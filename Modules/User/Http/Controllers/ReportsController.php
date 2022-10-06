@@ -33,8 +33,8 @@ class ReportsController extends Controller
                 'id',
                 'name',
                 'doc_id',
-                'idReference',
                 'email',
+                'city',
                 'estate',
                 'phone',
                 'is_vigia',
@@ -45,6 +45,23 @@ class ReportsController extends Controller
             ->paginate(30);
 
         if ($request->has('download')) {
+            $customers = DB::table('customers')
+                ->where('idReference', '=', $idRefCurrentUser)
+                ->select(
+                    'id',
+                    'name',
+                    'doc_id',
+                    'email',
+                    'city',
+                    'estate',
+                    'phone',
+                    'is_vigia',
+                    'next_visit_hour',
+                    'next_visit_date'
+                )
+                ->orderBy('created_at', 'DESC')
+                ->get();
+
             $pdf = PDF::loadView('user::reports.customersPrintPDF', compact('customers'));
             return $pdf->stream();
             // return $pdf->download('pdfview.pdf');
@@ -84,22 +101,5 @@ class ReportsController extends Controller
         }
 
         return view('user::reports.products', compact('products'))->with('i', (request()->input('page', 1) - 1) * 30);
-    }
-
-    public function schedules(Request $request)
-    {
-        $schedules = DB::table('schedules')
-            ->join('users', 'schedules.user_id', '=', 'users.id')
-            ->select('users.name', 'schedules.id', 'schedules.date', 'schedules.check_in_time', 'schedules.check_out_time', 'schedules.address_latitude_in', 'schedules.address_longitude_in', 'schedules.address_latitude_out', 'schedules.address_longitude_out')
-            ->orderBy('schedules.created_at', 'DESC')
-            ->Paginate(30);
-
-        if ($request->has('download')) {
-            $pdf = PDF::loadView('user::reports.createSchedulesPDF', compact('schedules'));
-            return $pdf->stream();
-            // return $pdf->download('pdfview.pdf');
-        }
-
-        return view('user::reports.schedules', compact('schedules'))->with('i', (request()->input('page', 1) - 1) * 30);
     }
 }

@@ -32,7 +32,15 @@ class SellersController extends Controller
     {
         $users = DB::table('users')
             ->where('main_user', '=', 1)
-            ->select('id', 'name', 'idReference', 'status', 'email','estate')
+            ->select(
+                'id',
+                'idReference',
+                'name',
+                'status',
+                'phone_1',
+                'city',
+                'estate'
+            )
             ->orderBy('created_at', 'DESC')
             ->paginate(10);
 
@@ -151,7 +159,7 @@ class SellersController extends Controller
         $userStatus = $user->status;
         $userEstate = $user->estate;
 
-        return view('admin::sellers.show', compact('user', 'status','userEstate','estates'));
+        return view('admin::sellers.show', compact('user', 'status', 'userEstate', 'estates'));
     }
 
     public function edit($id)

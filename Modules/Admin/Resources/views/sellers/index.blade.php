@@ -59,22 +59,24 @@
                     <thead>
                       <tr>
                         <th class="sm"><h6 class="text-sm text-medium"></h6></th>
+                        <th class="md"><h6>Código</h6></th>
                         <th class="md"><h6>Razón Social</h6></th>
-                        <th class="md"><h6>Cod Referencia</h6></th>
+                        <th class="md"><h6>Ciudad</h6></th>
                         <th class="md"><h6>Localidad</h6></th>
+                        <th class="md"><h6>Teléfono</h6></th>
                         <th class="md"><h6>Status</h6></th>
-                        <th class="md"><h6>Email</h6></th>
                         <th class="md"><h6>Acciones</h6></th>
                       </tr>
-                      <!-- end table row-->
                     </thead>
                     <tbody>
                       @foreach ($users as $user)
                       <tr>
                         <td class="min-width"><h6 class="text-sm">{{ ++$i }}</h6></td>
-                        <td class="min-width"><p>{{ $user->name }}</p></td>
                         <td class="min-width"><p>{{ $user->idReference }}</p></td>
+                        <td class="min-width"><p>{{ $user->name }}</p></td>
+                        <td class="min-width"><p>{{ $user->city }}</p></td>
                         <td class="min-width"><p>{{ $user->estate }}</p></td>
+                        <td class="min-width"><p><i class="lni lni-envelope mr-10"></i>{{ $user->phone_1 }}</p></td>
                         <td class="min-width">
                           @if ($user->status == 1)
                             <p><span class="status-btn success-btn">Activado</span></p>
@@ -82,7 +84,6 @@
                             <p><span class="status-btn active-btn">Desactivado</span></p>
                           @endif
                         </td>
-                        <td class="min-width"><p><i class="lni lni-envelope mr-10"></i>{{ $user->email }}</p></td>
                         <td class="text-right">
                           <div class="btn-group">
                             <div class="action">

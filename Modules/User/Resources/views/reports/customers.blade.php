@@ -8,7 +8,7 @@
         <div class="row align-items-center">
           <div class="col-md-8">
             <div class="title d-flex align-items-center flex-wrap mb-30">
-              <h2 class="mr-40">Relatorio de Clientes</h2>
+              <h2 class="mr-40">Informes de Clientes</h2>
             </div>
           </div>
         </div>
@@ -58,27 +58,13 @@
                 <table class="invoice-table table">
                   <thead style="background-color: #8dbba4;">
                     <tr>
-                      <th>
-                        <h6 class="text-sm text-medium">#</h6>
-                      </th>
-                      <th>
-                        <h6 class="text-sm text-medium">Razón Social</h6>
-                      </th>
-                      <th>
-                        <h6 class="text-sm text-medium">Teléfono</h6>
-                      </th>
-                      <th>
-                        <h6 class="text-sm text-medium">Email</h6>
-                      </th>
-                      <th>
-                        <h6 class="text-sm text-medium">¿Es Vigia?</h6>
-                      </th>
-                      <th>
-                        <h6 class="text-sm text-medium">Localidad</h6>
-                      </th>
-                      <th>
-                        <h6 class="text-sm text-medium">Próxima Visita</h6>
-                      </th>
+                      <th><h6 class="text-sm text-medium">#</h6></th>
+                      <th><h6 class="text-sm text-medium">Razón Social</h6></th>
+                      <th><h6 class="text-sm text-medium">Teléfono</h6></th>
+                      <th><h6 class="text-sm text-medium">¿Es Vigia?</h6></th>
+                      <th><h6 class="text-sm text-medium">Ciudad</h6></th>
+                      <th><h6 class="text-sm text-medium">Localidad</h6></th>
+                      <th><h6 class="text-sm text-medium">Próxima Visita</h6></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -87,7 +73,6 @@
                         <td class="text-sm"><h6 class="text-sm">{{ ++$i }}</h6></td>
                         <td class="text-sm"><p>{{ $customer->name }}</p></td>
                         <td class="text-sm"><p><i class="lni lni-phone mr-10"></i>{{ $customer->phone }}</p></td>
-                        <td class="text-sm"><p>{{ $customer->email }}</p></td>
                         <td class="text-sm">
                           @if ($customer->is_vigia == "on")
                             <p>Sí</p>
@@ -95,6 +80,7 @@
                             <p>No</p>
                           @endif
                         </td>
+                        <td class="text-sm"><p>{{ $customer->city }}</p></td>
                         <td class="text-sm"><p>{{ $customer->estate }}</p></td>
                         <td class="text-sm"><p>{{ $customer->next_visit_date }}</p></td>
                       </tr>
@@ -102,8 +88,6 @@
                   </tbody>
                 </table>
                 @if (isset($filter))
-                {{-- {{ $machines->appends(['sort' =>$filter])->links() }}  --}}
-                {{-- {!! $machines->appends(Request::except('page'))->render() !!} --}}
                   {!! $customers-> appends($filter)->links() !!} <!-- appends envia variable en la paginacion-->
                 @else
                   {!! $customers-> links() !!}    

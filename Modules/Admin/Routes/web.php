@@ -123,5 +123,11 @@ Route::prefix('admin')->group(function () {
                 Route::get('/search', 'ACL\PermissionsController@search');
             });
         });
+
+        /*** Reports Routes ***/
+        Route::group(['prefix' => 'reports'], function () {
+            Route::get('/sellers', 'ReportsController@sellers');
+            Route::get('/products', 'ReportsController@products');
+        });
     });
 });

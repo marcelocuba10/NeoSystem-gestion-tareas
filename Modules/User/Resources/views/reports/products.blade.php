@@ -50,21 +50,11 @@
                 <table class="invoice-table table">
                   <thead style="background-color: #8dbba4;">
                     <tr>
-                      <th>
-                        <h6 class="text-sm text-medium">#</h6>
-                      </th>
-                      <th>
-                        <h6 class="text-sm text-medium">Código</h6>
-                      </th>
-                      <th>
-                        <h6 class="text-sm text-medium">Nombre</h6>
-                      </th>
-                      <th>
-                        <h6 class="text-sm text-medium">Precio</h6>
-                      </th>
-                      <th>
-                        <h6 class="text-sm text-medium">Inventario</h6>
-                      </th>
+                      <th><h6 class="text-sm text-medium">#</h6></th>
+                      <th><h6 class="text-sm text-medium">Código</h6></th>
+                      <th><h6 class="text-sm text-medium">Nombre</h6></th>
+                      <th><h6 class="text-sm text-medium">Precio</h6></th>
+                      <th><h6 class="text-sm text-medium">Inventario</h6></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -73,7 +63,7 @@
                       <td class="text-sm"><h6 class="text-sm">{{ ++$i }}</h6></td>
                       <td class="text-sm"><p>{{ $product->code }}</p></td>
                       <td class="text-sm"><p>{{ $product->name }}</p></td>
-                      <td class="text-sm"><p>{{ $product->sale_price }}</p></td>
+                      <td class="text-sm"><p>G$ {{number_format($product->sale_price, 0)}}</p></td>
                       <td class="text-sm"><p>{{ $product->inventory }}</p></td>
                     </tr>
                     @endforeach
