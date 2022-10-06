@@ -90,21 +90,19 @@ class SalesController extends Controller
 
         $request->validate([
             'customer_id' => 'required',
+            'product_id' => 'required',
+            'qty' => 'required',
+            'price' => 'required',
+            'amount' => 'required',
         ]);
 
+        /** Save temporal sale */
         $input = $request->all();
         $input['seller_id'] = Auth::user()->idReference;
         $input['sale_date'] = $currentDate;
         $input['type'] = 'Sale';
         $input['status'] = 'Procesado';
         $sale = Sales::create($input);
-
-        $request->validate([
-            'product_id' => 'required',
-            'qty' => 'required|min:0',
-            'price' => 'required',
-            'amount' => 'required',
-        ]);
 
         foreach ($request->product_id as $key => $value) {
             $product = DB::table('products')
@@ -115,10 +113,11 @@ class SalesController extends Controller
                 )
                 ->first();
 
-            if ($request->qty[$key] > $product->inventory) {
+            if (intval($request->qty[$key]) > $product->inventory || intval($request->qty[$key]) <= 0) {
                 Sales::find($sale->id)->delete();
-                return back()->with('error', 'Cantidad solicitada, no disponible en inventario.');
+                return back()->with('error', 'Por favor, ingrese una cantidad válida.');
             } else {
+                /** Save items of sale */
                 $order = new OrderDetail();
                 $order->quantity = $request->qty[$key];
                 $order->inventory = $request->qty_av[$key];
@@ -128,6 +127,7 @@ class SalesController extends Controller
                 $order->sale_id = $sale->id;
                 $order->save();
 
+                /** Discount inventory from product */
                 $product_inventory = $product->inventory - $request->qty[$key];
 
                 Products::where('products.id', '=', $request->product_id[$key])
@@ -137,10 +137,12 @@ class SalesController extends Controller
             }
         }
 
+        /** Get total amount from items of Sale */
         $total_order = DB::table('order_details')
             ->where('order_details.sale_id', '=', $sale->id)
             ->sum('amount');
 
+        /** Update Sale with de total */
         $input['total'] = $total_order;
         $sale = Sales::find($sale->id);
         $sale->update($input);
