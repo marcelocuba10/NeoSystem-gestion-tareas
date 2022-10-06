@@ -11,7 +11,7 @@
         </div>    
         <div class="login-texto off-mobile">
             <p class="login-title">Panel Administrativo</p>
-            <p class="login-message">Gestiona tu empresa de un solo lugar!</p>
+            <p class="login-message">Gestión Comercial de Agentes</p>
         </div>
     </div>    
 </div> 

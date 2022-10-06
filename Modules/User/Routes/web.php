@@ -35,7 +35,8 @@ Route::prefix('user')->group(function () {
             Route::get('/edit/{id}', 'WhatDoController@edit');
             Route::put('/update/{id}', 'WhatDoController@update');
             Route::delete('/delete/{id}', 'WhatDoController@destroy');
-            Route::get('/search', 'WhatDoController@search');
+            Route::get('/search', 'AppointmentController@search');
+            Route::get('/filter', 'AppointmentController@filter');
         });
 
         /*** Appointments Routes ***/
@@ -48,6 +49,7 @@ Route::prefix('user')->group(function () {
             Route::put('/update/{id}', 'AppointmentController@update');
             Route::delete('/delete/{id}', 'AppointmentController@destroy');
             Route::get('/search', 'AppointmentController@search');
+            Route::get('/filter', 'AppointmentController@filter');
         });
 
         /*** Customer Visits Routes ***/

@@ -1,3 +1,26 @@
+.status-btn.info-btn {
+    border: 1px solid;
+}
+.status-btn.success-btn {
+    border: 1px solid;
+}
+.status-btn.warning-btn {
+    border: 1px solid;
+}
+.status-btn.close-btn {
+    border: 1px solid;
+}
+.status-btn.secondary-btn {
+    border: 1px solid;
+}
+.status-btn.orange-btn {
+    border: 1px solid;
+}
+.status-btn.primary-btn {
+    border: 1px solid;
+}
+
+
 .value-button {
     display: inline-block;
     border: 1px solid #ddd;
@@ -460,7 +483,7 @@ span.selection {
 .bg-card-enabled {
     background-color: #4caf50;
 }
-.bg-card-maintenance {
+.bg-card-secondary {
     background-color: #03a9f4;
 }
 .bg-card-error {

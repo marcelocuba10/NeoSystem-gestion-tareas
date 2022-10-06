@@ -10,7 +10,7 @@
         </div>    
         <div class="login-texto off-mobile">
             <p class="login-title">Bienvenido a {{ config('app.name') }}</p>
-            <p class="login-message">Facilidades increíbles para tu empresa! :)</p>
+            <p class="login-message">Gestión Comercial de Agentes</p>
         </div>
     </div>    
 </div> 

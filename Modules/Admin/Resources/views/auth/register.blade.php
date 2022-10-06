@@ -10,8 +10,8 @@
                 <a href="/"><button class="ththhf" type="button" class="btn btn-block create-account">Site ConectaCode</button></a>
             </div>
             <div class="register-texto">
-                <p class="login-title">Sea parte de ConectaCode</p>
-                <p class="login-message">Facilidades increíbles para tu empresa! :)</p>
+                <p class="login-title">Bienvenido a {{ config('app.name') }}</p>
+                <p class="login-message">Gestión Comercial de Agentes</p>
             </div>
         </div>
     </div>

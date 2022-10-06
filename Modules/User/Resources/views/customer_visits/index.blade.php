@@ -58,9 +58,9 @@
                         <td class="min-width"><h5 class="text-bold text-dark"><a href="{{ url('/user/customer_visits/show/'.$customer_visit->id ) }}">{{ $customer_visit->customer_name }}</a></h5></td>
                         <td class="min-width">
                           <span class="status-btn 
-                          @if($customer_visit->status == 'Visitado') btn-custom-secondary
-                          @elseIf($customer_visit->status == 'No Atendido') btn-custom-attention
-                          @elseIf($customer_visit->status == 'Cancelado') btn-custom-error
+                          @if($customer_visit->status == 'Visitado') secondary-btn
+                          @elseIf($customer_visit->status == 'No Atendido') close-btn
+                          @elseIf($customer_visit->status == 'Cancelado') warning-btn
                           @endif">
                             {{ $customer_visit->status }}
                           </span>

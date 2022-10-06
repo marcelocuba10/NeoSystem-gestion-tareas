@@ -57,9 +57,9 @@
                         <td class="min-width"><h5 class="text-bold text-dark"><a href="{{ url('/user/sales/show/'.$sale->id) }}">{{ $sale->customer_name }}</a></h5></td>
                         <td class="min-width"><p>{{ $sale->estate }}</p></td>
                         @if ($sale->type == 'Order')
-                          <td class="min-width"><span class="status-btn btn-custom-attention">Presupuesto</span></td>
+                          <td class="min-width"><span class="status-btn warning-btn">Presupuesto</span></td>
                         @elseIf($sale->type == 'Sale')
-                          <td class="min-width"><span class="status-btn btn-custom-enabled">Procesado</span></td>
+                          <td class="min-width"><span class="status-btn success-btn">Procesado</span></td>
                         @endif
                         @if ($sale->visit_date)
                           <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ $sale->visit_date }}</p></td>
