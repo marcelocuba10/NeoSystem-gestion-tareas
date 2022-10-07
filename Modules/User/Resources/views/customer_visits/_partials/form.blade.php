@@ -117,7 +117,7 @@
                     <input type="number" name="qty[]" id="number" class="qty"/>
                     <div class="value-button" id="increase" onclick="increaseValue()" value="Increase Value">+</div>
                   </td> --}}
-                  <td><input type="text" name="qty[]" value="{{ $item_order->quantity }}" class="form-control qty"></td>
+                  <td><input type="number" min="1" name="qty[]" value="{{ $item_order->quantity }}" class="form-control qty"></td>
                   <td><input type="text" name="amount[]" class="form-control amount" value="{{ $item_order->amount }}" readonly></td>
                   <td><button type="button" class="btn btn-success" id="add_btn"><i class="lni lni-plus"></i></button></td>
                 </tr>
@@ -174,7 +174,7 @@
                   <input type="number" name="qty[]" id="number" class="qty"/>
                   <div class="value-button" id="increase" onclick="increaseValue()" value="Increase Value">+</div>
                 </td> --}}
-                <td><input type="text" name="qty[]" class="form-control qty"></td>
+                <td><input type="number" min="1" name="qty[]" class="form-control qty"></td>
                 <td><input type="text" name="amount[]" class="form-control amount" readonly></td>
                 <td><button type="button" class="btn btn-success" id="add_btn"><i class="lni lni-plus"></i></button></td>
               </tr>
@@ -303,7 +303,7 @@
     html += '<td> <select name="product_id[]" class="form-control product"> <option>Seleccione Producto</option> @foreach($products as $product) <option name="product_id[]" data-qty_av="{{ $product->inventory }}" data-price="{{ $product->sale_price }}" value="{{ $product->id }}">{{ $product->name }}</option> @endforeach </select> </td>';
     html += '<td><input type="text" name="qty_av[]" class="form-control qty_av" readonly></td>';
     html += '<td><input type="text" name="price[]" class="form-control price" readonly></td>';
-    html += '<td><input type="text" type="text" name="qty[]" class="form-control qty"></td>';
+    html += '<td><input type="number" min="1" name="qty[]" class="form-control qty"></td>';
     html += '<td><input type="text" name="amount[]" class="form-control amount" readonly></td>';
     html += '<td><button type="button" class="btn btn-danger" id="remove"><i class="lni lni-trash-can"></i></button></td>';
     html += '</tr>';

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Modules\User\Entities\CustomerVisit;
 use Modules\User\Entities\OrderDetail;
+use Modules\User\Entities\Products;
 use Modules\User\Entities\Sales;
 use Symfony\Component\Console\Input\Input;
 
@@ -94,6 +95,10 @@ class CustomerVisitController extends Controller
             'status' => 'required|max:30|min:5',
             'result_of_the_visit' => 'nullable|max:1000|min:3',
             'objective' => 'nullable|max:1000|min:3',
+            'product_id' => 'required',
+            'qty' => 'required',
+            'price' => 'required',
+            'amount' => 'required',
         ]);
 
         $input = $request->all();
@@ -113,40 +118,54 @@ class CustomerVisitController extends Controller
                 return back()->with('error', 'Por favor, adicione un producto.');
             } else {
 
+                /** Save temporal CustomerVisit */
                 $input['type'] = 'Order';
                 $input['seller_id'] = Auth::user()->idReference;
                 $customer_visit = CustomerVisit::create($input);
 
-                $request->validate([
-                    'product_id' => 'required',
-                    'qty' => 'required|min:0',
-                    'price' => 'required',
-                    'amount' => 'required',
-                ]);
-
                 foreach ($request->product_id as $key => $value) {
-                    $order = new OrderDetail();
-                    $order->quantity = $request->qty[$key];
-                    $order->inventory = $request->qty_av[$key];
-                    $order->price = $request->price[$key];
-                    $order->amount = $request->amount[$key];
-                    $order->product_id = $request->product_id[$key];
-                    $order->visit_id = $customer_visit->id;
-                    $order->save();
+
+                    $product = DB::table('products')
+                        ->where('products.id', '=', $request->product_id[$key])
+                        ->select(
+                            'products.id',
+                            'products.inventory',
+                        )
+                        ->first();
+
+                    if (intval($request->qty[$key]) > $product->inventory || intval($request->qty[$key]) <= 0) {
+                        $CustomerVisitIsDeleted = CustomerVisit::find($customer_visit->id)->delete();
+                        return back()->with('error', 'Por favor, ingrese una cantidad válida.');
+                    } else {
+                        /** Save items of sale */
+                        $order = new OrderDetail();
+                        $order->quantity = $request->qty[$key];
+                        $order->inventory = $request->qty_av[$key];
+                        $order->price = $request->price[$key];
+                        $order->amount = $request->amount[$key];
+                        $order->product_id = $request->product_id[$key];
+                        $order->visit_id = $customer_visit->id;
+                        $order->save();
+
+                        /** if there is an error in items, customer_visit is deleted */
+                        $CustomerVisitIsDeleted = false;
+                    }
                 }
 
-                $total_order = DB::table('order_details')
-                    ->where('order_details.visit_id', '=', $customer_visit->id)
-                    ->sum('amount');
+                if ($CustomerVisitIsDeleted == false) {
+                    $total_order = DB::table('order_details')
+                        ->where('order_details.visit_id', '=', $customer_visit->id)
+                        ->sum('amount');
 
-                $sale['visit_id'] = $customer_visit->id;
-                $sale['seller_id'] = Auth::user()->idReference;
-                $sale['customer_id'] = $customer_visit->customer_id;
-                $sale['order_date'] = $customer_visit->visit_date;
-                $sale['type'] = 'Order';
-                $sale['status'] = 'Pendiente';
-                $sale['total'] = $total_order;
-                Sales::create($sale);
+                    $sale['visit_id'] = $customer_visit->id;
+                    $sale['seller_id'] = Auth::user()->idReference;
+                    $sale['customer_id'] = $customer_visit->customer_id;
+                    $sale['order_date'] = $customer_visit->visit_date;
+                    $sale['type'] = 'Order';
+                    $sale['status'] = 'Pendiente';
+                    $sale['total'] = $total_order;
+                    Sales::create($sale);
+                }
             }
         } else {
 
@@ -270,6 +289,10 @@ class CustomerVisitController extends Controller
             'status' => 'required|max:30|min:5',
             'result_of_the_visit' => 'nullable|max:1000|min:3',
             'objective' => 'nullable|max:1000|min:3',
+            'product_id' => 'required',
+            'qty' => 'required|min:0',
+            'price' => 'required',
+            'amount' => 'required',
         ]);
 
         $input = $request->all();
@@ -288,25 +311,33 @@ class CustomerVisitController extends Controller
             if (strlen($request->product_id[0]) > 10) {
                 return back()->with('error', 'Por favor, adicione un producto.');
             } else {
-                $request->validate([
-                    'product_id' => 'required',
-                    'qty' => 'required|min:0',
-                    'price' => 'required',
-                    'amount' => 'required',
-                ]);
 
                 $customer_visit = CustomerVisit::find($id);
 
                 if ($customer_visit->type == 'NoOrder') {
                     foreach ($request->product_id as $key => $value) {
-                        $order = new OrderDetail();
-                        $order->quantity = $request->qty[$key];
-                        $order->inventory = $request->qty_av[$key];
-                        $order->price = $request->price[$key];
-                        $order->amount = $request->amount[$key];
-                        $order->product_id = $request->product_id[$key];
-                        $order->visit_id = $customer_visit->id;
-                        $order->save();
+
+                        $product = DB::table('products')
+                            ->where('products.id', '=', $request->product_id[$key])
+                            ->select(
+                                'products.id',
+                                'products.inventory',
+                            )
+                            ->first();
+
+                        if (intval($request->qty[$key]) > $product->inventory || intval($request->qty[$key]) <= 0) {
+                            return back()->with('error', 'Por favor, ingrese una cantidad válida.');
+                        } else {
+                            /** Save items of customer visit */
+                            $order = new OrderDetail();
+                            $order->quantity = $request->qty[$key];
+                            $order->inventory = $request->qty_av[$key];
+                            $order->price = $request->price[$key];
+                            $order->amount = $request->amount[$key];
+                            $order->product_id = $request->product_id[$key];
+                            $order->visit_id = $customer_visit->id;
+                            $order->save();
+                        }
                     }
 
                     $total_order = DB::table('order_details')
@@ -324,14 +355,28 @@ class CustomerVisitController extends Controller
                 } else {
 
                     foreach ($request->product_id as $key => $value) {
-                        $order = new OrderDetail();
-                        $order->quantity = $request->qty[$key];
-                        $order->inventory = $request->qty_av[$key];
-                        $order->price = $request->price[$key];
-                        $order->amount = $request->amount[$key];
-                        $order->product_id = $request->product_id[$key];
-                        $order->visit_id = $customer_visit->id;
-                        $order->update();
+
+                        $product = DB::table('products')
+                            ->where('products.id', '=', $request->product_id[$key])
+                            ->select(
+                                'products.id',
+                                'products.inventory',
+                            )
+                            ->first();
+
+                        if (intval($request->qty[$key]) > $product->inventory || intval($request->qty[$key]) <= 0) {
+                            return back()->with('error', 'Por favor, ingrese una cantidad válida.');
+                        } else {
+                            /** update items of customer visit */
+                            $order = new OrderDetail();
+                            $order->quantity = $request->qty[$key];
+                            $order->inventory = $request->qty_av[$key];
+                            $order->price = $request->price[$key];
+                            $order->amount = $request->amount[$key];
+                            $order->product_id = $request->product_id[$key];
+                            $order->visit_id = $customer_visit->id;
+                            $order->update();
+                        }
                     }
 
                     $total_order = DB::table('order_details')
@@ -344,6 +389,7 @@ class CustomerVisitController extends Controller
                         ]);
                 }
 
+                /** add extra items in customer visit */
                 $input['type'] = 'Order';
                 $input['seller_id'] = Auth::user()->idReference;
                 $customer_visit->update($input);

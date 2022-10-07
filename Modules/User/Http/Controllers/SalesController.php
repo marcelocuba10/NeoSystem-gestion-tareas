@@ -96,56 +96,66 @@ class SalesController extends Controller
             'amount' => 'required',
         ]);
 
-        /** Save temporal sale */
-        $input = $request->all();
-        $input['seller_id'] = Auth::user()->idReference;
-        $input['sale_date'] = $currentDate;
-        $input['type'] = 'Sale';
-        $input['status'] = 'Procesado';
-        $sale = Sales::create($input);
+        /** If not select any product */
+        if (strlen($request->product_id[0]) > 10) {
+            return back()->with('error', 'Por favor, adicione un producto.');
+        } else {
+            /** Save temporal sale */
+            $input = $request->all();
+            $input['seller_id'] = Auth::user()->idReference;
+            $input['sale_date'] = $currentDate;
+            $input['type'] = 'Sale';
+            $input['status'] = 'Procesado';
+            $sale = Sales::create($input);
 
-        foreach ($request->product_id as $key => $value) {
-            $product = DB::table('products')
-                ->where('products.id', '=', $request->product_id[$key])
-                ->select(
-                    'products.id',
-                    'products.inventory',
-                )
-                ->first();
+            foreach ($request->product_id as $key => $value) {
+                $product = DB::table('products')
+                    ->where('products.id', '=', $request->product_id[$key])
+                    ->select(
+                        'products.id',
+                        'products.inventory',
+                    )
+                    ->first();
 
-            if (intval($request->qty[$key]) > $product->inventory || intval($request->qty[$key]) <= 0) {
-                Sales::find($sale->id)->delete();
-                return back()->with('error', 'Por favor, ingrese una cantidad válida.');
-            } else {
-                /** Save items of sale */
-                $order = new OrderDetail();
-                $order->quantity = $request->qty[$key];
-                $order->inventory = $request->qty_av[$key];
-                $order->price = $request->price[$key];
-                $order->amount = $request->amount[$key];
-                $order->product_id = $request->product_id[$key];
-                $order->sale_id = $sale->id;
-                $order->save();
+                if (intval($request->qty[$key]) > $product->inventory || intval($request->qty[$key]) <= 0) {
+                    $saleIsDeleted = Sales::find($sale->id)->delete();
+                    return back()->with('error', 'Por favor, ingrese una cantidad válida.');
+                } else {
+                    /** Save items of sale */
+                    $order = new OrderDetail();
+                    $order->quantity = $request->qty[$key];
+                    $order->inventory = $request->qty_av[$key];
+                    $order->price = $request->price[$key];
+                    $order->amount = $request->amount[$key];
+                    $order->product_id = $request->product_id[$key];
+                    $order->sale_id = $sale->id;
+                    $order->save();
 
-                /** Discount inventory from product */
-                $product_inventory = $product->inventory - $request->qty[$key];
+                    /** Discount inventory from product */
+                    $product_inventory = $product->inventory - $request->qty[$key];
 
-                Products::where('products.id', '=', $request->product_id[$key])
-                    ->update([
-                        'products.inventory' => $product_inventory
-                    ]);
+                    Products::where('products.id', '=', $request->product_id[$key])
+                        ->update([
+                            'products.inventory' => $product_inventory
+                        ]);
+
+                    /** if there is an error in items, sale is deleted */
+                    $saleIsDeleted = false;
+                }
+            }
+
+            if ($saleIsDeleted == false) {
+                /** Get total amount from items of Sale */
+                $total_order = DB::table('order_details')
+                    ->where('order_details.sale_id', '=', $sale->id)
+                    ->sum('amount');
+
+                /** Update Sale with de total */
+                $input['total'] = $total_order;
+                $sale = Sales::find($sale->id);
+                $sale->update($input);
             }
         }
-
-        /** Get total amount from items of Sale */
-        $total_order = DB::table('order_details')
-            ->where('order_details.sale_id', '=', $sale->id)
-            ->sum('amount');
-
-        /** Update Sale with de total */
-        $input['total'] = $total_order;
-        $sale = Sales::find($sale->id);
-        $sale->update($input);
 
         return redirect()->to('/user/sales')->with('message', 'Venta Creada Correctamente');
     }
@@ -266,6 +276,10 @@ class SalesController extends Controller
             'status' => 'required|max:30|min:5',
             'result_of_the_visit' => 'nullable|max:1000|min:3',
             'objective' => 'nullable|max:1000|min:3',
+            'product_id' => 'required',
+            'qty' => 'required|min:0',
+            'price' => 'required',
+            'amount' => 'required',
         ]);
 
         $input = $request->all();
@@ -278,37 +292,56 @@ class SalesController extends Controller
             $input['next_visit_hour'] = 'No marcado';
         }
 
-        /** check if checkbox is checked */
-        if (isset($request->setOrder)) {
-            /** If not select any product */
-            if (strlen($request->product_id[0]) > 10) {
-                return back()->with('error', 'Por favor, adicione un producto.');
-            } else {
 
-                $input['seller_id'] = Auth::user()->idReference;
-                $customer_visit = CustomerVisit::create($input);
-
-                $request->validate([
-                    'product_id' => 'required',
-                    'qty' => 'required|min:0',
-                    'price' => 'required',
-                    'amount' => 'required',
-                ]);
-
-                foreach ($request->product_id as $key => $product_id) {
-                    $item_order_visit = new OrderDetail();
-                    $item_order_visit->quantity = $request->qty[$key];
-                    $item_order_visit->price = $request->price[$key];
-                    $item_order_visit->amount = $request->amount[$key];
-                    $item_order_visit->product_id = $request->product_id[$key];
-                    $item_order_visit->visit_id = $customer_visit->id;
-                    $item_order_visit->update();
-                }
-            }
+        /** If not select any product */
+        if (strlen($request->product_id[0]) > 10) {
+            return back()->with('error', 'Por favor, adicione un producto.');
         } else {
 
-            $customer_visit = CustomerVisit::find($id);
-            $customer_visit->update($input);
+            $sale = Sales::find($id);
+
+            foreach ($request->product_id as $key => $value) {
+                $product = DB::table('products')
+                    ->where('products.id', '=', $request->product_id[$key])
+                    ->select(
+                        'products.id',
+                        'products.inventory',
+                    )
+                    ->first();
+
+                if (intval($request->qty[$key]) > $product->inventory || intval($request->qty[$key]) <= 0) {
+                    return back()->with('error', 'Por favor, ingrese una cantidad válida.');
+                } else {
+                    /** update items of sale */
+                    $order = new OrderDetail();
+                    $order->quantity = $request->qty[$key];
+                    $order->inventory = $request->qty_av[$key];
+                    $order->price = $request->price[$key];
+                    $order->amount = $request->amount[$key];
+                    $order->product_id = $request->product_id[$key];
+                    $order->sale_id = $sale->id;
+                    $order->update();
+
+                    /** Discount inventory from product */
+                    $product_inventory = $product->inventory - $request->qty[$key];
+
+                    Products::where('products.id', '=', $request->product_id[$key])
+                        ->update([
+                            'products.inventory' => $product_inventory
+                        ]);
+                }
+            }
+
+            /** Get total amount from items of Sale */
+            $total_order = DB::table('order_details')
+                ->where('order_details.sale_id', '=', $sale->id)
+                ->sum('amount');
+
+            /** Update Sale with de total */
+            Sales::where('sales.id', '=', $sale->id)
+                ->update([
+                    'total' => $total_order
+                ]);
         }
 
         return redirect()->to('/user/sales')->with('message', 'Visita Cliente actualizada correctamente.');
