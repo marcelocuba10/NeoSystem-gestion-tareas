@@ -10,9 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Modules\User\Entities\CustomerVisit;
 use Modules\User\Entities\OrderDetail;
-use Modules\User\Entities\Products;
 use Modules\User\Entities\Sales;
-use Symfony\Component\Console\Input\Input;
 
 class CustomerVisitController extends Controller
 {
@@ -34,6 +32,7 @@ class CustomerVisitController extends Controller
             ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
             ->select(
                 'customer_visits.id',
+                'customer_visits.visit_number',
                 'customer_visits.visit_date',
                 'customer_visits.next_visit_date',
                 'customer_visits.status',
@@ -120,6 +119,7 @@ class CustomerVisitController extends Controller
 
                 /** Save temporal CustomerVisit */
                 $input['type'] = 'Order';
+                $input['visit_number'] = $this->generateUniqueCodeVisit();
                 $input['seller_id'] = Auth::user()->idReference;
                 $customer_visit = CustomerVisit::create($input);
 
@@ -153,10 +153,13 @@ class CustomerVisitController extends Controller
                 }
 
                 if ($CustomerVisitIsDeleted == false) {
+                    /** Get total amount from items of visit order */
                     $total_order = DB::table('order_details')
                         ->where('order_details.visit_id', '=', $customer_visit->id)
                         ->sum('amount');
 
+                    /** Create Sale-order because order is checked */
+                    $sale['invoice_number'] = $customer_visit->visit_number;
                     $sale['visit_id'] = $customer_visit->id;
                     $sale['seller_id'] = Auth::user()->idReference;
                     $sale['customer_id'] = $customer_visit->customer_id;
@@ -169,12 +172,35 @@ class CustomerVisitController extends Controller
             }
         } else {
 
+            $input['visit_number'] = $this->generateUniqueCodeVisit();
             $input['type'] = 'NoOrder';
             $input['seller_id'] = Auth::user()->idReference;
             $customer_visit = CustomerVisit::create($input);
         }
 
         return redirect()->to('/user/customer_visits')->with('message', 'Visita Cliente Creada Correctamente');
+    }
+
+    public function generateUniqueCodeVisit()
+    {
+        do {
+            $visit_number = random_int(100000, 999999);
+        } while (
+            DB::table('customer_visits')->where("visit_number", "=", $visit_number)->first()
+        );
+
+        return $visit_number;
+    }
+
+    public function generateUniqueCodeSale()
+    {
+        do {
+            $invoice_number = random_int(100000, 999999);
+        } while (
+            DB::table('sales')->where("invoice_number", "=", $invoice_number)->first()
+        );
+
+        return $invoice_number;
     }
 
     public function show($id)
@@ -185,6 +211,7 @@ class CustomerVisitController extends Controller
             ->where('customer_visits.id', '=', $id)
             ->select(
                 'customer_visits.id',
+                'customer_visits.visit_number',
                 'customer_visits.visit_date',
                 'customer_visits.next_visit_date',
                 'customer_visits.next_visit_hour',
@@ -223,6 +250,7 @@ class CustomerVisitController extends Controller
             ->where('customer_visits.id', '=', $id)
             ->select(
                 'customer_visits.id',
+                'customer_visits.visit_number',
                 'customer_visits.customer_id',
                 'customer_visits.visit_date',
                 'customer_visits.next_visit_date',
@@ -315,8 +343,8 @@ class CustomerVisitController extends Controller
                 $customer_visit = CustomerVisit::find($id);
 
                 if ($customer_visit->type == 'NoOrder') {
-                    foreach ($request->product_id as $key => $value) {
 
+                    foreach ($request->product_id as $key => $value) {
                         $product = DB::table('products')
                             ->where('products.id', '=', $request->product_id[$key])
                             ->select(
@@ -344,6 +372,7 @@ class CustomerVisitController extends Controller
                         ->where('order_details.visit_id', '=', $customer_visit->id)
                         ->sum('amount');
 
+                    $sale['invoice_number'] = $customer_visit->visit_number;
                     $sale['visit_id'] = $customer_visit->id;
                     $sale['seller_id'] = Auth::user()->idReference;
                     $sale['customer_id'] = $customer_visit->customer_id;
@@ -368,14 +397,24 @@ class CustomerVisitController extends Controller
                             return back()->with('error', 'Por favor, ingrese una cantidad válida.');
                         } else {
                             /** update items of customer visit */
-                            $order = new OrderDetail();
-                            $order->quantity = $request->qty[$key];
-                            $order->inventory = $request->qty_av[$key];
-                            $order->price = $request->price[$key];
-                            $order->amount = $request->amount[$key];
-                            $order->product_id = $request->product_id[$key];
-                            $order->visit_id = $customer_visit->id;
-                            $order->update();
+                            // $order = new OrderDetail();
+                            // $order->quantity = $request->qty[$key];
+                            // $order->inventory = $request->qty_av[$key];
+                            // $order->price = $request->price[$key];
+                            // $order->amount = $request->amount[$key];
+                            // $order->product_id = $request->product_id[$key];
+                            // $order->visit_id = $customer_visit->id;
+                            // $order->update();
+
+                            //para controlar si agrega otro item, si no encuentra el id de order cadastraado, es porque esta agregando nuevo item.
+                            OrderDetail::where('order_details.visit_id', '=', $customer_visit->id)
+                                ->where('order_details.product_id', '=', $request->product_id[$key])
+                                ->update([
+                                    'product_id' => $request->product_id[$key],
+                                    'quantity' => $request->qty[$key],
+                                    'inventory' => $request->qty_av[$key],
+                                    'amount' => $request->amount[$key]
+                                ]);
                         }
                     }
 
@@ -413,6 +452,7 @@ class CustomerVisitController extends Controller
                 ->where('customers.idReference', '=', $idRefCurrentUser)
                 ->select(
                     'customer_visits.id',
+                    'customer_visits.visit_number',
                     'customer_visits.visit_date',
                     'customer_visits.next_visit_date',
                     'customer_visits.next_visit_hour',
@@ -432,6 +472,7 @@ class CustomerVisitController extends Controller
                 ->where('customers.name', 'LIKE', "%{$search}%")
                 ->select(
                     'customer_visits.id',
+                    'customer_visits.visit_number',
                     'customer_visits.visit_date',
                     'customer_visits.next_visit_date',
                     'customer_visits.next_visit_hour',

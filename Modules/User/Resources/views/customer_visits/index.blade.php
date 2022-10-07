@@ -41,7 +41,7 @@
                 <table class="table">
                   <thead>
                     <tr>
-                      <th><h6>#</h6></th>
+                      <th><h6>Número</h6></th>
                       <th><h6>Cliente</h6></th>
                       <th><h6>Estado</h6></th>
                       <th><h6>Presupuesto?</h6></th>
@@ -54,7 +54,7 @@
                   <tbody>
                     @foreach ($customer_visits as $customer_visit)
                       <tr>
-                        <td class="text-sm"><h6 class="text-sm">{{ ++$i }}</h6></td>
+                        <td class="text-sm"><h6 class="text-sm">{{ $customer_visit->visit_number }}</h6></td>
                         <td class="min-width"><h5 class="text-bold text-dark"><a href="{{ url('/user/customer_visits/show/'.$customer_visit->id ) }}">{{ $customer_visit->customer_name }}</a></h5></td>
                         <td class="min-width">
                           <span class="status-btn 

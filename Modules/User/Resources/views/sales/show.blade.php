@@ -8,7 +8,7 @@
       <div class="row align-items-center">
         <div class="col-md-6">
           <div class="title mb-30">
-            <h2>Detalle Venta</h2>
+            <h2>Detalle {{ ($sale->type == 'Order')  ? ' Presupuesto' : ' Venta' }} - n.º {{ $sale->invoice_number }}</h2>
           </div>
         </div>
         <div class="col-md-6">

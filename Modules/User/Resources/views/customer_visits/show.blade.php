@@ -8,7 +8,7 @@
       <div class="row align-items-center">
         <div class="col-md-6">
           <div class="title mb-30">
-            <h2>Detalle Visita Cliente</h2>
+            <h2>Detalle Visita Cliente - n.º {{ $customer_visit->visit_number }}</h2>
           </div>
         </div>
         <div class="col-md-6">
@@ -115,18 +115,18 @@
                           <td><p class="text-sm">{{ $item_order->quantity }}</p></td>
                           <td><p class="text-sm">G$ {{number_format($item_order->amount, 0)}}</p></td>
                         </tr>
-                        <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td>
-                            <h4>Total</h4>
-                          </td>
-                          <td>
-                            <h4>G$ {{number_format($total_order, 0)}}</h4>
-                          </td>
-                        </tr>
                       @endforeach
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                          <h4>Total</h4>
+                        </td>
+                        <td>
+                          <h4>G$ {{number_format($total_order, 0)}}</h4>
+                        </td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>

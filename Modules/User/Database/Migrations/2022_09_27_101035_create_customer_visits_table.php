@@ -15,6 +15,7 @@ class CreateCustomerVisitsTable extends Migration
     {
         Schema::create('customer_visits', function (Blueprint $table) {
             $table->id();
+            $table->integer('visit_number');
             $table->integer('customer_id');
             $table->integer('seller_id');
             $table->string('visit_date');

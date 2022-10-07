@@ -15,6 +15,7 @@ class CreateSalesTable extends Migration
     {
         Schema::create('sales', function (Blueprint $table) {
             $table->id();
+            $table->integer('invoice_number');
             $table->unsignedBigInteger('visit_id')->nullable();
             $table->integer('seller_id')->nullable();
             $table->integer('customer_id')->nullable();

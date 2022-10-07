@@ -8,7 +8,7 @@
       <div class="row align-items-center">
         <div class="col-md-6">
           <div class="title mb-30">
-            <h2>Editar {{ ($sale->type == 'Order')  ? ' Presupuesto' : ' Venta' }}</h2>
+            <h2>Editar {{ ($sale->type == 'Order')  ? ' Presupuesto' : ' Venta' }} - n.º {{ $sale->invoice_number }}</h2>
           </div>
         </div>
         <div class="col-md-6">
@@ -156,7 +156,7 @@
               @else
                 <div class="col-12">
                   <div class="button-group d-flex justify-content-center flex-wrap">
-                    <button class="main-btn danger-btn-outline btn-hover m-2">Cancelar Venta</button>
+                    <button class="main-btn danger-btn btn-hover m-2">Cancelar Venta</button>
                     <div class="button-groupd-flexjustify-content-center flex-wrap">
                       <a class="main-btn primary-btn-outline m-2" href="{{ url('/user/sales') }}">Atrás</a>
                     </div>

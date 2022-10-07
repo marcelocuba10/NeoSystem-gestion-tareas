@@ -19,10 +19,10 @@ class SalesController extends Controller
     {
         $this->middleware('auth:web', ['except' => ['logout']]);
 
-        $this->middleware('permission:customer_visit-list|customer_visit-create|customer_visit-edit|customer_visit-delete', ['only' => ['index']]);
-        $this->middleware('permission:customer_visit-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:customer_visit-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:customer_visit-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:sales-list|sales-create|sales-edit|sales-delete', ['only' => ['index']]);
+        $this->middleware('permission:sales-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:sales-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:sales-delete', ['only' => ['destroy']]);
     }
 
     public function index()
@@ -36,6 +36,7 @@ class SalesController extends Controller
             ->orWhere('customer_visits.seller_id', '=', $idRefCurrentUser)
             ->select(
                 'sales.id',
+                'sales.invoice_number',
                 'sales.sale_date',
                 'sales.type',
                 'sales.status',
@@ -102,6 +103,7 @@ class SalesController extends Controller
         } else {
             /** Save temporal sale */
             $input = $request->all();
+            $input['invoice_number'] = $this->generateUniqueCode();
             $input['seller_id'] = Auth::user()->idReference;
             $input['sale_date'] = $currentDate;
             $input['type'] = 'Sale';
@@ -160,6 +162,17 @@ class SalesController extends Controller
         return redirect()->to('/user/sales')->with('message', 'Venta Creada Correctamente');
     }
 
+    public function generateUniqueCode()
+    {
+        do {
+            $invoice_number = random_int(100000, 999999);
+        } while (
+            DB::table('sales')->where("invoice_number", "=", $invoice_number)->first()
+        );
+
+        return $invoice_number;
+    }
+
     public function show($id)
     {
         $idRefCurrentUser = Auth::user()->idReference;
@@ -176,6 +189,7 @@ class SalesController extends Controller
                 'customer_visits.objective',
                 'customer_visits.status',
                 'customers.name AS customer_name',
+                'sales.invoice_number',
                 'sales.visit_id',
                 'sales.type',
                 'sales.sale_date'
@@ -226,6 +240,7 @@ class SalesController extends Controller
                 'customer_visits.objective',
                 'customer_visits.status',
                 'customers.name AS customer_name',
+                'sales.invoice_number',
                 'sales.visit_id',
                 'sales.type',
                 'sales.sale_date'
@@ -262,34 +277,13 @@ class SalesController extends Controller
 
     public function update(Request $request, $id)
     {
-        /** date validation, not less than 1980 and not greater than the current year **/
-        $initialDate = '1980-01-01';
-        $currentDate = (date('Y') + 1) . '-01-01'; //2023-01-01
-
         $request->validate([
             'customer_id' => 'required',
-            'visit_date' => 'nullable|date|after_or_equal:today|before:' . $currentDate,
-            'next_visit_date' => 'nullable|date_format:Y-m-d|after_or_equal:today|before:' . $currentDate,
-            'next_visit_hour' => 'nullable|max:5|min:5',
-            'status' => 'required|max:30|min:5',
-            'result_of_the_visit' => 'nullable|max:1000|min:3',
-            'objective' => 'nullable|max:1000|min:3',
             'product_id' => 'required',
-            'qty' => 'required|min:0',
+            'qty' => 'required',
             'price' => 'required',
             'amount' => 'required',
         ]);
-
-        $input = $request->all();
-
-        if ($input['next_visit_date'] == null) {
-            $input['next_visit_date'] = 'No marcado';
-        }
-
-        if ($input['next_visit_hour'] == null) {
-            $input['next_visit_hour'] = 'No marcado';
-        }
-
 
         /** If not select any product */
         if (strlen($request->product_id[0]) > 10) {
@@ -357,6 +351,7 @@ class SalesController extends Controller
                 ->Where('customers.idReference', '=', $idRefCurrentUser)
                 ->select(
                     'sales.id',
+                    'sales.invoice_number',
                     'sales.sale_date',
                     'sales.type',
                     'sales.status',
@@ -375,6 +370,7 @@ class SalesController extends Controller
                 ->Where('customers.idReference', '=', $idRefCurrentUser)
                 ->select(
                     'sales.id',
+                    'sales.invoice_number',
                     'sales.sale_date',
                     'sales.type',
                     'sales.status',

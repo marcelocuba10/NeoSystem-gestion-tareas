@@ -41,11 +41,11 @@
                 <table class="table">
                   <thead>
                     <tr>
-                      <th><h6>#</h6></th>
+                      <th><h6>Número</h6></th>
                       <th><h6>Cliente</h6></th>
                       <th><h6>Localidad</h6></th>
                       <th><h6>Estado</h6></th>
-                      <th><h6>Fecha</h6></th>
+                      <th><h6>Fecha Emisión</h6></th>
                       <th><h6>Total</h6></th>
                       <th><h6>Acciones</h6></th>
                     </tr>
@@ -53,7 +53,7 @@
                   <tbody>
                     @foreach ($sales as $sale)
                       <tr>
-                        <td class="text-sm"><h6 class="text-sm">{{ ++$i }}</h6></td>
+                        <td class="text-sm"><h6 class="text-sm">{{ $sale->invoice_number }}</h6></td>
                         <td class="min-width"><h5 class="text-bold text-dark"><a href="{{ url('/user/sales/show/'.$sale->id) }}">{{ $sale->customer_name }}</a></h5></td>
                         <td class="min-width"><p>{{ $sale->estate }}</p></td>
                         @if ($sale->type == 'Order')
@@ -62,9 +62,9 @@
                           <td class="min-width"><span class="status-btn success-btn">Procesado</span></td>
                         @endif
                         @if ($sale->visit_date)
-                          <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ $sale->visit_date }}</p></td>
+                          <td class="min-width"><p>{{ $sale->visit_date }}</p></td>
                         @else
-                          <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ $sale->sale_date }}</p></td>
+                          <td class="min-width"><p>{{ $sale->sale_date }}</p></td>
                         @endif
                         
                         <td class="min-width"><p><b>G$ {{number_format($sale->total, 0)}}</b></p></td>
