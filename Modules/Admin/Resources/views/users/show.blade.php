@@ -7,7 +7,7 @@
     <div class="title-wrapper pt-30">
       <div class="row align-items-center">
         <div class="col-md-6">
-          <div class="titlemb-30">
+          <div class="title mb-30">
             <h2>Detalle Usuario</h2>
           </div>
         </div>
@@ -25,6 +25,7 @@
       </div>
     </div>
     <!-- ========== title-wrapper end ========== -->
+
     <div class="form-layout-wrapper">
       <div class="row">
         <div class="col-lg-12">
@@ -82,8 +83,8 @@
                 </div>
                 <!-- end col -->
                 <div class="col-12">
-                  <div class="button-groupd-flexjustify-content-centerflex-wrap">
-                    <a class="main-btn danger-btn-outline m-2" href="{{ url('/admin/users') }}">Atrás</a>
+                  <div class="button-group d-flex justify-content-center flex-wrap">
+                    <a class="main-btn primary-btn-outline m-2" href="{{ url('/admin/users') }}">Atrás</a>
                   </div>
                 </div>
               </div>

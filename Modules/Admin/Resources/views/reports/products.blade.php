@@ -48,7 +48,7 @@
 
               <div class="table-responsive">
                 <table class="invoice-table table">
-                  <thead style="background-color: #8dbba4;">
+                  <thead style="background-color: #DAEFFE;">
                     <tr>
                       <th><h6 class="text-sm text-medium">#</h6></th>
                       <th><h6 class="text-sm text-medium">Código</h6></th>

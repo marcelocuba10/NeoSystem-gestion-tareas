@@ -89,7 +89,7 @@
       <div class="col-12" id="setOrder">
         <div class="table-wrapper table-responsive">
           <table class="table top-selling-table mb-50">
-            <thead style="background-color: #3f51b566;">
+            <thead style="background-color: #DAEFFE;">
               <tr>
                 <th><h6>Producto</h6></th>
                 <th><h6>Inventario</h6></th>
@@ -128,8 +128,8 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td><b>Total</b></td>
-                <td><b class="total" id="total"></b></td>
+                <td><h4>Total</h4></td>
+                <td><h4 class="total" id="total"></h4></td>
                 <td></td>
               </tr>
             </tfoot>
@@ -146,7 +146,7 @@
       <div class="col-12" id="setOrder" style="display: none">
         <div class="table-wrapper table-responsive">
           <table class="table top-selling-table mb-50">
-            <thead style="background-color: #3f51b566;">
+            <thead style="background-color: #DAEFFE;">
               <tr>
                 <th><h6>Producto</h6></th>
                 <th><h6>Inventario</h6></th>
@@ -184,8 +184,8 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td><b>Total</b></td>
-                <td><b class="total"></b></td>
+                <td><h4>Total</h4></td>
+                <td><h4 class="total"></h4></td>
                 <td></td>
               </tr>
             </tfoot>
@@ -195,7 +195,7 @@
       <div class="col-12">
         <div class="button-group d-flex justify-content-center flex-wrap">
           <button type="submit" class="main-btn primary-btn btn-hover m-2">Guardar</button>
-          <a class="main-btn danger-btn-outline m-2" href="{{ url('/user/customer_visits') }}">Atrás</a>
+          <a class="main-btn primary-btn-outline m-2" href="{{ url('/user/customer_visits') }}">Atrás</a>
         </div>
       </div>
     @endif

@@ -95,7 +95,7 @@
               
               <div class="table-responsive">
                 <table class="invoice-table table">
-                  <thead style="background-color: #3f51b566;">
+                  <thead style="background-color: #DAEFFE;">
                     <tr>
                       <th class="qty">
                         <h6 class="text-sm text-medium">Cod</h6>
@@ -110,7 +110,7 @@
                         <h6 class="text-sm text-medium">Cantidad</h6>
                       </th>
                       <th class="amount">
-                        <h6 class="text-sm text-medium">Amounts</h6>
+                        <h6 class="text-sm text-medium">SubTotal</h6>
                       </th>
                     </tr>
                   </thead>
@@ -124,23 +124,24 @@
                         <td><p class="text-sm">G$ {{number_format($item_order->amount, 0)}}</p></td>
                       </tr>
                     @endforeach
-                  </tbody>
-                  <tfoot>
                     <tr>
                       <td></td>
                       <td></td>
                       <td></td>
-                      <td><h4>Total</h4></td>
-                      <td><h4>G$ {{number_format($total_order, 0)}}</h4></td>
-                      <td></td>
+                      <td>
+                        <h4>Total</h4>
+                      </td>
+                      <td>
+                        <h4>G$ {{number_format($total_order, 0)}}</h4>
+                      </td>
                     </tr>
-                  </tfoot>
+                  </tbody>
                 </table>
               </div>
           
               <div class="col-12">
-                <div class="button-groupd-flexjustify-content-centerflex-wrap">
-                  <a class="main-btn danger-btn-outline m-2" href="{{ url('/user/sales') }}">Atrás</a>
+                <div class="button-group d-flex justify-content-center flex-wrap">
+                  <a class="main-btn primary-btn-outline m-2" href="{{ url('/user/sales') }}">Atrás</a>
                 </div>
               </div>
 

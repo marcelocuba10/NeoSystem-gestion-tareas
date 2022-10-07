@@ -163,8 +163,6 @@ class SalesController extends Controller
     public function show($id)
     {
         $idRefCurrentUser = Auth::user()->idReference;
-
-
         $sale = DB::table('sales')
             ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
             ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
@@ -215,12 +213,12 @@ class SalesController extends Controller
     public function edit($id)
     {
         $idRefCurrentUser = Auth::user()->idReference;
-        $customer_visit = DB::table('customer_visits')
-            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-            ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+        $sale = DB::table('sales')
+            ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+            ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+            ->where('sales.id', '=', $id)
             ->select(
                 'customer_visits.id',
-                'customer_visits.customer_id',
                 'customer_visits.visit_date',
                 'customer_visits.next_visit_date',
                 'customer_visits.next_visit_hour',
@@ -228,38 +226,38 @@ class SalesController extends Controller
                 'customer_visits.objective',
                 'customer_visits.status',
                 'customers.name AS customer_name',
-                'customers.estate'
+                'sales.visit_id',
+                'sales.type',
+                'sales.sale_date'
             )
-            ->orderBy('customer_visits.created_at', 'DESC')
+            ->orderBy('sales.created_at', 'DESC')
             ->first();
 
-        $products = DB::table('products')
-            ->select(
-                'id',
-                'name',
-                'sale_price',
-                'quantity',
-                'description',
-            )
-            ->orderBy('created_at', 'DESC')
-            ->get();
+        if ($sale->type == 'Sale') {
+            $order_detail = DB::table('order_details')
+                ->where('order_details.sale_id', '=', $id)
+                ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+                ->select('products.name', 'products.code', 'order_details.price', 'order_details.quantity', 'order_details.inventory', 'order_details.amount')
+                ->orderBy('order_details.created_at', 'DESC')
+                ->get();
 
-        $currentDate = Carbon::now();
-        $currentDate = $currentDate->toDateTimeString();
+            $total_order = DB::table('order_details')
+                ->where('order_details.sale_id', '=', $id)
+                ->sum('amount');
+        } elseif ($sale->type == 'Order') {
+            $order_detail = DB::table('order_details')
+                ->where('order_details.visit_id', '=', $sale->visit_id)
+                ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+                ->select('products.name', 'products.code', 'order_details.price', 'order_details.quantity', 'order_details.inventory', 'order_details.amount')
+                ->orderBy('order_details.created_at', 'DESC')
+                ->get();
 
-        $customers = DB::table('customers')
-            ->where('customers.idReference', '=', $idRefCurrentUser)
-            ->select('customers.id', 'customers.name')
-            ->get();
+            $total_order = DB::table('order_details')
+                ->where('order_details.visit_id', '=', $sale->visit_id)
+                ->sum('amount');
+        }
 
-        $status = [
-            'Pendiente',
-            'Visitado',
-            'No Atendido',
-            'Cancelado'
-        ];
-
-        return view('user::sales.edit', compact('customers', 'customer_visit', 'currentDate', 'status', 'products'));
+        return view('user::sales.edit', compact('sale', 'order_detail', 'total_order'));
     }
 
     public function update(Request $request, $id)

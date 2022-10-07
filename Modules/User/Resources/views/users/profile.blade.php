@@ -7,11 +7,10 @@
             <div class="title-wrapper pt-30">
               <div class="row align-items-center">
                 <div class="col-md-6">
-                  <div class="titlemb-30">
+                  <div class="title mb-30">
                     <h2>Perfil</h2>
                   </div>
                 </div>
-                <!-- end col -->
                 <div class="col-md-6">
                   <div class="breadcrumb-wrapper mb-30">
                     <nav aria-label="breadcrumb">
@@ -22,11 +21,10 @@
                     </nav>
                   </div>
                 </div>
-                <!-- end col -->
               </div>
-              <!-- end row -->
             </div>
             <!-- ========== title-wrapper end ========== -->
+
             <div class="row">
                 <div class="col-xxl-9 col-lg-8">
                   <div class="profile-wrapper mb-30">
@@ -107,9 +105,7 @@
                               <input placeholder="{{ $user->address }}" type="text" readonly>
                             </div>
                           </div>
-                          <!-- end col -->
                         </div>
-                        <!-- end row -->
                       </form>
                     </div>
                   </div>
@@ -218,11 +214,9 @@
                           </div>
                         </div>
                       </a>
-                      <!-- end chat-list -->
                     </div>
                   </div>
                 </div>
-                <!-- end col -->
             </div>
         </div>
     </section>

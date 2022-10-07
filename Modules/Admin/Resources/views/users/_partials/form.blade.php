@@ -84,10 +84,11 @@
       </div>
     </div>
     <!-- end col -->
+
     <div class="col-12">
       <div class="button-group d-flex justify-content-center flex-wrap">
         <button type="submit" class="main-btn primary-btn btn-hover m-2">Guardar</button>
-        <a class="main-btn danger-btn-outline m-2" href="{{ url('/admin/users') }}">Atrás</a>
+        <a class="main-btn primary-btn-outline m-2" href="{{ url('/admin/users') }}">Atrás</a>
       </div>
     </div>
   </div>

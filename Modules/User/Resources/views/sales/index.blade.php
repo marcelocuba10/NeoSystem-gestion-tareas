@@ -77,7 +77,7 @@
                             </div>
                             @can('sales-edit')
                             <div class="action">
-                              <a href="#">
+                              <a href="{{ url('/user/sales/edit/'.$sale->id) }}">
                                 <button class="text-info"><i class="lni lni-coin"></i></button>
                               </a>
                             </div>

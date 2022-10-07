@@ -7,7 +7,9 @@
             <div class="title-wrapper pt-30">
                 <div class="row align-items-center">
                     <div class="col-md-6">
-                        <div class="title mb-30"><h2>Editar Venta</h2></div>
+                        <div class="title mb-30">
+                            <h2>Editar {{ ($sale->type == 'Order')  ? ' Presupuesto' : ' Venta' }}</h2>
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <div class="breadcrumb-wrapper mb-30">
@@ -31,7 +33,7 @@
                             <form method="POST" action="{{ url('/user/sales/update/'.$sale->id) }}">
                                 @csrf
                                 @method('PUT')
-                                @include('user::sales._partials.form')
+                                @include('user::sales._partials.form-temp')
                             </form>
                         </div>
                     </div>

@@ -94,8 +94,8 @@
               </div>
               <!-- end col -->          
               <div class="col-12">
-                <div class="button-groupd-flexjustify-content-centerflex-wrap">
-                  <a class="main-btn danger-btn-outline m-2" href="{{ url('/user/products') }}">Atrás</a>
+                <div class="button-group d-flex justify-content-center flex-wrap">
+                  <a class="main-btn primary-btn-outline m-2" href="{{ url('/user/products') }}">Atrás</a>
                 </div>
               </div>
             </div>
