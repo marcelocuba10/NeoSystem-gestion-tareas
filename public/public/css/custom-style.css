@@ -1,3 +1,21 @@
+.input-sm{
+    padding: 7px 16px !important;
+}
+
+.table-search input {
+    width: 100%;
+    border: 1px solid #efefef;
+    background: rgba(239, 239, 239, 0.5);
+    border-radius: 4px;
+    height: 46px;
+    padding-left: 44px;
+    -webkit-transition: all 0.3s ease-out 0s;
+    -moz-transition: all 0.3s ease-out 0s;
+    -ms-transition: all 0.3s ease-out 0s;
+    -o-transition: all 0.3s ease-out 0s;
+    transition: all 0.3s ease-out 0s;
+}
+
 .status-btn.info-btn {
     border: 1px solid;
 }

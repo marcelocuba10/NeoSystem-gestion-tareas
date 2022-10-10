@@ -35,8 +35,9 @@ Route::prefix('user')->group(function () {
             Route::get('/edit/{id}', 'WhatDoController@edit');
             Route::put('/update/{id}', 'WhatDoController@update');
             Route::delete('/delete/{id}', 'WhatDoController@destroy');
-            Route::get('/search', 'AppointmentController@search');
-            Route::get('/filter', 'AppointmentController@filter');
+            Route::get('/search', 'WhatDoController@search');
+            Route::get('/filter', 'WhatDoController@filter');
+            Route::get('/visit_on_map', 'WhatDoController@visit_on_map');
         });
 
         /*** Appointments Routes ***/
