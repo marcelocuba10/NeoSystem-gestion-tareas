@@ -43,7 +43,7 @@
                     <tr>
                       <th><h6>Número</h6></th>
                       <th><h6>Cliente</h6></th>
-                      <th><h6>Estado</h6></th>
+                      <th><h6>Acción</h6></th>
                       <th><h6>Presupuesto?</h6></th>
                       <th><h6>Fecha Visita</h6></th>
                       <th><h6>Fecha Prox Visita</h6></th>

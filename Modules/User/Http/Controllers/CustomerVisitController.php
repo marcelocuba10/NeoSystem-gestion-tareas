@@ -61,9 +61,9 @@ class CustomerVisitController extends Controller
             ->get();
 
         $status = [
-            'Visitado',
-            'No Atendido',
-            'Cancelado'
+            'Realizar Llamada',
+            'Visitar Personalmente',
+            'Enviar Presupuesto'
         ];
 
         $products = DB::table('products')
@@ -88,8 +88,10 @@ class CustomerVisitController extends Controller
 
         $request->validate([
             'customer_id' => 'required',
-            'visit_date' => 'nullable|date|after_or_equal:today|before:' . $currentDate,
-            'next_visit_date' => 'nullable|date_format:Y-m-d|after_or_equal:today|before:' . $currentDate,
+            'visit_date' => 'required|date',
+            // 'visit_date' => 'nullable|date|after_or_equal:today|before:' . $currentDate,
+            // 'next_visit_date' => 'nullable|date_format:Y-m-d|after_or_equal:today|before:' . $currentDate,
+            'next_visit_date' => 'nullable|date',
             'next_visit_hour' => 'nullable|max:5|min:5',
             'status' => 'required|max:30|min:5',
             'result_of_the_visit' => 'nullable|max:1000|min:3',
@@ -307,12 +309,14 @@ class CustomerVisitController extends Controller
     {
         /** date validation, not less than 1980 and not greater than the current year **/
         $initialDate = '1980-01-01';
-        $currentDate = (date('Y') + 1) . '-01-01'; //2023-01-01
+        $currentDate = (date('Y') + 2) . '-01-01'; //2024-01-01
 
         $request->validate([
             'customer_id' => 'required',
-            'visit_date' => 'nullable|date|after_or_equal:today|before:' . $currentDate,
-            'next_visit_date' => 'nullable|date_format:Y-m-d|after_or_equal:today|before:' . $currentDate,
+            'visit_date' => 'nullable|date',
+            // 'visit_date' => 'nullable|date|after_or_equal:today|before:' . $currentDate,
+            // 'next_visit_date' => 'nullable|date_format:Y-m-d|after_or_equal:today|before:' . $currentDate,
+            'next_visit_date' => 'nullable|date',
             'next_visit_hour' => 'nullable|max:5|min:5',
             'status' => 'required|max:30|min:5',
             'result_of_the_visit' => 'nullable|max:1000|min:3',

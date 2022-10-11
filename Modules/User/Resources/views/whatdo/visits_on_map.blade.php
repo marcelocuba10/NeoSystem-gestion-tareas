@@ -48,92 +48,68 @@
 
     function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
-            center: { lat: -25.48313710, lng: -54.62047370 },
-            zoom: 13
+          center: { lat: -25.48313710, lng: -54.62047370 },
+          zoom: 13
         });   
 
         var infowindow = new google.maps.InfoWindow();
 
-        for (i = 1; i < locations.length; i++) { 
-            addMarker(locations[i]);
-          
+        for (i = 0; i < locations.length; i++) { 
+          addMarker(locations[i]);
+        }
 
-            // var marker = new google.maps.LatLng(lat, lng);
-            // // var marker = new google.maps.LatLng(parseFloat(marker.lat),parseFloat(marker.lng));
-            // var mark = new google.maps.Marker({
-            //     map: map,
-            //     position: marker,
-            // });
-              
-            // google.maps.event.addListener(marker, 'click', (function(marker, i) {
-            //   return function() {
-            //     infowindow.setContent(locations[i]['customer_name'],locations[i]['longitude']);
-            //     infowindow.open(map, marker);
-            //   }
-            // })(marker, i));
+      function addMarker(marker){
+        var customer_name = marker.customer_name;
+        var visit_date = marker.visit_date;
+        var next_visit_date = marker.next_visit_date;
+        var next_visit_hour = marker.next_visit_hour;
+        var estate = marker.estate;
 
-          }
+        var html = "<b style='overflow: hidden;font-weight: 500;font-size: 14px;color:#333'>" + customer_name + "</b> <br/>Visitado: " + visit_date +",<br/>Localidad: "+estate+",<br/>Próxima Visita: "+next_visit_date+",<br/>Hora: "+next_visit_hour;
 
+        const then = new Date(visit_date); //visit_date
+        const now = new Date(); //current date
+        //Subtract visit date with current date, result in milliseconds.
+        const msBetweenDates = Math.abs(then.getTime() - now.getTime());
 
-          function addMarker(marker){
+        // convert ms to days                 hour   min  sec   ms
+        const daysBetweenDates = msBetweenDates / (24 * 60 * 60 * 1000);
 
-                var customer_name = marker.customer_name;
-                var city = marker.city;
-                var estate = marker.estate;
-                var visit_date = marker.visit_date;
+        console.log(daysBetweenDates);
+        if (daysBetweenDates < 30) {
+          console.log('visitado hace menos de 30 días');
+          let a=(daysBetweenDates)/(1000*60*60*24);
+          console.log('days:' + a);
+          var imageColor = '/public/images/markers/marker-icon-green-20x32.png';
+        } 
+        
+        if(daysBetweenDates > 30 && daysBetweenDates < 90) {
+          console.log('visitado entre 30 y 90 días');
+          var imageColor = '/public/images/markers/marker-icon-yellow-20x32.png';
+        }
 
-                // alert(customer_name + city + estate + visit_date);
+        if (daysBetweenDates > 90) {
+          console.log('visitado hace más de 90 días');
+          var imageColor = '/public/images/markers/marker-icon-red-20x32.png';
+        } 
 
-                var html = "<b>" + customer_name + "</b> <br/>" + city +",<br/>"+estate+" "+visit_date+",<br/>";
+        var markerLatlng = new google.maps.LatLng(parseFloat(marker.latitude),parseFloat(marker.longitude));
 
-                var markerLatlng = new google.maps.LatLng(parseFloat(marker.latitude),parseFloat(marker.longitude));
-                //alert(markerLatlng);
+        var mark = new google.maps.Marker({
+            map: map,
+            position: markerLatlng,
+            icon: imageColor,
+        });
 
-                var mark = new google.maps.Marker({
-                    map: map,
-                    position: markerLatlng,
-                });
+        google.maps.event.addListener(mark, 'click', (function() {
+            return function() {
+              infowindow.setContent(html);
+              infowindow.open(map, mark);
+            }
+          })(mark , i));
 
-                // var infoWindow = new google.maps.InfoWindow;
-
-                // google.maps.event.addListener(mark, 'click', function(){
-                //     infoWindow.setContent(html);
-                //     infoWindow.open(map, mark);
-                // });
-
-                google.maps.event.addListener(mark, 'click', (function() {
-                    return function() {
-                      //infowindow.setContent(marker.customer_name  + "</b> <br/>" + city);
-                      infowindow.setContent(html);
-                      infowindow.open(map, mark);
-                    }
-                  })(mark , i));
-
-                return mark;
-          }
-
-
-          // @foreach($customer_visits as $customers)
-          //   var lat = <?php 
-          //            $data = $customer_visits[0]->latitude;
-          //            $data = str_replace('"', '', $data);
-          //            echo str_replace('"', '', $data);
-          //          ?>;
-          //   var lng = {{ $customers->longitude }}
-
-          //   console.log(lat + lng);
-
-          //   marker = new google.maps.Marker({
-          //           position: new google.maps.LatLng(lat, lng),
-          //           map: map,
-                 
-          //         });
-
-          // @endforeach
-
-          
-
-
+        return mark;
+      }
     }
 
     window.initMap = initMap;

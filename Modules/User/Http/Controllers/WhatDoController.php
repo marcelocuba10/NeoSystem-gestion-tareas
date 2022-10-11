@@ -84,6 +84,7 @@ class WhatDoController extends Controller
                     'customer_visits.id',
                     'customer_visits.visit_date',
                     'customer_visits.next_visit_date',
+                    'customer_visits.next_visit_hour',
                     'customer_visits.status',
                     'customer_visits.type',
                     'customers.name AS customer_name',
@@ -94,23 +95,6 @@ class WhatDoController extends Controller
                 )
                 ->orderBy('customer_visits.created_at', 'DESC')
                 ->get();
-
-                // $latitude = json_encode($customer_visits);
-                // dd($customer_visits[0]->latitude);
-                // $latitude = str_replace('"', '', $latitude);
-                // $latitude = doubleval($latitude);
-                // dd($latitude);
-
-                // dd($customer_visits);
-
-            $locations = [
-                ['Mumbai', 19.0760,72.8777],
-                ['Pune', 18.5204,73.8567],
-                ['Bhopal ', 23.2599,77.4126],
-                ['Agra', 27.1767,78.0081],
-                ['Delhi', 28.7041,77.1025],
-                ['Rajkot', 22.2734719,70.7512559],
-            ];
 
         return view('user::whatdo.visits_on_map', compact('customer_visits',));
     }

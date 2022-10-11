@@ -123,6 +123,7 @@
     function readyInputMask() {
       VMasker(document.getElementById("phone")).maskPattern('(999) 999 999');
       VMasker(document.getElementById("date")).maskPattern('99/99/9999');
+      VMasker(document.getElementById("date_2")).maskPattern('99/99/9999');
     }
 
     /** ========= Tooltip ======== **/

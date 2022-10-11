@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-4">
       <div class="select-style-1">
-        <label>(*) Cliente</label>
+        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Cliente</label>
         <div class="select-position">
           @if($customer_visit)
           <select name="customer_id">
@@ -23,8 +23,8 @@
     <!-- end col --> 
     <div class="col-3">
       <div class="input-style-1">
-        <label>Fecha/Hora de Visita</label>
-        <input type="text" name="visit_date" value="{{ $currentDate ?? old('currentDate') }}" readonly>
+        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Fecha de Visita</label>
+        <input type="date" name="visit_date" id="date_2" placeholder="DD/MM/YYYY" value="{{ $customer_visit->visit_date ?? old('visit_date') }}" class="bg-transparent">
       </div>
     </div>
     <!-- end col -->
@@ -44,7 +44,7 @@
     <!-- end col -->
     <div class="col-sm-2">
       <div class="select-style-1">
-        <label>(*) Estado</label>
+        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Acciones</label>
         <div class="select-position">
           @if ($customer_visit)
             <select name="status">
@@ -65,14 +65,14 @@
     <!-- end col -->
     <div class="col-5">
       <div class="input-style-1">
-        <label>Resultado de la Visita</label>
+        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Resultado de la Visita</label>
         <textarea type="text" name="result_of_the_visit" value="{{ $customer_visit->result_of_the_visit ?? old('result_of_the_visit') }}" class="bg-transparent">{{ $customer_visit->result_of_the_visit ?? old('result_of_the_visit') }}</textarea>
       </div>
     </div>
     <!-- end col -->
     <div class="col-5">
       <div class="input-style-1">
-        <label>Objetivos</label>
+        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Objetivos</label>
         <textarea type="text" name="objective" value="{{ $customer_visit->objective ?? old('objective') }}" class="bg-transparent">{{ $customer_visit->objective ?? old('objective') }}</textarea>
       </div>
     </div>
