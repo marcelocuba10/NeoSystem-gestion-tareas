@@ -23,15 +23,16 @@
     <!-- end col --> 
     <div class="col-3">
       <div class="input-style-1">
-        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Fecha de Visita</label>
-        <input type="date" name="visit_date" id="date_2" placeholder="DD/MM/YYYY" value="{{ $customer_visit->visit_date ?? old('visit_date') }}" class="bg-transparent">
+        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Fecha/Hora de Visita</label>
+        <input type="text" name="visit_date" placeholder="DD/MM/YYYY" value="{{ $currentDate }}" readonly>
       </div>
     </div>
     <!-- end col -->
     <div class="col-3">
       <div class="input-style-1">
         <label>Fecha Próxima Visita</label>
-        <input type="date" name="next_visit_date" id="date" placeholder="DD/MM/YYYY" value="{{ $customer_visit->next_visit_date ?? old('next_visit_date') }}" class="bg-transparent">
+        <input onchange="showFieldObjectives(this);" type="date" name="next_visit_date" id="date" placeholder="DD/MM/YYYY" value="{{ $customer_visit->next_visit_date ?? old('next_visit_date') }}" class="bg-transparent">
+        <span id="msg1" style="display: none" class="form-text m-b-none">Es necesario agregar la <b>Hora</b> y <b>Objetivos</b></span>
       </div>
     </div>
     <!-- end col -->
@@ -47,14 +48,14 @@
         <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Acciones</label>
         <div class="select-position">
           @if ($customer_visit)
-            <select name="status">
-              @foreach ($status as $item)
-                <option value="{{ $item }}" {{ ( $item === $customer_visit->status) ? 'selected' : '' }}> {{ $item}} </option>
+            <select name="action">
+              @foreach ($actions as $item)
+                <option value="{{ $item }}" {{ ( $item === $customer_visit->action) ? 'selected' : '' }}> {{ $item}} </option>
               @endforeach 
             </select> 
           @else
-            <select name="status">
-              @foreach ($status as $item)
+            <select name="action">
+              @foreach ($actions as $item)
                 <option value="{{ $item }}"> {{ $item}} </option>
               @endforeach 
             </select> 
@@ -71,7 +72,7 @@
     </div>
     <!-- end col -->
     <div class="col-5">
-      <div class="input-style-1">
+      <div class="input-style-1" id="objective" style="display: none">
         <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Objetivos</label>
         <textarea type="text" name="objective" value="{{ $customer_visit->objective ?? old('objective') }}" class="bg-transparent">{{ $customer_visit->objective ?? old('objective') }}</textarea>
       </div>
@@ -138,7 +139,7 @@
       </div>
       <div class="col-12">
         <div class="button-group d-flex justify-content-center flex-wrap">
-          <button type="submit" class="main-btn primary-btn btn-hover m-2">Guardar</button>
+          <button type="submit" class="main-btn primary-btn btn-hover m-2">{{ ($customer_visit)  ? ' Actualizar' : 'Actualizar' }}</button>
           <a class="main-btn danger-btn-outline m-2" href="{{ url('/user/customer_visits') }}">Atrás</a>
         </div>
       </div>
@@ -194,7 +195,7 @@
       </div>
       <div class="col-12">
         <div class="button-group d-flex justify-content-center flex-wrap">
-          <button type="submit" class="main-btn primary-btn btn-hover m-2">Guardar</button>
+          <button type="submit" class="main-btn primary-btn btn-hover m-2">{{ ($customer_visit)  ? ' Actualizar' : 'Guardar' }}</button>
           <a class="main-btn primary-btn-outline m-2" href="{{ url('/user/customer_visits') }}">Atrás</a>
         </div>
       </div>
@@ -232,8 +233,30 @@
       document.getElementById('setOrder').style.display = 'none';
     }
   })
+  
+  function showFieldObjectives(object){
+    //show field objectives and message span
+    document.getElementById('objective').style.display = 'initial';
+    document.getElementById('msg1').style.display = 'initial';
+    console.log('show field objective');
+
+    //if clear calendar click hide field objectives and message span
+    if (object.value == '') {
+      document.getElementById('objective').style.display = 'none';
+      document.getElementById('msg1').style.display = 'none';
+      console.log('hide field objective');
+    }
+  }
 
   $(document).ready(function(){
+
+    //check if have next visit, show field objectives and message span
+    var next_visit_date = document.getElementById('date');
+    if (next_visit_date.value) {
+      document.getElementById('objective').style.display = 'initial';
+      document.getElementById('msg1').style.display = 'initial';
+      console.log('show field objective');
+    }
 
     //When get data from Edit, calculate Total;
     var tr = $(this).parent().parent();

@@ -62,8 +62,8 @@
               <!-- end col -->
               <div class="col-2">
                 <div class="input-style-1">
-                  <label>Estado</label>
-                  <input type="text" value="{{ $customer_visit->status ?? old('status') }}" readonly>
+                  <label>Acción</label>
+                  <input type="text" value="{{ $customer_visit->action ?? old('action') }}" readonly>
                 </div>
               </div>
               <!-- end col -->

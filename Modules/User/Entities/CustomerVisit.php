@@ -19,6 +19,7 @@ class CustomerVisit extends Model
         'result_of_the_visit',
         'objective',
         'status',
+        'action',
         'type'
     ];
     

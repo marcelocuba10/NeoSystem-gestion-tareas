@@ -50,8 +50,7 @@ class CustomerVisitController extends Controller
     {
         $customer_visit = null;
         $customer_visit_type = null;
-        $currentDate = Carbon::now();
-        $currentDate = $currentDate->toDateTimeString();
+        $currentDate = Carbon::now()->format('d/m/y H:i');
 
         $idRefCurrentUser = Auth::user()->idReference;
 
@@ -60,7 +59,7 @@ class CustomerVisitController extends Controller
             ->select('customers.id', 'customers.name')
             ->get();
 
-        $status = [
+        $actions = [
             'Realizar Llamada',
             'Visitar Personalmente',
             'Enviar Presupuesto'
@@ -77,24 +76,22 @@ class CustomerVisitController extends Controller
             ->orderBy('created_at', 'DESC')
             ->get();
 
-        return view('user::customer_visits.create', compact('customers', 'customer_visit', 'currentDate', 'status', 'products', 'customer_visit_type'));
+        return view('user::customer_visits.create', compact('customers', 'customer_visit', 'currentDate', 'actions', 'products', 'customer_visit_type'));
     }
 
     public function store(Request $request)
     {
         /** date validation, not less than 1980 and not greater than the current year **/
         $initialDate = '1980-01-01';
-        $currentDate = (date('Y') + 1) . '-01-01'; //2023-01-01
+        $currentDate = (date('Y') + 2) . '-01-01'; //current date + 2 year
 
         $request->validate([
             'customer_id' => 'required',
-            'visit_date' => 'required|date',
-            // 'visit_date' => 'nullable|date|after_or_equal:today|before:' . $currentDate,
-            // 'next_visit_date' => 'nullable|date_format:Y-m-d|after_or_equal:today|before:' . $currentDate,
-            'next_visit_date' => 'nullable|date',
+            'visit_date' => 'required|date|after_or_equal:today|before:' . $currentDate,
+            'next_visit_date' => 'nullable|date|after_or_equal:today|before:' . $currentDate,
             'next_visit_hour' => 'nullable|max:5|min:5',
-            'status' => 'required|max:30|min:5',
-            'result_of_the_visit' => 'nullable|max:1000|min:3',
+            'action' => 'required|max:30|min:5',
+            'result_of_the_visit' => 'required|max:1000|min:3',
             'objective' => 'nullable|max:1000|min:3',
             'product_id' => 'required',
             'qty' => 'required',
@@ -104,12 +101,19 @@ class CustomerVisitController extends Controller
 
         $input = $request->all();
 
-        if ($input['next_visit_date'] == null) {
-            $input['next_visit_date'] = 'No marcado';
+        //validations
+        if ($input['next_visit_date'] != null && $input['objective'] == null) {
+            return back()->with('error', 'Por favor, agregue los Objetivos para la próxima visita marcada');
         }
 
-        if ($input['next_visit_hour'] == null) {
+        if ($input['next_visit_date'] != null && $input['next_visit_hour'] == null) {
+            return back()->with('error', 'Por favor, agregue la Hora de la próxima visita');
+        }
+
+        if ($input['next_visit_date'] == null || $input['next_visit_hour'] == null) {
+            $input['next_visit_date'] = 'No marcado';
             $input['next_visit_hour'] = 'No marcado';
+            $input['objective'] = null;
         }
 
         /** check if checkbox is checked */
@@ -119,8 +123,9 @@ class CustomerVisitController extends Controller
                 return back()->with('error', 'Por favor, adicione un producto.');
             } else {
 
-                /** Save temporal CustomerVisit */
+                /** create temporal CustomerVisit */
                 $input['type'] = 'Order';
+                $input['status'] = 'Visitado';
                 $input['visit_number'] = $this->generateUniqueCodeVisit();
                 $input['seller_id'] = Auth::user()->idReference;
                 $customer_visit = CustomerVisit::create($input);
@@ -176,6 +181,7 @@ class CustomerVisitController extends Controller
 
             $input['visit_number'] = $this->generateUniqueCodeVisit();
             $input['type'] = 'NoOrder';
+            $input['status'] = 'Visitado';
             $input['seller_id'] = Auth::user()->idReference;
             $customer_visit = CustomerVisit::create($input);
         }
@@ -219,7 +225,7 @@ class CustomerVisitController extends Controller
                 'customer_visits.next_visit_hour',
                 'customer_visits.result_of_the_visit',
                 'customer_visits.objective',
-                'customer_visits.status',
+                'customer_visits.action',
                 'customer_visits.type',
                 'customers.name AS customer_name',
                 'customers.estate'
@@ -259,7 +265,7 @@ class CustomerVisitController extends Controller
                 'customer_visits.next_visit_hour',
                 'customer_visits.result_of_the_visit',
                 'customer_visits.objective',
-                'customer_visits.status',
+                'customer_visits.action',
                 'customers.name AS customer_name',
                 'customers.estate',
                 'customer_visits.type'
@@ -285,10 +291,10 @@ class CustomerVisitController extends Controller
             ->select('customers.id', 'customers.name')
             ->get();
 
-        $status = [
-            'Visitado',
-            'No Atendido',
-            'Cancelado'
+        $actions = [
+            'Realizar Llamada',
+            'Visitar Personalmente',
+            'Enviar Presupuesto'
         ];
 
         $order_details = DB::table('order_details')
@@ -302,24 +308,22 @@ class CustomerVisitController extends Controller
             ->where('order_details.visit_id', '=', $id)
             ->sum('amount');
 
-        return view('user::customer_visits.edit', compact('customers', 'customer_visit', 'currentDate', 'status', 'products', 'order_details', 'total_order', 'customer_visit_type'));
+        return view('user::customer_visits.edit', compact('customers', 'customer_visit', 'currentDate', 'actions', 'products', 'order_details', 'total_order', 'customer_visit_type'));
     }
 
     public function update(Request $request, $id)
     {
         /** date validation, not less than 1980 and not greater than the current year **/
         $initialDate = '1980-01-01';
-        $currentDate = (date('Y') + 2) . '-01-01'; //2024-01-01
+        $currentDate = (date('Y') + 2) . '-01-01'; //current date + 2 year
 
         $request->validate([
             'customer_id' => 'required',
-            'visit_date' => 'nullable|date',
-            // 'visit_date' => 'nullable|date|after_or_equal:today|before:' . $currentDate,
-            // 'next_visit_date' => 'nullable|date_format:Y-m-d|after_or_equal:today|before:' . $currentDate,
-            'next_visit_date' => 'nullable|date',
+            'visit_date' => 'required|date|after_or_equal:today|before:' . $currentDate,
+            'next_visit_date' => 'nullable|date|after_or_equal:today|before:' . $currentDate,
             'next_visit_hour' => 'nullable|max:5|min:5',
-            'status' => 'required|max:30|min:5',
-            'result_of_the_visit' => 'nullable|max:1000|min:3',
+            'action' => 'required|max:30|min:5',
+            'result_of_the_visit' => 'required|max:1000|min:3',
             'objective' => 'nullable|max:1000|min:3',
             'product_id' => 'required',
             'qty' => 'required|min:0',
@@ -329,12 +333,18 @@ class CustomerVisitController extends Controller
 
         $input = $request->all();
 
-        if ($input['next_visit_date'] == null) {
-            $input['next_visit_date'] = 'No marcado';
+        if ($input['next_visit_date'] != null && $input['objective'] == null) {
+            return back()->with('error', 'Por favor, agregue los Objetivos para la próxima visita marcada');
         }
 
-        if ($input['next_visit_hour'] == null) {
+        if ($input['next_visit_date'] != null && $input['next_visit_hour'] == null) {
+            return back()->with('error', 'Por favor, agregue la Hora de la próxima visita');
+        }
+
+        if ($input['next_visit_date'] == null || $input['next_visit_hour'] == null) {
+            $input['next_visit_date'] = 'No marcado';
             $input['next_visit_hour'] = 'No marcado';
+            $input['objective'] = null;
         }
 
         /** check if checkbox is checked */

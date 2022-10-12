@@ -111,11 +111,11 @@
     $(document).ready(function() {
         setTimeout(function() {
             $(".alert-success").alert('close');
-        }, 2500);
+        }, 3500);
     
         setTimeout(function() {
             $(".alert-danger").alert('close');
-        }, 2500);
+        }, 3500);
     });
 
     /** ========= InputMask ======== **/

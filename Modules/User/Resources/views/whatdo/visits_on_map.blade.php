@@ -80,17 +80,17 @@
           console.log('visitado hace menos de 30 días');
           let a=(daysBetweenDates)/(1000*60*60*24);
           console.log('days:' + a);
-          var imageColor = '/public/images/markers/marker-icon-green-20x32.png';
+          var imageColor = "{!! asset('public/images/markers/marker-icon-green-20x32.png') !!}";
         } 
         
         if(daysBetweenDates > 30 && daysBetweenDates < 90) {
           console.log('visitado entre 30 y 90 días');
-          var imageColor = '/public/images/markers/marker-icon-yellow-20x32.png';
+          var imageColor ="{!! asset('public/images/markers/marker-icon-yellow-20x32.png') !!}";
         }
 
         if (daysBetweenDates > 90) {
           console.log('visitado hace más de 90 días');
-          var imageColor = '/public/images/markers/marker-icon-red-20x32.png';
+          var imageColor = "{!! asset('public/images/markers/marker-icon-red-20x32.png') !!}";
         } 
 
         var markerLatlng = new google.maps.LatLng(parseFloat(marker.latitude),parseFloat(marker.longitude));
