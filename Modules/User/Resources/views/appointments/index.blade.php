@@ -10,7 +10,7 @@
             <div class="title d-flex align-items-center flex-wrap mb-30">
               <h2 class="mr-40">Agenda de Visitas y Llamadas</h2>
               @can('appointment-create')
-                <a href="#" class="main-btn info-btn btn-hover btn-sm"><i class="lni lni-plus mr-5"></i></a>
+                <a href="{{ url('/user/appointments/create') }}" class="main-btn info-btn btn-hover btn-sm"><i class="lni lni-plus mr-5"></i></a>
               @endcan  
             </div>
           </div>
@@ -39,20 +39,10 @@
                     <ul class="legend3 d-flex flex-wrap align-items-center mb-30">
                       <li>
                         <div class="d-flex">
-                          <span class="bg-color bg-card-secondary"></span>
+                          <span class="bg-color bg-card-attention-2"> </span>
                           <div class="text">
                             <form action="{{ url('/user/appointments/filter') }}">
-                              <button class="btn-group-status" name="filter" value="Visitado" type="submit"><p class="text-sm text-dark">Visitados</p></button>
-                            </form> 
-                          </div>
-                        </div>
-                      </li>
-                      <li>
-                        <div class="d-flex">
-                          <span class="bg-color bg-card-enabled"></span>
-                          <div class="text">
-                            <form action="{{ url('/user/appointments/filter') }}">
-                              <button class="btn-group-status" name="filter" value="Pendiente" type="submit"><p class="text-sm text-dark">Pendientes</p></button>
+                              <button class="btn-group-status" name="filter" value="Realizar Llamada" type="submit"><p class="text-sm text-dark">Realizar Llamadas</p></button>
                             </form> 
                           </div>
                         </div>
@@ -62,17 +52,7 @@
                           <span class="bg-color bg-card-attention"> </span>
                           <div class="text">
                             <form action="{{ url('/user/appointments/filter') }}">
-                              <button class="btn-group-status" name="filter" value="Cancelado" type="submit"><p class="text-sm text-dark">Cancelados</p></button>
-                            </form> 
-                          </div>
-                        </div>
-                      </li>
-                      <li>
-                        <div class="d-flex">
-                          <span class="bg-color bg-card-error"> </span>
-                          <div class="text">
-                            <form action="{{ url('/user/appointments/filter') }}">
-                              <button class="btn-group-status" name="filter" value="No Atendido" type="submit"><p class="text-sm text-dark">No Atendidos</p></button>
+                              <button class="btn-group-status" name="filter" value="Visitar Personalmente" type="submit"><p class="text-sm text-dark">Visitar Personalmente</p></button>
                             </form> 
                           </div>
                         </div>
@@ -96,75 +76,84 @@
                   @endif
                 </div>
               </div>
+
               <div class="table-wrapper table-responsive">
                 <table class="table">
                   <thead>
                     <tr>
                       <th><h6>#</h6></th>
                       <th><h6>Cliente</h6></th>
-                      <th><h6>Estado</h6></th>
-                      <th><h6>Presupuesto?</h6></th>
-                      <th><h6>Fecha Visita</h6></th>
-                      <th><h6>Fecha Prox Visita</h6></th>
+                      <th><h6>Teléfono</h6></th>
                       <th><h6>Localidad</h6></th>
+                      <th><h6>Acción</h6></th>
+                      <th><h6>Fecha</h6></th>
+                      <th><h6>Hora</h6></th>
                       <th><h6>Acciones</h6></th>
                     </tr>
                   </thead>
                   <tbody>
-                    @foreach ($customer_visits as $customer_visit)
-                      <tr>
-                        <td class="text-sm"><h6 class="text-sm">{{ ++$i }}</h6></td>
-                        <td class="min-width"><h5 class="text-bold text-dark"><a href="{{ url('/user/customer_visits/show/'.$customer_visit->id ) }}">{{ $customer_visit->customer_name }}</a></h5></td>
-                        <td class="min-width">
-                          <span class="status-btn 
-                          @if($customer_visit->status == 'Visitado') secondary-btn
-                          @elseIf($customer_visit->status == 'No Atendido') close-btn
-                          @elseIf($customer_visit->status == 'Cancelado') warning-btn
-                          @endif">
-                            {{ $customer_visit->status }}
-                          </span>
-                        </td>
-                        @if ($customer_visit->type == 'Order')
-                          <td class="min-width"><p>Sí</p></td>
-                        @elseIf($customer_visit->type == 'NoOrder')
-                          <td class="min-width"><p>No</p></td>
-                        @endif
-                        <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ $customer_visit->visit_date }}</p></td>
-                        <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ $customer_visit->next_visit_date }}</p></td>
-                        <td class="min-width"><p>{{ $customer_visit->estate }}</p></td>
-                        <td class="text-right">
-                          <div class="btn-group">
-                            <div class="action">
-                              <a href="#">
-                                <button class="text-active"><i class="lni lni-eye"></i></button>
-                              </a>
-                            </div>
-                            @can('appointment-edit')
-                            <div class="action">
-                              <a href="#">
-                                <button class="text-info"><i class="lni lni-pencil"></i></button>
-                              </a>
-                            </div>
-                            @endcan
-                            {{-- @can('appointment-delete')
-                            <form method="POST" action="#">
-                              @csrf
+                    @if (count($appointments) > 0 )
+                      @foreach ($appointments as $appointment)
+                        <tr>
+                          <td class="text-sm"><h6 class="text-sm">{{ ++$i }}</h6></td>
+                          <td class="min-width"><h5 class="text-bold text-dark"><a href="{{ url('/user/appointments/show/'.$appointment->id ) }}">{{ $appointment->customer_name }}</a></h5></td>
+                          <td class="min-width"><p>{{ $appointment->customer_phone }}</p></td>
+                          <td class="min-width"><p><i class="lni lni-map-marker mr-10"></i>{{ $appointment->customer_estate }}</p></td>
+                          <td class="min-width">
+                            <span class="status-btn 
+                            @if($appointment->action == 'Realizar Llamada') orange-btn
+                            @elseIf($appointment->action == 'Visitar Personalmente') warning-btn
+                            @endif">
+                              {{ $appointment->action }}
+                            </span>
+                          </td>
+                          <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ $appointment->date }}</p></td>
+                          <td class="min-width"><p><i class="lni lni-timer mr-10"></i>{{ $appointment->hour }}</p></td>
+                          <td class="text-right">
+                            <div class="btn-group">
                               <div class="action">
-                                <input name="_method" type="hidden" value="DELETE">
-                                <button type="submit" class="text-danger"><i class="lni lni-trash-can"></i></button>
+                                <a href="{{ url('/user/appointments/show/'.$appointment->id) }}">
+                                  <button class="text-active"><i class="lni lni-eye"></i></button>
+                                </a>
                               </div>
-                            </form>
-                            @endcan --}}
-                          </div>
-                        </td>
+                              @can('appointment-edit')
+                              <div class="action">
+                                <a href="{{ url('/user/appointments/edit/'.$appointment->id) }}">
+                                  <button class="text-info"><i class="lni lni-pencil"></i></button>
+                                </a>
+                              </div>
+                              @endcan
+                              @can('appointment-delete')
+                              <form method="POST" action="{{ url('/user/appointments/delete/'.$appointment->id) }}">
+                                @csrf
+                                <div class="action">
+                                  <input name="_method" type="hidden" value="DELETE">
+                                  <button type="submit" class="text-danger"><i class="lni lni-trash-can"></i></button>
+                                </div>
+                              </form>
+                              @endcan
+                            </div>
+                          </td>
+                        </tr>
+                      @endforeach
+                    @else
+                      <tr>
+                        <td class="text-sm"></td>
+                        <td class="min-width"></td>
+                        <td class="min-width"></td>
+                        <td class="min-width"></td>
+                        <td class="min-width">Sin resultados encontrados</td>
+                        <td class="min-width"></td>
+                        <td class="min-width"></td>
+                        <td class="min-width"></td>
                       </tr>
-                    @endforeach
+                    @endif
                   </tbody>
                 </table>
                 @if (isset($search))
-                    {!! $customer_visits-> appends($search)->links() !!} <!-- appends envia variable en la paginacion-->
+                    {!! $appointments-> appends($search)->links() !!} <!-- appends envia variable en la paginacion-->
                 @else
-                    {!! $customer_visits-> links() !!}    
+                    {!! $appointments-> links() !!}    
                 @endif
               </div>
             </div>

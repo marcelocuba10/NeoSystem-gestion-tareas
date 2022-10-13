@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Modules\User\Entities\Appointment;
 
 class AppointmentController extends Controller
 {
@@ -23,22 +24,106 @@ class AppointmentController extends Controller
     public function index()
     {
         $idRefCurrentUser = Auth::user()->idReference;
-        $customer_visits = DB::table('customer_visits')
-            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-            ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+
+        $appointments = DB::table('appointments')
+            ->leftjoin('customers', 'customers.id', '=', 'appointments.customer_id')
+            ->where('appointments.idReference', '=', $idRefCurrentUser)
             ->select(
-                'customer_visits.id',
-                'customer_visits.visit_date',
-                'customer_visits.next_visit_date',
-                'customer_visits.status',
-                'customer_visits.type',
+                'appointments.id',
                 'customers.name AS customer_name',
-                'customers.estate'
+                'customers.phone AS customer_phone',
+                'customers.estate AS customer_estate',
+                'date',
+                'hour',
+                'action',
+                'observation',
             )
-            ->orderBy('customer_visits.created_at', 'DESC')
+            ->orderBy('appointments.created_at', 'DESC')
             ->paginate(10);
 
-        return view('user::appointments.index', compact('customer_visits'))->with('i', (request()->input('page', 1) - 1) * 10);
+        return view('user::appointments.index', compact('appointments'))->with('i', (request()->input('page', 1) - 1) * 10);
+    }
+
+    public function create()
+    {
+        $idRefCurrentUser = Auth::user()->idReference;
+        $appointment = null;
+
+        $customers = DB::table('customers')
+            ->where('customers.idReference', '=', $idRefCurrentUser)
+            ->select('customers.id', 'customers.name')
+            ->get();
+
+        $actions = [
+            'Realizar Llamada',
+            'Visitar Personalmente',
+        ];
+
+        return view('user::appointments.create', compact('customers', 'actions', 'appointment'));
+    }
+
+    public function store(Request $request)
+    {
+        /** date validation, not less than 1980 and not greater than the current year **/
+        $initialDate = '1980-01-01';
+        $currentDate = (date('Y') + 2) . '-01-01'; //current date + 2 year
+
+        $request->validate([
+            'customer_id' => 'required',
+            'date' => 'required|date|after_or_equal:today|before:' . $currentDate,
+            'hour' => 'required|max:5|min:5',
+            'action' => 'required|max:30|min:5',
+            'observation' => 'nullable|max:1000|min:3',
+        ]);
+
+        $input = $request->all();
+
+        /** add the idReference of the user */
+        $input['idReference'] = Auth::user()->idReference;
+
+        Appointment::create($input);
+
+        return redirect()->to('/user/appointments')->with('message', 'Agendado Correctamente');
+    }
+
+    public function edit($id)
+    {
+        $appointment = Appointment::find($id);
+        $idRefCurrentUser = Auth::user()->idReference;
+
+        $customers = DB::table('customers')
+            ->where('customers.idReference', '=', $idRefCurrentUser)
+            ->select('customers.id', 'customers.name')
+            ->get();
+
+        $actions = [
+            'Realizar Llamada',
+            'Visitar Personalmente',
+        ];
+
+        return view('user::appointments.edit', compact('customers', 'actions', 'appointment'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        /** date validation, not less than 1980 and not greater than the current year **/
+        $initialDate = '1980-01-01';
+        $currentDate = (date('Y') + 2) . '-01-01'; //current date + 2 year
+
+        $request->validate([
+            'customer_id' => 'required',
+            'date' => 'required|date|after_or_equal:today|before:' . $currentDate,
+            'hour' => 'required|max:5|min:5',
+            'action' => 'required|max:30|min:5',
+            'observation' => 'nullable|max:1000|min:3',
+        ]);
+
+        $input = $request->all();
+
+        $Appointment = Appointment::find($id);
+        $Appointment->update($input);
+
+        return redirect()->to('/user/appointments')->with('message', 'Agenda actualizada correctamente');
     }
 
     public function filter(Request $request)
@@ -47,39 +132,69 @@ class AppointmentController extends Controller
         $idRefCurrentUser = Auth::user()->idReference;
 
         if ($filter == '') {
-            $customer_visits = DB::table('customer_visits')
-                ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-                ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+            $appointments = DB::table('appointments')
+                ->leftjoin('customers', 'customers.id', '=', 'appointments.customer_id')
+                ->where('appointments.idReference', '=', $idRefCurrentUser)
                 ->select(
-                    'customer_visits.id',
-                    'customer_visits.visit_date',
-                    'customer_visits.next_visit_date',
-                    'customer_visits.status',
-                    'customer_visits.type',
+                    'appointments.id',
                     'customers.name AS customer_name',
-                    'customers.estate'
+                    'customers.phone AS customer_phone',
+                    'customers.estate AS customer_estate',
+                    'date',
+                    'hour',
+                    'action',
+                    'observation',
                 )
-                ->orderBy('customer_visits.created_at', 'DESC')
+                ->orderBy('appointments.created_at', 'DESC')
                 ->paginate(10);
         } else {
-            $customer_visits = DB::table('customer_visits')
-                ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-                ->where('customer_visits.status', 'LIKE', "%{$filter}%")
-                ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+            $appointments = DB::table('appointments')
+                ->leftjoin('customers', 'customers.id', '=', 'appointments.customer_id')
+                ->where('appointments.idReference', '=', $idRefCurrentUser)
+                ->where('appointments.action', 'LIKE', "%{$filter}%")
                 ->select(
-                    'customer_visits.id',
-                    'customer_visits.visit_date',
-                    'customer_visits.next_visit_date',
-                    'customer_visits.status',
-                    'customer_visits.type',
+                    'appointments.id',
                     'customers.name AS customer_name',
-                    'customers.estate'
+                    'customers.phone AS customer_phone',
+                    'customers.estate AS customer_estate',
+                    'date',
+                    'hour',
+                    'action',
+                    'observation',
                 )
-                ->orderBy('customer_visits.created_at', 'DESC')
+                ->orderBy('appointments.created_at', 'DESC')
                 ->paginate(10);
         }
 
-        return view('user::appointments.index', compact('customer_visits', 'filter'))->with('i', (request()->input('page', 1) - 1) * 10);
+        return view('user::appointments.index', compact('appointments', 'filter'))->with('i', (request()->input('page', 1) - 1) * 10);
+    }
+
+    public function show($id)
+    {
+        $idRefCurrentUser = Auth::user()->idReference;
+
+        $appointment = DB::table('appointments')
+            ->leftjoin('customers', 'customers.id', '=', 'appointments.customer_id')
+            ->where('appointments.id', '=', $id)
+            ->select(
+                'appointments.id',
+                'customers.name AS customer_name',
+                'customers.phone AS customer_phone',
+                'customers.estate AS customer_estate',
+                'date',
+                'hour',
+                'action',
+                'observation',
+            )
+            ->orderBy('appointments.created_at', 'DESC')
+            ->first();
+
+        $actions = [
+            'Realizar Llamada',
+            'Visitar Personalmente',
+        ];
+
+        return view('user::appointments.show', compact('appointment', 'actions'));
     }
 
     public function search(Request $request)
@@ -88,44 +203,46 @@ class AppointmentController extends Controller
         $idRefCurrentUser = Auth::user()->idReference;
 
         if ($search == '') {
-            $customer_visits = DB::table('customer_visits')
-                ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-                ->where('customers.idReference', '=', $idRefCurrentUser)
+            $appointments = DB::table('appointments')
+                ->leftjoin('customers', 'customers.id', '=', 'appointments.customer_id')
+                ->where('appointments.idReference', '=', $idRefCurrentUser)
                 ->select(
-                    'customer_visits.id',
-                    'customer_visits.visit_date',
-                    'customer_visits.next_visit_date',
-                    'customer_visits.next_visit_hour',
-                    'customer_visits.result_of_the_visit',
-                    'customer_visits.objective',
-                    'customer_visits.status',
-                    'customer_visits.type',
+                    'appointments.id',
                     'customers.name AS customer_name',
-                    'customers.estate'
+                    'customers.phone AS customer_phone',
+                    'customers.estate AS customer_estate',
+                    'date',
+                    'hour',
+                    'action',
+                    'observation',
                 )
-                ->orderBy('customer_visits.created_at', 'DESC')
+                ->orderBy('appointments.created_at', 'DESC')
                 ->paginate(10);
         } else {
-            $customer_visits = DB::table('customer_visits')
-                ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-                ->where('customers.idReference', '=', $idRefCurrentUser)
+            $appointments = DB::table('appointments')
+                ->leftjoin('customers', 'customers.id', '=', 'appointments.customer_id')
+                ->where('appointments.idReference', '=', $idRefCurrentUser)
                 ->where('customers.name', 'LIKE', "%{$search}%")
                 ->select(
-                    'customer_visits.id',
-                    'customer_visits.visit_date',
-                    'customer_visits.next_visit_date',
-                    'customer_visits.next_visit_hour',
-                    'customer_visits.result_of_the_visit',
-                    'customer_visits.objective',
-                    'customer_visits.status',
-                    'customer_visits.type',
+                    'appointments.id',
                     'customers.name AS customer_name',
-                    'customers.estate'
+                    'customers.phone AS customer_phone',
+                    'customers.estate AS customer_estate',
+                    'date',
+                    'hour',
+                    'action',
+                    'observation',
                 )
-                ->orderBy('customer_visits.created_at', 'DESC')
+                ->orderBy('appointments.created_at', 'DESC')
                 ->paginate();
         }
 
-        return view('user::appointments.index', compact('customer_visits', 'search'))->with('i', (request()->input('page', 1) - 1) * 10);
+        return view('user::appointments.index', compact('appointments', 'search'))->with('i', (request()->input('page', 1) - 1) * 10);
+    }
+
+    public function destroy($id)
+    {
+        Appointment::find($id)->delete();
+        return redirect()->to('/user/appointments')->with('message', 'Agenda eliminada correctamente');
     }
 }

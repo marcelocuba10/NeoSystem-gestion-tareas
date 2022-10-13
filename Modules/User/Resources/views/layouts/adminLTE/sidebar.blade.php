@@ -54,7 +54,7 @@
         </li>
         @endcan
         @can('appointment-list')
-        <li class="nav-item {{ (request()->is('user/appointments')) ? 'active' : '' }}">
+        <li class="nav-item {{ (request()->is('user/appointments')) || (request()->is('user/appointments/*')) ? 'active' : '' }}">
           <a href="{{ url('/user/appointments') }}">
             <span class="icon">
               <svg style="width:24px;height:24px" viewBox="0 0 24 24">

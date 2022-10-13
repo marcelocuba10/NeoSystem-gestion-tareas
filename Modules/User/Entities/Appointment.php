@@ -10,15 +10,12 @@ class Appointment extends Model
     use HasFactory;
 
     protected $fillable = [
+        'idReference',
         'customer_id',
-        'seller_id',
-        'visit_date',
-        'next_visit_date',
-        'next_visit_hour',
-        'result_of_the_visit',
-        'objective',
-        'status',
-        'type'
+        'date',
+        'hour',
+        'action',
+        'observation',
     ];
     
     protected static function newFactory()
