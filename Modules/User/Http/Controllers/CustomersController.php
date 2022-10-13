@@ -86,7 +86,7 @@ class CustomersController extends Controller
 
         $request->validate([
             'name' => 'required|max:50|min:5',
-            'phone' => 'nullable|max:25|min:5',
+            'phone' => 'required|max:25|min:5',
             'doc_id' => 'nullable|max:25|min:5|unique:customers,doc_id',
             'email' => 'nullable|max:50|min:5|email:rfc,dns|unique:customers,email',
             'address' => 'nullable|max:255|min:5',
@@ -96,8 +96,8 @@ class CustomersController extends Controller
             'category' => 'required|max:150|min:1',
             'potential_products' => 'required|max:150|min:1',
             'unit_quantity' => 'nullable|integer|between:0,9999|min:0',
-            'result_of_the_visit' => 'nullable|max:1000|min:3',
-            'objective' => 'nullable|max:1000|min:3',
+            'result_of_the_visit' => 'required|max:1000|min:3',
+            'objective' => 'required|max:1000|min:3',
             'next_visit_date' => 'nullable|date_format:Y-m-d|after_or_equal:' . $initialDate . '|before:' . $currentDate,
             'next_visit_hour' => 'nullable|max:5|min:5',
         ]);

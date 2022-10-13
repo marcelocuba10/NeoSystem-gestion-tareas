@@ -1,3 +1,17 @@
+.input-style-1 input, .input-style-1 textarea {
+    padding: 10px;
+}
+.select-style-1 .select-position select {
+    padding: 10px;
+}
+tbody, td, tfoot, th, thead, tr {
+    /* border-color: inherit; */
+    border-style: none !important;
+    border-width: 0;
+}
+.table tbody tr:first-child > * {
+    padding-top: 12px !important;
+}
 .c_red{
     color: red;
 }
@@ -216,7 +230,7 @@ span.selection {
     border: solid #c9c9c9 1px !important;
 }
 .select2-container--default .select2-selection--multiple {
-    padding-bottom: 12px !important;
+    padding: 10px !important;
 }
 .select2-container--default
     .select2-selection--multiple
