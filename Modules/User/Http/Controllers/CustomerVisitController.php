@@ -87,7 +87,7 @@ class CustomerVisitController extends Controller
 
         $request->validate([
             'customer_id' => 'required',
-            'visit_date' => 'required|date|after_or_equal:today|before:' . $currentDate,
+            'visit_date' => 'required',
             'next_visit_date' => 'nullable|date|after_or_equal:today|before:' . $currentDate,
             'next_visit_hour' => 'nullable|max:5|min:5',
             'action' => 'required|max:30|min:5',
@@ -126,6 +126,7 @@ class CustomerVisitController extends Controller
                 /** create temporal CustomerVisit */
                 $input['type'] = 'Order';
                 $input['status'] = 'Visitado';
+                $input['visit_date'] = Carbon::now();
                 $input['visit_number'] = $this->generateUniqueCodeVisit();
                 $input['seller_id'] = Auth::user()->idReference;
                 $customer_visit = CustomerVisit::create($input);
@@ -182,6 +183,7 @@ class CustomerVisitController extends Controller
             $input['visit_number'] = $this->generateUniqueCodeVisit();
             $input['type'] = 'NoOrder';
             $input['status'] = 'Visitado';
+            $input['visit_date'] = Carbon::now();
             $input['seller_id'] = Auth::user()->idReference;
             $customer_visit = CustomerVisit::create($input);
         }
@@ -319,7 +321,7 @@ class CustomerVisitController extends Controller
 
         $request->validate([
             'customer_id' => 'required',
-            'visit_date' => 'required|date|after_or_equal:today|before:' . $currentDate,
+            'visit_date' => 'required',
             'next_visit_date' => 'nullable|date|after_or_equal:today|before:' . $currentDate,
             'next_visit_hour' => 'nullable|max:5|min:5',
             'action' => 'required|max:30|min:5',
@@ -370,6 +372,7 @@ class CustomerVisitController extends Controller
                         if (intval($request->qty[$key]) > $product->inventory || intval($request->qty[$key]) <= 0) {
                             return back()->with('error', 'Por favor, ingrese una cantidad válida.');
                         } else {
+
                             /** Save items of customer visit */
                             $order = new OrderDetail();
                             $order->quantity = $request->qty[$key];
@@ -410,25 +413,36 @@ class CustomerVisitController extends Controller
                         if (intval($request->qty[$key]) > $product->inventory || intval($request->qty[$key]) <= 0) {
                             return back()->with('error', 'Por favor, ingrese una cantidad válida.');
                         } else {
-                            /** update items of customer visit */
-                            // $order = new OrderDetail();
-                            // $order->quantity = $request->qty[$key];
-                            // $order->inventory = $request->qty_av[$key];
-                            // $order->price = $request->price[$key];
-                            // $order->amount = $request->amount[$key];
-                            // $order->product_id = $request->product_id[$key];
-                            // $order->visit_id = $customer_visit->id;
-                            // $order->update();
 
-                            //para controlar si agrega otro item, si no encuentra el id de order cadastraado, es porque esta agregando nuevo item.
-                            OrderDetail::where('order_details.visit_id', '=', $customer_visit->id)
+                            $order_detail_id = DB::table('order_details')
                                 ->where('order_details.product_id', '=', $request->product_id[$key])
-                                ->update([
-                                    'product_id' => $request->product_id[$key],
-                                    'quantity' => $request->qty[$key],
-                                    'inventory' => $request->qty_av[$key],
-                                    'amount' => $request->amount[$key]
-                                ]);
+                                ->where('order_details.visit_id', '=', $customer_visit->id)
+                                ->select(
+                                    'order_details.product_id',
+                                )
+                                ->first();
+
+                            /** if find product id, update item detail; else create new item detail */
+                            if ($order_detail_id) {
+                                DB::table('order_details')
+                                    ->where('order_details.visit_id', '=', $customer_visit->id)
+                                    ->where('order_details.product_id', '=', $request->product_id[$key])
+                                    ->update([
+                                        'quantity' => $request->qty[$key],
+                                        'inventory' => $request->qty_av[$key],
+                                        'amount' => $request->amount[$key]
+                                    ]);
+                            } else {
+                                /** Save item detail customer visit */
+                                $order = new OrderDetail();
+                                $order->quantity = $request->qty[$key];
+                                $order->inventory = $request->qty_av[$key];
+                                $order->price = $request->price[$key];
+                                $order->amount = $request->amount[$key];
+                                $order->product_id = $request->product_id[$key];
+                                $order->visit_id = $customer_visit->id;
+                                $order->save();
+                            }
                         }
                     }
 
@@ -444,10 +458,12 @@ class CustomerVisitController extends Controller
 
                 /** add extra items in customer visit */
                 $input['type'] = 'Order';
+                $input['visit_date'] = Carbon::now();
                 $input['seller_id'] = Auth::user()->idReference;
                 $customer_visit->update($input);
             }
         } else {
+            $input['visit_date'] = Carbon::now();
             $customer_visit = CustomerVisit::find($id);
             $customer_visit->update($input);
         }

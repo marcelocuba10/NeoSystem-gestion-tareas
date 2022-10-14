@@ -44,6 +44,9 @@
             </tr>
           </thead>
           <tbody>
+            @php
+              $c = 0;
+            @endphp
             @foreach ($order_visits as $item_order)
               <tr>
                 <td>
@@ -65,6 +68,9 @@
                 <td><input type="text" name="amount[]" class="form-control amount" value="{{ $item_order->amount }}" readonly></td>
                 <td><button type="button" class="btn btn-success" id="add_btn"><i class="lni lni-plus"></i></button></td>
               </tr>
+              @php
+                $c++;
+              @endphp
             @endforeach
           </tbody>
           <tfoot>

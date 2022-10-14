@@ -101,6 +101,9 @@
               </tr>
             </thead>
             <tbody>
+              @php
+                $c = 0;
+              @endphp
               @foreach ($order_details as $item_order)
                 <tr>
                   <td>
@@ -120,8 +123,15 @@
                   </td> --}}
                   <td><input type="number" min="1" name="qty[]" value="{{ $item_order->quantity }}" class="form-control qty"></td>
                   <td><input type="text" name="amount[]" class="form-control amount" value="{{ $item_order->amount }}" readonly></td>
-                  <td><button type="button" class="btn btn-success" id="add_btn"><i class="lni lni-plus"></i></button></td>
+                  @if ($c == 0)
+                    <td><button type="button" class="btn btn-success" id="add_btn"><i class="lni lni-plus"></i></button></td>
+                  @else
+                    <td><button type="button" class="btn btn-danger" id="remove"><i class="lni lni-trash-can"></i></button></td>
+                  @endif
                 </tr>
+                @php
+                  $c++;
+                @endphp
               @endforeach
             </tbody>
             <tfoot>

@@ -100,6 +100,18 @@
                       </li>
                       <li>
                         <div class="select-style-1">
+                          <label>Equipos Potenciales</label>
+                          <div class="select-position select-sm">
+                            <select class="light-bg" id="selectValue2">>
+                              @foreach ($customers_categories as $item)
+                                <option value="{{ $item }}"> {{ $item }} </option>
+                              @endforeach 
+                            </select>
+                          </div>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="select-style-1">
                           <label>Localidad</label>
                           <div class="select-position select-sm">
                             <select class="light-bg" id="selectValue3">>

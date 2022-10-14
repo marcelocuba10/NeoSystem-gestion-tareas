@@ -148,6 +148,7 @@
               </div>
               <!-- end col -->
 
+              <h6 class="mb-20">Actualice la ubicación del cliente desde la app móvil.</h6>
               <div id="map"></div>
 
               <div class="col-12">

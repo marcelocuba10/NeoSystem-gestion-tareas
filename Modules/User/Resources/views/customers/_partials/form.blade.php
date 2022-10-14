@@ -39,25 +39,35 @@
           <table class="table top-selling-table mb-30">
             <thead>
               <tr>
-                <th><h6>Equipos Potenciales</h6></th>
-                <th><h6>Cantidad Unidades</h6></th>
+                <th><h6><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Equipos Potenciales</h6></th>
+                <th><h6><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Cantidad Unidades</h6></th>
                 <th><h6>Acción</h6></th>
               </tr>
             </thead>
             <tbody>
-              @foreach ($order_details as $item_order)
+              @php
+                $c = 0;
+              @endphp
+              @foreach ($potential_products_selectd as $item_product)
                 <tr>
                   <td>
                     <select name="potential_products[]" class="form-control product">
                       <option>Seleccione Producto</option>
                       @foreach($potential_products as $product)  
-                        <option value="{{ $product->id }}" name="potential_products[]" {{ ( $product->id == $item_order->product_id) ? 'selected' : '' }}> {{ $product->name}} </option>
+                        <option value="{{ $product->id }}" name="potential_products[]" {{ ( $product->id == $item_product->id) ? 'selected' : '' }}> {{ $product->name}} </option>
                       @endforeach
                     </select>
                   </td>
-                  <td><input type="number" min="1" name="qty[]" value="{{ $item_order->quantity }}" class="form-control qty"></td>
-                  <td><button type="button" class="btn btn-success" id="add_btn"><i class="lni lni-plus"></i></button></td>
+                  <td><input type="number" min="1" name="qty[]" value="{{ $item_product->quantity }}" class="form-control qty"></td>
+                  @if ($c == 0)
+                    <td><button type="button" class="btn btn-success" id="add_btn"><i class="lni lni-plus"></i></button></td>
+                  @else
+                    <td><button type="button" class="btn btn-danger" id="remove"><i class="lni lni-trash-can"></i></button></td>
+                  @endif
                 </tr>
+                @php
+                  $c++;
+                @endphp
               @endforeach
             </tbody>
           </table>
@@ -70,8 +80,8 @@
           <table class="table top-selling-table mb-30">
             <thead>
               <tr>
-                <th><h6>Equipos Potenciales</h6></th>
-                <th><h6>Cantidad Unidades</h6></th>
+                <th><h6><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Equipos Potenciales</h6></th>
+                <th><h6><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Cantidad Unidades</h6></th>
                 <th><h6>Acción</h6></th>
               </tr>
             </thead>
@@ -94,19 +104,6 @@
       </div>
 
     @endif
-    <!-- end col -->
-    {{-- <div class="col-3">
-      <div class="input-style-1">
-        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Equipos Potenciales</label>
-        <div class="select-position">
-          <select name="potential_products[]" class="select2-multiple_2" multiple="multiple">
-            @foreach ($potential_products as $item)
-              <option value="{{ $item->id }}" @if(!empty($customerPotentialProducts)) {{ in_array($item->id,$customerPotentialProducts)  ? 'selected' : '' }} @endif> {{ $item->name }} </option>
-            @endforeach 
-          </select>
-        </div>
-      </div>
-    </div> --}}
     <!-- end col -->
     <div class="col-5">
       <div class="input-style-1">
@@ -189,27 +186,11 @@
 
 <script type="text/javascript">
 
-  function formatNumber(num) {
-    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
-  }
-
   $(document).ready(function(){
-
-    //check if have next visit, show field objectives and message span
-    var next_visit_date = document.getElementById('date');
-    if (next_visit_date.value) {
-      document.getElementById('objective').style.display = 'initial';
-      document.getElementById('msg1').style.display = 'initial';
-      console.log('show field objective');
-    }
 
     //When get data from Edit, calculate Total;
     var tr = $(this).parent().parent();
     var qty = tr.find('.qty').val();
-    var price = tr.find('.price').val();
-    var amount = (qty * price);
-    tr.find('.amount').val(amount);
-    total();
 
     //When select product, focus on input quantity;
     $('tbody').delegate('.product', 'change', function () {
@@ -220,49 +201,10 @@
     //Get product Data and calculate the amount, total;
     $('tbody').delegate('.product', 'change', function () {
       var tr =$(this).parent().parent();
-      var id = tr.find('.product').val();
-      var dataId = {'id':id};
-      $.ajax({
-        type    : 'GET',
-        url     :"{{ URL::to('/user/products/findPrice') }}",
-        dataType: 'json',
-        data: {"_token": $('meta[name="csrf-token"]').attr('content'), 'id':id},
-        success:function (response) {
-          var data = response;
-          var string_data = JSON.stringify(data); 
-          tr.find('.price').val(data.sale_price);
-          tr.find('.qty_av').val(data.inventory);
-
-          var qty = 1;
-          var amount = (qty * data.sale_price);
-          tr.find('.qty').val(qty);
-          tr.find('.amount').val(amount);
-          total();
-        }
-      });
-    });
-
-    //when write the quantity, calculate amount, total;
-    $('tbody').delegate('.qty', 'keyup', function () {
-      var tr = $(this).parent().parent();
-      var qty = tr.find('.qty').val();
-      var price = tr.find('.price').val();
-      var amount = (qty * price);
-      tr.find('.amount').val(amount);
-      total();
+      var qty = 1;
+      tr.find('.qty').val(qty);
     });
   });
-
-  function total(){
-    var total = 0;
-    $('.amount').each(function (i,e) {
-      var amount =$(this).val()-0;
-      total += amount;
-    })
-    var total = formatNumber(total);
-    var total = total.replaceAll(",", ".");
-    $('.total').html(total);
-  }
 
   $('#add_btn').on('click',function(){
     console.log('add_btn');
@@ -277,7 +219,6 @@
 
   $(document).on('click', '#remove', function () {
     $(this).closest('tr').remove();
-    total();
   });
 
 </script> 
