@@ -60,18 +60,25 @@
                       <tr>
                         <th><h6>#</h6></th>
                         <th><h6>Razón Social</h6></th>
+                        <th><h6>Rubro</h6></th>
                         <th><h6>Teléfono</h6></th>
                         <th><h6>Email</h6></th>
                         <th><h6>Localidad</h6></th>
                         <th><h6>Acciones</h6></th>
                       </tr>
-                      <!-- end table row-->
                     </thead>
                     <tbody>
                         @foreach ($customers as $customer)
                         <tr>
                             <td class="text-sm"><h6 class="text-sm">{{ ++$i }}</h6></td>
                             <td class="min-width"><h5 class="text-bold text-dark"><a href="{{ url('/user/customers/show/'.$customer->id ) }}">{{ $customer->name }} {{ $customer->last_name ?? old('last_name') }}</a></h5></td>
+                            <td class="text-sm" style="width: 180px;">
+                              @foreach ($categories as $item) 
+                                <span class="{{ in_array($item->id, json_decode($customer->category) )  ? 'show-span' : 'hide-span' }} ">
+                                  {{ $item->name }}
+                                </span>
+                              @endforeach 
+                            </td>
                             <td class="min-width"><p>{{ $customer->phone }}</p></td>
                             <td class="min-width"><p>{{ $customer->email }}</p></td>
                             <td class="min-width"><p>{{ $customer->estate }}</p></td>

@@ -4,7 +4,7 @@
         <th><h6>#</h6></th>
         <th><h6>Cliente</h6></th>
         <th><h6>Estado</h6></th>
-        <th><h6>Presupuesto?</h6></th>
+        <th><h6>Rubro</h6></th>
         <th><h6>Fecha Visita</h6></th>
         <th><h6>Fecha Prox Visita</h6></th>
         <th><h6>Localidad</h6></th>
@@ -20,17 +20,19 @@
             <td class="min-width">
               <span class="status-btn 
               @if($customer_visit->status == 'Visitado') secondary-btn
-              @elseIf($customer_visit->status == 'No Atendido') close-btn
+              @elseIf($customer_visit->status == 'No Visitado') close-btn
               @elseIf($customer_visit->status == 'Cancelado') warning-btn
               @endif">
                 {{ $customer_visit->status }}
               </span>
             </td>
-            @if ($customer_visit->type == 'Order')
-              <td class="min-width"><p>Sí</p></td>
-            @elseIf($customer_visit->type == 'NoOrder')
-              <td class="min-width"><p>No</p></td>
-            @endif
+            <td class="text-sm" style="width: 180px;">
+                  @foreach ($categories as $item) 
+                    <span class="{{ in_array($item->id, json_decode($customer_visit->category) )  ? 'show-span' : 'hide-span' }} ">
+                      {{ $item->name }}
+                    </span>
+                  @endforeach 
+            </td>
             <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ $customer_visit->visit_date }}</p></td>
             <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ $customer_visit->next_visit_date }}</p></td>
             <td class="min-width"><p>{{ $customer_visit->estate }}</p></td>

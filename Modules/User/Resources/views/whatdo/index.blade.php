@@ -78,7 +78,7 @@
                         <div class="select-style-1">
                           <label>Estado</label>
                           <div class="select-position select-sm">
-                            <select class="light-bg" id="selectValue">
+                            <select class="light-bg" id="status">
                               @foreach ($status as $item)
                                 <option value="{{ $item }}"> {{ $item}} </option>
                               @endforeach 
@@ -90,9 +90,9 @@
                         <div class="select-style-1">
                           <label>Rubro</label>
                           <div class="select-position select-sm">
-                            <select class="light-bg" id="selectValue2">>
-                              @foreach ($customers_categories as $item)
-                                <option value="{{ $item }}"> {{ $item }} </option>
+                            <select class="light-bg" id="category">>
+                              @foreach ($categories as $item)
+                                <option value="{{ $item->id }}"> {{ $item->name }} </option>
                               @endforeach 
                             </select>
                           </div>
@@ -102,8 +102,8 @@
                         <div class="select-style-1">
                           <label>Equipos Potenciales</label>
                           <div class="select-position select-sm">
-                            <select class="light-bg" id="selectValue2">>
-                              @foreach ($customers_categories as $item)
+                            <select class="light-bg" id="potential_products">>
+                              @foreach ($potential_products as $item)
                                 <option value="{{ $item }}"> {{ $item }} </option>
                               @endforeach 
                             </select>
@@ -114,7 +114,7 @@
                         <div class="select-style-1">
                           <label>Localidad</label>
                           <div class="select-position select-sm">
-                            <select class="light-bg" id="selectValue3">>
+                            <select class="light-bg" id="estate">>
                               @foreach ($estates as $item)
                                 <option value="{{ $item }}"> {{ $item }} </option>
                               @endforeach 
@@ -125,7 +125,7 @@
                       <li>
                         <div class="input-style-1">
                           <label>Fecha Última Visita</label>
-                          <input class="input-sm" type="date" name="next_visit_date" id="selectValue4" placeholder="DD/MM/YYYY"  class="bg-transparent">
+                          <input class="input-sm" type="date" name="next_visit_date" id="visit_date" placeholder="DD/MM/YYYY"  class="bg-transparent">
                         </div>
                       </li>
                       <li>
@@ -255,6 +255,9 @@
             $("#permissions").html(permissions);
           }
       });
+
+      //hide
+      document.getElementById('clear').style.display = 'none';
     });
 
     $("#search").keyup(function(event) {
@@ -278,9 +281,9 @@
       }
     });
 
-    $("#selectValue").change(function () {
+    $("#status").change(function () {
           var optionSelected = $(this).val();
-          var type = 'Estado';
+          var type = 'status';
 
           console.log(type + ' : ' + optionSelected);
 
@@ -301,9 +304,9 @@
           });
       });
 
-      $("#selectValue2").change(function () {
+      $("#category").change(function () {
           var optionSelected = $(this).val();
-          var type = 'Rubro';
+          var type = 'category';
 
           console.log(type + ' : ' + optionSelected);
 
@@ -324,9 +327,9 @@
           });
       });
 
-      $("#selectValue3").change(function () {
+      $("#potential_products").change(function () {
           var optionSelected = $(this).val();
-          var type = 'Localidad';
+          var type = 'potential_products';
 
           console.log(type + ' : ' + optionSelected);
 
@@ -347,9 +350,9 @@
           });
       });
 
-      $("#selectValue4").change(function () {
+      $("#estate").change(function () {
           var optionSelected = $(this).val();
-          var type = 'Ultima Visita';
+          var type = 'estate';
 
           console.log(type + ' : ' + optionSelected);
 
@@ -370,9 +373,32 @@
           });
       });
 
-      $("#selectValue5").change(function () {
+      $("#visit_date").change(function () {
           var optionSelected = $(this).val();
-          var type = 'Próxima Visita';
+          var type = 'visit_date';
+
+          console.log(type + ' : ' + optionSelected);
+
+          document.getElementById('clear').style.display = 'initial';
+
+          $.ajax({
+            type: "GET",
+            url: "{{ URL::to('/user/whatdo/filter') }}",
+            data: { 
+              filter : optionSelected,
+              type: type,
+              "_token": "{{ csrf_token() }}",
+            },
+              success:function(permissions)
+              {
+                $("#permissions").html(permissions);
+              }
+          });
+      });
+
+      $("#next_visit_date").change(function () {
+          var optionSelected = $(this).val();
+          var type = 'next_visit_date';
 
           console.log(type + ' : ' + optionSelected);
 

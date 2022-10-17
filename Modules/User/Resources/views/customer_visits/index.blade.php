@@ -59,7 +59,7 @@
                         <td class="min-width">
                           <span class="status-btn 
                           @if($customer_visit->status == 'Visitado') secondary-btn
-                          @elseIf($customer_visit->status == 'No Atendido') close-btn
+                          @elseIf($customer_visit->status == 'No Visitado') close-btn
                           @elseIf($customer_visit->status == 'Cancelado') warning-btn
                           @endif">
                             {{ $customer_visit->status }}

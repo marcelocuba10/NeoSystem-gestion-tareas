@@ -34,11 +34,17 @@ class CustomersController extends Controller
                 'email',
                 'estate',
                 'phone',
+                'category'
             )
             ->orderBy('created_at', 'DESC')
             ->paginate(10);
 
-        return view('user::customers.index', compact('customers'))->with('i', (request()->input('page', 1) - 1) * 10);
+        $categories = DB::table('parameters')
+            ->where('type', '=', 'Rubro')
+            ->select('id', 'name')
+            ->get();
+
+        return view('user::customers.index', compact('customers', 'categories'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
     public function create()
@@ -286,6 +292,7 @@ class CustomersController extends Controller
 
             $customer = Customers::find($id);
 
+            /** potential products array */
             foreach ($request->potential_products as $key => $value) {
                 if (intval($request->qty[$key]) <= 0) {
                     return back()->with('error', 'Por favor, ingrese una cantidad válida en Producto Potencial.');
@@ -407,7 +414,12 @@ class CustomersController extends Controller
                 ->paginate();
         }
 
-        return view('user::customers.index', compact('customers', 'search'))->with('i', (request()->input('page', 1) - 1) * 10);
+        $categories = DB::table('parameters')
+            ->where('type', '=', 'Rubro')
+            ->select('id', 'name')
+            ->get();
+
+        return view('user::customers.index', compact('customers', 'search', 'categories'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
     public function destroy($id)

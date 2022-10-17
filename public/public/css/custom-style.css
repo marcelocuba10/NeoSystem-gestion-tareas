@@ -1,3 +1,15 @@
+.hide-span{
+    display: none;
+}
+.show-span {
+    display: initial;
+    background-color: #EDF0FE;
+    color: #4a6cf7;
+    margin: 0px 3px;
+    padding: 1px 5px;
+    border-radius: 4px;
+}
+
 .input-style-1 input, .input-style-1 textarea {
     padding: 10px;
 }

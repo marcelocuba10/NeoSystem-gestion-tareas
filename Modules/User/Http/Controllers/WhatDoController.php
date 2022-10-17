@@ -28,6 +28,9 @@ class WhatDoController extends Controller
         $idRefCurrentUser = Auth::user()->idReference;
         $customer_visits = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+            ->leftjoin('customer_parameters', 'customer_parameters.customer_id', '=', 'customers.id')
+            ->leftjoin('parameters', 'parameters.id', '=', 'customer_parameters.category_id')
+            ->where('customer_parameters.category_id', '!=', 0)
             ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
             ->select(
                 'customer_visits.id',
@@ -36,18 +39,25 @@ class WhatDoController extends Controller
                 'customer_visits.status',
                 'customer_visits.type',
                 'customers.name AS customer_name',
-                'customers.estate'
+                'customers.estate',
+                'customers.category',
+                'parameters.name'
             )
             ->orderBy('customer_visits.created_at', 'DESC')
-            ->paginate(10);
+            ->paginate(10); 
 
-        $customers_categories = DB::table('parameters')
+        $categories = DB::table('parameters')
             ->where('type', '=', 'Rubro')
+            ->select('id', 'name')
+            ->get();
+
+        $potential_products = DB::table('parameters')
+            ->where('type', '=', 'Equipos Potenciales')
             ->pluck('name', 'name');
 
         $status = [
             'Visitado',
-            'No Atendido',
+            'No Visitado',
             'Cancelado'
         ];
 
@@ -71,7 +81,7 @@ class WhatDoController extends Controller
             'Alto Paraguay'
         ];
 
-        return view('user::whatdo.index', compact('customer_visits', 'customers_categories', 'estates', 'status'))->with('i', (request()->input('page', 1) - 1) * 10);
+        return view('user::whatdo.index', compact('customer_visits', 'categories', 'potential_products', 'estates', 'status'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
     public function visit_on_map()
@@ -80,21 +90,21 @@ class WhatDoController extends Controller
         $customer_visits = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
-                ->select(
-                    'customer_visits.id',
-                    'customer_visits.visit_date',
-                    'customer_visits.next_visit_date',
-                    'customer_visits.next_visit_hour',
-                    'customer_visits.status',
-                    'customer_visits.type',
-                    'customers.name AS customer_name',
-                    'customers.city',
-                    'customers.estate',
-                    'customers.latitude',
-                    'customers.longitude',
-                )
-                ->orderBy('customer_visits.created_at', 'DESC')
-                ->get();
+            ->select(
+                'customer_visits.id',
+                'customer_visits.visit_date',
+                'customer_visits.next_visit_date',
+                'customer_visits.next_visit_hour',
+                'customer_visits.status',
+                'customer_visits.type',
+                'customers.name AS customer_name',
+                'customers.city',
+                'customers.estate',
+                'customers.latitude',
+                'customers.longitude',
+            )
+            ->orderBy('customer_visits.created_at', 'DESC')
+            ->get();
 
         return view('user::whatdo.visits_on_map', compact('customer_visits',));
     }
@@ -116,13 +126,14 @@ class WhatDoController extends Controller
                     'customer_visits.status',
                     'customer_visits.type',
                     'customers.name AS customer_name',
-                    'customers.estate'
+                    'customers.estate',
+                    'customers.category'
                 )
                 ->orderBy('customer_visits.created_at', 'DESC')
                 ->paginate(10);
         } else {
 
-            if ($type == 'Localidad') {
+            if ($type == 'estate') {
                 $customer_visits = DB::table('customer_visits')
                     ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
                     ->where('customers.estate', 'LIKE', "%{$filter}%")
@@ -134,11 +145,12 @@ class WhatDoController extends Controller
                         'customer_visits.status',
                         'customer_visits.type',
                         'customers.name AS customer_name',
-                        'customers.estate'
+                        'customers.estate',
+                        'customers.category'
                     )
                     ->orderBy('customer_visits.created_at', 'DESC')
                     ->paginate(10);
-            } elseif ($type == 'Estado') {
+            } elseif ($type == 'status') {
                 $customer_visits = DB::table('customer_visits')
                     ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
                     ->where('customer_visits.status', 'LIKE', "%{$filter}%")
@@ -150,11 +162,31 @@ class WhatDoController extends Controller
                         'customer_visits.status',
                         'customer_visits.type',
                         'customers.name AS customer_name',
-                        'customers.estate'
+                        'customers.estate',
+                        'customers.category'
                     )
                     ->orderBy('customer_visits.created_at', 'DESC')
                     ->paginate(10);
-            } elseif ($type == 'Rubro') {
+            } elseif ($type == 'category') {
+
+                $customer_visits = DB::table('customer_visits')
+                    ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+                    ->leftjoin('customer_parameters', 'customer_parameters.customer_id', '=', 'customers.id')
+                    ->where('customer_parameters.category_id', '=', $filter)
+                    ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+                    ->select(
+                        'customer_visits.id',
+                        'customer_visits.visit_date',
+                        'customer_visits.next_visit_date',
+                        'customer_visits.status',
+                        'customer_visits.type',
+                        'customers.name AS customer_name',
+                        'customers.estate',
+                        'customers.category'
+                    )
+                    ->orderBy('customer_visits.created_at', 'DESC')
+                    ->paginate(10);
+            } elseif ($type == 'potential_products') {
 
                 $customer_visits = DB::table('customer_visits')
                     ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
@@ -174,7 +206,7 @@ class WhatDoController extends Controller
                     ->paginate(10);
 
                 dd($customer_visits);
-            } elseif ($type == 'Ultima Visita') {
+            } elseif ($type == 'visit_date') {
 
                 $customer_visits = DB::table('customer_visits')
                     ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
@@ -192,7 +224,7 @@ class WhatDoController extends Controller
                     )
                     ->orderBy('customer_visits.created_at', 'DESC')
                     ->paginate(10);
-            } elseif ($type == 'Próxima Visita') {
+            } elseif ($type == 'next_visit_date') {
 
                 $customer_visits = DB::table('customer_visits')
                     ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
@@ -213,9 +245,10 @@ class WhatDoController extends Controller
             }
         }
 
-        $customers_categories = DB::table('parameters')
+        $categories = DB::table('parameters')
             ->where('type', '=', 'Rubro')
-            ->pluck('name', 'name');
+            ->select('id', 'name')
+            ->get();
 
         $status = [
             'Visitado',
@@ -243,7 +276,7 @@ class WhatDoController extends Controller
             'Alto Paraguay'
         ];
 
-        return View::make('user::whatdo._partials.datatable', compact('customer_visits', 'filter'))->with('i', (request()->input('page', 1) - 1) * 10);
+        return View::make('user::whatdo._partials.datatable', compact('customer_visits', 'filter', 'categories'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
     public function search(Request $request)
