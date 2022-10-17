@@ -31,48 +31,6 @@
               <div class="d-flex flex-wrap justify-content-between align-items-center py-3">
                 <div class="left">
                   <div id="legend3">
-                    {{-- <ul class="legend3 d-flex flex-wrap align-items-center mb-30">
-                      <li>
-                        <div class="d-flex">
-                          <span class="bg-color bg-card-secondary"></span>
-                          <div class="text">
-                            <form action="{{ url('/user/whatdo/filter') }}">
-                              <button class="btn-group-status" name="filter" value="Visitado" type="submit"><p class="text-sm text-dark">Visitados</p></button>
-                            </form> 
-                          </div>
-                        </div>
-                      </li>
-                      <li>
-                        <div class="d-flex">
-                          <span class="bg-color bg-card-enabled"></span>
-                          <div class="text">
-                            <form action="{{ url('/user/whatdo/filter') }}">
-                              <button class="btn-group-status" name="filter" value="Pendiente" type="submit"><p class="text-sm text-dark">Pendientes</p></button>
-                            </form> 
-                          </div>
-                        </div>
-                      </li>
-                      <li>
-                        <div class="d-flex">
-                          <span class="bg-color bg-card-attention"> </span>
-                          <div class="text">
-                            <form action="{{ url('/user/whatdo/filter') }}">
-                              <button class="btn-group-status" name="filter" value="Cancelado" type="submit"><p class="text-sm text-dark">Cancelados</p></button>
-                            </form> 
-                          </div>
-                        </div>
-                      </li>
-                      <li>
-                        <div class="d-flex">
-                          <span class="bg-color bg-card-error"> </span>
-                          <div class="text">
-                            <form action="{{ url('/user/whatdo/filter') }}">
-                              <button class="btn-group-status" name="filter" value="No Atendido" type="submit"><p class="text-sm text-dark">No Atendidos</p></button>
-                            </form> 
-                          </div>
-                        </div>
-                      </li>
-                    </ul> --}}
                     <ul class="legend3 d-flex flex-wrap align-items-center mb-30">
                       <li>
                         <div class="select-style-1">
@@ -93,18 +51,6 @@
                             <select class="light-bg" id="category">>
                               @foreach ($categories as $item)
                                 <option value="{{ $item->id }}"> {{ $item->name }} </option>
-                              @endforeach 
-                            </select>
-                          </div>
-                        </div>
-                      </li>
-                      <li>
-                        <div class="select-style-1">
-                          <label>Equipos Potenciales</label>
-                          <div class="select-position select-sm">
-                            <select class="light-bg" id="potential_products">>
-                              @foreach ($potential_products as $item)
-                                <option value="{{ $item }}"> {{ $item }} </option>
                               @endforeach 
                             </select>
                           </div>
@@ -150,8 +96,7 @@
                 </div>
               </div>
               <div class="table-wrapper table-responsive">
-                <div id="permissions">
-                </div>
+                <div id="permissions"></div>
                 {{-- <table class="table">
                   <thead>
                     <tr>

@@ -38,7 +38,7 @@
                 <div class="right"></div>
               </div>
               <div class="table-wrapper table-responsive">
-                <table class="table">
+                <table class="table table-hover">
                   <thead>
                     <tr>
                       <th><h6>Número</h6></th>
@@ -71,15 +71,11 @@
                         <td class="text-right">
                           <div class="btn-group">
                             <div class="action">
-                              <a href="{{ url('/user/sales/show/'.$sale->id) }}">
-                                <button class="text-active"><i class="lni lni-eye"></i></button>
-                              </a>
+                              <a href="{{ url('/user/sales/show/'.$sale->id) }}" class="main-btn-sm deactive-btn rounded-md btn-hover">Ver</a>
                             </div>
                             @can('sales-edit')
                             <div class="action">
-                              <a href="{{ url('/user/sales/edit/'.$sale->id) }}">
-                                <button class="text-info"><i class="lni lni-coin"></i></button>
-                              </a>
+                              <a href="{{ url('/user/sales/edit/'.$sale->id) }}" class="main-btn-sm success-btn rounded-md btn-hover">Procesar</a>
                             </div>
                             @endcan
                             {{-- @can('sales-delete')

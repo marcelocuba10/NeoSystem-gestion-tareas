@@ -78,7 +78,7 @@
               </div>
 
               <div class="table-wrapper table-responsive">
-                <table class="table">
+                <table class="table table-hover">
                   <thead>
                     <tr>
                       <th><h6>#</h6></th>
@@ -112,19 +112,19 @@
                           <td class="text-right">
                             <div class="btn-group">
                               <div class="action">
-                                <a href="{{ url('/user/appointments/show/'.$appointment->id) }}">
+                                <a href="{{ url('/user/appointments/show/'.$appointment->id) }}" data-toggle="tooltip" data-placement="bottom" title="Ver">
                                   <button class="text-active"><i class="lni lni-eye"></i></button>
                                 </a>
                               </div>
                               @can('appointment-edit')
                               <div class="action">
-                                <a href="{{ url('/user/appointments/edit/'.$appointment->id) }}">
+                                <a href="{{ url('/user/appointments/edit/'.$appointment->id) }}" data-toggle="tooltip" data-placement="bottom" title="Editar">
                                   <button class="text-info"><i class="lni lni-pencil"></i></button>
                                 </a>
                               </div>
                               @endcan
                               @can('appointment-delete')
-                              <form method="POST" action="{{ url('/user/appointments/delete/'.$appointment->id) }}">
+                              <form method="POST" action="{{ url('/user/appointments/delete/'.$appointment->id) }}" data-toggle="tooltip" data-placement="bottom" title="Eliminar">
                                 @csrf
                                 <div class="action">
                                   <input name="_method" type="hidden" value="DELETE">

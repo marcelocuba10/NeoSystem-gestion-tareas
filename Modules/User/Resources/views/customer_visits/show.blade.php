@@ -60,14 +60,14 @@
                 </div>
               </div>
               <!-- end col -->
-              <div class="col-2">
+              <div class="col-3">
                 <div class="input-style-1">
                   <label>Acción</label>
                   <input type="text" value="{{ $customer_visit->action ?? old('action') }}" readonly>
                 </div>
               </div>
               <!-- end col -->
-              <div class="col-5">
+              <div class="col-4">
                 <div class="input-style-1">
                   <label>Resultado de la Visita</label>
                   <textarea type="text" value="{{ $customer_visit->result_of_the_visit }}" readonly>{{ $customer_visit->result_of_the_visit }}</textarea>

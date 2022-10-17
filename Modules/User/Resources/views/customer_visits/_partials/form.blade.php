@@ -43,7 +43,7 @@
       </div>
     </div>
     <!-- end col -->
-    <div class="col-sm-2">
+    <div class="col-sm-3">
       <div class="select-style-1">
         <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Acciones</label>
         <div class="select-position">
@@ -64,7 +64,7 @@
       </div>
     </div>
     <!-- end col -->
-    <div class="col-5">
+    <div class="col-4">
       <div class="input-style-1">
         <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Resultado de la Visita</label>
         <textarea type="text" name="result_of_the_visit" value="{{ $customer_visit->result_of_the_visit ?? old('result_of_the_visit') }}" class="bg-transparent">{{ $customer_visit->result_of_the_visit ?? old('result_of_the_visit') }}</textarea>

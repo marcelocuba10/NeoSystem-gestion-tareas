@@ -26,6 +26,19 @@ Route::prefix('user')->group(function () {
         Route::get('/dashboard', 'HomeController@index');
         Route::get('/logout', 'Auth\LogoutController@perform');
 
+        /*** Multimedia Routes ***/
+        Route::group(['prefix' => 'multimedia'], function () {
+            Route::get('/', 'MultimediaController@index');
+            Route::get('/create', 'MultimediaController@create');
+            Route::post('/create', 'MultimediaController@store');
+            Route::get('/show/{id}', 'MultimediaController@show');
+            Route::get('/edit/{id}', 'MultimediaController@edit');
+            Route::put('/update/{id}', 'MultimediaController@update');
+            Route::delete('/delete/{id}', 'MultimediaController@destroy');
+            Route::get('/search', 'MultimediaController@search');
+            Route::get('/filter', 'MultimediaController@filter');
+        });
+
         /*** WhatCanDo Routes ***/
         Route::group(['prefix' => 'whatdo'], function () {
             Route::get('/', 'WhatDoController@index');

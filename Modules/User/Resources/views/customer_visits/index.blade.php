@@ -33,12 +33,8 @@
         <div class="row">
           <div class="col-lg-12">
             <div class="card-style mb-30">
-              <div class="d-flex flex-wrap justify-content-between align-items-center py-3">
-                <div class="left"></div>
-                <div class="right"></div>
-              </div>
               <div class="table-wrapper table-responsive">
-                <table class="table">
+                <table class="table table-hover">
                   <thead>
                     <tr>
                       <th><h6>Número</h6></th>
@@ -76,19 +72,19 @@
                         <td class="text-right">
                           <div class="btn-group">
                             <div class="action">
-                              <a href="{{ url('/user/customer_visits/show/'.$customer_visit->id) }}">
+                              <a href="{{ url('/user/customer_visits/show/'.$customer_visit->id) }}" data-toggle="tooltip" data-placement="bottom" title="Ver">
                                 <button class="text-active"><i class="lni lni-eye"></i></button>
                               </a>
                             </div>
                             @can('customer_visit-edit')
                             <div class="action">
-                              <a href="{{ url('/user/customer_visits/edit/'.$customer_visit->id) }}">
+                              <a href="{{ url('/user/customer_visits/edit/'.$customer_visit->id) }}" data-toggle="tooltip" data-placement="bottom" title="Editar">
                                 <button class="text-info"><i class="lni lni-pencil"></i></button>
                               </a>
                             </div>
                             @endcan
                             @can('customer_visit-delete')
-                            <form method="POST" action="{{ url('/user/customer_visits/delete/'.$customer_visit->id) }}">
+                            <form method="POST" action="{{ url('/user/customer_visits/delete/'.$customer_visit->id) }}" data-toggle="tooltip" data-placement="bottom" title="Eliminar">
                               @csrf
                               <div class="action">
                                 <input name="_method" type="hidden" value="DELETE">

@@ -44,7 +44,7 @@ class WhatDoController extends Controller
                 'parameters.name'
             )
             ->orderBy('customer_visits.created_at', 'DESC')
-            ->paginate(10); 
+            ->paginate(10);
 
         $categories = DB::table('parameters')
             ->where('type', '=', 'Rubro')
@@ -204,8 +204,6 @@ class WhatDoController extends Controller
                     )
                     ->orderBy('customer_visits.created_at', 'DESC')
                     ->paginate(10);
-
-                dd($customer_visits);
             } elseif ($type == 'visit_date') {
 
                 $customer_visits = DB::table('customer_visits')
@@ -249,32 +247,6 @@ class WhatDoController extends Controller
             ->where('type', '=', 'Rubro')
             ->select('id', 'name')
             ->get();
-
-        $status = [
-            'Visitado',
-            'No Atendido',
-            'Cancelado'
-        ];
-
-        $estates = [
-            'Alto Paraná',
-            'Central',
-            'Concepción',
-            'San Pedro',
-            'Cordillera',
-            'Guairá',
-            'Caaguazú',
-            'Caazapá',
-            'Itapúa',
-            'Misiones',
-            'Paraguarí',
-            'Ñeembucú',
-            'Amambay',
-            'Canindeyú',
-            'Presidente Hayes',
-            'Boquerón',
-            'Alto Paraguay'
-        ];
 
         return View::make('user::whatdo._partials.datatable', compact('customer_visits', 'filter', 'categories'))->with('i', (request()->input('page', 1) - 1) * 10);
     }

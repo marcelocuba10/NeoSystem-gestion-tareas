@@ -55,7 +55,7 @@
               </div>
             </div>
                 <div class="table-wrapper table-responsive">
-                  <table class="table">
+                  <table class="table table-hover">
                     <thead>
                       <tr>
                         <th><h6>#</h6></th>
@@ -85,19 +85,19 @@
                             <td class="text-right">
                                 <div class="btn-group">
                                     <div class="action">
-                                      <a href="{{ url('/user/customers/show/'.$customer->id) }}">
+                                      <a href="{{ url('/user/customers/show/'.$customer->id) }}" data-toggle="tooltip" data-placement="bottom" title="Ver">
                                           <button class="text-active"><i class="lni lni-eye"></i></button>
                                       </a>
                                     </div>
                                     @can('customer-edit')
                                     <div class="action">
-                                        <a href="{{ url('/user/customers/edit/'.$customer->id) }}">
+                                        <a href="{{ url('/user/customers/edit/'.$customer->id) }}" data-toggle="tooltip" data-placement="bottom" title="Editar">
                                             <button class="text-info"><i class="lni lni-pencil"></i></button>
                                         </a>
                                     </div>
                                     @endcan
                                     @can('customer-delete')
-                                    <form method="POST" action="{{ url('/user/customers/delete/'.$customer->id) }}">
+                                    <form method="POST" action="{{ url('/user/customers/delete/'.$customer->id) }}" data-toggle="tooltip" data-placement="bottom" title="Eliminar">
                                         @csrf
                                         <div class="action">
                                             <input name="_method" type="hidden" value="DELETE">

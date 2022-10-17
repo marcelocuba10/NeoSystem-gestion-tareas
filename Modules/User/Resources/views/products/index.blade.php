@@ -35,7 +35,7 @@
               <div class="right"></div>
             </div>
             <div class="table-wrapper table-responsive">
-              <table class="table top-selling-table">
+              <table class="table top-selling-table table-hover">
                 <thead>
                   <tr>
                     <th><h6>#</h6></th>
@@ -74,7 +74,7 @@
                     <td class="text-right">
                       <div class="btn-group">
                         <div class="action">
-                          <a href="{{ url('/user/products/show/'.$product->id) }}">
+                          <a href="{{ url('/user/products/show/'.$product->id) }}" data-toggle="tooltip" data-placement="bottom" title="Ver">
                             <button class="text-active"><i class="lni lni-eye"></i></button>
                           </a>
                         </div>

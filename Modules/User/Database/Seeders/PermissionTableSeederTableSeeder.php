@@ -17,6 +17,11 @@ class PermissionTableSeederTableSeeder extends Seeder
     {
         Model::unguard();
         $permissions = [
+            'multimedia-list',
+            'multimedia-create',
+            'multimedia-edit',
+            'multimedia-delete',
+
             'role-list',
             'role-create',
             'role-edit',
