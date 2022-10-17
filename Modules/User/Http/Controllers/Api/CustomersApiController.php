@@ -17,17 +17,8 @@ class CustomersApiController extends Controller
         // $idRefCurrentUser = Auth::user()->idReference;
         $customers = DB::table('customers')
             // ->where('idReference', '=', $idRefCurrentUser)
-            ->select(
-                'id',
-                'name',
-                'email',
-                'estate',
-                'phone',
-                'latitude',
-                'longitude',
-            )
             ->orderBy('created_at', 'DESC')
-            ->paginate(10);
+            ->get();
 
         return response()->json($customers);
     }
