@@ -28,38 +28,65 @@ class MultimediaController extends Controller
             ->where('multimedia.type', '=', 'Lista de Precios')
             ->count();
 
+        $sum_price_list_size = DB::table('multimedia')
+            ->where('multimedia.type', '=', 'Lista de Precios')
+            ->sum('size');
+
+        $sum_price_list_size = $this->formatBytes($sum_price_list_size);
+
         $count_images = DB::table('multimedia')
             ->where('multimedia.type', '=', 'Imágenes')
             ->count();
+
+        $sum_images_size = DB::table('multimedia')
+            ->where('multimedia.type', '=', 'Imágenes')
+            ->sum('size');
+
+        $sum_images_size = $this->formatBytes($sum_images_size);
 
         $count_manuals = DB::table('multimedia')
             ->where('multimedia.type', '=', 'Manuales')
             ->count();
 
+        $sum_manuals_size = DB::table('multimedia')
+            ->where('multimedia.type', '=', 'Manuales')
+            ->sum('size');
+
+        $sum_manuals_size = $this->formatBytes($sum_manuals_size);
+
         $count_docs = DB::table('multimedia')
             ->where('multimedia.type', '=', 'Documentos')
             ->count();
 
-        return view('user::multimedia.index', compact('count_price_list', 'count_images', 'count_manuals', 'count_docs'));
+        $sum_docs_size = DB::table('multimedia')
+            ->where('multimedia.type', '=', 'Documentos')
+            ->sum('size');
+
+        $sum_docs_size = $this->formatBytes($sum_docs_size);
+
+        return view('user::multimedia.index', compact('count_price_list', 'count_images', 'count_manuals', 'count_docs', 'sum_price_list_size', 'sum_images_size', 'sum_manuals_size', 'sum_docs_size'));
     }
 
     public function show($id)
     {
         $multimedia = Multimedia::find($id);
 
-        return view('user::multimedia.show', compact('multimedia'));
+        $file_size_format = $this->formatBytes($multimedia->size);
+        $created_at_format = $multimedia->created_at->format('d/m/y H:i');
+
+        return view('user::multimedia.show', compact('multimedia','file_size_format','created_at_format'));
     }
 
-    public function findPrice(Request $request)
+    function formatBytes($bytes, $precision = 2)
     {
-        $product = DB::table('products')
-            ->where('id', '=', $request->id)
-            ->select('id', 'sale_price', 'inventory')
-            ->first();
+        $units = ['Byte', 'KB', 'MB', 'GB', 'TB'];
+        $i = 0;
 
-        if ($request->ajax()) {
-            return response()->json($product);
+        while ($bytes > 1024) {
+            $bytes /= 1024;
+            $i++;
         }
+        return round($bytes, $precision) . ' ' . $units[$i];
     }
 
     public function filter(Request $request)

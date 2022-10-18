@@ -30,6 +30,23 @@ Route::prefix('admin')->group(function () {
         Route::get('/dashboard', 'HomeController@index');
         Route::get('/logout', 'Auth\LogoutController@perform');
 
+        /*** Multimedia Routes ***/
+        Route::group(['prefix' => 'multimedia'], function () {
+            Route::get('/', 'MultimediaController@index');
+            Route::get('/create', 'MultimediaController@create');
+            Route::post('/create', 'MultimediaController@store');
+            Route::get('/show/{id}', 'MultimediaController@show');
+            Route::get('/edit/{id}', 'MultimediaController@edit');
+            Route::put('/update/{id}', 'MultimediaController@update');
+            Route::delete('/delete/{id}', 'MultimediaController@destroy');
+            Route::get('/search', 'MultimediaController@search');
+            Route::get('/filter', 'MultimediaController@filter');
+
+            Route::get('image-gallery/{id}', 'MultimediaController@imageGallery');
+            Route::post('upload-file/', 'MultimediaController@uploadFile');
+            Route::delete('delete-file/{id}', 'MultimediaController@destroyFile');
+        });
+
         /** Products Routes */
         Route::group(['prefix' => 'products'], function () {
             Route::get('/', 'ProductsController@index');

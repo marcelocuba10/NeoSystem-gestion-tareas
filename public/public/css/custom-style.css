@@ -105,7 +105,17 @@ tbody, td, tfoot, th, thead, tr {
 .status-btn.primary-btn {
     border: 1px solid;
 }
-
+.status-btn.purple-btn{
+    border: 1px solid;
+}
+.deactive-btn {
+    background: #cbe1ff;
+    color: #4a6cf7;
+}
+.purple-btn{
+    background-color: #F5EDFC;
+    color: #9b51e0;
+}
 
 .value-button {
     display: inline-block;
@@ -400,10 +410,7 @@ span.selection {
     font-weight: 500;
     color: #5d657b;
 }
-.deactive-btn {
-    background: #cbe1ff;
-    color: #4a6cf7;
-}
+
 .tab-style-3 nav button:hover,
 .tab-style-3 nav button.active {
     color: #fff;

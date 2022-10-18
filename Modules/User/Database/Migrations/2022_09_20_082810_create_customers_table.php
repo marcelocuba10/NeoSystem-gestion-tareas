@@ -31,7 +31,6 @@ class CreateCustomersTable extends Migration
             $table->string('is_vigia')->nullable();
             $table->string('category')->nullable();
             $table->string('potential_products')->nullable();
-            $table->string('unit_quantity')->nullable();
             $table->string('result_of_the_visit',1000)->nullable();
             $table->string('objective',1000)->nullable();
             $table->string('next_visit_date')->nullable();

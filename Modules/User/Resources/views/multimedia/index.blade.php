@@ -7,15 +7,15 @@
     <div class="title-wrapper pt-30">
       <div class="row align-items-center">
         <div class="col-md-6">
-          <div class="titlemb-30">
-            <h2>Archivos compartidos</h2>
+          <div class="title mb-30">
+            <h2>Archivos Compartidos</h2>
           </div>
         </div>
         <div class="col-md-6">
           <div class="breadcrumb-wrapper mb-30">
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
-                <li class="breadcrumb-item" aria-current="page"><a href="{{ url('user/dashboard') }}"> Dashboard </a></li>
+                <li class="breadcrumb-item" aria-current="page"><a href="{{ url('user/dashboard') }}">Dashboard</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Archivos Compartidos</li>
               </ol>
             </nav>
@@ -39,7 +39,7 @@
                 <p class="text-sm text-gray">{{ $count_price_list }} archivos</p>
               </div>
               <div>
-                <h6 class="file-size">459 MB</h6>
+                <h6 class="file-size">{{ $sum_price_list_size }}</h6>
               </div>
             </div>
           </div>
@@ -55,7 +55,7 @@
                 <p class="text-sm text-gray">{{ $count_images }} archivos</p>
               </div>
               <div>
-                <h6 class="file-size">120 MB</h6>
+                <h6 class="file-size">{{ $sum_images_size }}</h6>
               </div>
             </div>
           </div>
@@ -71,7 +71,7 @@
                 <p class="text-sm text-gray">{{ $count_manuals }} archivos</p>
               </div>
               <div>
-                <h6 class="file-size">374 MB</h6>
+                <h6 class="file-size">{{ $sum_manuals_size }}</h6>
               </div>
             </div>
           </div>
@@ -87,7 +87,7 @@
                 <p class="text-sm text-gray">{{ $count_docs }} archivos</p>
               </div>
               <div>
-                <h6 class="file-size">237 MB</h6>
+                <h6 class="file-size">{{ $sum_docs_size }}</h6>
               </div>
             </div>
           </div>
@@ -166,7 +166,7 @@
   });
 
     $("#price_list").click(function () {
-        var type = 'price_list';
+        var type = 'Lista de Precios';
         document.getElementById('clear').style.display = 'initial';
 
         $.ajax({
@@ -183,8 +183,8 @@
         });
     });
 
-    $("#images").change(function () {
-        var type = 'images';
+    $("#images").click(function () {
+        var type = 'Imágenes';
         document.getElementById('clear').style.display = 'initial';
 
         $.ajax({
@@ -201,8 +201,8 @@
         });
     });
 
-    $("#manuals").change(function () {
-        var type = 'manuals';
+    $("#manuals").click(function () {
+        var type = 'Manuales';
         document.getElementById('clear').style.display = 'initial';
 
         $.ajax({
@@ -219,8 +219,8 @@
         });
     });
 
-    $("#docs").change(function () {
-        var type = 'docs';
+    $("#docs").click(function () {
+        var type = 'Documentos';
         document.getElementById('clear').style.display = 'initial';
 
         $.ajax({

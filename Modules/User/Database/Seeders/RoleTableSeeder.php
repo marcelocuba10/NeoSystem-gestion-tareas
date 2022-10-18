@@ -26,7 +26,7 @@ class RoleTableSeeder extends Seeder
 
         //Create role
         $role = Role::create([
-            'name' => 'Funcionario',
+            'name' => 'Agente',
             'guard_name' => 'web',
             'system_role' => '1',
             'idReference' => $this->generateUniqueCodeRole()
@@ -34,20 +34,28 @@ class RoleTableSeeder extends Seeder
 
         //Assign default permissions
         $role->givePermissionTo('user-list');
+
         $role->givePermissionTo('customer-list');
         $role->givePermissionTo('customer-create');
         $role->givePermissionTo('customer-edit');
 
-        $role->givePermissionTo('visit_customer-list');
-        $role->givePermissionTo('visit_customer-create');
-        $role->givePermissionTo('visit_customer-edit');
+        $role->givePermissionTo('customer_visit-list');
+        $role->givePermissionTo('customer_visit-create');
+        $role->givePermissionTo('customer_visit-edit');
 
-        $role->givePermissionTo('schedule-list');
-        $role->givePermissionTo('schedule-create');
-        $role->givePermissionTo('schedule-edit');
+        $role->givePermissionTo('report-list');
+        $role->givePermissionTo('report-create');
+        $role->givePermissionTo('report-edit');
+
+        $role->givePermissionTo('multimedia-list');
 
         $role->givePermissionTo('sales-list');
         $role->givePermissionTo('sales-create');
+        $role->givePermissionTo('sales-edit');
+
+        $role->givePermissionTo('appointment-list');
+        $role->givePermissionTo('appointment-create');
+        $role->givePermissionTo('appointment-edit');
 
         $role->givePermissionTo('products-list');
 
@@ -56,14 +64,6 @@ class RoleTableSeeder extends Seeder
         $role->givePermissionTo('what_can_do-edit');
 
         $role->givePermissionTo('role-list');
-        $role->givePermissionTo('role-create');
-        $role->givePermissionTo('role-edit');
-        $role->givePermissionTo('report-list');
-
-        $role->givePermissionTo('parameter-list');
-        $role->givePermissionTo('parameter-create');
-        $role->givePermissionTo('parameter-edit');
-        $role->givePermissionTo('parameter-delete');
     }
 
     public function generateUniqueCodeRole()

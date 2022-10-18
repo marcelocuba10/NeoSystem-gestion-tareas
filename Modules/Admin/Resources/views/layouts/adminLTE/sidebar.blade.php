@@ -41,18 +41,18 @@
           </a>
         </li>
         @endcan
-        {{-- @can('financial-sa-list')
-        <li class="nav-item {{ (request()->is('admin/financial')) ? 'active' : '' }}">
-          <a href="#">
+        @can('multimedia-sa-list')
+        <li class="nav-item {{ (request()->is('admin/multimedia')) ? 'active' : '' }}">
+          <a href="{{ url('/admin/multimedia') }}">
             <span class="icon">
               <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M11.5,1L2,6V8H21V6M16,10V17H19V10M2,22H21V19H2M10,10V17H13V10M4,10V17H7V10H4Z" />
+                <path fill="currentColor" d="M21,17H7V3H21M21,1H7A2,2 0 0,0 5,3V17A2,2 0 0,0 7,19H21A2,2 0 0,0 23,17V3A2,2 0 0,0 21,1M3,5H1V21A2,2 0 0,0 3,23H19V21H3M15.96,10.29L13.21,13.83L11.25,11.47L8.5,15H19.5L15.96,10.29Z" />
               </svg>
             </span>
-            <span class="text">Financiero</span>
+            <span class="text">Multimedia</span>
           </a>
         </li>
-        @endcan --}}
+        @endcan
         @can('report-sa-list')
         <li class="nav-item nav-item-has-children">
           <a aria-expanded="false" class="collapsed" id="ddlink_1" href="#" onclick="toggle('ddmenu_1', 'ddlink_1')">

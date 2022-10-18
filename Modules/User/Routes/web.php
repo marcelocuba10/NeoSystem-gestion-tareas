@@ -29,12 +29,7 @@ Route::prefix('user')->group(function () {
         /*** Multimedia Routes ***/
         Route::group(['prefix' => 'multimedia'], function () {
             Route::get('/', 'MultimediaController@index');
-            Route::get('/create', 'MultimediaController@create');
-            Route::post('/create', 'MultimediaController@store');
             Route::get('/show/{id}', 'MultimediaController@show');
-            Route::get('/edit/{id}', 'MultimediaController@edit');
-            Route::put('/update/{id}', 'MultimediaController@update');
-            Route::delete('/delete/{id}', 'MultimediaController@destroy');
             Route::get('/search', 'MultimediaController@search');
             Route::get('/filter', 'MultimediaController@filter');
         });

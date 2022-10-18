@@ -3,7 +3,6 @@
       <tr>
         <th><h6>#</h6></th>
         <th><h6>Archivo</h6></th>
-        <th><h6>Descripción</h6></th>
         <th><h6>Categoría</h6></th>
         <th><h6>Tamaño</h6></th>
         <th><h6>Fecha Creación</h6></th>
@@ -18,22 +17,21 @@
             <td>
               <div class="product">
                 <div class="image">
-                  @if ($multimedia->filename)
-                    <img src="{{ asset('/public/images/products/'.$multimedia->filename) }}" alt="{{ Str::limit($multimedia->filename, 15) }}">
+                  @if ($multimedia->type == "Imágenes")
+                    <img src="{{ asset('/public/images/files/'.$multimedia->filename) }}" alt="{{ Str::limit($multimedia->filename, 15) }}">
                   @else
-                    <img src="{{ asset('/public/adminLTE/images/products/no-image.jpg') }}" alt="{{ Str::limit($multimedia->filename, 15) }}">
+                    <img height="40" width="30" src="{{ asset('/public/images/image-docs-small.png') }}" alt="{{ Str::limit($multimedia->filename, 15) }}">
                   @endif
                 </div>
                 <h5 class="text-bold text-dark"><a href="{{ url('/user/multimedia/show/'.$multimedia->id ) }}">{{ $multimedia->filename }}</a></h5>
               </div>
             </td>
-            <td class="min-width"><p>{{ $multimedia->description }}</p></td>
             <td class="min-width">
               <span class="status-btn 
-              @if($multimedia->type == 'Imágenes') secondary-btn
-              @elseIf($multimedia->type == 'Documentos') close-btn
-              @elseIf($multimedia->type == 'Manuales') warning-btn
-              @elseIf($multimedia->type == 'Lista de Precios') success-btn
+              @if($multimedia->type == 'Imágenes') success-btn
+              @elseIf($multimedia->type == 'Documentos') orange-btn
+              @elseIf($multimedia->type == 'Manuales') active-btn
+              @elseIf($multimedia->type == 'Lista de Precios') purple-btn
               @endif">
                 {{ $multimedia->type }}
               </span>
@@ -48,7 +46,7 @@
                   </a>
                 </div>
                 <div class="action">
-                  <a href="#">
+                  <a href="{{ asset('/public/images/files/'.$multimedia->filename) }}" download="{{ $multimedia->filename }}">
                     <button class="text-success"><i class="lni lni-download"></i></button>
                   </a>
                 </div>
