@@ -62,6 +62,10 @@ Route::prefix('admin')->group(function () {
             Route::get('image-gallery/{id}', 'ProductsController@imageGallery');
             Route::post('upload-image/', 'ProductsController@uploadImage');
             Route::delete('image-delete/{id}', 'ProductsController@destroyImage');
+
+            /** Import/Export CSV */
+            Route::get('import-csv', 'ImportExportController@index');
+            Route::post('import', 'ImportExportController@importcsv');
         });
 
         /*** User Routes ***/

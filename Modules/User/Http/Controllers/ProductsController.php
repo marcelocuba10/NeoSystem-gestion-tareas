@@ -22,21 +22,32 @@ class ProductsController extends Controller
 
     public function index()
     {
+        // $products = DB::table('products')
+        //     ->leftjoin('images_products', 'images_products.code_product', '=', 'products.code')
+        //     ->select(
+        //         'products.id',
+        //         'products.name',
+        //         'products.description',
+        //         'products.sale_price',
+        //         'products.inventory',
+        //         'images_products.filename'
+        //     )
+        //     ->orderBy('products.created_at', 'DESC')
+        //     ->groupBy('code')
+        //     ->paginate(10);
+
         $products = DB::table('products')
-            ->leftjoin('images_products', 'images_products.code_product', '=', 'products.code')
             ->select(
                 'products.id',
+                'products.custom_code',
                 'products.name',
                 'products.description',
                 'products.sale_price',
-                'products.inventory',
-                'images_products.filename'
             )
             ->orderBy('products.created_at', 'DESC')
-            ->groupBy('code')
-            ->paginate(10);
+            ->paginate(30);
 
-        return view('user::products.index', compact('products'))->with('i', (request()->input('page', 1) - 1) * 10);
+        return view('user::products.index', compact('products'));
     }
 
     public function getItemProduct()
@@ -46,19 +57,29 @@ class ProductsController extends Controller
 
     public function show($id)
     {
-        $product = Products::find($id);
-        $images = DB::table('images_products')
-            ->where('code_product', '=', $product->code)
-            ->get();
+        $product = DB::table('products')
+            ->where('products.id', '=', $id)
+            ->select(
+                'products.id',
+                'products.custom_code',
+                'products.name',
+                'products.description',
+                'products.sale_price'
+            )
+            ->first();
+            
+        // $images = DB::table('images_products')
+        //     ->where('code_product', '=', $product->code)
+        //     ->get();
 
-        return view('user::products.show', compact('product', 'images'));
+        return view('user::products.show', compact('product'));
     }
 
     public function findPrice(Request $request)
     {
         $product = DB::table('products')
             ->where('id', '=', $request->id)
-            ->select('id','sale_price','inventory')
+            ->select('id', 'sale_price', 'inventory')
             ->first();
 
         if ($request->ajax()) {
@@ -71,36 +92,59 @@ class ProductsController extends Controller
         $search = $request->input('search');
 
         if ($search == '') {
+            // $products = DB::table('products')
+            //     ->leftjoin('images_products', 'images_products.code_product', '=', 'products.code')
+            //     ->select(
+            //         'products.id',
+            //         'products.name',
+            //         'products.description',
+            //         'products.sale_price',
+            //         'products.inventory',
+            //         'images_products.filename'
+            //     )
+            //     ->orderBy('products.created_at', 'DESC')
+            //     ->groupBy('code')
+            //     ->paginate(10);
+
             $products = DB::table('products')
-                ->leftjoin('images_products', 'images_products.code_product', '=', 'products.code')
                 ->select(
                     'products.id',
+                    'products.custom_code',
                     'products.name',
                     'products.description',
                     'products.sale_price',
-                    'products.inventory',
-                    'images_products.filename'
                 )
                 ->orderBy('products.created_at', 'DESC')
-                ->groupBy('code')
-                ->paginate(10);
+                ->paginate(30);
         } else {
+            // $products = DB::table('products')
+            //     ->where('products.name', 'LIKE', "%{$search}%")
+            //     ->leftjoin('images_products', 'images_products.code_product', '=', 'products.code')
+            //     ->select(
+            //         'products.id',
+            //         'products.name',
+            //         'products.description',
+            //         'products.sale_price',
+            //         'products.inventory',
+            //         'images_products.filename'
+            //     )
+            //     ->orderBy('products.created_at', 'DESC')
+            //     ->groupBy('code')
+            //     ->paginate();
+
             $products = DB::table('products')
                 ->where('products.name', 'LIKE', "%{$search}%")
-                ->leftjoin('images_products', 'images_products.code_product', '=', 'products.code')
                 ->select(
                     'products.id',
+                    'products.custom_code',
                     'products.name',
                     'products.description',
                     'products.sale_price',
-                    'products.inventory',
-                    'images_products.filename'
                 )
                 ->orderBy('products.created_at', 'DESC')
-                ->groupBy('code')
-                ->paginate();
+                ->paginate(30);
         }
 
-        return view('user::products.index', compact('products', 'search'))->with('i', (request()->input('page', 1) - 1) * 10);
+        return view('user::products.index', compact('products', 'search'));
     }
 }

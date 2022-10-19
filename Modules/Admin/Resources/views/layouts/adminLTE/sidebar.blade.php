@@ -30,7 +30,7 @@
         </li>
         @endcan
         @can('product-sa-list')
-        <li class="nav-item {{ (request()->is('admin/products')) ? 'active' : '' }}">
+        <li class="nav-item {{ (request()->is('admin/products')) || (request()->is('admin/products/*')) ? 'active' : '' }}">
           <a href="{{ url('/admin/products') }}">
             <span class="icon">
               <svg style="width:24px;height:24px" viewBox="0 0 24 24">

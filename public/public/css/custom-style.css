@@ -1,3 +1,4 @@
+
 .main-btn-sm {
     display: inline-block;
     text-align: center;
@@ -29,7 +30,7 @@
     font-size: 14px;
     font-weight: 400;
 }
-.table>:not(caption)>*>* {
+.table .lines {
     padding: 0.5rem 0.5rem;
     background-color: var(--bs-table-bg);
     border-bottom-width: 1px;
@@ -53,11 +54,6 @@
 }
 .select-style-1 .select-position select {
     padding: 10px;
-}
-tbody, td, tfoot, th, thead, tr {
-    /* border-color: inherit; */
-    border-style: none !important;
-    border-width: 0;
 }
 .table tbody tr:first-child > * {
     padding-top: 12px !important;

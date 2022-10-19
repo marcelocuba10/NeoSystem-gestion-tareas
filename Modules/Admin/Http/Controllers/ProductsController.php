@@ -24,22 +24,35 @@ class ProductsController extends Controller
 
     public function index()
     {
+        // $products = DB::table('products')
+        //     ->leftjoin('images_products', 'images_products.code_product', '=', 'products.code')
+        //     ->select(
+        //         'products.id',
+        //         'products.code',
+        //         'products.code_2',
+        //         'products.name',
+        //         'products.description',
+        //         'products.purchase_price',
+        //         'products.sale_price',
+        //         'images_products.filename'
+        //     )
+        //     ->orderBy('products.created_at', 'DESC')
+        //     ->groupBy('code')
+        //     ->paginate(10);
+
         $products = DB::table('products')
-            ->leftjoin('images_products', 'images_products.code_product', '=', 'products.code')
             ->select(
                 'products.id',
+                'products.custom_code',
                 'products.name',
                 'products.description',
                 'products.purchase_price',
                 'products.sale_price',
-                'products.inventory',
-                'images_products.filename'
             )
             ->orderBy('products.created_at', 'DESC')
-            ->groupBy('code')
-            ->paginate(10);
+            ->paginate(30);
 
-        return view('admin::products.index', compact('products'))->with('i', (request()->input('page', 1) - 1) * 10);
+        return view('admin::products.index', compact('products'));
     }
 
     public function imageGallery($id)
@@ -67,11 +80,12 @@ class ProductsController extends Controller
         $code_product = $this->generateUniqueCode();
 
         $request->validate([
-            'name' => 'required|max:50|min:5|unique:products,name',
+            'custom_code' => 'required|max:50|min:5|unique:products,custom_code',
+            'name' => 'required|max:150|min:5|unique:products,name',
             'sale_price' => 'required|max:12|min:6',
             'purchase_price' => 'required|max:12|min:6',
             'description' => 'nullable|max:250|min:5',
-            'inventory' => 'required|integer|between:0,9999|min:0',
+            'inventory' => 'nullable|integer|between:0,9999|min:0',
             'brand' => 'nullable|max:50|min:3',
             'model' => 'nullable|max:50|min:3',
             'supplier' => 'nullable|max:50|min:3',
@@ -83,10 +97,9 @@ class ProductsController extends Controller
         $input['sale_price'] = str_replace('.', '', $input['sale_price']);
         $input['purchase_price'] = str_replace('.', '', $input['purchase_price']);
         $input['code'] = $code_product;
-        $input['type'] = 'Equipos Potenciales';
         Products::create($input);
 
-        return redirect()->to('/admin/products')->with('message', 'Product created successfully.');
+        return redirect()->to('/admin/products')->with('message', 'Producto creado correctamente');
     }
 
     public function generateUniqueCode()
@@ -104,11 +117,119 @@ class ProductsController extends Controller
     {
         $product = Products::find($id);
 
-        $images = DB::table('images_products')
-            ->where('code_product', '=', $product->code)
-            ->get();
+        // $images = DB::table('images_products')
+        //     ->where('code_product', '=', $product->code)
+        //     ->get();
 
-        return view('admin::products.show', compact('product', 'images'));
+        return view('admin::products.show', compact('product'));
+    }
+
+    public function edit($id)
+    {
+        $product = Products::find($id);
+
+        // $images = DB::table('images_products')
+        //     ->where('code_product', '=', $product->code)
+        //     ->get();
+
+        return view('admin::products.edit', compact('product'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'custom_code' => 'required|max:50|min:5|unique:products,custom_code,' . $id,
+            'name' => 'required|max:150|min:5|unique:products,name,' . $id,
+            'sale_price' => 'required|max:12|min:6',
+            'purchase_price' => 'required|max:12|min:6',
+            'description' => 'nullable|max:250|min:5',
+            'inventory' => 'nullable|integer|between:0,9999|min:0',
+            'brand' => 'nullable|max:50|min:3',
+            'model' => 'nullable|max:50|min:3',
+            'supplier' => 'nullable|max:50|min:3',
+            'phone_supplier' => 'nullable|max:50|min:3',
+        ]);
+
+        $input = $request->all();
+
+        $input['sale_price'] = str_replace('.', '', $input['sale_price']);
+        $input['purchase_price'] = str_replace('.', '', $input['purchase_price']);
+
+        $product = Products::find($id);
+        $product->update($input);
+
+        return redirect()->to('/admin/products')->with('message', 'Producto actualizado correctamente');
+    }
+
+    public function destroy($id)
+    {
+        Products::find($id)->delete();
+        return redirect()->to('/admin/products')->with('message', 'Producto Eliminado Correctamente');
+    }
+
+    public function search(Request $request)
+    {
+        $search = $request->input('search');
+
+        if ($search == '') {
+            // $products = DB::table('products')
+            //     ->leftjoin('images_products', 'images_products.code_product', '=', 'products.code')
+            //     ->select(
+            //         'products.id',
+            //         'products.name',
+            //         'products.custom_code',
+            //         'products.purchase_price',
+            //         'products.sale_price',
+            //         'products.inventory',
+            //         'images_products.filename'
+            //     )
+            //     ->orderBy('products.created_at', 'DESC')
+            //     ->groupBy('code')
+            //     ->paginate(10);
+
+            $products = DB::table('products')
+                ->select(
+                    'products.id',
+                    'products.custom_code',
+                    'products.name',
+                    'products.description',
+                    'products.purchase_price',
+                    'products.sale_price',
+                )
+                ->orderBy('products.created_at', 'DESC')
+                ->paginate(30);
+        } else {
+            // $products = DB::table('products')
+            //     ->where('name', 'LIKE', "%{$search}%")
+            //     ->leftjoin('images_products', 'images_products.code_product', '=', 'products.code')
+            //     ->select(
+            //         'products.id',
+            //         'products.name',
+            //         'products.custom_code',
+            //         'products.purchase_price',
+            //         'products.sale_price',
+            //         'products.inventory',
+            //         'images_products.filename'
+            //     )
+            //     ->orderBy('products.created_at', 'DESC')
+            //     ->groupBy('code')
+            //     ->paginate();
+
+            $products = DB::table('products')
+                ->where('name', 'LIKE', "%{$search}%")
+                ->select(
+                    'products.id',
+                    'products.custom_code',
+                    'products.name',
+                    'products.description',
+                    'products.purchase_price',
+                    'products.sale_price',
+                )
+                ->orderBy('products.created_at', 'DESC')
+                ->paginate(30);
+        }
+
+        return view('admin::products.index', compact('products', 'search'));
     }
 
     public function uploadImage(Request $request)
@@ -157,47 +278,6 @@ class ProductsController extends Controller
         }
     }
 
-    public function edit($id)
-    {
-        $product = Products::find($id);
-
-        $images = DB::table('images_products')
-            ->where('code_product', '=', $product->code)
-            ->get();
-
-        return view('admin::products.edit', compact('product', 'images'));
-    }
-
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'name' => 'required|max:50|min:5|unique:products,name,' . $id,
-            'sale_price' => 'required|max:12|min:6',
-            'purchase_price' => 'required|max:12|min:6',
-            'description' => 'nullable|max:250|min:5',
-            'inventory' => 'required|integer|between:0,9999|min:0',
-            'brand' => 'nullable|max:50|min:3',
-            'model' => 'nullable|max:50|min:3',
-            'supplier' => 'nullable|max:50|min:3',
-            'phone_supplier' => 'nullable|max:50|min:3',
-        ]);
-
-        $input = $request->all();
-        $input['sale_price'] = str_replace('.', '', $input['sale_price']);
-        $input['purchase_price'] = str_replace('.', '', $input['purchase_price']);
-
-        $product = Products::find($id);
-        $product->update($input);
-
-        return redirect()->to('/admin/products')->with('message', 'Producto actualizado correctamente');
-    }
-
-    public function destroy($id)
-    {
-        Products::find($id)->delete();
-        return redirect()->to('/admin/products')->with('message', 'Producto Eliminado Correctamente');
-    }
-
     public function destroyImage($id)
     {
         $image = ImagesProduct::find($id);
@@ -210,45 +290,5 @@ class ProductsController extends Controller
         }
 
         return back()->with('success', 'Image removed successfully.');
-    }
-
-    public function search(Request $request)
-    {
-        $search = $request->input('search');
-
-        if ($search == '') {
-            $products = DB::table('products')
-                ->leftjoin('images_products', 'images_products.code_product', '=', 'products.code')
-                ->select(
-                    'products.id',
-                    'products.name',
-                    'products.description',
-                    'products.purchase_price',
-                    'products.sale_price',
-                    'products.inventory',
-                    'images_products.filename'
-                )
-                ->orderBy('products.created_at', 'DESC')
-                ->groupBy('code')
-                ->paginate(10);
-        } else {
-            $products = DB::table('products')
-                ->where('name', 'LIKE', "%{$search}%")
-                ->leftjoin('images_products', 'images_products.code_product', '=', 'products.code')
-                ->select(
-                    'products.id',
-                    'products.name',
-                    'products.description',
-                    'products.purchase_price',
-                    'products.sale_price',
-                    'products.inventory',
-                    'images_products.filename'
-                )
-                ->orderBy('products.created_at', 'DESC')
-                ->groupBy('code')
-                ->paginate();
-        }
-
-        return view('admin::products.index', compact('products', 'search'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 }

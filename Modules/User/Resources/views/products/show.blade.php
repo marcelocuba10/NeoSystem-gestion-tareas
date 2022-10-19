@@ -30,41 +30,34 @@
         <div class="col-lg-12">
           <div class="card-style mb-30">
             <div class="row">
-              <div class="col-2">
+              <div class="col-3">
                 <div class="input-style-1">
                   <label>Código</label>
-                  <input value="{{ $product->code ?? old('code') }}" type="text" readonly>
+                  <input value="{{ $product->custom_code ?? old('custom_code') }}" type="text" readonly>
                 </div>
               </div>
               <!-- end col -->
-              <div class="col-5">
+              <div class="col-9">
                 <div class="input-style-1">
                   <label>Nombre</label>
                   <input value="{{ $product->name ?? old('name') }}" type="text">
                 </div>
               </div>
               <!-- end col -->
-              <div class="col-5">
-                <div class="input-style-1">
-                  <label>Descripción</label>
-                  <input value="{{ $product->description ?? old('description') }}" type="text">
-                </div>
-              </div>
-              <!-- end col -->
               <div class="col-4">
                 <div class="input-style-1">
-                  <label>Precio Venta</label>
+                  <label>Precio Venta Público</label>
                   <input id="currency_2" value="{{number_format($product->sale_price, 0)}}" type="text">
                 </div>
               </div>
               <!-- end col -->
-              <div class="col-4">
+              {{-- <div class="col-4">
                 <div class="input-style-1">
                   <label>Inventario</label>
                   <input value="{{ $product->quantity ?? old('quantity') }}" type="text">
                 </div>
               </div>
-              <!-- end col -->
+              <!-- end col --> --}}
               <div class="col-4">
                 <div class="input-style-1">
                   <label>Marca</label>
@@ -103,7 +96,7 @@
         </div>
       </div>
 
-      <div class="row">
+      {{-- <div class="row">
         <div class="title-wrapper pt-30">
           <div class="row align-items-center">
             <div class="col-md-6">
@@ -113,9 +106,9 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> --}}
       
-      <div class="row">
+      {{-- <div class="row">
         <div class="col-md-12">
           <div class="card-style mb-30">
             @if (count($images) > 0)
@@ -135,7 +128,7 @@
             @endif
           </div>
         </div>
-      </div>
+      </div> --}}
 
     </div>
   </div>

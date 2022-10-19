@@ -12,6 +12,7 @@
             @can('product-sa-create')
               <a href="{{ url('/admin/products/create') }}" class="main-btn info-btn btn-hover btn-sm"><i class="lni lni-plus mr-5"></i></a>
             @endcan  
+            <a style="margin-left: 17px;" href="{{ url('/admin/products/import-csv') }}"><i class="hthtg lni lni-upload" data-toggle="tooltip" data-placement="bottom" title="Importar datos desde planilla Excel"></i></a>
           </div>
         </div>
         <!-- end col -->
@@ -43,24 +44,21 @@
               </div>
             </div>
             <div class="table-wrapper table-responsive">
-              <table class="table top-selling-table">
+              <table class="table top-selling-table table-hover">
                 <thead>
                   <tr>
-                    <th><h6>#</h6></th>
-                    <th><h6>Producto</h6></th>
-                    <th><h6>Descripción</h6></th>
-                    <th><h6>Precio Compra</h6></th>
-                    <th><h6>Precio Venta</h6></th>
-                    <th><h6>Inventario</h6></th>
+                    <th><h6>Código</h6></th>
+                    <th><h6>Nombre</h6></th>
+                    <th><h6>Precio Agente</h6></th>
+                    <th><h6>Precio Público</h6></th>
                     <th><h6>Acciones</h6></th>
                   </tr>
-                  <!-- end table row-->
                 </thead>
                 <tbody>
                   @foreach ($products as $product)
                   <tr>
-                    <td class="text-sm"><h6 class="text-sm">{{ ++$i }}</h6></td>
-                    <td>
+                    <td class="text-sm"><h6 class="text-sm">{{ $product->custom_code }}</h6></td>
+                    {{-- <td>
                       <div class="product">
                         <div class="image">
                           @if ($product->filename)
@@ -71,24 +69,24 @@
                         </div>
                         <p class="text-sm"><a href="{{ url('/admin/products/show/'.$product->id) }}">{{ $product->name }}</a></p>
                       </div>
-                    </td>
-                    <td class="min-width"><p>{{ $product->description }}</p></td>
-                    <td class="min-width"><p>G$ {{number_format($product->purchase_price, 0)}}</p></td>
-                    <td class="min-width"><p>G$ {{number_format($product->sale_price, 0)}}</p></td>
-                    <td class="min-width">
+                    </td> --}}
+                    <td class="min-width"><p class="text-sm"><a href="{{ url('/admin/products/show/'.$product->id) }}">{{ Str::limit($product->name, 50) }}</a></p></td>
+                    <td class="min-width"><p>G$ {{number_format($product->purchase_price, 0,",",".")}}</p></td>
+                    <td class="min-width"><p>G$ {{number_format($product->sale_price, 0,",",".")}}</p></td>
+                    {{-- <td class="min-width">
                       @if ($product->inventory > 5)
                       <p><span class="status-btn info-btn">{{ $product->inventory }}</span></p>
                       @else
                         <p><span class="status-btn orange-btn">{{ $product->inventory }}</span></p>
                       @endif
-                    </td>
+                    </td> --}}
                     <td class="text-right">
                       <div class="btn-group">
-                        <div class="action">
+                        {{-- <div class="action">
                           <a href="{{ url('/admin/products/image-gallery/'.$product->id) }}">
                             <button class="text-success"><i class="lni lni-image"></i></button>
                           </a>
-                        </div>
+                        </div> --}}
                         <div class="action">
                           <a href="{{ url('/admin/products/show/'.$product->id) }}">
                             <button class="text-active"><i class="lni lni-eye"></i></button>
@@ -102,7 +100,7 @@
                           </div>
                         @endcan
                         @can('product-sa-delete')
-                          <form method="POST" action="{{ '/admin/products/delete/'.$product->id }}">
+                          <form method="POST" action="{{ url('/admin/products/delete/'.$product->id) }}">
                             @csrf
                             <div class="action">
                               <input name="_method" type="hidden" value="DELETE">
