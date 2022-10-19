@@ -31,8 +31,8 @@
           <div class="card-style mb-30">
             <div class="row">
               @if ($multimedia->type == "Imágenes")
-                <a class="thumbnail fancybox" rel="ligthbox" href="{{ asset('/public/images/files/'.$multimedia->filename) }}">
-                  <img class="card-img-top" width="500" height="500" style="max-width: 100%;max-height: 100%;" src="{{ asset('/public/images/files/'.$multimedia->filename) }}" alt="{{ Str::limit($multimedia->filename, 15) }}">
+                <a class="thumbnail fancybox" rel="ligthbox" href="{{ asset('/public/files/'.$multimedia->filename) }}">
+                  <img class="card-img-top" width="500" height="500" style="max-width: 100%;max-height: 100%;" src="{{ asset('/public/files/'.$multimedia->filename) }}" alt="{{ Str::limit($multimedia->filename, 15) }}">
                 </a>
               @else
                 <img class="card-img-top" width="500" height="500" style="max-width: 100%;max-height: 100%;" src="{{ asset('/public/images/image-docs-show.png') }}" alt="{{ Str::limit($multimedia->filename, 15) }}">
@@ -81,7 +81,7 @@
 
               <div class="col-12">
                 <div class="button-group d-flex justify-content-center flex-wrap">
-                  <a href="{{ asset('/public/images/files/'.$multimedia->filename) }}" download="{{ $multimedia->filename }}"><button class="main-btn success-btn btn-hover m-2">Descargar</button></a>
+                  <a href="{{ asset('/public/files/'.$multimedia->filename) }}" download="{{ $multimedia->filename }}"><button class="main-btn success-btn btn-hover m-2">Descargar</button></a>
                   <div class="button-group d-flex justify-content-center flex-wrap">
                     <a class="main-btn primary-btn-outline m-2" href="{{ url('/admin/multimedia') }}">Atrás</a>
                   </div>

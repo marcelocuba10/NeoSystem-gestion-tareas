@@ -25,47 +25,35 @@ class MultimediaController extends Controller
 
     public function index()
     {
-        $count_price_list = DB::table('multimedia')
+        $price_list = DB::table('multimedia')
+            ->select(DB::raw('count(*) as count, sum(size) as sum'))
             ->where('multimedia.type', '=', 'Lista de Precios')
-            ->count();
+            ->first();
 
-        $sum_price_list_size = DB::table('multimedia')
-            ->where('multimedia.type', '=', 'Lista de Precios')
-            ->sum('size');
+        $price_list_total_size = $this->formatBytes($price_list->sum);
 
-        $sum_price_list_size = $this->formatBytes($sum_price_list_size);
-
-        $count_images = DB::table('multimedia')
+        $images = DB::table('multimedia')
+            ->select(DB::raw('count(*) as count, sum(size) as sum'))
             ->where('multimedia.type', '=', 'Imágenes')
-            ->count();
+            ->first();
 
-        $sum_images_size = DB::table('multimedia')
-            ->where('multimedia.type', '=', 'Imágenes')
-            ->sum('size');
+        $images_total_size = $this->formatBytes($images->sum);
 
-        $sum_images_size = $this->formatBytes($sum_images_size);
-
-        $count_manuals = DB::table('multimedia')
+        $manuals = DB::table('multimedia')
+            ->select(DB::raw('count(*) as count, sum(size) as sum'))
             ->where('multimedia.type', '=', 'Manuales')
-            ->count();
+            ->first();
 
-        $sum_manuals_size = DB::table('multimedia')
-            ->where('multimedia.type', '=', 'Manuales')
-            ->sum('size');
+        $manuals_total_size = $this->formatBytes($manuals->sum);
 
-        $sum_manuals_size = $this->formatBytes($sum_manuals_size);
-
-        $count_docs = DB::table('multimedia')
+        $docs = DB::table('multimedia')
+            ->select(DB::raw('count(*) as count, sum(size) as sum'))
             ->where('multimedia.type', '=', 'Documentos')
-            ->count();
+            ->first();
 
-        $sum_docs_size = DB::table('multimedia')
-            ->where('multimedia.type', '=', 'Documentos')
-            ->sum('size');
+        $docs_total_size = $this->formatBytes($docs->sum);
 
-        $sum_docs_size = $this->formatBytes($sum_docs_size);
-
-        return view('admin::multimedia.index', compact('count_price_list', 'count_images', 'count_manuals', 'count_docs', 'sum_price_list_size', 'sum_images_size', 'sum_manuals_size', 'sum_docs_size'));
+        return view('admin::multimedia.index', compact('price_list', 'price_list_total_size', 'images', 'images_total_size', 'manuals', 'manuals_total_size', 'docs', 'docs_total_size'));
     }
 
     public function show($id)
@@ -75,7 +63,7 @@ class MultimediaController extends Controller
         $file_size_format = $this->formatBytes($multimedia->size);
         $created_at_format = $multimedia->created_at->format('d/m/y H:i');
 
-        return view('admin::multimedia.show', compact('multimedia','file_size_format','created_at_format'));
+        return view('admin::multimedia.show', compact('multimedia', 'file_size_format', 'created_at_format'));
     }
 
     public function uploadFile(Request $request)
@@ -88,13 +76,13 @@ class MultimediaController extends Controller
         /** check if not select category */
         if (strlen($request->category) == 25) {
             return back()->with('error', 'Por favor, adicione una categoría al archivo antes de subir.');
-        } 
+        }
 
         $filesize = $request->file('filename')->getSize();
 
         $file = $request->file('filename');
         $filename = str_replace(' ', '-', $file->getClientOriginalName());
-        $file->move(public_path('/images/files/'), $filename);
+        $file->move(public_path('files/'), $filename);
 
         if ($request->fileId) {
             $statusFile = Multimedia::where('id', $request->fileId)
@@ -102,7 +90,7 @@ class MultimediaController extends Controller
                     'filename' => str_replace('"', '', $filename),
                 ]);
 
-            $image_path = public_path("/images/files/") . $request->oldFile;
+            $image_path = public_path("files/") . $request->oldFile;
 
             if (File::exists($image_path) && $request->oldFile != $filename) {
                 File::delete($image_path);
@@ -148,7 +136,7 @@ class MultimediaController extends Controller
         $multimedia = Multimedia::find($id);
         Multimedia::where('id', $id)->delete();
 
-        $file_path = public_path("/images/files/") . $multimedia->filename;
+        $file_path = public_path("files/") . $multimedia->filename;
 
         if (File::exists($file_path)) {
             File::delete($file_path);

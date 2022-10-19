@@ -39,10 +39,10 @@
             <div class="content">
               <div>
                 <h6 class="text-semibold text-purple">Lista de Precios</h6>
-                <p class="text-sm text-gray">{{ $count_price_list }} archivos</p>
+                <p class="text-sm text-gray">{{ $price_list->count }} archivos</p>
               </div>
               <div>
-                <h6 class="file-size">{{ $sum_price_list_size }}</h6>
+                <h6 class="file-size">{{ $price_list_total_size }}</h6>
               </div>
             </div>
           </div>
@@ -55,10 +55,10 @@
             <div class="content">
               <div>
                 <h6 class="text-semibold text-success">Imágenes</h6>
-                <p class="text-sm text-gray">{{ $count_images }} archivos</p>
+                <p class="text-sm text-gray">{{ $images->count }} archivos</p>
               </div>
               <div>
-                <h6 class="file-size">{{ $sum_images_size }}</h6>
+                <h6 class="file-size">{{ $images_total_size }}</h6>
               </div>
             </div>
           </div>
@@ -71,10 +71,10 @@
             <div class="content">
               <div>
                 <h6 class="text-semibold text-primary">Manuales de Uso</h6>
-                <p class="text-sm text-gray">{{ $count_manuals }} archivos</p>
+                <p class="text-sm text-gray">{{ $manuals->count }} archivos</p>
               </div>
               <div>
-                <h6 class="file-size">{{ $sum_manuals_size }}</h6>
+                <h6 class="file-size">{{ $manuals_total_size }}</h6>
               </div>
             </div>
           </div>
@@ -87,10 +87,10 @@
             <div class="content">
               <div>
                 <h6 class="text-semibold text-orange">Documentos</h6>
-                <p class="text-sm text-gray">{{ $count_docs }} archivos</p>
+                <p class="text-sm text-gray">{{ $docs->count }} archivos</p>
               </div>
               <div>
-                <h6 class="file-size">{{ $sum_docs_size }}</h6>
+                <h6 class="file-size">{{ $docs_total_size }}</h6>
               </div>
             </div>
           </div>
@@ -193,7 +193,7 @@
 
       if(filename !== undefined) {
         $(".modal-title").text("Subir Archivo");
-        $(".file-input").after("<div class='form-group old-img' style='margin-top: 15px;'><img src='/images/files/"+filename+"' style='height:100px;'></div>");
+        $(".file-input").after("<div class='form-group old-img' style='margin-top: 15px;'><img src='/files/"+filename+"' style='height:100px;'></div>");
       }
     });
 

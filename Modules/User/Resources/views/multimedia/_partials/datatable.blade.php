@@ -18,7 +18,7 @@
               <div class="product">
                 <div class="image">
                   @if ($multimedia->type == "Imágenes")
-                    <img src="{{ asset('/public/images/files/'.$multimedia->filename) }}" alt="{{ Str::limit($multimedia->filename, 15) }}">
+                    <img src="{{ asset('/public/files/'.$multimedia->filename) }}" alt="{{ Str::limit($multimedia->filename, 15) }}">
                   @else
                     <img height="40" width="30" src="{{ asset('/public/images/image-docs-small.png') }}" alt="{{ Str::limit($multimedia->filename, 15) }}">
                   @endif
@@ -46,7 +46,7 @@
                   </a>
                 </div>
                 <div class="action">
-                  <a href="{{ asset('/public/images/files/'.$multimedia->filename) }}" download="{{ $multimedia->filename }}">
+                  <a href="{{ asset('/public/files/'.$multimedia->filename) }}" download="{{ $multimedia->filename }}">
                     <button class="text-success"><i class="lni lni-download"></i></button>
                   </a>
                 </div>
