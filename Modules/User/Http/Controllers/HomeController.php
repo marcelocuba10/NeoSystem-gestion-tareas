@@ -16,18 +16,22 @@ class HomeController extends Controller
     public function index()
     {
         $idRefCurrentUser = Auth::user()->idReference;
-
-        $customers = DB::table('customers')
-            ->select('customers.id', 'customers.name', 'customers.phone', 'customers.address', 'customers.doc_id')
-            ->where('customers.idReference', '=', $idRefCurrentUser)
-            ->orderBy('customers.created_at', 'DESC')
-            ->limit(7)
-            ->get();
-
-        $products = DB::table('products')
-            ->select('id', 'name', 'inventory')
-            ->orderBy('created_at', 'DESC')
-            ->paginate(7);
+        $customer_visits = DB::table('customer_visits')
+            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+            ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+            ->select(
+                'customer_visits.id',
+                'customer_visits.visit_number',
+                'customer_visits.visit_date',
+                'customer_visits.next_visit_date',
+                'customer_visits.status',
+                'customer_visits.type',
+                'customers.name AS customer_name',
+                'customers.estate',
+                'customers.phone',
+            )
+            ->orderBy('customer_visits.created_at', 'DESC')
+            ->paginate(5);
 
         $cant_customers = DB::table('customers')
             ->where('customers.idReference', '=', $idRefCurrentUser)
@@ -45,6 +49,6 @@ class HomeController extends Controller
             ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
             ->count();
 
-        return view('user::dashboard', compact('products', 'customers', 'cant_customers', 'cant_products', 'total_sales', 'total_visits'));
+        return view('user::dashboard', compact('customer_visits', 'cant_customers', 'cant_products', 'total_sales', 'total_visits'));
     }
 }

@@ -1,8 +1,7 @@
   <table class="table top-selling-table table-hover">
     <thead>
       <tr>
-        <th><h6>#</h6></th>
-        <th><h6>Archivo</h6></th>
+        <th><h6>Nombre de Archivo</h6></th>
         <th><h6>Categoría</h6></th>
         <th><h6>Tamaño</h6></th>
         <th><h6>Fecha Creación</h6></th>

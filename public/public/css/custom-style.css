@@ -1,4 +1,9 @@
 
+.table .employee-image {
+    width: 50px;
+    height: 46px;
+}
+
 .main-btn-sm {
     display: inline-block;
     text-align: center;

@@ -61,85 +61,150 @@
           </div>
         </div>
       </div>
+
       <div class="row">
-        <div class="col-md-6 col-lg-3 col-xl-6 col-xxl-3">
-          <div class="card-style mb-30">
-            <div class="title d-flex flex-wrap align-items-center justify-content-between mb-10">
-              <div class="left">
-                <h6 class="text-medium mb-2">Clientes Registrados</h6>
-              </div>
-              <div class="right mb-2">
+        <!-- Customer visits -->
+        <div class="col-lg-6 col-xl-6 col-xxl-6">
+          <div class="card-style clients-table-card mb-30">
+            <div class="title d-flex justify-content-between align-items-center">
+              <h6 class="mb-10">Visita Clientes</h6>
+              <div class="more-btn-wrapper mb-10">
+                <button class="more-btn dropdown-toggle" id="moreAction" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="lni lni-more-alt"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="moreAction">
+                  <li class="dropdown-item">
+                    <a href="#0" class="text-gray">Add All</a>
+                  </li>
+                  <li class="dropdown-item">
+                    <a href="#0" class="text-gray">Remove All</a>
+                  </li>
+                </ul>
               </div>
             </div>
-
-            <div class="table-responsive">
-              <table class="table sell-order-table">
-                <thead>
-                  <tr>
-                    <th><h6 class="text-sm fw-500">Nombre</h6></th>
-                    <th><h6 class="text-sm fw-500">Doc Identidad</h6></th>
-                    <th class="text-end"><h6 class="text-sm fw-500">Teléfono</h6></th>
-                  </tr>
-                </thead>
+            <div class="table-wrapper table-responsive">
+              <table class="table">
                 <tbody>
-                  @foreach ($customers as $customer)
+                  @foreach ($customer_visits as $customer_visit)
                     <tr>
-                        <td><p class="text-sm fw-500 text-gray"><a href="{{ url('/user/customers/show/'.$customer->id) }}">{{ $customer->name ?? old('name') }} {{ $customer->last_name ?? old('last_name') }}</a></p></td>
-                        <td><p class="text-sm fw-500 text-gray">{{ $customer->doc_id }}</p></td>
-                        <td><p class="text-sm fw-500 text-gray text-end">{{ $customer->phone }}</p></td>
-                    </tr>
-                  @endforeach
-                </tbody>
-              </table>
-              <a href="{{ url('/user/customers') }}"><p class="text-sm mb-20">Ver más..</p></a>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6 col-lg-3 col-xl-6 col-xxl-3">
-          <div class="card-style mb-30">
-            <div class="title d-flex flex-wrap align-items-center justify-content-between mb-10">
-              <div class="left">
-                <h6 class="text-medium mb-2">Productos Registrados</h6>
-              </div>
-              <div class="right mb-2">
-              </div>
-            </div>
-
-            <div class="table-responsive">
-              <table class="table sell-order-table">
-                <thead>
-                  <tr>
-                    <th>
-                      <h6 class="text-sm fw-500">Nombre</h6>
-                    </th>
-                    <th>
-                      <h6 class="text-sm fw-500">Inventario</h6>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @foreach ($products as $product)
-                    <tr>
-                      <td><p class="text-sm fw-500 text-gray"><a href="{{ url('/user/products/show/'.$product->id) }}">{{ $product->name ?? old('name') }}</a></p></td>
-                      <td class="min-width">
-                        @if ($product->inventory > 5)
-                        <p><span class="status-btn info-btn">{{ $product->inventory }}</span></p>
-                        @else
-                          <p><span class="status-btn orange-btn">{{ $product->inventory }}</span></p>
-                        @endif
+                      <td>
+                        <div class="employee-image">
+                          <img src="{{ asset('/public/images/user-icon-business-man-flat-png-transparent.png') }}" alt="">
+                        </div>
+                      </td>
+                      <td class="employee-info">
+                        <h5 class="text-medium">{{ $customer_visit->customer_name }}</h5>
+                        <p><i class="lni lni-phone"></i>&nbsp;{{ $customer_visit->phone }} / {{ $customer_visit->estate }}</p>
+                      </td>
+                      <td>
+                        <div class="d-flex justify-content-end">
+                          <button class="status-btn close-btn border-0 m-1">
+                            Cancel
+                          </button>
+                          <button class="status-btn primary-btn border-0 m-1">
+                            Add
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   @endforeach
                 </tbody>
               </table>
-              <a href="{{ url('/user/products') }}"><p class="text-sm mb-20">Ver más..</p></a>
             </div>
           </div>
         </div>
-        <div class="col-lg-6 col-xl-12 col-xxl-6">
-          <div class="card-style calendar-card mb-30">
-            <div id="calendar-mini"></div>
+
+        <!-- Appointments -->
+        <div class="col-lg-6 col-xl-6 col-xxl-6">
+          <div class="card-style mb-30">
+            <div class="title mb-10 d-flex justify-content-between align-items-center">
+              <h6 class="mb-10">Agenda de Visitas y Llamadas</h6>
+              <div class="more-btn-wrapper">
+                <button class="more-btn dropdown-toggle" id="moreAction" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="lni lni-more-alt"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="moreAction">
+                  <li class="dropdown-item">
+                    <a href="#0" class="text-gray">Mark as Read</a>
+                  </li>
+                  <li class="dropdown-item">
+                    <a href="#0" class="text-gray">Reply</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="todo-list-wrapper">
+              <ul>
+                <li class="todo-list-item success">
+                  <div class="todo-content">
+                    <p class="text-sm mb-2">
+                      <i class="lni lni-calendar"></i>
+                      14 February,2024
+                    </p>
+                    <h5 class="text-bold mb-10">Uideck Yearly Meetings</h5>
+                    <p class="text-sm">
+                      <i class="lni lni-alarm-clock"></i>
+                      10:20 AM - 3:00 PM
+                    </p>
+                  </div>
+                  <div class="todo-status">
+                    <span class="status-btn success-btn">Completed</span>
+                  </div>
+                </li>
+                <li class="todo-list-item primary">
+                  <div class="todo-content">
+                    <p class="text-sm mb-2">
+                      <i class="lni lni-calendar"></i>
+                      14 February,2024
+                    </p>
+                    <h5 class="text-bold mb-10">2024 Dribbble Meet Up</h5>
+                    <p class="text-sm">
+                      <i class="lni lni-alarm-clock"></i>
+                      10:20 AM - 3:00 PM
+                    </p>
+                  </div>
+                  <div class="todo-status">
+                    <span class="status-btn active-btn">Upcoming</span>
+                  </div>
+                </li>
+                <li class="todo-list-item orange">
+                  <div class="todo-content">
+                    <p class="text-sm mb-2">
+                      <i class="lni lni-calendar"></i>
+                      14 February,2024
+                    </p>
+                    <h5 class="text-bold mb-10">
+                      Plain Admin Dashboard Meeting
+                    </h5>
+                    <p class="text-sm">
+                      <i class="lni lni-alarm-clock"></i>
+                      10:20 AM - 3:00 PM
+                    </p>
+                  </div>
+                  <div class="todo-status">
+                    <span class="status-btn orange-btn">Pending</span>
+                  </div>
+                </li>
+                <li class="todo-list-item danger">
+                  <div class="todo-content">
+                    <p class="text-sm mb-2">
+                      <i class="lni lni-calendar"></i>
+                      14 February,2024
+                    </p>
+                    <h5 class="text-bold mb-10">Uideck Yearly Meetings</h5>
+                    <p class="text-sm">
+                      <i class="lni lni-alarm-clock"></i>
+                      10:20 AM - 3:00 PM
+                    </p>
+                  </div>
+                  <div class="todo-status">
+                    <span class="status-btn close-btn">Canceled</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </div>
+          <!-- End Cart -->
         </div>
       </div>
     </div>
