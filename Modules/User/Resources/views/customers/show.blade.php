@@ -121,7 +121,7 @@
               <!-- end col -->
               <div class="col-4">
                 <div class="form-check checkbox-style mb-30" style="margin-top: 40px;">
-                  <input @if(!empty($customer->is_vigia)) {{ $customer->is_vigia = 'on'  ? 'checked' : '' }} @endif class="form-check-input" type="checkbox" id="checkbox-not-robot" checked onclick="return false;">
+                  <input @if(!empty($customer->is_vigia)) {{ $customer->is_vigia = 'on'  ? 'checked' : '' }} @endif class="form-check-input" type="checkbox" id="checkbox-not-robot" onclick="return false;">
                   <label class="form-check-label" for="checkbox-not-robot" >¿Es Cliente Vigia?</label>
                 </div>
               </div>

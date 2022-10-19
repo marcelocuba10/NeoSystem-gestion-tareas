@@ -52,9 +52,13 @@ class CustomersApiController extends Controller
         /** link the customer with the admin user */
         $input['idReference'] = Auth::user()->idReference;
 
-        Customers::create($input);
+        $customer = Customers::create($input);
 
-        return redirect()->to('/user/customers')->with('message', 'Customer created successfully.');
+        //return response
+        return response()->json(array(
+            'success' => 'Customer created successfully.',
+            'data'   => $customer
+        ));
     }
 
     public function update(Request $request, $id)
@@ -68,8 +72,6 @@ class CustomersApiController extends Controller
             'city' => 'nullable|max:50|min:5',
             'estate' => 'required|max:50|min:5',
             'is_vigia' => 'nullable',
-            'category' => 'nullable|max:150|min:1',
-            'potential_products' => 'nullable|max:150|min:1',
             'unit_quantity' => 'nullable|integer|between:0,9999|min:0',
             'result_of_the_visit' => 'nullable|max:1000|min:3',
             'objective' => 'nullable|max:1000|min:3',
@@ -86,13 +88,15 @@ class CustomersApiController extends Controller
 
         //update in DB
         $customer = Customers::find($id);
+        $input['category'] = str_replace('/\/', '', $customer->category);
+        $input['potential_products'] = str_replace('/\/', '', $customer->potential_products);
         $customer->update($input);
 
         //return response
         return response()->json(array(
             'success' => 'Customer updated successfully.',
             'data'   => $customer
-          )); 
+        ));
     }
 
     public function search(Request $request)

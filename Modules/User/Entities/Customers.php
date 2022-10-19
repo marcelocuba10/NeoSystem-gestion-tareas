@@ -35,7 +35,7 @@ class Customers extends Model
         'category' => 'array',
         'potential_products' => 'array',
     ];
-    
+
     protected static function newFactory()
     {
         //return \Modules\User\Database\factories\CustomersFactory::new();

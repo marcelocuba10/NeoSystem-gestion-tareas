@@ -25,11 +25,10 @@ Route::middleware(['cors'])->group(function () {
     /*** Customers Routes ***/
     Route::group(['prefix' => 'customers'], function () {
         Route::get('/', [CustomersApiController::class, 'index']);
-        Route::get('/create', 'CustomersApiController@create');
         Route::post('/create', 'CustomersApiController@store');
         Route::get('/show/{id}', 'CustomersApiController@show');
         Route::get('/edit/{id}', 'CustomersApiController@edit');
-        Route::put('/update/{id}', 'CustomersApiController@update');
+        Route::put('/update/{id}', [CustomersApiController::class, 'update']);
         Route::delete('/delete/{id}', 'CustomersApiController@destroy');
         Route::get('/search', 'CustomersApiController@search');
     });
