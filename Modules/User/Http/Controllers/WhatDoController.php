@@ -368,6 +368,12 @@ class WhatDoController extends Controller
             'Cancelado'
         ];
 
+        $visits_labels = [
+            'Menos de 30 días',
+            'Más de 30 días',
+            'Más de 90 días'
+        ];
+
         $estates = [
             'Alto Paraná',
             'Central',
