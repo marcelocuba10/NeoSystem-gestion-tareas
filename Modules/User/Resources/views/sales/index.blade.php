@@ -62,9 +62,9 @@
                           <td class="min-width"><span class="status-btn success-btn">Procesado</span></td>
                         @endif
                         @if ($sale->visit_date)
-                          <td class="min-width"><p>{{ $sale->visit_date }}</p></td>
+                          <td class="min-width"><p>{{ date('d/m/Y - H:i', strtotime($sale->visit_date)) }}</p></td>
                         @else
-                          <td class="min-width"><p>{{ $sale->sale_date }}</p></td>
+                          <td class="min-width"><p>{{ date('d/m/Y - H:i', strtotime($sale->sale_date)) }}</p></td>
                         @endif
                         
                         <td class="min-width"><p><b>G$ {{number_format($sale->total, 0)}}</b></p></td>

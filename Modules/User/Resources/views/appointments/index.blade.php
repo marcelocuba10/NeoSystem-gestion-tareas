@@ -107,7 +107,7 @@
                               {{ $appointment->action }}
                             </span>
                           </td>
-                          <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ $appointment->date }}</p></td>
+                          <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ date('d/m/Y', strtotime($appointment->date)) }}</p></td>
                           <td class="min-width"><p><i class="lni lni-timer mr-10"></i>{{ $appointment->hour }}</p></td>
                           <td class="text-right">
                             <div class="btn-group">

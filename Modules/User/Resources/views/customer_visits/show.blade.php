@@ -42,14 +42,14 @@
               <div class="col-3">
                 <div class="input-style-1">
                   <label>Fecha/Hora de Visita</label>
-                  <input type="text" value="{{ $customer_visit->visit_date ?? old('visit_date') }}" readonly>
+                  <input type="text" value="{{ date('d/m/Y - H:i', strtotime($customer_visit->visit_date)) }}" readonly>
                 </div>
               </div>
               <!-- end col -->
               <div class="col-3">
                 <div class="input-style-1">
                   <label>Fecha Próxima Visita</label>
-                  <input type="text" value="{{ $customer_visit->next_visit_date ?? old('next_visit_date') }}" readonly>
+                  <input type="text" value="{{ date('d/m/Y', strtotime($customer_visit->next_visit_date)) }}" readonly>
                 </div>
               </div>
               <!-- end col -->

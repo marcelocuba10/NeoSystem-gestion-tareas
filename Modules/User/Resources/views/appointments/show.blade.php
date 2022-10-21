@@ -42,7 +42,7 @@
               <div class="col-3">
                 <div class="input-style-1">
                   <label>Fecha</label>
-                  <input type="text" value="{{ $appointment->date ?? old('date') }}" readonly>
+                  <input type="text" value="{{ date('d/m/Y', strtotime($appointment->date)) }}" readonly>
                 </div>
               </div>
               <!-- end col -->

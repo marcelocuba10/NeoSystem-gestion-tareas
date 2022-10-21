@@ -36,7 +36,7 @@
                         <div class="select-style-1">
                           <label>Estado</label>
                           <div class="select-position select-sm">
-                            <select class="light-bg" id="status">
+                            <select class="light-bg" id="status" style="width: 122px;">
                               @foreach ($status as $item)
                                 <option value="{{ $item }}"> {{ $item}} </option>
                               @endforeach 
@@ -58,6 +58,18 @@
                       </li>
                       <li>
                         <div class="select-style-1">
+                          <label>Equipos Potenciales</label>
+                          <div class="select-position select-sm">
+                            <select class="light-bg" id="potential_products">>
+                              @foreach ($potential_products as $item)
+                                <option value="{{ $item->id }}"> {{ $item->name }} </option>
+                              @endforeach 
+                            </select>
+                          </div>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="select-style-1">
                           <label>Localidad</label>
                           <div class="select-position select-sm">
                             <select class="light-bg" id="estate">>
@@ -68,18 +80,28 @@
                           </div>
                         </div>
                       </li>
-                      <li>
+                      {{-- <li>
                         <div class="input-style-1">
                           <label>Fecha Última Visita</label>
-                          <input class="input-sm" type="date" name="next_visit_date" id="visit_date" placeholder="DD/MM/YYYY"  class="bg-transparent">
+                          <input class="input-sm" type="date" name="visit_date" id="visit_date" placeholder="DD/MM/YYYY"  class="bg-transparent">
                         </div>
-                      </li>
-                      <li>
+                      </li> --}}
+                      <div class="select-style-1">
+                        <label>Fecha Última Visita</label>
+                        <div class="select-position select-sm">
+                          <select class="light-bg" id="visit_date" style="width: 166px;">
+                            @foreach ($visits_labels as $item)
+                              <option value="{{ $item }}"> {{ $item}} </option>
+                            @endforeach 
+                          </select>
+                        </div>
+                      </div>
+                      {{-- <li>
                         <div class="input-style-1">
                           <label>Fecha Próxima Visita</label>
                           <input class="input-sm" type="date" name="next_visit_date" id="selectValue5" placeholder="DD/MM/YYYY"  class="bg-transparent">
                         </div>
-                      </li>
+                      </li> --}}
                     </ul>
                   </div>
                 </div>
@@ -96,7 +118,7 @@
                 </div>
               </div>
               <div class="table-wrapper table-responsive">
-                <div id="permissions"></div>
+                <div id="datatable"></div>
                 {{-- <table class="table">
                   <thead>
                     <tr>
@@ -177,9 +199,9 @@
           filter : '',
           "_token": "{{ csrf_token() }}",
         },
-          success:function(permissions)
+          success:function(datatable)
           {
-            $("#permissions").html(permissions);
+            $("#datatable").html(datatable);
           }
       });
 
@@ -195,9 +217,9 @@
           filter : '',
           "_token": "{{ csrf_token() }}",
         },
-          success:function(permissions)
+          success:function(datatable)
           {
-            $("#permissions").html(permissions);
+            $("#datatable").html(datatable);
           }
       });
 
@@ -218,9 +240,9 @@
               search : search,
               "_token": "{{ csrf_token() }}",
             },
-              success:function(permissions)
+              success:function(datatable)
               {
-                $("#permissions").html(permissions);
+                $("#datatable").html(datatable);
               }
           });
       }
@@ -242,9 +264,9 @@
               type: type,
               "_token": "{{ csrf_token() }}",
             },
-              success:function(permissions)
+              success:function(datatable)
               {
-                $("#permissions").html(permissions);
+                $("#datatable").html(datatable);
               }
           });
       });
@@ -265,9 +287,9 @@
               type: type,
               "_token": "{{ csrf_token() }}",
             },
-              success:function(permissions)
+              success:function(datatable)
               {
-                $("#permissions").html(permissions);
+                $("#datatable").html(datatable);
               }
           });
       });
@@ -288,9 +310,9 @@
               type: type,
               "_token": "{{ csrf_token() }}",
             },
-              success:function(permissions)
+              success:function(datatable)
               {
-                $("#permissions").html(permissions);
+                $("#datatable").html(datatable);
               }
           });
       });
@@ -311,9 +333,9 @@
               type: type,
               "_token": "{{ csrf_token() }}",
             },
-              success:function(permissions)
+              success:function(datatable)
               {
-                $("#permissions").html(permissions);
+                $("#datatable").html(datatable);
               }
           });
       });
@@ -334,9 +356,9 @@
               type: type,
               "_token": "{{ csrf_token() }}",
             },
-              success:function(permissions)
+              success:function(datatable)
               {
-                $("#permissions").html(permissions);
+                $("#datatable").html(datatable);
               }
           });
       });
@@ -357,9 +379,9 @@
               type: type,
               "_token": "{{ csrf_token() }}",
             },
-              success:function(permissions)
+              success:function(datatable)
               {
-                $("#permissions").html(permissions);
+                $("#datatable").html(datatable);
               }
           });
       });

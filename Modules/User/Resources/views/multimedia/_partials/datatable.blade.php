@@ -35,7 +35,7 @@
               </span>
             </td>
             <td class="min-width"><p>{{ $multimedia->size }}</p></td>
-            <td class="min-width"><p>{{ $multimedia->created_at }}</p></td>
+            <td class="min-width"><p>{{ date('d/m/Y - H:i', strtotime($multimedia->created_at)) }}</p></td>
             <td class="text-right">
               <div class="btn-group">
                 <div class="action">
