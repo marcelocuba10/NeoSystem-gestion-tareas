@@ -10,8 +10,9 @@
             <div class="title d-flex align-items-center flex-wrap mb-30">
               <h2 class="mr-40">Ventas</h2>
               @can('sales-create')
-                <a href="{{ url('/user/sales/create') }}" class="main-btn info-btn btn-hover btn-sm"><i class="lni lni-plus mr-5"></i></a>
-              @endcan  
+                <a href="{{ url('/user/sales/create') }}" class="main-btn info-btn btn-hover btn-sm" data-toggle="tooltip" data-placement="bottom" title="Crear Nueva Venta"><i class="lni lni-plus mr-5"></i></a>
+              @endcan
+              <a href="{{ url('/user/sales/createOrder') }}" style="margin-left: 17px;" class="main-btn secondary-btn btn-hover btn-sm" data-toggle="tooltip" data-placement="bottom" title="Crear Nuevo Presupuesto"><i class="lni lni-control-panel mr-5"></i></a>
             </div>
           </div>
           <div class="col-md-4">
@@ -51,46 +52,60 @@
                     </tr>
                   </thead>
                   <tbody>
-                    @foreach ($sales as $sale)
-                      <tr>
-                        <td class="text-sm"><h6 class="text-sm">{{ $sale->invoice_number }}</h6></td>
-                        <td class="min-width"><h5 class="text-bold text-dark"><a href="{{ url('/user/sales/show/'.$sale->id) }}">{{ $sale->customer_name }}</a></h5></td>
-                        <td class="min-width"><p>{{ $sale->estate }}</p></td>
-                        @if ($sale->type == 'Order')
-                          <td class="min-width"><span class="status-btn warning-btn">Presupuesto</span></td>
-                        @elseIf($sale->type == 'Sale')
-                          <td class="min-width"><span class="status-btn success-btn">Procesado</span></td>
-                        @endif
-                        @if ($sale->visit_date)
-                          <td class="min-width"><p>{{ date('d/m/Y - H:i', strtotime($sale->visit_date)) }}</p></td>
-                        @else
-                          <td class="min-width"><p>{{ date('d/m/Y - H:i', strtotime($sale->sale_date)) }}</p></td>
-                        @endif
-                        
-                        <td class="min-width"><p><b>G$ {{number_format($sale->total, 0)}}</b></p></td>
-                        <td class="text-right">
-                          <div class="btn-group">
-                            <div class="action">
-                              <a href="{{ url('/user/sales/show/'.$sale->id) }}" class="main-btn-sm deactive-btn rounded-md btn-hover">Ver</a>
-                            </div>
-                            @can('sales-edit')
-                            <div class="action">
-                              <a href="{{ url('/user/sales/edit/'.$sale->id) }}" class="main-btn-sm success-btn rounded-md btn-hover">Procesar</a>
-                            </div>
-                            @endcan
-                            {{-- @can('sales-delete')
-                            <form method="POST" action="{{ url('/user/sales/delete/'.$sale->id) }}">
-                              @csrf
+                    @if (count($sales) > 0 )
+                      @foreach ($sales as $sale)
+                        <tr>
+                          <td class="text-sm"><h6 class="text-sm">{{ $sale->invoice_number }}</h6></td>
+                          <td class="min-width"><h5 class="text-bold text-dark"><a href="{{ url('/user/sales/show/'.$sale->id) }}">{{ $sale->customer_name }}</a></h5></td>
+                          <td class="min-width"><p>{{ $sale->estate }}</p></td>
+                          @if ($sale->type == 'Presupuesto')
+                            <td class="min-width"><span class="status-btn warning-btn">Presupuesto</span></td>
+                          @elseIf($sale->type == 'Venta')
+                            <td class="min-width"><span class="status-btn success-btn">Procesado</span></td>
+                          @endif
+                          @if ($sale->visit_date)
+                            <td class="min-width"><p>{{ date('d/m/Y - H:i', strtotime($sale->visit_date)) }}</p></td>
+                          @else
+                            <td class="min-width"><p>{{ date('d/m/Y - H:i', strtotime($sale->sale_date)) }}</p></td>
+                          @endif
+                          
+                          <td class="min-width"><p><b>G$ {{number_format($sale->total, 0)}}</b></p></td>
+                          <td class="text-right">
+                            <div class="btn-group">
+                              @can('sales-edit')
                               <div class="action">
-                                <input name="_method" type="hidden" value="DELETE">
-                                <button type="submit" class="text-danger"><i class="lni lni-trash-can"></i></button>
+                                @if ($sale->type == 'Venta')
+                                  <a href="{{ url('/user/sales/edit/'.$sale->id) }}" class="main-btn-sm deactive-btn rounded-md btn-hover">Detalles Venta</a>
+                                @else
+                                  <a href="{{ url('/user/sales/edit/'.$sale->id) }}" class="main-btn-sm success-btn rounded-md btn-hover">Procesar</a>
+                                @endif
                               </div>
-                            </form>
-                            @endcan --}}
-                          </div>
-                        </td>
+                              @endcan
+                              {{-- @can('sales-delete')
+                              <form method="POST" action="{{ url('/user/sales/delete/'.$sale->id) }}">
+                                @csrf
+                                <div class="action">
+                                  <input name="_method" type="hidden" value="DELETE">
+                                  <button type="submit" class="text-danger"><i class="lni lni-trash-can"></i></button>
+                                </div>
+                              </form>
+                              @endcan --}}
+                            </div>
+                          </td>
+                        </tr>
+                      @endforeach
+                    @else
+                      <tr>
+                        <td class="text-sm"></td>
+                        <td class="min-width"></td>
+                        <td class="min-width"></td>
+                        <td class="min-width"></td>
+                        <td class="min-width">Sin resultados encontrados</td>
+                        <td class="min-width"></td>
+                        <td class="min-width"></td>
+                        <td class="min-width"></td>
                       </tr>
-                    @endforeach
+                    @endif  
                   </tbody>
                 </table>
                 @if (isset($search))

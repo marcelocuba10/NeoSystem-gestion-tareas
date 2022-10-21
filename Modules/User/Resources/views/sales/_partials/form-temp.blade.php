@@ -8,7 +8,7 @@
       <div class="row align-items-center">
         <div class="col-md-6">
           <div class="title mb-30">
-            <h2>Editar {{ ($sale->type == 'Order')  ? ' Presupuesto' : ' Venta' }} - n.º {{ $sale->invoice_number }}</h2>
+            <h2>Editar {{ ($sale->type == 'Presupuesto')  ? ' Presupuesto' : ' Venta' }} - n.º {{ $sale->invoice_number }}</h2>
           </div>
         </div>
         <div class="col-md-6">
@@ -39,8 +39,7 @@
                 </div>
               </div>
               <!-- end col -->
-
-              @if ($sale->type == 'Sale')
+              @if ($sale->type == 'Venta')
                 <div class="col-3">
                   <div class="input-style-1">
                     <label>Fecha/Hora</label>
@@ -48,7 +47,14 @@
                   </div>
                 </div>
                 <!-- end col -->
-              @elseif($sale->type == 'Order')
+                <div class="col-sm-3">
+                  <div class="input-style-1">
+                    <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Tipo</label>
+                    <input value="{{ $sale->type }}" type="text" readonly>
+                  </div>
+                </div>
+                <!-- end col -->
+              @elseif($sale->type == 'Presupuesto')
                 <div class="col-3">
                   <div class="input-style-1">
                     <label>Fecha/Hora de Visita</label>
@@ -119,7 +125,7 @@
                   <tbody>
                     @foreach ($order_detail as $item_order)
                       <tr>
-                        <td><p class="text-sm">{{ $item_order->code }}</td>
+                        <td><p class="text-sm">{{ $item_order->custom_code }}</td>
                         <td><p class="text-sm">{{ $item_order->name }}</p></td>
                         <td><p class="text-sm">G$ {{number_format($item_order->price, 0)}}</p></td>
                         <td><p class="text-sm">{{ $item_order->quantity }}</p></td>

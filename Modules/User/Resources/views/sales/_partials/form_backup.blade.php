@@ -2,13 +2,21 @@
 <div class="row">
   <div class="col-4">
     <div class="select-style-1">
-      <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Cliente</label>
+      <label>(*) Cliente</label>
       <div class="select-position">
+        @if($customer_visit)
         <select name="customer_id">
           @foreach ($customers as $customer)
-            <option value="{{ $customer->id }}" @if($sale) {{ ( $customer->id == $sale->customer_id) ? 'selected' : '' }} @endif> {{ $customer->name}} </option>
+            <option value="{{ $customer->id }}" {{ ( $customer->id == $customer_visit->customer_id) ? 'selected' : '' }}> {{ $customer->name}} </option>
           @endforeach 
         </select>
+        @else
+        <select name="customer_id">
+          @foreach ($customers as $customer)
+            <option value="{{ $customer->id }}"> {{ $customer->name}} </option>
+          @endforeach 
+        </select>
+        @endIf
       </div>
     </div>
   </div>
@@ -16,31 +24,19 @@
   <div class="col-3">
     <div class="input-style-1">
       <label>Fecha/Hora de Venta</label>
-      <input type="text" name="visit_date" value="{{ date('d/m/Y - H:i', strtotime($currentDate)) }}" readonly>
-    </div>
-  </div>
-  <!-- end col -->
-  <div class="col-sm-3">
-    <div class="select-style-1">
-      <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Tipo</label>
-      <div class="select-position">
-        <select name="action">
-          @foreach ($actions as $item)
-            <option value="{{ $item }}" @if($sale) {{ ( $item === $sale->type) ? 'selected' : '' }} @endif> {{ $item}} </option>
-          @endforeach 
-        </select> 
-      </div>
+      <input type="text" name="visit_date" value="{{ $currentDate ?? old('currentDate') }}" readonly>
     </div>
   </div>
   <!-- end col -->
 
-  @if ($sale)
+  @if ($customer_visit)
     <div class="col-12" id="setOrder">
       <div class="table-wrapper table-responsive">
         <table class="table top-selling-table mb-50">
           <thead style="background-color: #DAEFFE;">
             <tr>
               <th><h6>Producto</h6></th>
+              <th><h6>Inventario</h6></th>
               <th><h6>Precio</h6></th>
               <th><h6>Cantidad</h6></th>
               <th><h6>Subtotal</h6></th>
@@ -48,9 +44,6 @@
             </tr>
           </thead>
           <tbody>
-            @php
-              $c = 0;
-            @endphp
             @foreach ($order_visits as $item_order)
               <tr>
                 <td>
@@ -61,14 +54,17 @@
                     @endforeach
                   </select>
                 </td>
+                <td><input type="text" name="qty_av[]" value="{{ $item_order->inventory }}" class="form-control qty_av" readonly></td>
                 <td><input type="text" name="price[]" value="{{ $item_order->price }}" class="form-control price" readonly></td>
+                {{-- <td>
+                  <div class="value-button" id="decrease" onclick="decreaseValue()" value="Decrease Value">-</div>
+                  <input type="number" name="qty[]" id="number" class="qty"/>
+                  <div class="value-button" id="increase" onclick="increaseValue()" value="Increase Value">+</div>
+                </td> --}}
                 <td><input type="number" min="1" name="qty[]" value="{{ $item_order->quantity }}" class="form-control qty"></td>
                 <td><input type="text" name="amount[]" class="form-control amount" value="{{ $item_order->amount }}" readonly></td>
                 <td><button type="button" class="btn btn-success" id="add_btn"><i class="lni lni-plus"></i></button></td>
               </tr>
-              @php
-                $c++;
-              @endphp
             @endforeach
           </tbody>
           <tfoot>
@@ -87,7 +83,7 @@
     <div class="col-12">
       <div class="button-group d-flex justify-content-center flex-wrap">
         <button type="submit" class="main-btn primary-btn btn-hover m-2">Guardar</button>
-        <a class="main-btn danger-btn-outline m-2" href="{{ url('/user/sales') }}">Atrás</a>
+        <a class="main-btn danger-btn-outline m-2" href="{{ url('/user/customer_visits') }}">Atrás</a>
       </div>
     </div>
   @else
@@ -97,6 +93,7 @@
           <thead style="background-color: #DAEFFE;">
             <tr>
               <th><h6>Producto</h6></th>
+              <th><h6>Inventario</h6></th>
               <th><h6>Precio</h6></th>
               <th><h6>Cantidad</h6></th>
               <th><h6>Subtotal</h6></th>
@@ -110,10 +107,17 @@
                   <option>Seleccione Producto</option>
                   @foreach($products as $product)  
                     <option name="product_id[]" value="{{ $product->id }}">{{ $product->name }}</option>
+                    {{-- {{ str_replace(',','.',number_format($product->sale_price, 0)) }} --}}
                   @endforeach
                 </select>
               </td>
+              <td><input type="text" name="qty_av[]" class="form-control qty_av" readonly></td>
               <td><input type="text" name="price[]" class="form-control price" readonly></td>
+              {{-- <td>
+                <div class="value-button" id="decrease" onclick="decreaseValue()" value="Decrease Value">-</div>
+                <input type="number" name="qty[]" id="number" class="qty"/>
+                <div class="value-button" id="increase" onclick="increaseValue()" value="Increase Value">+</div>
+              </td> --}}
               <td><input type="number" min="1" name="qty[]" class="form-control qty"></td>
               <td><input type="text" name="amount[]" class="form-control amount" readonly></td>
               <td><button type="button" class="btn btn-success" id="add_btn"><i class="lni lni-plus"></i></button></td>
@@ -174,14 +178,12 @@ $(document).ready(function(){
       type    : 'GET',
       url     :"{{ URL::to('/user/products/findPrice') }}",
       dataType: 'json',
-      data: {
-        "_token": $('meta[name="csrf-token"]').attr('content'),
-        'id': id
-      },
+      data: {"_token": $('meta[name="csrf-token"]').attr('content'), 'id':id},
       success:function (response) {
         var data = response;
         var string_data = JSON.stringify(data); 
         tr.find('.price').val(data.sale_price);
+        tr.find('.qty_av').val(data.inventory);
 
         var qty = 1;
         var amount = (qty * data.sale_price);
@@ -218,7 +220,8 @@ $('#add_btn').on('click',function(){
   console.log('add_btn');
   var html = '';
   html += '<tr>';
-  html += '<td> <select name="product_id[]" class="form-control product"> <option>Seleccione Producto</option> @foreach($products as $product) <option name="product_id[]" data-price="{{ $product->sale_price }}" value="{{ $product->id }}">{{ $product->name }}</option> @endforeach </select> </td>';
+  html += '<td> <select name="product_id[]" class="form-control product"> <option>Seleccione Producto</option> @foreach($products as $product) <option name="product_id[]" data-qty_av="{{ $product->inventory }}" data-price="{{ $product->sale_price }}" value="{{ $product->id }}">{{ $product->name }}</option> @endforeach </select> </td>';
+  html += '<td><input type="text" name="qty_av[]" class="form-control qty_av" readonly></td>';
   html += '<td><input type="text" name="price[]" class="form-control price" readonly></td>';
   html += '<td><input type="number" min="1" name="qty[]" class="form-control qty"></td>';
   html += '<td><input type="text" name="amount[]" class="form-control amount" readonly></td>';
