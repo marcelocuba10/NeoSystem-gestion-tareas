@@ -2,6 +2,7 @@
 
 namespace Modules\User\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +17,8 @@ class HomeController extends Controller
     public function index()
     {
         $idRefCurrentUser = Auth::user()->idReference;
+        $currentDate = Carbon::now()->format('d/m/Y');
+
         $customer_visits = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
@@ -37,18 +40,48 @@ class HomeController extends Controller
             ->where('customers.idReference', '=', $idRefCurrentUser)
             ->count();
 
-        $cant_products = DB::table('products')
+        $appointments = DB::table('appointments')
+            ->leftjoin('customers', 'customers.id', '=', 'appointments.customer_id')
+            ->where('appointments.idReference', '=', $idRefCurrentUser)
+            ->select(
+                'appointments.id',
+                'customers.name AS customer_name',
+                'customers.phone AS customer_phone',
+                'customers.estate AS customer_estate',
+                'date',
+                'hour',
+                'action',
+                'observation',
+            )
+            ->orderBy('appointments.created_at', 'DESC')
+            ->paginate(5);
+
+        $visited_less_30_days = DB::table('customer_visits')
+            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+            ->where('customers.idReference', '=', $idRefCurrentUser)
+            ->where('visit_date', '>', Carbon::now()->subDays(30))
             ->count();
 
-        $total_sales = DB::table('sales')
-            ->where('sales.seller_id', '=', $idRefCurrentUser)
-            ->where('sales.type', '=', 'Sale')
-            ->sum('total');
-
-        $total_visits = DB::table('customer_visits')
-            ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+        $visited_more_30_days = DB::table('customer_visits')
+            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+            ->where('customers.idReference', '=', $idRefCurrentUser)
+            ->where('visit_date', '<', Carbon::now()->subDays(30))
             ->count();
 
-        return view('user::dashboard', compact('customer_visits', 'cant_customers', 'cant_products', 'total_sales', 'total_visits'));
+        $visited_more_90_days = DB::table('customer_visits')
+            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+            ->where('customers.idReference', '=', $idRefCurrentUser)
+            ->where('visit_date', '<', Carbon::now()->subDays(90))
+            ->count();
+
+        return view('user::dashboard', compact(
+            'customer_visits',
+            'cant_customers',
+            'appointments',
+            'currentDate',
+            'visited_less_30_days',
+            'visited_more_30_days',
+            'visited_more_90_days'
+        ));
     }
 }

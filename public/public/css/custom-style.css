@@ -574,7 +574,7 @@ span.selection {
 
 /** custom card grid view machines */
 
-.bg-card-enabled {
+.bg-card-success {
     background-color: #4caf50;
 }
 .bg-card-secondary {
@@ -583,7 +583,7 @@ span.selection {
 .bg-card-error {
     background-color: #f44336;
 }
-.bg-card-attention {
+.bg-card-warning {
     background-color: #ffc107;
 }
 .bg-card-offline {
@@ -592,7 +592,7 @@ span.selection {
 .bg-card-disabled {
     background-color: #9e9e9e;
 }
-.bg-card-attention-2 {
+.bg-card-orange {
     background-color: #ff5722;
 }
 

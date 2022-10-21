@@ -39,7 +39,7 @@
                     <ul class="legend3 d-flex flex-wrap align-items-center mb-30">
                       <li>
                         <div class="d-flex">
-                          <span class="bg-color bg-card-attention-2"> </span>
+                          <span class="bg-color bg-card-success"> </span>
                           <div class="text">
                             <form action="{{ url('/user/appointments/filter') }}">
                               <button class="btn-group-status" name="filter" value="Realizar Llamada" type="submit"><p class="text-sm text-dark">Realizar Llamadas</p></button>
@@ -49,7 +49,7 @@
                       </li>
                       <li>
                         <div class="d-flex">
-                          <span class="bg-color bg-card-attention"> </span>
+                          <span class="bg-color bg-card-orange"> </span>
                           <div class="text">
                             <form action="{{ url('/user/appointments/filter') }}">
                               <button class="btn-group-status" name="filter" value="Visitar Personalmente" type="submit"><p class="text-sm text-dark">Visitar Personalmente</p></button>
@@ -101,8 +101,8 @@
                           <td class="min-width"><p><i class="lni lni-map-marker mr-10"></i>{{ $appointment->customer_estate }}</p></td>
                           <td class="min-width">
                             <span class="status-btn 
-                            @if($appointment->action == 'Realizar Llamada') orange-btn
-                            @elseIf($appointment->action == 'Visitar Personalmente') warning-btn
+                            @if($appointment->action == 'Realizar Llamada') success-btn
+                            @elseIf($appointment->action == 'Visitar Personalmente') orange-btn
                             @endif">
                               {{ $appointment->action }}
                             </span>

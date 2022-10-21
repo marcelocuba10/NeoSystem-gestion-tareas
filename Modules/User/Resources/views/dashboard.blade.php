@@ -22,41 +22,50 @@
               <i class="lni lni-users"></i>
             </div>
             <div class="content">
-              <h6 class="mb-10">Total Clientes</h6>
-              <h3 class="text-bold mb-10">{{ $cant_customers }}</h3>
+              <h6 class="mb-10">Visita a clientes</h6>
+              <h3 class="text-bold mb-10">{{ $visited_less_30_days }}</h3>
+              <p class="text-sm text-success">
+                <span class="text-gray">(menos de 30 días)</span>
+              </p>
             </div>
           </div>
         </div>
         <div class="col-xl-3 col-lg-4 col-sm-6">
           <div class="icon-card mb-30">
             <div class="icon orange">
-              <i class="lni lni-grid-alt"></i>
+              <i class="lni lni-users"></i>
             </div>
             <div class="content">
-              <h6 class="mb-10">Total Productos</h6>
-              <h3 class="text-bold mb-10">{{ $cant_products }}</h3>
+              <h6 class="mb-10">Visita a clientes</h6>
+              <h3 class="text-bold mb-10">{{ $visited_more_30_days }}</h3>
+              <p class="text-sm text-success">
+                <span class="text-gray">(más de 30 días)</span>
+              </p>
             </div>
           </div>
         </div>
         <div class="col-xl-3 col-lg-4 col-sm-6">
           <div class="icon-card mb-30">
             <div class="icon success">
-              <i class="lni lni-credit-cards"></i>
+              <i class="lni lni-users"></i>
             </div>
             <div class="content">
-              <h6 class="mb-10">Total Ventas</h6>
-              <h3 class="text-bold mb-10">G$ {{number_format($total_sales, 0)}}</h3>
+              <h6 class="mb-10">Visita a clientes</h6>
+              <h3 class="text-bold mb-10">{{ $visited_more_90_days }}</h3>
+              <p class="text-sm text-success">
+                <span class="text-gray">(más de 90 días)</span>
+              </p>
             </div>
           </div>
         </div>
         <div class="col-xl-3 col-lg-4 col-sm-6">
           <div class="icon-card mb-30">
             <div class="icon primary">
-              <i class="lni lni-hand"></i>
+              <i class="lni lni-users"></i>
             </div>
             <div class="content">
-              <h6 class="mb-10">Total Visitas</h6>
-              <h3 class="text-bold mb-10">{{ $total_visits }}</h3>
+              <h6 class="mb-10">Total Clientes</h6>
+              <h3 class="text-bold mb-10">{{ $cant_customers }}</h3>
             </div>
           </div>
         </div>
@@ -65,21 +74,17 @@
       <div class="row">
         <!-- Customer visits -->
         <div class="col-lg-6 col-xl-6 col-xxl-6">
-          <div class="card-style clients-table-card mb-30">
+          <div class="card-style activity-card clients-table-card mb-30">
             <div class="title d-flex justify-content-between align-items-center">
               <h6 class="mb-10">Visita Clientes</h6>
               <div class="more-btn-wrapper mb-10">
-                <button class="more-btn dropdown-toggle" id="moreAction" data-bs-toggle="dropdown" aria-expanded="false">
-                  <i class="lni lni-more-alt"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="moreAction">
-                  <li class="dropdown-item">
-                    <a href="#0" class="text-gray">Add All</a>
-                  </li>
-                  <li class="dropdown-item">
-                    <a href="#0" class="text-gray">Remove All</a>
-                  </li>
-                </ul>
+                <div class="right mb-2">
+                  <div class="button-group">
+                    <a href="javascript:void(0)" class="active">+30 días</a>
+                    <a href="javascript:void(0)">+60 días</a>
+                    <a href="javascript:void(0)">+90 días</a>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="table-wrapper table-responsive">
@@ -94,16 +99,24 @@
                       </td>
                       <td class="employee-info">
                         <h5 class="text-medium">{{ $customer_visit->customer_name }}</h5>
-                        <p><i class="lni lni-phone"></i>&nbsp;{{ $customer_visit->phone }} / {{ $customer_visit->estate }}</p>
+                        <p><i class="lni lni-phone"></i>&nbsp;{{ $customer_visit->phone }} /<i class="lni lni-map-marker"></i>&nbsp; {{ $customer_visit->estate }}</p>
+                      </td>
+                      <td>
+                        <span style="float: right;" class="status-btn 
+                        @if($customer_visit->status == 'Visitado') secondary-btn
+                        @elseIf($customer_visit->status == 'No Visitado') close-btn
+                        @elseIf($customer_visit->status == 'Cancelado') warning-btn
+                        @endif">
+                          {{ $customer_visit->status }}
+                        </span>
                       </td>
                       <td>
                         <div class="d-flex justify-content-end">
-                          <button class="status-btn close-btn border-0 m-1">
-                            Cancel
-                          </button>
-                          <button class="status-btn primary-btn border-0 m-1">
-                            Add
-                          </button>
+                          <a href="{{ url('/user/customer_visits/show/'.$customer_visit->id) }}" data-toggle="tooltip" data-placement="bottom" title="Ver">
+                            <button class="status-btn primary-btn border-0 m-1">
+                              Ver
+                            </button>
+                          </a>
                         </div>
                       </td>
                     </tr>
@@ -135,76 +148,51 @@
             </div>
             <div class="todo-list-wrapper">
               <ul>
-                <li class="todo-list-item success">
-                  <div class="todo-content">
-                    <p class="text-sm mb-2">
-                      <i class="lni lni-calendar"></i>
-                      14 February,2024
-                    </p>
-                    <h5 class="text-bold mb-10">Uideck Yearly Meetings</h5>
-                    <p class="text-sm">
-                      <i class="lni lni-alarm-clock"></i>
-                      10:20 AM - 3:00 PM
-                    </p>
-                  </div>
-                  <div class="todo-status">
-                    <span class="status-btn success-btn">Completed</span>
-                  </div>
-                </li>
-                <li class="todo-list-item primary">
-                  <div class="todo-content">
-                    <p class="text-sm mb-2">
-                      <i class="lni lni-calendar"></i>
-                      14 February,2024
-                    </p>
-                    <h5 class="text-bold mb-10">2024 Dribbble Meet Up</h5>
-                    <p class="text-sm">
-                      <i class="lni lni-alarm-clock"></i>
-                      10:20 AM - 3:00 PM
-                    </p>
-                  </div>
-                  <div class="todo-status">
-                    <span class="status-btn active-btn">Upcoming</span>
-                  </div>
-                </li>
-                <li class="todo-list-item orange">
-                  <div class="todo-content">
-                    <p class="text-sm mb-2">
-                      <i class="lni lni-calendar"></i>
-                      14 February,2024
-                    </p>
-                    <h5 class="text-bold mb-10">
-                      Plain Admin Dashboard Meeting
-                    </h5>
-                    <p class="text-sm">
-                      <i class="lni lni-alarm-clock"></i>
-                      10:20 AM - 3:00 PM
-                    </p>
-                  </div>
-                  <div class="todo-status">
-                    <span class="status-btn orange-btn">Pending</span>
-                  </div>
-                </li>
-                <li class="todo-list-item danger">
-                  <div class="todo-content">
-                    <p class="text-sm mb-2">
-                      <i class="lni lni-calendar"></i>
-                      14 February,2024
-                    </p>
-                    <h5 class="text-bold mb-10">Uideck Yearly Meetings</h5>
-                    <p class="text-sm">
-                      <i class="lni lni-alarm-clock"></i>
-                      10:20 AM - 3:00 PM
-                    </p>
-                  </div>
-                  <div class="todo-status">
-                    <span class="status-btn close-btn">Canceled</span>
-                  </div>
-                </li>
+                @if (count($appointments) > 0 )
+                  @foreach ($appointments as $appointment)
+                    <li class="todo-list-item primary">
+                      <div class="todo-content">
+                        <p class="text-sm mb-2">
+                          <i class="lni lni-calendar"></i>
+                          Fecha: {{ date('d/m/Y', strtotime($appointment->date)) }}
+                        </p>
+                        <a href="{{ url('/user/appointments/show/'.$appointment->id ) }}"><h5 class="text-bold mb-10">{{ $appointment->customer_name }}</h5></a>
+                        <p class="text-sm">
+                          <i class="lni lni-alarm-clock"></i>
+                          Hora: {{ $appointment->hour }}
+                        </p>
+                      </div>
+                      <div class="todo-status">
+                        <span class="status-btn text-bold">
+                          {{ $appointment->action }}
+                        </span>
+                        @if(date('d/m/Y', strtotime($appointment->date)) < $currentDate )
+                          <span class="status-btn close-btn">
+                            Atrasado
+                          </span>
+                        @else
+                          <span class="status-btn orange-btn">
+                            Pendiente
+                          </span>
+                        @endif
+                      </div>
+                    </li>
+                  @endforeach
+                @else
+                  <tr>
+                    <td class="text-sm"></td>
+                    <td class="min-width"></td>
+                    <td class="min-width"></td>
+                    <td class="min-width"></td>
+                    <td class="min-width">Sin resultados encontrados</td>
+                    <td class="min-width"></td>
+                    <td class="min-width"></td>
+                    <td class="min-width"></td>
+                  </tr>
+                @endif
               </ul>
             </div>
           </div>
-          <!-- End Cart -->
         </div>
       </div>
     </div>
