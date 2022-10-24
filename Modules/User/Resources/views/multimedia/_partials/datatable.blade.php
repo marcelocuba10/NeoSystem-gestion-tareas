@@ -4,7 +4,7 @@
         <th><h6>Nombre del Archivo</h6></th>
         <th><h6>Categoría</h6></th>
         <th><h6>Tamaño</h6></th>
-        <th><h6>Fecha Creación</h6></th>
+        <th><h6>Creada el</h6></th>
         <th><h6>Acciones</h6></th>
       </tr>
     </thead>
@@ -26,7 +26,7 @@
             </td>
             <td class="min-width">
               <span class="status-btn 
-              @if($multimedia->type == 'Imágenes') success-btn
+              @if($multimedia->type == 'Imágenes') info-btn
               @elseIf($multimedia->type == 'Documentos') orange-btn
               @elseIf($multimedia->type == 'Manuales') active-btn
               @elseIf($multimedia->type == 'Lista de Precios') purple-btn

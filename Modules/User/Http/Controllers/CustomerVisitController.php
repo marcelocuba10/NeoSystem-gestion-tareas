@@ -38,6 +38,7 @@ class CustomerVisitController extends Controller
                 'customer_visits.next_visit_date',
                 'customer_visits.status',
                 'customer_visits.type',
+                'customer_visits.action',
                 'customers.name AS customer_name',
                 'customers.estate'
             )
@@ -486,6 +487,7 @@ class CustomerVisitController extends Controller
                     'customer_visits.objective',
                     'customer_visits.status',
                     'customer_visits.type',
+                    'customer_visits.action',
                     'customers.name AS customer_name',
                     'customers.estate'
                 )
@@ -506,6 +508,7 @@ class CustomerVisitController extends Controller
                     'customer_visits.objective',
                     'customer_visits.status',
                     'customer_visits.type',
+                    'customer_visits.action',
                     'customers.name AS customer_name',
                     'customers.estate'
                 )
@@ -519,6 +522,6 @@ class CustomerVisitController extends Controller
     public function destroy($id)
     {
         CustomerVisit::find($id)->delete();
-        return redirect()->to('/user/customer_visits')->with('message', 'Customer deleted successfully');
+        return redirect()->to('/user/customer_visits')->with('message', 'Visita cliente eliminado correctamente');
     }
 }

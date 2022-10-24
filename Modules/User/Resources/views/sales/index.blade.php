@@ -45,7 +45,7 @@
                       <th><h6>Cliente</h6></th>
                       <th><h6>Tipo</h6></th>
                       <th><h6>Estado</h6></th>
-                      <th><h6>Fecha Emisión</h6></th>
+                      <th><h6>Creada el</h6></th>
                       <th><h6>Total</h6></th>
                       <th><h6>Acciones</h6></th>
                     </tr>
@@ -56,7 +56,7 @@
                         <tr>
                           <td class="text-sm"><h6 class="text-sm">{{ $sale->invoice_number }}</h6></td>
                           <td class="min-width"><h5 class="text-bold text-dark"><a href="{{ url('/user/sales/show/'.$sale->id) }}">{{ $sale->customer_name }}</a></h5></td>
-                          <td class="min-width"><p>{{ $sale->type }}</p></td>
+                          <td class="min-width"><span class="status-btn primary-btn">{{ $sale->type }}</span></td>
                           <td class="min-width">
                             <span class="status-btn 
                             @if($sale->status == 'Procesado') success-btn

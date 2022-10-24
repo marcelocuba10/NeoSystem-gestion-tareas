@@ -105,7 +105,7 @@
                           <td class="min-width"><p><i class="lni lni-map-marker mr-10"></i>{{ $appointment->customer_estate }}</p></td>
                           <td class="min-width">
                             <span class="status-btn 
-                            @if($appointment->action == 'Realizar Llamada') success-btn
+                            @if($appointment->action == 'Realizar Llamada') info-btn
                             @elseIf($appointment->action == 'Visitar Personalmente') orange-btn
                             @endif">
                               {{ $appointment->action }}

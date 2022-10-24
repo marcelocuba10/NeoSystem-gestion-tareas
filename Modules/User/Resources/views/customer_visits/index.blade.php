@@ -39,11 +39,10 @@
                     <tr>
                       <th><h6>Número</h6></th>
                       <th><h6>Cliente</h6></th>
-                      <th><h6>Acción</h6></th>
+                      <th><h6>Estado</h6></th>
                       <th><h6>Presupuesto?</h6></th>
-                      <th><h6>Fecha Visita</h6></th>
-                      <th><h6>Fecha Prox Visita</h6></th>
-                      <th><h6>Localidad</h6></th>
+                      <th><h6>Creada el</h6></th>
+                      <th><h6>Acción</h6></th>
                       <th><h6>Acciones</h6></th>
                     </tr>
                   </thead>
@@ -52,23 +51,22 @@
                       <tr>
                         <td class="text-sm"><h6 class="text-sm">{{ $customer_visit->visit_number }}</h6></td>
                         <td class="min-width"><h5 class="text-bold text-dark"><a href="{{ url('/user/customer_visits/show/'.$customer_visit->id ) }}">{{ $customer_visit->customer_name }}</a></h5></td>
-                        <td class="min-width">
-                          <span class="status-btn 
-                          @if($customer_visit->status == 'Visitado') secondary-btn
-                          @elseIf($customer_visit->status == 'No Visitado') close-btn
-                          @elseIf($customer_visit->status == 'Cancelado') warning-btn
-                          @endif">
-                            {{ $customer_visit->status }}
-                          </span>
-                        </td>
+                        <td class="min-width"><span class="status-btn primary-btn">{{ $customer_visit->status }}</span></td>
                         @if ($customer_visit->type == 'Presupuesto')
                           <td class="min-width"><p>Sí</p></td>
                         @elseIf($customer_visit->type == 'Sin Presupuesto')
                           <td class="min-width"><p>No</p></td>
                         @endif
                         <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ date('d/m/Y - H:i', strtotime($customer_visit->visit_date)) }}</p></td>
-                        <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ date('d/m/Y', strtotime($customer_visit->next_visit_date)) }}</p></td>
-                        <td class="min-width"><p>{{ $customer_visit->estate }}</p></td>
+                        <td class="min-width">
+                          <span class="status-btn 
+                          @if($customer_visit->action == 'Realizar Llamada') success-btn
+                          @elseIf($customer_visit->action == 'Visitar Personalmente') orange-btn
+                          @elseIf($customer_visit->action == 'Enviar Presupuesto') info-btn
+                          @endif">
+                            {{ $customer_visit->action }}
+                          </span>
+                        </td>
                         <td class="text-right">
                           <div class="btn-group">
                             <div class="action">

@@ -77,15 +77,6 @@
           <div class="card-style activity-card clients-table-card mb-30">
             <div class="title d-flex justify-content-between align-items-center">
               <h6 class="mb-10">Visita Clientes</h6>
-              <div class="more-btn-wrapper mb-10">
-                <div class="right mb-2">
-                  <div class="button-group">
-                    <a href="javascript:void(0)" class="active">+30 días</a>
-                    <a href="javascript:void(0)">+60 días</a>
-                    <a href="javascript:void(0)">+90 días</a>
-                  </div>
-                </div>
-              </div>
             </div>
             <div class="table-wrapper table-responsive">
               <table class="table">
@@ -99,11 +90,11 @@
                       </td>
                       <td class="employee-info">
                         <h5 class="text-medium">{{ $customer_visit->customer_name }}</h5>
-                        <p><i class="lni lni-phone"></i>&nbsp;{{ $customer_visit->phone }} /<i class="lni lni-map-marker"></i>&nbsp; {{ $customer_visit->estate }}</p>
+                        <p><i class="lni lni-map-marker"></i>&nbsp;{{ $customer_visit->estate }} - &nbsp;{{ date('d/m/Y - H:i', strtotime($customer_visit->visit_date)) }}</p>
                       </td>
                       <td>
                         <span style="float: right;" class="status-btn 
-                        @if($customer_visit->status == 'Visitado') secondary-btn
+                        @if($customer_visit->status == 'Visitado') info-btn
                         @elseIf($customer_visit->status == 'No Visitado') close-btn
                         @elseIf($customer_visit->status == 'Cancelado') warning-btn
                         @endif">
@@ -132,19 +123,6 @@
           <div class="card-style mb-30">
             <div class="title mb-10 d-flex justify-content-between align-items-center">
               <h6 class="mb-10">Agenda de Visitas y Llamadas</h6>
-              <div class="more-btn-wrapper">
-                <button class="more-btn dropdown-toggle" id="moreAction" data-bs-toggle="dropdown" aria-expanded="false">
-                  <i class="lni lni-more-alt"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="moreAction">
-                  <li class="dropdown-item">
-                    <a href="#0" class="text-gray">Mark as Read</a>
-                  </li>
-                  <li class="dropdown-item">
-                    <a href="#0" class="text-gray">Reply</a>
-                  </li>
-                </ul>
-              </div>
             </div>
             <div class="todo-list-wrapper">
               <ul>
@@ -163,7 +141,7 @@
                         </p>
                       </div>
                       <div class="todo-status">
-                        <span class="status-btn text-bold">
+                        <span class="status-btn primary-btn text-bold">
                           {{ $appointment->action }}
                         </span>
                         @if(date('d/m/Y', strtotime($appointment->date)) < $currentDate )
