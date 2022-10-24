@@ -36,6 +36,7 @@ class SalesController extends Controller
             ->orWhere('customer_visits.seller_id', '=', $idRefCurrentUser)
             ->select(
                 'sales.id',
+                'sales.customer_id',
                 'sales.invoice_number',
                 'sales.sale_date',
                 'sales.type',
@@ -54,7 +55,6 @@ class SalesController extends Controller
     public function create()
     {
         /** Auxiliar Variables */
-        $type = 'Venta';
         $sale = null;
 
         /** Format Date */
@@ -85,7 +85,7 @@ class SalesController extends Controller
             'Presupuesto'
         ];
 
-        return view('user::sales.create', compact('actions', 'type', 'sale', 'customers', 'currentDate', 'products'));
+        return view('user::sales.create', compact('actions', 'sale', 'customers', 'currentDate', 'products'));
     }
 
     public function store(Request $request)
@@ -126,16 +126,20 @@ class SalesController extends Controller
 
             foreach ($request->product_id as $key => $value) {
 
-                /** Save items of sale */
-                $order = new OrderDetail();
-                $order->sale_id = $sale->id;
-                $order->product_id = $request->product_id[$key];
-                $order->quantity = $request->qty[$key];
-                $order->price = $request->price[$key];
-                $order->amount = $request->amount[$key];
-                $order->save();
+                if (intval($request->qty[$key]) <= 0) {
+                    return back()->with('error', 'Por favor, ingrese una cantidad válida.');
+                } else {
+                    /** Save items of sale */
+                    $order = new OrderDetail();
+                    $order->sale_id = $sale->id;
+                    $order->product_id = $request->product_id[$key];
+                    $order->quantity = $request->qty[$key];
+                    $order->price = $request->price[$key];
+                    $order->amount = $request->amount[$key];
+                    $order->save();
 
-                $saleIsDeleted = false;
+                    $saleIsDeleted = false;
+                }
 
                 // $product = DB::table('products')
                 //     ->where('products.id', '=', $request->product_id[$key])
@@ -218,6 +222,7 @@ class SalesController extends Controller
                 'sales.invoice_number',
                 'sales.visit_id',
                 'sales.type',
+                'sales.status',
                 'sales.sale_date'
             )
             ->orderBy('sales.created_at', 'DESC')
@@ -225,16 +230,15 @@ class SalesController extends Controller
 
         if ($sale->type == 'Venta') {
             $order_detail = DB::table('order_details')
-                ->where('order_details.sale_id', '=', $id)
                 ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+                ->where('order_details.sale_id', '=', $id)
                 ->select(
-                    'products.name',
-                    'products.code',
-                    'products.custom_code',
+                    'order_details.product_id',
                     'order_details.price',
                     'order_details.quantity',
-                    'order_details.inventory',
-                    'order_details.amount'
+                    'order_details.amount',
+                    'products.custom_code',
+                    'products.name',
                 )
                 ->orderBy('order_details.created_at', 'DESC')
                 ->get();
@@ -242,24 +246,42 @@ class SalesController extends Controller
             $total_order = DB::table('order_details')
                 ->where('order_details.sale_id', '=', $id)
                 ->sum('amount');
-        } elseif ($sale->type == 'Presupuesto') {
+        } elseif ($sale->type == 'Presupuesto' && $sale->visit_id) {
             $order_detail = DB::table('order_details')
-                ->where('order_details.visit_id', '=', $sale->visit_id)
                 ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+                ->where('order_details.visit_id', '=', $sale->visit_id)
                 ->select(
-                    'products.name',
-                    'products.code',
-                    'products.custom_code',
+                    'order_details.product_id',
                     'order_details.price',
                     'order_details.quantity',
-                    'order_details.inventory',
-                    'order_details.amount'
+                    'order_details.amount',
+                    'products.name',
+                    'products.custom_code',
                 )
                 ->orderBy('order_details.created_at', 'DESC')
                 ->get();
 
             $total_order = DB::table('order_details')
                 ->where('order_details.visit_id', '=', $sale->visit_id)
+                ->sum('amount');
+                
+        } elseif ($sale->type == 'Presupuesto' && !$sale->visit_id) {
+            $order_detail = DB::table('order_details')
+                ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+                ->where('order_details.sale_id', '=', $id)
+                ->select(
+                    'order_details.product_id',
+                    'order_details.price',
+                    'order_details.quantity',
+                    'order_details.amount',
+                    'products.custom_code',
+                    'products.name',
+                )
+                ->orderBy('order_details.created_at', 'DESC')
+                ->get();
+
+            $total_order = DB::table('order_details')
+                ->where('order_details.sale_id', '=', $id)
                 ->sum('amount');
         }
 
@@ -269,6 +291,11 @@ class SalesController extends Controller
     public function edit($id)
     {
         $idRefCurrentUser = Auth::user()->idReference;
+
+        /** Format Date */
+        $currentDate = Carbon::now();
+        $currentDate = $currentDate->toDateTimeString();
+
         $sale = DB::table('sales')
             ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
             ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
@@ -284,24 +311,26 @@ class SalesController extends Controller
                 'customers.name AS customer_name',
                 'sales.invoice_number',
                 'sales.visit_id',
+                'sales.customer_id',
                 'sales.type',
-                'sales.sale_date'
+                'sales.sale_date',
+                'sales.id',
+                'sales.status',
             )
             ->orderBy('sales.created_at', 'DESC')
             ->first();
 
         if ($sale->type == 'Venta') {
             $order_detail = DB::table('order_details')
-                ->where('order_details.sale_id', '=', $id)
                 ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+                ->where('order_details.sale_id', '=', $id)
                 ->select(
-                    'products.name',
-                    'products.code',
-                    'products.custom_code',
+                    'order_details.product_id',
                     'order_details.price',
                     'order_details.quantity',
-                    'order_details.inventory',
-                    'order_details.amount'
+                    'order_details.amount',
+                    'products.custom_code',
+                    'products.name',
                 )
                 ->orderBy('order_details.created_at', 'DESC')
                 ->get();
@@ -309,24 +338,41 @@ class SalesController extends Controller
             $total_order = DB::table('order_details')
                 ->where('order_details.sale_id', '=', $id)
                 ->sum('amount');
-        } elseif ($sale->type == 'Presupuesto') {
+        } elseif ($sale->type == 'Presupuesto' && $sale->visit_id) {
             $order_detail = DB::table('order_details')
-                ->where('order_details.visit_id', '=', $sale->visit_id)
                 ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+                ->where('order_details.visit_id', '=', $sale->visit_id)
                 ->select(
-                    'products.name',
-                    'products.code',
-                    'products.custom_code',
+                    'order_details.product_id',
                     'order_details.price',
                     'order_details.quantity',
-                    'order_details.inventory',
-                    'order_details.amount'
+                    'order_details.amount',
+                    'products.name',
+                    'products.custom_code',
                 )
                 ->orderBy('order_details.created_at', 'DESC')
                 ->get();
 
             $total_order = DB::table('order_details')
                 ->where('order_details.visit_id', '=', $sale->visit_id)
+                ->sum('amount');
+        } elseif ($sale->type == 'Presupuesto' && !$sale->visit_id) {
+            $order_detail = DB::table('order_details')
+                ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+                ->where('order_details.sale_id', '=', $id)
+                ->select(
+                    'order_details.product_id',
+                    'order_details.price',
+                    'order_details.quantity',
+                    'order_details.amount',
+                    'products.custom_code',
+                    'products.name',
+                )
+                ->orderBy('order_details.created_at', 'DESC')
+                ->get();
+
+            $total_order = DB::table('order_details')
+                ->where('order_details.sale_id', '=', $id)
                 ->sum('amount');
         }
 
@@ -335,11 +381,39 @@ class SalesController extends Controller
             'Presupuesto'
         ];
 
-        return view('user::sales.edit', compact('actions', 'sale', 'order_detail', 'total_order'));
+        /** Get Customers to select */
+        $customers = DB::table('customers')
+            ->where('customers.idReference', '=', $idRefCurrentUser)
+            ->select('customers.id', 'customers.name')
+            ->get();
+
+        /** Get Products to select */
+        $products = DB::table('products')
+            ->select(
+                'id',
+                'custom_code',
+                'name',
+                'sale_price',
+            )
+            ->orderBy('created_at', 'DESC')
+            ->get();
+
+        return view('user::sales.edit', compact('products', 'currentDate', 'customers', 'actions', 'sale', 'order_detail', 'total_order'));
     }
 
     public function update(Request $request, $id)
     {
+        if ($request->cancelSale == true) {
+            DB::table('sales')
+                ->where('sales.id', '=', $request->sale_id)
+                ->where('sales.invoice_number', '=', $request->invoice_number)
+                ->update([
+                    'status' => 'Cancelado'
+                ]);
+
+            return redirect()->to('/user/sales')->with('message', 'Venta actualizada correctamente.');
+        }
+
         $request->validate([
             'customer_id' => 'required',
             'product_id' => 'required',
@@ -356,50 +430,103 @@ class SalesController extends Controller
             $sale = Sales::find($id);
 
             foreach ($request->product_id as $key => $value) {
-                $product = DB::table('products')
-                    ->where('products.id', '=', $request->product_id[$key])
-                    ->select(
-                        'products.id',
-                        'products.inventory',
-                    )
-                    ->first();
 
-                if (intval($request->qty[$key]) > $product->inventory || intval($request->qty[$key]) <= 0) {
+                if (intval($request->qty[$key]) <= 0) {
                     return back()->with('error', 'Por favor, ingrese una cantidad válida.');
                 } else {
-                    /** update items of sale */
-                    $order = new OrderDetail();
-                    $order->quantity = $request->qty[$key];
-                    $order->inventory = $request->qty_av[$key];
-                    $order->price = $request->price[$key];
-                    $order->amount = $request->amount[$key];
-                    $order->product_id = $request->product_id[$key];
-                    $order->sale_id = $sale->id;
-                    $order->update();
 
-                    /** Discount inventory from product */
-                    $product_inventory = $product->inventory - $request->qty[$key];
+                    $order_detail_id = DB::table('order_details')
+                        ->where('order_details.product_id', '=', $request->product_id[$key])
+                        ->where('order_details.sale_id', '=', $sale->id)
+                        ->select(
+                            'order_details.product_id',
+                        )
+                        ->first();
 
-                    Products::where('products.id', '=', $request->product_id[$key])
-                        ->update([
-                            'products.inventory' => $product_inventory
-                        ]);
+                    /** if find product id, update item detail; else create new item detail */
+                    if ($order_detail_id) {
+                        DB::table('order_details')
+                            ->where('order_details.sale_id', '=', $sale->id)
+                            ->where('order_details.product_id', '=', $request->product_id[$key])
+                            ->update([
+                                'quantity' => $request->qty[$key],
+                                'amount' => $request->amount[$key]
+                            ]);
+                    } else {
+                        /** Save item detail sale */
+                        $order = new OrderDetail();
+                        $order->product_id = $request->product_id[$key];
+                        $order->sale_id = $sale->id;
+                        $order->quantity = $request->qty[$key];
+                        $order->price = $request->price[$key];
+                        $order->amount = $request->amount[$key];
+                        $order->save();
+                    }
                 }
             }
+
+            /** old code with inventary discount */
+            // foreach ($request->product_id as $key => $value) {
+            //     $product = DB::table('products')
+            //         ->where('products.custom_code', '=', $request->product_id[$key])
+            //         ->select(
+            //             'products.id',
+            //             'products.inventory',
+            //         )
+            //         ->first();
+
+            //     if (intval($request->qty[$key]) > $product->inventory || intval($request->qty[$key]) <= 0) {
+            //         return back()->with('error', 'Por favor, ingrese una cantidad válida.');
+            //     } else {
+            //         /** update items of sale */
+            //         $order = new OrderDetail();
+            //         $order->quantity = $request->qty[$key];
+            //         $order->inventory = $request->qty_av[$key];
+            //         $order->price = $request->price[$key];
+            //         $order->amount = $request->amount[$key];
+            //         $order->product_id = $request->product_id[$key];
+            //         $order->sale_id = $sale->id;
+            //         $order->update();
+
+            //         /** Discount inventory from product */
+            //         $product_inventory = $product->inventory - $request->qty[$key];
+
+            //         Products::where('products.id', '=', $request->product_id[$key])
+            //             ->update([
+            //                 'products.inventory' => $product_inventory
+            //             ]);
+            //     }
+            // }
 
             /** Get total amount from items of Sale */
             $total_order = DB::table('order_details')
                 ->where('order_details.sale_id', '=', $sale->id)
                 ->sum('amount');
 
-            /** Update Sale with de total */
-            Sales::where('sales.id', '=', $sale->id)
-                ->update([
-                    'total' => $total_order
-                ]);
+            /** Update Sale with total items detail and check if process or cancel sale */
+            /** Order pass to Sale */
+            if ($request->orderToSale == true) {
+                Sales::where('sales.id', '=', $sale->id)
+                    ->update([
+                        'status' => 'Procesado',
+                        'type' => 'Venta',
+                        'total' => $total_order
+                    ]);
+            } elseif ($request->cancelSale == true) {
+                Sales::where('sales.id', '=', $sale->id)
+                    ->update([
+                        'status' => 'Cancelado',
+                        'total' => $total_order
+                    ]);
+            } else {
+                Sales::where('sales.id', '=', $sale->id)
+                    ->update([
+                        'total' => $total_order
+                    ]);
+            }
         }
 
-        return redirect()->to('/user/sales')->with('message', 'Visita Cliente actualizada correctamente.');
+        return redirect()->to('/user/sales')->with('message', 'Venta actualizada correctamente.');
     }
 
     public function search(Request $request)

@@ -57,7 +57,15 @@
                           <td class="text-sm"><h6 class="text-sm">{{ $sale->invoice_number }}</h6></td>
                           <td class="min-width"><h5 class="text-bold text-dark"><a href="{{ url('/user/sales/show/'.$sale->id) }}">{{ $sale->customer_name }}</a></h5></td>
                           <td class="min-width"><p>{{ $sale->type }}</p></td>
-                          <td class="min-width"><span class="status-btn {{ ($sale->status == 'Procesado')  ? 'success-btn' : ' warning-btn' }}">{{ $sale->status }}</span></td>
+                          <td class="min-width">
+                            <span class="status-btn 
+                            @if($sale->status == 'Procesado') success-btn
+                            @elseIf($sale->status == 'Pendiente') warning-btn
+                            @elseIf($sale->status == 'Cancelado') close-btn
+                            @endif">
+                            {{ $sale->status }}
+                            </span>
+                          </td>
                           @if ($sale->visit_date)
                             <td class="min-width"><p>{{ date('d/m/Y - H:i', strtotime($sale->visit_date)) }}</p></td>
                           @else
@@ -68,9 +76,11 @@
                             <div class="btn-group">
                               @can('sales-edit')
                               <div class="action">
-                                @if ($sale->type == 'Venta')
+                                @if ($sale->type == 'Venta' && $sale->status == 'Cancelado')
+                                  <a href="{{ url('/user/sales/show/'.$sale->id) }}" class="main-btn-sm deactive-btn rounded-md btn-hover">Detalles Venta</a>
+                                @elseif($sale->type == 'Venta' && $sale->status != 'Cancelado')
                                   <a href="{{ url('/user/sales/edit/'.$sale->id) }}" class="main-btn-sm deactive-btn rounded-md btn-hover">Detalles Venta</a>
-                                @else
+                                @elseif($sale->type == 'Presupuesto')
                                   <a href="{{ url('/user/sales/edit/'.$sale->id) }}" class="main-btn-sm success-btn rounded-md btn-hover">Procesar</a>
                                 @endif
                               </div>
