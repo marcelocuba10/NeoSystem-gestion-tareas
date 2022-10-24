@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Modules\User\Entities\Appointment;
 use Modules\User\Entities\CustomerVisit;
 use Modules\User\Entities\OrderDetail;
 use Modules\User\Entities\Sales;
@@ -81,6 +82,8 @@ class CustomerVisitController extends Controller
 
     public function store(Request $request)
     {
+        $idRefCurrentUser = Auth::user()->idReference;
+
         /** date validation, not less than 1980 and not greater than the current year **/
         $initialDate = '1980-01-01';
         $currentDate = (date('Y') + 2) . '-01-01'; //current date + 2 year
@@ -128,7 +131,7 @@ class CustomerVisitController extends Controller
                 $input['status'] = 'Visitado';
                 $input['visit_date'] = Carbon::now();
                 $input['visit_number'] = $this->generateUniqueCodeVisit();
-                $input['seller_id'] = Auth::user()->idReference;
+                $input['seller_id'] = $idRefCurrentUser;
                 $customer_visit = CustomerVisit::create($input);
 
                 foreach ($request->product_id as $key => $value) {
@@ -137,7 +140,6 @@ class CustomerVisitController extends Controller
                         ->where('products.id', '=', $request->product_id[$key])
                         ->select(
                             'products.id',
-                            'products.inventory',
                         )
                         ->first();
 
@@ -169,13 +171,25 @@ class CustomerVisitController extends Controller
                     /** Create Sale-order because order is checked */
                     $sale['invoice_number'] = $customer_visit->visit_number;
                     $sale['visit_id'] = $customer_visit->id;
-                    $sale['seller_id'] = Auth::user()->idReference;
+                    $sale['seller_id'] = $idRefCurrentUser;
                     $sale['customer_id'] = $customer_visit->customer_id;
                     $sale['order_date'] = $customer_visit->visit_date;
                     $sale['type'] = 'Order';
                     $sale['status'] = 'Pendiente';
                     $sale['total'] = $total_order;
                     Sales::create($sale);
+
+                    if ($input['next_visit_date']) {
+                        /** Create appointment because next_visit_date is marked */
+                        $field['idReference'] = $idRefCurrentUser;
+                        $field['visit_id'] = $customer_visit->id;
+                        $field['customer_id'] = $input['customer_id'];
+                        $field['date'] = $input['next_visit_date'];
+                        $field['hour'] = $input['next_visit_hour'];
+                        $field['action'] =  $input['action'];
+                        $field['status'] = 'Pendiente';
+                        Appointment::create($field);
+                    }
                 }
             }
         } else {
@@ -184,8 +198,20 @@ class CustomerVisitController extends Controller
             $input['type'] = 'NoOrder';
             $input['status'] = 'Visitado';
             $input['visit_date'] = Carbon::now();
-            $input['seller_id'] = Auth::user()->idReference;
+            $input['seller_id'] = $idRefCurrentUser;
             $customer_visit = CustomerVisit::create($input);
+
+            if ($input['next_visit_date'] != 'No marcado') {
+                /** Create appointment because next_visit_date is marked */
+                $field['idReference'] = $idRefCurrentUser;
+                $field['visit_id'] = $customer_visit->id;
+                $field['customer_id'] = $input['customer_id'];
+                $field['date'] = $input['next_visit_date'];
+                $field['hour'] = $input['next_visit_hour'];
+                $field['action'] =  $input['action'];
+                $field['status'] = 'Pendiente';
+                Appointment::create($field);
+            }
         }
 
         return redirect()->to('/user/customer_visits')->with('message', 'Visita Cliente Creada Correctamente');

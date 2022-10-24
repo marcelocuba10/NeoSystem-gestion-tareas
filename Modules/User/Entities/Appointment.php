@@ -12,14 +12,16 @@ class Appointment extends Model
     protected $fillable = [
         'idReference',
         'customer_id',
+        'visit_id',
         'date',
         'hour',
         'action',
         'observation',
+        'status',
     ];
     
     protected static function newFactory()
     {
-        return \Modules\User\Database\factories\AppointmentFactory::new();
+        //return \Modules\User\Database\factories\AppointmentFactory::new();
     }
 }

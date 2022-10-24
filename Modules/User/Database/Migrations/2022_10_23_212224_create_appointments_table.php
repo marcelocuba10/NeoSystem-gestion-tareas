@@ -13,11 +13,17 @@ class CreateAppointmentsTable extends Migration
             $table->id();
             $table->integer('idReference');
             $table->integer('customer_id');
+            $table->unsignedBigInteger('visit_id')->nullable();
             $table->string('date');
             $table->string('hour');
             $table->string('action');
-            $table->string('observation',500)->nullable();
+            $table->string('status');
+            $table->string('observation', 500)->nullable();
             $table->timestamps();
+
+            $table->foreign('visit_id')
+                ->references('id')->on('customer_visits')
+                ->onDelete('cascade');
         });
     }
 

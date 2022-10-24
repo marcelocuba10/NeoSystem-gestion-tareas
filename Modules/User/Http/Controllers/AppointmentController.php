@@ -30,13 +30,15 @@ class AppointmentController extends Controller
             ->where('appointments.idReference', '=', $idRefCurrentUser)
             ->select(
                 'appointments.id',
+                'appointments.visit_id',
+                'appointments.date',
+                'appointments.hour',
+                'appointments.action',
+                'appointments.status',
+                'appointments.observation',
                 'customers.name AS customer_name',
                 'customers.phone AS customer_phone',
                 'customers.estate AS customer_estate',
-                'date',
-                'hour',
-                'action',
-                'observation',
             )
             ->orderBy('appointments.created_at', 'DESC')
             ->paginate(10);
@@ -137,13 +139,15 @@ class AppointmentController extends Controller
                 ->where('appointments.idReference', '=', $idRefCurrentUser)
                 ->select(
                     'appointments.id',
+                    'appointments.visit_id',
+                    'appointments.date',
+                    'appointments.hour',
+                    'appointments.action',
+                    'appointments.status',
+                    'appointments.observation',
                     'customers.name AS customer_name',
                     'customers.phone AS customer_phone',
                     'customers.estate AS customer_estate',
-                    'date',
-                    'hour',
-                    'action',
-                    'observation',
                 )
                 ->orderBy('appointments.created_at', 'DESC')
                 ->paginate(10);
@@ -154,13 +158,15 @@ class AppointmentController extends Controller
                 ->where('appointments.action', 'LIKE', "%{$filter}%")
                 ->select(
                     'appointments.id',
+                    'appointments.visit_id',
+                    'appointments.date',
+                    'appointments.hour',
+                    'appointments.action',
+                    'appointments.status',
+                    'appointments.observation',
                     'customers.name AS customer_name',
                     'customers.phone AS customer_phone',
                     'customers.estate AS customer_estate',
-                    'date',
-                    'hour',
-                    'action',
-                    'observation',
                 )
                 ->orderBy('appointments.created_at', 'DESC')
                 ->paginate(10);
@@ -178,13 +184,15 @@ class AppointmentController extends Controller
             ->where('appointments.id', '=', $id)
             ->select(
                 'appointments.id',
+                'appointments.visit_id',
+                'appointments.date',
+                'appointments.hour',
+                'appointments.action',
+                'appointments.status',
+                'appointments.observation',
                 'customers.name AS customer_name',
                 'customers.phone AS customer_phone',
                 'customers.estate AS customer_estate',
-                'date',
-                'hour',
-                'action',
-                'observation',
             )
             ->orderBy('appointments.created_at', 'DESC')
             ->first();
@@ -208,13 +216,15 @@ class AppointmentController extends Controller
                 ->where('appointments.idReference', '=', $idRefCurrentUser)
                 ->select(
                     'appointments.id',
+                    'appointments.visit_id',
+                    'appointments.date',
+                    'appointments.hour',
+                    'appointments.action',
+                    'appointments.status',
+                    'appointments.observation',
                     'customers.name AS customer_name',
                     'customers.phone AS customer_phone',
                     'customers.estate AS customer_estate',
-                    'date',
-                    'hour',
-                    'action',
-                    'observation',
                 )
                 ->orderBy('appointments.created_at', 'DESC')
                 ->paginate(10);
@@ -225,13 +235,15 @@ class AppointmentController extends Controller
                 ->where('customers.name', 'LIKE', "%{$search}%")
                 ->select(
                     'appointments.id',
+                    'appointments.visit_id',
+                    'appointments.date',
+                    'appointments.hour',
+                    'appointments.action',
+                    'appointments.status',
+                    'appointments.observation',
                     'customers.name AS customer_name',
                     'customers.phone AS customer_phone',
                     'customers.estate AS customer_estate',
-                    'date',
-                    'hour',
-                    'action',
-                    'observation',
                 )
                 ->orderBy('appointments.created_at', 'DESC')
                 ->paginate();
