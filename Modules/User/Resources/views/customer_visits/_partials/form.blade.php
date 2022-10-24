@@ -4,19 +4,11 @@
       <div class="select-style-1">
         <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Cliente</label>
         <div class="select-position">
-          @if($customer_visit)
           <select name="customer_id">
             @foreach ($customers as $customer)
-              <option value="{{ $customer->id }}" {{ ( $customer->id == $customer_visit->customer_id) ? 'selected' : '' }}> {{ $customer->name}} </option>
+              <option value="{{ $customer->id }}" @if($customer_visit) {{ ($customer->id == $customer_visit->customer_id) ? 'selected' : '' }} @endif> {{ $customer->name}} </option>
             @endforeach 
           </select>
-          @else
-          <select name="customer_id">
-            @foreach ($customers as $customer)
-              <option value="{{ $customer->id }}"> {{ $customer->name}} </option>
-            @endforeach 
-          </select>
-          @endIf
         </div>
       </div>
     </div>
@@ -47,19 +39,11 @@
       <div class="select-style-1">
         <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Acciones</label>
         <div class="select-position">
-          @if ($customer_visit)
-            <select name="action">
-              @foreach ($actions as $item)
-                <option value="{{ $item }}" {{ ( $item === $customer_visit->action) ? 'selected' : '' }}> {{ $item}} </option>
-              @endforeach 
-            </select> 
-          @else
-            <select name="action">
-              @foreach ($actions as $item)
-                <option value="{{ $item }}"> {{ $item}} </option>
-              @endforeach 
-            </select> 
-          @endif
+          <select name="action" id="action">
+            @foreach ($actions as $item)
+              <option value="{{ $item }}" @if($customer_visit) {{ ($item == $customer_visit->action) ? 'selected' : '' }} @endif> {{ $item}} </option>
+            @endforeach 
+          </select> 
         </div>
       </div>
     </div>
@@ -79,80 +63,125 @@
     </div>
     <!-- end col -->
     
-    <div class="col-12">
+    {{-- <div class="col-12">
       <div class="form-check checkbox-style mb-30">
         <input name="setOrder" class="form-check-input" type="checkbox" id="chkbox_setOrder" @if(!empty($customer_visit)) {{ ($customer_visit->type == 'Order') ? 'checked' : '' }} @endif>
         <label class="form-check-label" for="checkbox-setOrder">¿Crear Presupuesto?</label>
       </div>
-    </div>
+    </div> --}}
 
-    @if ($customer_visit_type == 'Order')
-      <div class="col-12" id="setOrder">
-        <div class="table-wrapper table-responsive">
-          <table class="table top-selling-table mb-50">
-            <thead style="background-color: #DAEFFE;">
-              <tr>
-                <th><h6>Producto</h6></th>
-                <th><h6>Inventario</h6></th>
-                <th><h6>Precio</h6></th>
-                <th><h6>Cantidad</h6></th>
-                <th><h6>Subtotal</h6></th>
-                <th><h6>Acción</h6></th>
-              </tr>
-            </thead>
-            <tbody>
-              @php
-                $c = 0;
-              @endphp
-              @foreach ($order_details as $item_order)
+    @if ($customer_visit)
+      @if ($customer_visit->type == 'Presupuesto')
+        <div class="col-12" id="setOrder">
+          <div class="table-wrapper table-responsive">
+            <table class="table top-selling-table mb-50">
+              <thead style="background-color: #DAEFFE;">
+                <tr>
+                  <th><h6>Producto</h6></th>
+                  <th><h6>Precio</h6></th>
+                  <th><h6>Cantidad</h6></th>
+                  <th><h6>Subtotal</h6></th>
+                  <th><h6>Acción</h6></th>
+                </tr>
+              </thead>
+              <tbody>
+                @php
+                  $c = 0;
+                @endphp
+                @foreach ($order_details as $item_order)
+                  <tr>
+                    <td>
+                      <select name="product_id[]" class="form-control product">
+                        <option>Seleccione Producto</option>
+                        @foreach($products as $product)  
+                          <option value="{{ $product->id }}" name="product_id[]" {{ ( $product->id == $item_order->product_id) ? 'selected' : '' }}> {{ $product->name}} </option>
+                        @endforeach
+                      </select>
+                    </td>
+                    <td><input type="text" name="price[]" value="{{ $item_order->price }}" class="form-control price" readonly></td>
+                    <td><input type="number" min="1" name="qty[]" value="{{ $item_order->quantity }}" class="form-control qty"></td>
+                    <td><input type="text" name="amount[]" class="form-control amount" value="{{ $item_order->amount }}" readonly></td>
+                    @if ($c == 0)
+                      <td><button type="button" class="btn btn-success" id="add_btn"><i class="lni lni-plus"></i></button></td>
+                    @else
+                      <td><button type="button" class="btn btn-danger" id="remove"><i class="lni lni-trash-can"></i></button></td>
+                    @endif
+                  </tr>
+                  @php
+                    $c++;
+                  @endphp
+                @endforeach
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td><h4>Total</h4></td>
+                  <td><h4 class="total" id="total"></h4></td>
+                  <td></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="button-group d-flex justify-content-center flex-wrap">
+            <input type="hidden" name="isSetOrder" id="isSetOrder">
+            <button type="submit" class="main-btn primary-btn btn-hover m-2">{{ ($customer_visit)  ? ' Actualizar' : 'Guardar' }}</button>
+            <a class="main-btn primary-btn-outline m-2" href="{{ url('/user/customer_visits') }}">Atrás</a>
+          </div>
+        </div>
+      @elseif($customer_visit->type == 'Sin Presupuesto')
+        <div class="col-12" id="setOrder" style="display: none">
+          <div class="table-wrapper table-responsive">
+            <table class="table top-selling-table mb-50">
+              <thead style="background-color: #DAEFFE;">
+                <tr>
+                  <th><h6>Producto</h6></th>
+                  <th><h6>Precio</h6></th>
+                  <th><h6>Cantidad</h6></th>
+                  <th><h6>Subtotal</h6></th>
+                  <th><h6>Acción</h6></th>
+                </tr>
+              </thead>
+              <tbody>
                 <tr>
                   <td>
                     <select name="product_id[]" class="form-control product">
                       <option>Seleccione Producto</option>
                       @foreach($products as $product)  
-                        <option value="{{ $product->id }}" name="product_id[]" {{ ( $product->id == $item_order->product_id) ? 'selected' : '' }}> {{ $product->name}} </option>
+                        <option name="product_id[]" value="{{ $product->id }}">{{ $product->name }}</option>
                       @endforeach
                     </select>
                   </td>
-                  <td><input type="text" name="qty_av[]" value="{{ $item_order->inventory }}" class="form-control qty_av" readonly></td>
-                  <td><input type="text" name="price[]" value="{{ $item_order->price }}" class="form-control price" readonly></td>
-                  {{-- <td>
-                    <div class="value-button" id="decrease" onclick="decreaseValue()" value="Decrease Value">-</div>
-                    <input type="number" name="qty[]" id="number" class="qty"/>
-                    <div class="value-button" id="increase" onclick="increaseValue()" value="Increase Value">+</div>
-                  </td> --}}
-                  <td><input type="number" min="1" name="qty[]" value="{{ $item_order->quantity }}" class="form-control qty"></td>
-                  <td><input type="text" name="amount[]" class="form-control amount" value="{{ $item_order->amount }}" readonly></td>
-                  @if ($c == 0)
-                    <td><button type="button" class="btn btn-success" id="add_btn"><i class="lni lni-plus"></i></button></td>
-                  @else
-                    <td><button type="button" class="btn btn-danger" id="remove"><i class="lni lni-trash-can"></i></button></td>
-                  @endif
+                  <td><input type="text" name="price[]" class="form-control price" readonly></td>
+                  <td><input type="number" min="1" name="qty[]" class="form-control qty"></td>
+                  <td><input type="text" name="amount[]" class="form-control amount" readonly></td>
+                  <td><button type="button" class="btn btn-success" id="add_btn"><i class="lni lni-plus"></i></button></td>
                 </tr>
-                @php
-                  $c++;
-                @endphp
-              @endforeach
-            </tbody>
-            <tfoot>
-              <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><h4>Total</h4></td>
-                <td><h4 class="total" id="total"></h4></td>
-                <td></td>
-              </tr>
-            </tfoot>
-          </table>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td><h4>Total</h4></td>
+                  <td><h4 class="total"></h4></td>
+                  <td></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
         </div>
-      </div>
-      <div class="col-12">
-        <div class="button-group d-flex justify-content-center flex-wrap">
-          <button type="submit" class="main-btn primary-btn btn-hover m-2">{{ ($customer_visit)  ? ' Actualizar' : 'Guardar' }}</button>
-          <a class="main-btn danger-btn-outline m-2" href="{{ url('/user/customer_visits') }}">Atrás</a>
+        <div class="col-12">
+          <div class="button-group d-flex justify-content-center flex-wrap">
+            <input type="hidden" name="isSetOrder" id="isSetOrder">
+            <button type="submit" class="main-btn primary-btn btn-hover m-2">{{ ($customer_visit)  ? ' Actualizar' : 'Guardar' }}</button>
+            <a class="main-btn primary-btn-outline m-2" href="{{ url('/user/customer_visits') }}">Atrás</a>
+          </div>
         </div>
-      </div>
+      @endif
     @else
       <div class="col-12" id="setOrder" style="display: none">
         <div class="table-wrapper table-responsive">
@@ -160,7 +189,6 @@
             <thead style="background-color: #DAEFFE;">
               <tr>
                 <th><h6>Producto</h6></th>
-                <th><h6>Inventario</h6></th>
                 <th><h6>Precio</h6></th>
                 <th><h6>Cantidad</h6></th>
                 <th><h6>Subtotal</h6></th>
@@ -174,17 +202,10 @@
                     <option>Seleccione Producto</option>
                     @foreach($products as $product)  
                       <option name="product_id[]" value="{{ $product->id }}">{{ $product->name }}</option>
-                      {{-- {{ str_replace(',','.',number_format($product->sale_price, 0)) }} --}}
                     @endforeach
                   </select>
                 </td>
-                <td><input type="text" name="qty_av[]" class="form-control qty_av" readonly></td>
                 <td><input type="text" name="price[]" class="form-control price" readonly></td>
-                {{-- <td>
-                  <div class="value-button" id="decrease" onclick="decreaseValue()" value="Decrease Value">-</div>
-                  <input type="number" name="qty[]" id="number" class="qty"/>
-                  <div class="value-button" id="increase" onclick="increaseValue()" value="Increase Value">+</div>
-                </td> --}}
                 <td><input type="number" min="1" name="qty[]" class="form-control qty"></td>
                 <td><input type="text" name="amount[]" class="form-control amount" readonly></td>
                 <td><button type="button" class="btn btn-success" id="add_btn"><i class="lni lni-plus"></i></button></td>
@@ -205,6 +226,7 @@
       </div>
       <div class="col-12">
         <div class="button-group d-flex justify-content-center flex-wrap">
+          <input type="hidden" name="isSetOrder" id="isSetOrder">
           <button type="submit" class="main-btn primary-btn btn-hover m-2">{{ ($customer_visit)  ? ' Actualizar' : 'Guardar' }}</button>
           <a class="main-btn primary-btn-outline m-2" href="{{ url('/user/customer_visits') }}">Atrás</a>
         </div>
@@ -215,34 +237,31 @@
 
 <script type="text/javascript">
 
+  //if setOrder is selected, show box item detail order.
+  $('#action').on( 'change', function(){ 
+    action = document.getElementById("action").value;
+    if (action == 'Enviar Presupuesto') {
+      document.getElementById('setOrder').style.display = 'initial';
+      $("#isSetOrder").val(true);
+    }else{
+      document.getElementById('setOrder').style.display = 'none';
+      $("#isSetOrder").val(false);
+    }
+  });
+
   function formatNumber(num) {
     return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
   }
 
-  // function increaseValue() {
-  //   var value = parseInt(document.getElementById('number').value, 10);
-  //   value = isNaN(value) ? 0 : value;
-  //   value++;
-  //   document.getElementById('number').value = value;
-  // }
-
-  // function decreaseValue() {
-  //   var value = parseInt(document.getElementById('number').value, 10);
-  //   value = isNaN(value) ? 0 : value;
-  //   value < 1 ? value = 1 : '';
-  //   value--;
-  //   document.getElementById('number').value = value;
-  // }
-
   //if SetOrder is checked, show order item table;
-  var checkbox = document.getElementById('chkbox_setOrder')
-  checkbox.addEventListener('change', (event) => {
-    if (event.currentTarget.checked) {
-      document.getElementById('setOrder').style.display = 'initial';
-    } else {
-      document.getElementById('setOrder').style.display = 'none';
-    }
-  })
+  // var checkbox = document.getElementById('chkbox_setOrder')
+  // checkbox.addEventListener('change', (event) => {
+  //   if (event.currentTarget.checked) {
+  //     document.getElementById('setOrder').style.display = 'initial';
+  //   } else {
+  //     document.getElementById('setOrder').style.display = 'none';
+  //   }
+  // })
   
   function showFieldObjectives(object){
     //show field objectives and message span
@@ -259,9 +278,18 @@
   }
 
   $(document).ready(function(){
+    var action = document.getElementById("action").value;
+    var next_visit_date = document.getElementById('date');
+
+    if (action == 'Enviar Presupuesto') {
+      document.getElementById('setOrder').style.display = 'initial';
+      $("#isSetOrder").val(true);
+    }else{
+      document.getElementById('setOrder').style.display = 'none';
+      $("#isSetOrder").val(false);
+    }
 
     //check if have next visit, show field objectives and message span
-    var next_visit_date = document.getElementById('date');
     if (next_visit_date.value) {
       document.getElementById('objective').style.display = 'initial';
       document.getElementById('msg1').style.display = 'initial';
@@ -296,7 +324,6 @@
           var data = response;
           var string_data = JSON.stringify(data); 
           tr.find('.price').val(data.sale_price);
-          tr.find('.qty_av').val(data.inventory);
 
           var qty = 1;
           var amount = (qty * data.sale_price);
@@ -333,8 +360,7 @@
     console.log('add_btn');
     var html = '';
     html += '<tr>';
-    html += '<td> <select name="product_id[]" class="form-control product"> <option>Seleccione Producto</option> @foreach($products as $product) <option name="product_id[]" data-qty_av="{{ $product->inventory }}" data-price="{{ $product->sale_price }}" value="{{ $product->id }}">{{ $product->name }}</option> @endforeach </select> </td>';
-    html += '<td><input type="text" name="qty_av[]" class="form-control qty_av" readonly></td>';
+    html += '<td> <select name="product_id[]" class="form-control product"> <option>Seleccione Producto</option> @foreach($products as $product) <option name="product_id[]" data-price="{{ $product->sale_price }}" value="{{ $product->id }}">{{ $product->name }}</option> @endforeach </select> </td>';
     html += '<td><input type="text" name="price[]" class="form-control price" readonly></td>';
     html += '<td><input type="number" min="1" name="qty[]" class="form-control qty"></td>';
     html += '<td><input type="text" name="amount[]" class="form-control amount" readonly></td>';

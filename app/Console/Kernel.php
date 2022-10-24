@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        \Modules\Admin\Console\ApiCron::class,
+        //\Modules\Admin\Console\ApiCron::class,
     ];
 
     /**
@@ -24,7 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('api:cron')->everyMinute()->withoutOverlapping(1);
+        //$schedule->command('api:cron')->everyMinute()->withoutOverlapping(1);
     }
 
     /**

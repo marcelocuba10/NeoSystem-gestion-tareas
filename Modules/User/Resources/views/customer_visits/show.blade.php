@@ -82,26 +82,25 @@
               </div>
               <!-- end col -->
 
-              @if ($customer_visit->type == 'Order')
-                <h5 class="text-medium mb-20" >Detalles del Presupuesto</h5>
-
+              @if ($customer_visit->type == 'Presupuesto')
+                <h5 class="text-medium mb-20" >Detalles {{ $customer_visit->type }}</h5>
                 <div class="table-responsive">
                   <table class="invoice-table table">
                     <thead style="background-color: #DAEFFE;">
                       <tr>
-                        <th class="qty">
+                        <th>
                           <h6 class="text-sm text-medium">Cod</h6>
                         </th>
-                        <th class="service">
+                        <th>
                           <h6 class="text-sm text-medium">Producto</h6>
                         </th>
-                        <th class="price">
+                        <th>
                           <h6 class="text-sm text-medium">Precio</h6>
                         </th>
-                        <th class="qty">
+                        <th>
                           <h6 class="text-sm text-medium">Cantidad</h6>
                         </th>
-                        <th class="amount">
+                        <th>
                           <h6 class="text-sm text-medium">SubTotal</h6>
                         </th>
                       </tr>
@@ -109,8 +108,8 @@
                     <tbody>
                       @foreach ($order_details as $item_order)
                         <tr>
-                          <td><p class="text-sm">{{ $item_order->code }}</td>
-                          <td><p class="text-sm">{{ $item_order->name }}</p></td>
+                          <td><p class="text-sm">{{ $item_order->custom_code }}</td>
+                            <td><p class="text-sm" data-toggle="tooltip" data-placement="bottom" title="{{ $item_order->name }}">{{ Str::limit($item_order->name, 65) }}</p></td>
                           <td><p class="text-sm">G$ {{number_format($item_order->price, 0)}}</p></td>
                           <td><p class="text-sm">{{ $item_order->quantity }}</p></td>
                           <td><p class="text-sm">G$ {{number_format($item_order->amount, 0)}}</p></td>

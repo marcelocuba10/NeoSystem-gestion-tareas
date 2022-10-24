@@ -50,7 +50,6 @@ class CustomerVisitController extends Controller
     public function create()
     {
         $customer_visit = null;
-        $customer_visit_type = null;
         $currentDate = Carbon::now()->format('d/m/y H:i');
 
         $idRefCurrentUser = Auth::user()->idReference;
@@ -71,13 +70,11 @@ class CustomerVisitController extends Controller
                 'id',
                 'name',
                 'sale_price',
-                'inventory',
-                'description',
             )
             ->orderBy('created_at', 'DESC')
             ->get();
 
-        return view('user::customer_visits.create', compact('customers', 'customer_visit', 'currentDate', 'actions', 'products', 'customer_visit_type'));
+        return view('user::customer_visits.create', compact('customers', 'customer_visit', 'currentDate', 'actions', 'products'));
     }
 
     public function store(Request $request)
@@ -119,15 +116,15 @@ class CustomerVisitController extends Controller
             $input['objective'] = null;
         }
 
-        /** check if checkbox is checked */
-        if (isset($request->setOrder)) {
+        /** check if select 'order' is selected */
+        if ($request->isSetOrder == 'true') {
             /** If not select any product */
             if (strlen($request->product_id[0]) > 10) {
                 return back()->with('error', 'Por favor, adicione un producto.');
             } else {
 
                 /** create temporal CustomerVisit */
-                $input['type'] = 'Order';
+                $input['type'] = 'Presupuesto';
                 $input['status'] = 'Visitado';
                 $input['visit_date'] = Carbon::now();
                 $input['visit_number'] = $this->generateUniqueCodeVisit();
@@ -135,29 +132,20 @@ class CustomerVisitController extends Controller
                 $customer_visit = CustomerVisit::create($input);
 
                 foreach ($request->product_id as $key => $value) {
-
-                    $product = DB::table('products')
-                        ->where('products.id', '=', $request->product_id[$key])
-                        ->select(
-                            'products.id',
-                        )
-                        ->first();
-
-                    if (intval($request->qty[$key]) > $product->inventory || intval($request->qty[$key]) <= 0) {
+                    if (intval($request->qty[$key]) <= 0) {
                         $CustomerVisitIsDeleted = CustomerVisit::find($customer_visit->id)->delete();
                         return back()->with('error', 'Por favor, ingrese una cantidad válida.');
                     } else {
-                        /** Save items of sale */
+                        /** Save order detail of customer visit */
                         $order = new OrderDetail();
-                        $order->quantity = $request->qty[$key];
-                        $order->inventory = $request->qty_av[$key];
-                        $order->price = $request->price[$key];
-                        $order->amount = $request->amount[$key];
                         $order->product_id = $request->product_id[$key];
                         $order->visit_id = $customer_visit->id;
+                        $order->quantity = $request->qty[$key];
+                        $order->price = $request->price[$key];
+                        $order->amount = $request->amount[$key];
                         $order->save();
 
-                        /** if there is an error in items, customer_visit is deleted */
+                        /** if there is an error in order detail, CustomerVisitIsDeleted is true, else false*/
                         $CustomerVisitIsDeleted = false;
                     }
                 }
@@ -174,13 +162,13 @@ class CustomerVisitController extends Controller
                     $sale['seller_id'] = $idRefCurrentUser;
                     $sale['customer_id'] = $customer_visit->customer_id;
                     $sale['order_date'] = $customer_visit->visit_date;
-                    $sale['type'] = 'Order';
+                    $sale['type'] = 'Presupuesto';
                     $sale['status'] = 'Pendiente';
                     $sale['total'] = $total_order;
                     Sales::create($sale);
 
-                    if ($input['next_visit_date']) {
-                        /** Create appointment because next_visit_date is marked */
+                    /** check if next_visit_date is marked, do appointment */
+                    if ($input['next_visit_date'] != 'No marcado') {
                         $field['idReference'] = $idRefCurrentUser;
                         $field['visit_id'] = $customer_visit->id;
                         $field['customer_id'] = $input['customer_id'];
@@ -192,17 +180,17 @@ class CustomerVisitController extends Controller
                     }
                 }
             }
-        } else {
+        } elseif ($request->isSetOrder == 'false') {
 
             $input['visit_number'] = $this->generateUniqueCodeVisit();
-            $input['type'] = 'NoOrder';
+            $input['type'] = 'Sin Presupuesto';
             $input['status'] = 'Visitado';
             $input['visit_date'] = Carbon::now();
             $input['seller_id'] = $idRefCurrentUser;
             $customer_visit = CustomerVisit::create($input);
 
+            /** check if next_visit_date is marked, do appointment */
             if ($input['next_visit_date'] != 'No marcado') {
-                /** Create appointment because next_visit_date is marked */
                 $field['idReference'] = $idRefCurrentUser;
                 $field['visit_id'] = $customer_visit->id;
                 $field['customer_id'] = $input['customer_id'];
@@ -264,7 +252,14 @@ class CustomerVisitController extends Controller
         $order_details = DB::table('order_details')
             ->where('order_details.visit_id', '=', $id)
             ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
-            ->select('products.name', 'products.code', 'order_details.price', 'order_details.quantity', 'order_details.inventory', 'order_details.amount')
+            ->select(
+                'products.name',
+                'products.custom_code',
+                'order_details.price',
+                'order_details.quantity',
+                'order_details.inventory',
+                'order_details.amount'
+            )
             ->orderBy('order_details.created_at', 'DESC')
             ->get();
 
@@ -294,22 +289,18 @@ class CustomerVisitController extends Controller
                 'customer_visits.result_of_the_visit',
                 'customer_visits.objective',
                 'customer_visits.action',
+                'customer_visits.type',
                 'customers.name AS customer_name',
                 'customers.estate',
-                'customer_visits.type'
             )
             ->orderBy('customer_visits.created_at', 'DESC')
             ->first();
-
-        $customer_visit_type = $customer_visit->type;
 
         $products = DB::table('products')
             ->select(
                 'id',
                 'name',
                 'sale_price',
-                'inventory',
-                'description',
             )
             ->orderBy('created_at', 'DESC')
             ->get();
@@ -336,7 +327,7 @@ class CustomerVisitController extends Controller
             ->where('order_details.visit_id', '=', $id)
             ->sum('amount');
 
-        return view('user::customer_visits.edit', compact('customers', 'customer_visit', 'currentDate', 'actions', 'products', 'order_details', 'total_order', 'customer_visit_type'));
+        return view('user::customer_visits.edit', compact('customers', 'customer_visit', 'currentDate', 'actions', 'products', 'order_details', 'total_order'));
     }
 
     public function update(Request $request, $id)
@@ -375,8 +366,8 @@ class CustomerVisitController extends Controller
             $input['objective'] = null;
         }
 
-        /** check if checkbox is checked */
-        if (isset($request->setOrder)) {
+        /** check if select 'order' is selected */
+        if ($request->isSetOrder == 'true') {
             /** If not select any product */
             if (strlen($request->product_id[0]) > 10) {
                 return back()->with('error', 'Por favor, adicione un producto.');
@@ -384,29 +375,20 @@ class CustomerVisitController extends Controller
 
                 $customer_visit = CustomerVisit::find($id);
 
-                if ($customer_visit->type == 'NoOrder') {
+                if ($customer_visit->type == 'Sin Presupuesto') {
 
                     foreach ($request->product_id as $key => $value) {
-                        $product = DB::table('products')
-                            ->where('products.id', '=', $request->product_id[$key])
-                            ->select(
-                                'products.id',
-                                'products.inventory',
-                            )
-                            ->first();
-
-                        if (intval($request->qty[$key]) > $product->inventory || intval($request->qty[$key]) <= 0) {
+                        if (intval($request->qty[$key]) <= 0) {
                             return back()->with('error', 'Por favor, ingrese una cantidad válida.');
                         } else {
 
-                            /** Save items of customer visit */
+                            /** Save order details of customer visit */
                             $order = new OrderDetail();
-                            $order->quantity = $request->qty[$key];
-                            $order->inventory = $request->qty_av[$key];
-                            $order->price = $request->price[$key];
-                            $order->amount = $request->amount[$key];
                             $order->product_id = $request->product_id[$key];
                             $order->visit_id = $customer_visit->id;
+                            $order->quantity = $request->qty[$key];
+                            $order->price = $request->price[$key];
+                            $order->amount = $request->amount[$key];
                             $order->save();
                         }
                     }
@@ -420,23 +402,13 @@ class CustomerVisitController extends Controller
                     $sale['seller_id'] = Auth::user()->idReference;
                     $sale['customer_id'] = $customer_visit->customer_id;
                     $sale['order_date'] = $customer_visit->visit_date;
-                    $sale['type'] = 'Order';
+                    $sale['type'] = 'Presupuesto';
                     $sale['status'] = 'Pendiente';
                     $sale['total'] = $total_order;
                     Sales::create($sale);
                 } else {
-
                     foreach ($request->product_id as $key => $value) {
-
-                        $product = DB::table('products')
-                            ->where('products.id', '=', $request->product_id[$key])
-                            ->select(
-                                'products.id',
-                                'products.inventory',
-                            )
-                            ->first();
-
-                        if (intval($request->qty[$key]) > $product->inventory || intval($request->qty[$key]) <= 0) {
+                        if (intval($request->qty[$key]) <= 0) {
                             return back()->with('error', 'Por favor, ingrese una cantidad válida.');
                         } else {
 
@@ -455,18 +427,16 @@ class CustomerVisitController extends Controller
                                     ->where('order_details.product_id', '=', $request->product_id[$key])
                                     ->update([
                                         'quantity' => $request->qty[$key],
-                                        'inventory' => $request->qty_av[$key],
                                         'amount' => $request->amount[$key]
                                     ]);
                             } else {
                                 /** Save item detail customer visit */
                                 $order = new OrderDetail();
-                                $order->quantity = $request->qty[$key];
-                                $order->inventory = $request->qty_av[$key];
-                                $order->price = $request->price[$key];
-                                $order->amount = $request->amount[$key];
                                 $order->product_id = $request->product_id[$key];
                                 $order->visit_id = $customer_visit->id;
+                                $order->quantity = $request->qty[$key];
+                                $order->price = $request->price[$key];
+                                $order->amount = $request->amount[$key];
                                 $order->save();
                             }
                         }
@@ -483,12 +453,12 @@ class CustomerVisitController extends Controller
                 }
 
                 /** add extra items in customer visit */
-                $input['type'] = 'Order';
+                $input['type'] = 'Presupuesto';
                 $input['visit_date'] = Carbon::now();
                 $input['seller_id'] = Auth::user()->idReference;
                 $customer_visit->update($input);
             }
-        } else {
+        } elseif ($request->isSetOrder == 'false') {
             $input['visit_date'] = Carbon::now();
             $customer_visit = CustomerVisit::find($id);
             $customer_visit->update($input);

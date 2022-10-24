@@ -61,9 +61,9 @@
                             {{ $customer_visit->status }}
                           </span>
                         </td>
-                        @if ($customer_visit->type == 'Order')
+                        @if ($customer_visit->type == 'Presupuesto')
                           <td class="min-width"><p>Sí</p></td>
-                        @elseIf($customer_visit->type == 'NoOrder')
+                        @elseIf($customer_visit->type == 'Sin Presupuesto')
                           <td class="min-width"><p>No</p></td>
                         @endif
                         <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ date('d/m/Y - H:i', strtotime($customer_visit->visit_date)) }}</p></td>
