@@ -61,7 +61,7 @@ Route::prefix('user')->group(function () {
             Route::get('/filter', 'AppointmentController@filter');
         });
 
-        /*** Customer Visits Routes ***/
+        /*** Sales Routes ***/
         Route::group(['prefix' => 'sales'], function () {
             Route::get('/', 'SalesController@index');
             Route::get('/create', 'SalesController@create');
@@ -83,6 +83,7 @@ Route::prefix('user')->group(function () {
             Route::put('/update/{id}', 'CustomerVisitController@update');
             Route::delete('/delete/{id}', 'CustomerVisitController@destroy');
             Route::get('/search', 'CustomerVisitController@search');
+            Route::get('generateInvoicePDF/{id}', 'CustomerVisitController@generateInvoicePDF');
         });
 
         /** Products Routes */

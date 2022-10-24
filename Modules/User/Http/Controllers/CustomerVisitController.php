@@ -3,7 +3,6 @@
 namespace Modules\User\Http\Controllers;
 
 use Carbon\Carbon;
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -12,6 +11,8 @@ use Modules\User\Entities\Appointment;
 use Modules\User\Entities\CustomerVisit;
 use Modules\User\Entities\OrderDetail;
 use Modules\User\Entities\Sales;
+
+use PDF;
 
 class CustomerVisitController extends Controller
 {
@@ -230,7 +231,6 @@ class CustomerVisitController extends Controller
 
     public function show($id)
     {
-        $idRefCurrentUser = Auth::user()->idReference;
         $customer_visit = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customer_visits.id', '=', $id)
@@ -517,6 +517,52 @@ class CustomerVisitController extends Controller
         }
 
         return view('user::customer_visits.index', compact('customer_visits', 'search'))->with('i', (request()->input('page', 1) - 1) * 10);
+    }
+
+    public function generateInvoicePDF(Request $request)
+    {
+        $customer_visit = DB::table('customer_visits')
+            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+            ->where('customer_visits.id', '=', $request->customer_visit)
+            ->select(
+                'customer_visits.id',
+                'customer_visits.visit_number',
+                'customer_visits.visit_date',
+                'customer_visits.next_visit_date',
+                'customer_visits.next_visit_hour',
+                'customer_visits.result_of_the_visit',
+                'customer_visits.objective',
+                'customer_visits.action',
+                'customer_visits.type',
+                'customers.name AS customer_name',
+                'customers.estate'
+            )
+            ->orderBy('customer_visits.created_at', 'DESC')
+            ->first();
+
+        $order_details = DB::table('order_details')
+            ->where('order_details.visit_id', '=', $request->customer_visit)
+            ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+            ->select(
+                'products.name',
+                'products.custom_code',
+                'order_details.price',
+                'order_details.quantity',
+                'order_details.inventory',
+                'order_details.amount'
+            )
+            ->orderBy('order_details.created_at', 'DESC')
+            ->get();
+
+        $total_order = DB::table('order_details')
+            ->where('order_details.visit_id', '=', $request->customer_visit)
+            ->sum('amount');
+
+        if ($request->has('download')) {
+            $pdf = PDF::loadView('user::customer_visits.invoicePDF.invoicePrintPDF', compact('customer_visit', 'order_details', 'total_order'));
+            return $pdf->stream();
+            // return $pdf->download('pdfview.pdf');
+        }
     }
 
     public function destroy($id)

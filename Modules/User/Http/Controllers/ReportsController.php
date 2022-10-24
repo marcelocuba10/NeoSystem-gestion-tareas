@@ -3,14 +3,10 @@
 namespace Modules\User\Http\Controllers;
 
 use PDF;
-use Modules\User\Entities\User;
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Modules\User\Entities\Customers;
-use Modules\User\Entities\Reports;
 
 class ReportsController extends Controller
 {

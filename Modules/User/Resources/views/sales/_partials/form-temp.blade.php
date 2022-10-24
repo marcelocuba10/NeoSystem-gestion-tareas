@@ -278,7 +278,11 @@
         <div class="button-group d-flex justify-content-center flex-wrap">
           <input type="hidden" name="orderToSale" id="orderToSale">
           <button type="submit" class="main-btn primary-btn btn-hover m-2 btn-orderToSale">Procesar a Venta</button>
-          <button type="submit" class="main-btn primary-btn-outline btn-hover m-2">Actualizar</button>
+          @if (!$sale->visit_id)
+            @can('sales-edit')
+              <button type="submit" class="main-btn primary-btn-outline btn-hover m-2">Actualizar</button>
+            @endcan  
+          @endif
           @if ($sale->visit_id)
             @can('customer_visit-edit')
               <a class="main-btn primary-btn-outline m-2" href="{{ url('/user/customer_visits/edit/'.$sale->visit_id) }}">Editar</a>
