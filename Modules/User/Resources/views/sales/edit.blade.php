@@ -8,7 +8,7 @@
                 <div class="row align-items-center">
                     <div class="col-md-6">
                         <div class="title mb-30">
-                            <h2>Editar {{ ($sale->type == 'Order')  ? ' Presupuesto' : ' Venta' }}  - n.º {{ $sale->invoice_number }}</h2>
+                            <h2>Editar {{ $sale->type }}  - n.º {{ $sale->invoice_number }}</h2>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -17,7 +17,7 @@
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="{{ url('/user/dashboard') }}">Dashboard</a></li>
                                     <li class="breadcrumb-item" aria-current="page"><a href="{{ url('/user/sales') }}">Ventas</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Editar Venta</li>
+                                    <li class="breadcrumb-item active" aria-current="page">Editar {{ $sale->type }}</li>
                                 </ol>
                             </nav>
                         </div>

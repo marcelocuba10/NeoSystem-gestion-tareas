@@ -24,7 +24,7 @@
     <div class="select-style-1">
       <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Tipo</label>
       <div class="select-position">
-        <select name="action">
+        <select name="type">
           @foreach ($actions as $item)
             <option value="{{ $item }}" @if($sale) {{ ( $item === $sale->type) ? 'selected' : '' }} @endif> {{ $item}} </option>
           @endforeach 

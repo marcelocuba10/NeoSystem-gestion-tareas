@@ -103,6 +103,7 @@ class SalesController extends Controller
             'qty' => 'required',
             'price' => 'required',
             'amount' => 'required',
+            'type' => 'required'
         ]);
 
         /** If not select any product */
@@ -114,8 +115,13 @@ class SalesController extends Controller
             $input['invoice_number'] = $this->generateUniqueCode();
             $input['seller_id'] = $idRefCurrentUser;
             $input['sale_date'] = $currentDate;
-            $input['type'] = 'Venta';
-            $input['status'] = 'Procesado';
+
+            if ($input['type'] == 'Venta') {
+                $input['status'] = 'Procesado';
+            } elseif ($input['type'] == 'Presupuesto') {
+                $input['status'] = 'Pendiente';
+            }
+
             $sale = Sales::create($input);
 
             foreach ($request->product_id as $key => $value) {
@@ -217,22 +223,38 @@ class SalesController extends Controller
             ->orderBy('sales.created_at', 'DESC')
             ->first();
 
-        if ($sale->type == 'Sale') {
+        if ($sale->type == 'Venta') {
             $order_detail = DB::table('order_details')
                 ->where('order_details.sale_id', '=', $id)
                 ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
-                ->select('products.name', 'products.code', 'order_details.price', 'order_details.quantity', 'order_details.inventory', 'order_details.amount')
+                ->select(
+                    'products.name',
+                    'products.code',
+                    'products.custom_code',
+                    'order_details.price',
+                    'order_details.quantity',
+                    'order_details.inventory',
+                    'order_details.amount'
+                )
                 ->orderBy('order_details.created_at', 'DESC')
                 ->get();
 
             $total_order = DB::table('order_details')
                 ->where('order_details.sale_id', '=', $id)
                 ->sum('amount');
-        } elseif ($sale->type == 'Order') {
+        } elseif ($sale->type == 'Presupuesto') {
             $order_detail = DB::table('order_details')
                 ->where('order_details.visit_id', '=', $sale->visit_id)
                 ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
-                ->select('products.name', 'products.code', 'order_details.price', 'order_details.quantity', 'order_details.inventory', 'order_details.amount')
+                ->select(
+                    'products.name',
+                    'products.code',
+                    'products.custom_code',
+                    'order_details.price',
+                    'order_details.quantity',
+                    'order_details.inventory',
+                    'order_details.amount'
+                )
                 ->orderBy('order_details.created_at', 'DESC')
                 ->get();
 
@@ -272,7 +294,15 @@ class SalesController extends Controller
             $order_detail = DB::table('order_details')
                 ->where('order_details.sale_id', '=', $id)
                 ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
-                ->select('products.name', 'products.code', 'products.custom_code', 'order_details.price', 'order_details.quantity', 'order_details.inventory', 'order_details.amount')
+                ->select(
+                    'products.name',
+                    'products.code',
+                    'products.custom_code',
+                    'order_details.price',
+                    'order_details.quantity',
+                    'order_details.inventory',
+                    'order_details.amount'
+                )
                 ->orderBy('order_details.created_at', 'DESC')
                 ->get();
 
@@ -283,7 +313,15 @@ class SalesController extends Controller
             $order_detail = DB::table('order_details')
                 ->where('order_details.visit_id', '=', $sale->visit_id)
                 ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
-                ->select('products.name', 'products.code', 'products.custom_code', 'order_details.price', 'order_details.quantity', 'order_details.inventory', 'order_details.amount')
+                ->select(
+                    'products.name',
+                    'products.code',
+                    'products.custom_code',
+                    'order_details.price',
+                    'order_details.quantity',
+                    'order_details.inventory',
+                    'order_details.amount'
+                )
                 ->orderBy('order_details.created_at', 'DESC')
                 ->get();
 

@@ -12,7 +12,6 @@
               @can('sales-create')
                 <a href="{{ url('/user/sales/create') }}" class="main-btn info-btn btn-hover btn-sm" data-toggle="tooltip" data-placement="bottom" title="Crear Nueva Venta"><i class="lni lni-plus mr-5"></i></a>
               @endcan
-              <a href="{{ url('/user/sales/createOrder') }}" style="margin-left: 17px;" class="main-btn secondary-btn btn-hover btn-sm" data-toggle="tooltip" data-placement="bottom" title="Crear Nuevo Presupuesto"><i class="lni lni-control-panel mr-5"></i></a>
             </div>
           </div>
           <div class="col-md-4">
@@ -44,7 +43,7 @@
                     <tr>
                       <th><h6>Número</h6></th>
                       <th><h6>Cliente</h6></th>
-                      <th><h6>Localidad</h6></th>
+                      <th><h6>Tipo</h6></th>
                       <th><h6>Estado</h6></th>
                       <th><h6>Fecha Emisión</h6></th>
                       <th><h6>Total</h6></th>
@@ -57,18 +56,13 @@
                         <tr>
                           <td class="text-sm"><h6 class="text-sm">{{ $sale->invoice_number }}</h6></td>
                           <td class="min-width"><h5 class="text-bold text-dark"><a href="{{ url('/user/sales/show/'.$sale->id) }}">{{ $sale->customer_name }}</a></h5></td>
-                          <td class="min-width"><p>{{ $sale->estate }}</p></td>
-                          @if ($sale->type == 'Presupuesto')
-                            <td class="min-width"><span class="status-btn warning-btn">Presupuesto</span></td>
-                          @elseIf($sale->type == 'Venta')
-                            <td class="min-width"><span class="status-btn success-btn">Procesado</span></td>
-                          @endif
+                          <td class="min-width"><p>{{ $sale->type }}</p></td>
+                          <td class="min-width"><span class="status-btn {{ ($sale->status == 'Procesado')  ? 'success-btn' : ' warning-btn' }}">{{ $sale->status }}</span></td>
                           @if ($sale->visit_date)
                             <td class="min-width"><p>{{ date('d/m/Y - H:i', strtotime($sale->visit_date)) }}</p></td>
                           @else
                             <td class="min-width"><p>{{ date('d/m/Y - H:i', strtotime($sale->sale_date)) }}</p></td>
                           @endif
-                          
                           <td class="min-width"><p><b>G$ {{number_format($sale->total, 0)}}</b></p></td>
                           <td class="text-right">
                             <div class="btn-group">

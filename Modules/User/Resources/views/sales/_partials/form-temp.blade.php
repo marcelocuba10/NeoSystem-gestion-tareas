@@ -8,7 +8,7 @@
       <div class="row align-items-center">
         <div class="col-md-6">
           <div class="title mb-30">
-            <h2>Editar {{ ($sale->type == 'Presupuesto')  ? ' Presupuesto' : ' Venta' }} - n.º {{ $sale->invoice_number }}</h2>
+            <h2>Editar {{ $sale->type }} - n.º {{ $sale->invoice_number }}</h2>
           </div>
         </div>
         <div class="col-md-6">
@@ -17,7 +17,7 @@
               <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ url('/user/dashboard') }}">Dashboard</a></li>
                 <li class="breadcrumb-item" aria-current="page"><a href="{{ url('/user/sales') }}">Ventas</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Editar Venta</li>
+                <li class="breadcrumb-item active" aria-current="page">Editar {{ $sale->type }}</li>
               </ol>
             </nav>
           </div>
@@ -55,51 +55,68 @@
                 </div>
                 <!-- end col -->
               @elseif($sale->type == 'Presupuesto')
-                <div class="col-3">
-                  <div class="input-style-1">
-                    <label>Fecha/Hora de Visita</label>
-                    <input type="text" value="{{ $sale->visit_date ?? old('visit_date') }}" readonly>
+                @if ($sale->visit_id)
+                  <div class="col-3">
+                    <div class="input-style-1">
+                      <label>Fecha/Hora de Visita</label>
+                      <input type="text" value="{{ $sale->visit_date ?? old('visit_date') }}" readonly>
+                    </div>
                   </div>
-                </div>
-                <!-- end col -->
-                <div class="col-3">
-                  <div class="input-style-1">
-                    <label>Fecha Próxima Visita</label>
-                    <input type="text" value="{{ $sale->next_visit_date ?? old('next_visit_date') }}" readonly>
+                  <!-- end col -->
+                  <div class="col-3">
+                    <div class="input-style-1">
+                      <label>Fecha Próxima Visita</label>
+                      <input type="text" value="{{ $sale->next_visit_date ?? old('next_visit_date') }}" readonly>
+                    </div>
                   </div>
-                </div>
-                <!-- end col -->
-                <div class="col-2">
-                  <div class="input-style-1">
-                    <label>Hora Próxima Visita</label>
-                      <input type="text" value="{{ $sale->next_visit_hour ?? old('next_visit_hour') }}" readonly>
+                  <!-- end col -->
+                  <div class="col-2">
+                    <div class="input-style-1">
+                      <label>Hora Próxima Visita</label>
+                        <input type="text" value="{{ $sale->next_visit_hour ?? old('next_visit_hour') }}" readonly>
+                    </div>
                   </div>
-                </div>
-                <!-- end col -->
-                <div class="col-2">
-                  <div class="input-style-1">
-                    <label>Estado</label>
-                    <input type="text" value="{{ $sale->status ?? old('status') }}" readonly>
+                  <!-- end col -->
+                  <div class="col-2">
+                    <div class="input-style-1">
+                      <label>Estado</label>
+                      <input type="text" value="{{ $sale->status ?? old('status') }}" readonly>
+                    </div>
                   </div>
-                </div>
-                <!-- end col -->
-                <div class="col-5">
-                  <div class="input-style-1">
-                    <label>Resultado de la Visita</label>
-                    <textarea type="text" value="{{ $sale->result_of_the_visit }}" readonly>{{ $sale->result_of_the_visit }}</textarea>
+                  <!-- end col -->
+                  <div class="col-5">
+                    <div class="input-style-1">
+                      <label>Resultado de la Visita</label>
+                      <textarea type="text" value="{{ $sale->result_of_the_visit }}" readonly>{{ $sale->result_of_the_visit }}</textarea>
+                    </div>
                   </div>
-                </div>
-                <!-- end col -->
-                <div class="col-5">
-                  <div class="input-style-1">
-                    <label>Objetivos</label>
-                    <textarea type="text" value="{{ $sale->objective ?? old('objective') }}" readonly>{{ $sale->objective ?? old('objective') }}</textarea>
+                  <!-- end col -->
+                  <div class="col-5">
+                    <div class="input-style-1">
+                      <label>Objetivos</label>
+                      <textarea type="text" value="{{ $sale->objective ?? old('objective') }}" readonly>{{ $sale->objective ?? old('objective') }}</textarea>
+                    </div>
                   </div>
-                </div>
-                <!-- end col -->
+                  <!-- end col -->
+                @else
+                  <div class="col-3">
+                    <div class="input-style-1">
+                      <label>Fecha/Hora</label>
+                      <input type="text" value="{{ $sale->sale_date ?? old('sale_date') }}" readonly>
+                    </div>
+                  </div>
+                  <!-- end col -->
+                  <div class="col-sm-3">
+                    <div class="input-style-1">
+                      <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Tipo</label>
+                      <input value="{{ $sale->type }}" type="text" readonly>
+                    </div>
+                  </div>
+                  <!-- end col -->
+                @endif
               @endif
 
-              <h5 class="text-medium mb-20" >Detalles {{ ($sale->type == 'Order')  ? ' del Presupuesto' : ' de la Venta' }}</h5>
+              <h5 class="text-medium mb-20" >Detalles {{ $sale->type }}</h5>
               
               <div class="table-responsive">
                 <table class="invoice-table table">
@@ -147,7 +164,7 @@
                 </table>
               </div>
 
-              @if ($sale->type == 'Order')
+              @if ($sale->type == 'Presupuesto')
                 <div class="col-12">
                   <div class="button-group d-flex justify-content-center flex-wrap">
                     <button class="main-btn primary-btn btn-hover m-2">Procesar a Venta</button>
@@ -169,8 +186,6 @@
                   </div>
                 </div>
               @endif
-
-
             </div>
           </div>
         </div>
