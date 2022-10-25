@@ -76,6 +76,9 @@
                             <div class="btn-group">
                               @can('sales-edit')
                               <div class="action">
+                                <a href="{{ url('/user/sales/generateInvoicePDF/?download=pdf&saleId='.$sale->id) }}" data-toggle="tooltip" data-placement="bottom" title="Imprimir" target="_blank">
+                                  <button class="text-secondary"><i class="lni lni-printer"></i></button>
+                                </a>
                                 @if ($sale->type == 'Venta' && $sale->status == 'Cancelado')
                                   <a href="{{ url('/user/sales/show/'.$sale->id) }}" class="main-btn-sm deactive-btn rounded-md btn-hover">Detalles Venta</a>
                                 @elseif($sale->type == 'Venta' && $sale->status != 'Cancelado')

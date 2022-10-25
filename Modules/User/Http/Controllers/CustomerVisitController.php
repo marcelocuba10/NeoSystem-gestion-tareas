@@ -521,6 +521,8 @@ class CustomerVisitController extends Controller
 
     public function generateInvoicePDF(Request $request)
     {
+        $idRefCurrentUser = Auth::user()->idReference;
+
         $customer_visit = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customer_visits.id', '=', $request->customer_visit)
@@ -535,10 +537,19 @@ class CustomerVisitController extends Controller
                 'customer_visits.action',
                 'customer_visits.type',
                 'customers.name AS customer_name',
-                'customers.estate'
+                'customers.estate',
+                'customers.doc_id',
+                'customers.email',
+                'customers.phone',
+                'customers.address'
             )
             ->orderBy('customer_visits.created_at', 'DESC')
             ->first();
+
+        $user = DB::table('users')
+        ->where('users.idReference', '=', $idRefCurrentUser)
+        ->select('name','phone_1','doc_id','address','email','city','estate')
+        ->first();
 
         $order_details = DB::table('order_details')
             ->where('order_details.visit_id', '=', $request->customer_visit)
@@ -559,7 +570,7 @@ class CustomerVisitController extends Controller
             ->sum('amount');
 
         if ($request->has('download')) {
-            $pdf = PDF::loadView('user::customer_visits.invoicePDF.invoicePrintPDF', compact('customer_visit', 'order_details', 'total_order'));
+            $pdf = PDF::loadView('user::customer_visits.invoicePDF.invoicePrintPDF', compact('user','customer_visit', 'order_details', 'total_order'));
             return $pdf->stream();
             // return $pdf->download('pdfview.pdf');
         }

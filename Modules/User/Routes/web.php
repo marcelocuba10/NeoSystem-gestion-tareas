@@ -71,6 +71,7 @@ Route::prefix('user')->group(function () {
             Route::put('/update/{id}', 'SalesController@update');
             Route::delete('/delete/{id}', 'SalesController@destroy');
             Route::get('/search', 'SalesController@search');
+            Route::get('/generateInvoicePDF', 'SalesController@generateInvoicePDF');
         });
 
         /*** Customer Visits Routes ***/
@@ -83,7 +84,7 @@ Route::prefix('user')->group(function () {
             Route::put('/update/{id}', 'CustomerVisitController@update');
             Route::delete('/delete/{id}', 'CustomerVisitController@destroy');
             Route::get('/search', 'CustomerVisitController@search');
-            Route::get('generateInvoicePDF/{id}', 'CustomerVisitController@generateInvoicePDF');
+            Route::get('/generateInvoicePDF', 'CustomerVisitController@generateInvoicePDF');
         });
 
         /** Products Routes */

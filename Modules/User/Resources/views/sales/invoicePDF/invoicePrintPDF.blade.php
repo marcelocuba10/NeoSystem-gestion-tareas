@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Imprimir {{ $customer_visit->type }}</title>
+    <title>Imprimir {{ $sale->type }}</title>
 </head>
 <style type="text/css">
     body{
@@ -85,16 +85,16 @@
 </style>
 <body>
 <div class="head-title">
-    <h1 class="text-center m-0 p-0">Nota de Presupuesto</h1>
+    <h1 class="text-center m-0 p-0">Nota de {{ $sale->type }}</h1>
 </div>
 <div class="add-detail mt-10">
     <div class="w-50 float-left mt-10">
-        <p class="m-0 pt-5 text-bold w-100">Nº Pedido u Orden: <span class="gray-color">{{ $customer_visit->visit_number }}</span></p>
-        <p class="m-0 pt-5 text-bold w-100">Emitida el: <span class="gray-color">{{ date('d/m/Y - H:i', strtotime($customer_visit->visit_date)) }}</span></p>
-        <p class="m-0 pt-5 text-bold w-100">-<span class="gray-color">-</span></p>
+        <p class="m-0 pt-5 text-bold w-100">Nº Pedido u Orden: <span class="gray-color">{{ $sale->invoice_number }}</span></p>
+        <p class="m-0 pt-5 text-bold w-100">Emitida el: <span class="gray-color">{{ ( $sale->type == 'Venta') ? date('d/m/Y - H:i', strtotime($sale->sale_date)) : date('d/m/Y - H:i', strtotime($sale->order_date)) }}</span></p>
+        <p class="m-0 pt-5 text-bold w-100">Estado: <span class="gray-color">{{ $sale->status }}</span></p>
     </div>
     <div class="float-right logo">
-        <img src="./public/adminLTE/images/logo/logo-pyp.png">  
+        <img src="./adminLTE/images/logo/logo-pyp.png">  
     </div>
     <div style="clear: both;"></div>
 </div>
@@ -116,11 +116,11 @@
             </td>
             <td>
                 <div class="box-text">
-                    <p>Nombre: {{ $customer_visit->customer_name }}</p>
-                    <p>Doc / RUC: {{ $customer_visit->doc_id }}</p>
-                    <p>Teléfono: {{ $customer_visit->phone }}</p>
-                    <p>Email: {{ $customer_visit->email }}</p>
-                    <p>Dirección: {{ $customer_visit->address }} - {{ $customer_visit->estate }}</p>
+                    <p>Nombre: {{ $sale->customer_name }}</p>
+                    <p>Doc / RUC: {{ $sale->doc_id }}</p>
+                    <p>Teléfono: {{ $sale->phone }}</p>
+                    <p>Email: {{ $sale->email }}</p>
+                    <p>Dirección: {{ $sale->address }} - {{ $sale->estate }}</p>
                 </div>
             </td>
         </tr>

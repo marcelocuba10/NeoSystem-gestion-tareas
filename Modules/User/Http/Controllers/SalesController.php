@@ -13,6 +13,8 @@ use Modules\User\Entities\OrderDetail;
 use Modules\User\Entities\Products;
 use Modules\User\Entities\Sales;
 
+use PDF;
+
 class SalesController extends Controller
 {
     public function __construct()
@@ -264,7 +266,6 @@ class SalesController extends Controller
             $total_order = DB::table('order_details')
                 ->where('order_details.visit_id', '=', $sale->visit_id)
                 ->sum('amount');
-                
         } elseif ($sale->type == 'Presupuesto' && !$sale->visit_id) {
             $order_detail = DB::table('order_details')
                 ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
@@ -574,6 +575,106 @@ class SalesController extends Controller
         }
 
         return view('user::sales.index', compact('sales', 'search'))->with('i', (request()->input('page', 1) - 1) * 10);
+    }
+
+    public function generateInvoicePDF(Request $request)
+    {
+        $idRefCurrentUser = Auth::user()->idReference;
+
+        $sale = DB::table('sales')
+            ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+            ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+            ->where('sales.id', '=', $request->saleId)
+            ->select(
+                'customer_visits.id',
+                'customer_visits.visit_date',
+                'customer_visits.next_visit_date',
+                'customer_visits.next_visit_hour',
+                'customer_visits.result_of_the_visit',
+                'customer_visits.objective',
+                'customer_visits.status',
+                'customers.name AS customer_name',
+                'customers.estate',
+                'customers.doc_id',
+                'customers.email',
+                'customers.phone',
+                'customers.address',
+                'sales.invoice_number',
+                'sales.visit_id',
+                'sales.type',
+                'sales.status',
+                'sales.sale_date',
+                'sales.order_date'
+            )
+            ->orderBy('sales.created_at', 'DESC')
+            ->first();
+
+        if ($sale->type == 'Venta') {
+            $order_details = DB::table('order_details')
+                ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+                ->where('order_details.sale_id', '=', $request->saleId)
+                ->select(
+                    'order_details.product_id',
+                    'order_details.price',
+                    'order_details.quantity',
+                    'order_details.amount',
+                    'products.custom_code',
+                    'products.name',
+                )
+                ->orderBy('order_details.created_at', 'DESC')
+                ->get();
+
+            $total_order = DB::table('order_details')
+                ->where('order_details.sale_id', '=', $request->saleId)
+                ->sum('amount');
+        } elseif ($sale->type == 'Presupuesto' && $sale->visit_id) {
+            $order_details = DB::table('order_details')
+                ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+                ->where('order_details.visit_id', '=', $sale->visit_id)
+                ->select(
+                    'order_details.product_id',
+                    'order_details.price',
+                    'order_details.quantity',
+                    'order_details.amount',
+                    'products.name',
+                    'products.custom_code',
+                )
+                ->orderBy('order_details.created_at', 'DESC')
+                ->get();
+
+            $total_order = DB::table('order_details')
+                ->where('order_details.visit_id', '=', $sale->visit_id)
+                ->sum('amount');
+        } elseif ($sale->type == 'Presupuesto' && !$sale->visit_id) {
+            $order_details = DB::table('order_details')
+                ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+                ->where('order_details.sale_id', '=', $request->saleId)
+                ->select(
+                    'order_details.product_id',
+                    'order_details.price',
+                    'order_details.quantity',
+                    'order_details.amount',
+                    'products.custom_code',
+                    'products.name',
+                )
+                ->orderBy('order_details.created_at', 'DESC')
+                ->get();
+
+            $total_order = DB::table('order_details')
+                ->where('order_details.sale_id', '=', $request->saleId)
+                ->sum('amount');
+        }
+
+        $user = DB::table('users')
+            ->where('users.idReference', '=', $idRefCurrentUser)
+            ->select('name', 'phone_1', 'doc_id', 'address', 'email', 'city', 'estate')
+            ->first();
+
+        if ($request->has('download')) {
+            $pdf = PDF::loadView('user::sales.invoicePDF.invoicePrintPDF', compact('user', 'sale', 'order_details', 'total_order'));
+            return $pdf->stream();
+            // return $pdf->download('pdfview.pdf');
+        }
     }
 
     public function destroy($id)
