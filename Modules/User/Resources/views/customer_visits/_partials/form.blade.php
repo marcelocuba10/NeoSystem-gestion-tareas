@@ -22,7 +22,7 @@
     <!-- end col -->
     <div class="col-3">
       <div class="input-style-1">
-        <label>Fecha Próxima Visita</label>
+        <label>Fecha Próxima Paso</label>
         <input onchange="showFieldObjectives(this);" type="date" name="next_visit_date" id="date" placeholder="DD/MM/YYYY" value="{{ $customer_visit->next_visit_date ?? old('next_visit_date') }}" class="bg-transparent">
         <span id="msg1" style="display: none" class="form-text m-b-none">Es necesario agregar la <b>Hora</b> y <b>Objetivos</b></span>
       </div>
@@ -30,7 +30,7 @@
     <!-- end col -->
     <div class="col-2">
       <div class="input-style-1">
-        <label>Hora Próxima Visita</label>
+        <label>Hora Próxima Paso</label>
           <input type="time" name="next_visit_hour" value="{{ $customer_visit->next_visit_hour ?? old('next_visit_hour') }}" class="bg-transparent">
       </div>
     </div>
@@ -278,6 +278,7 @@
   }
 
   $(document).ready(function(){
+
     var action = document.getElementById("action").value;
     var next_visit_date = document.getElementById('date');
 
@@ -315,11 +316,18 @@
       var tr =$(this).parent().parent();
       var id = tr.find('.product').val();
       var dataId = {'id':id};
+      console.log('product id: ' + id );
+      //document.getElementById('select_item').style.display = 'none';
+      //$('select:first-child').css({display:none;});
+
       $.ajax({
         type    : 'GET',
         url     :"{{ URL::to('/user/products/findPrice') }}",
         dataType: 'json',
-        data: {"_token": $('meta[name="csrf-token"]').attr('content'), 'id':id},
+        data: {
+          "_token": $('meta[name="csrf-token"]').attr('content'), 
+          'id':id
+        },
         success:function (response) {
           var data = response;
           var string_data = JSON.stringify(data); 
@@ -357,7 +365,6 @@
   }
 
   $('#add_btn').on('click',function(){
-    console.log('add_btn');
     var html = '';
     html += '<tr>';
     html += '<td> <select name="product_id[]" class="form-control product"> <option>Seleccione Producto</option> @foreach($products as $product) <option name="product_id[]" data-price="{{ $product->sale_price }}" value="{{ $product->id }}">{{ $product->name }}</option> @endforeach </select> </td>';
@@ -368,12 +375,44 @@
     html += '</tr>';
     $('tbody').append(html);
   })
-
-  $(document).on('click', '#remove', function () {
-    $(this).closest('tr').remove();
-    total();
-  });
-
 </script>   
+
+@if ($customer_visit != null)
+  <script type="text/javascript">
+    $(document).on('click', '#remove', function () {
+      var tr =$(this).parent().parent();
+      var id = tr.find('.product').val();
+      var visit_id = <?php echo json_encode($customer_visit->id); ?>;
+      console.log('product id: ' + id + ' visit_id: ' + visit_id );
+      $.ajax({
+          type: 'DELETE',
+          url     :"{{ URL::to('/user/customer_visits/destroyItemOrder') }}",
+          dataType: 'json',
+          data: {
+            "_method" : "DELETE",
+            '_token': '{{ csrf_token() }}',
+            'id':id,
+            'visit_id':visit_id
+          },
+          success:function (response) {
+            console.log('response: '+ response);
+          }
+      });
+
+      //remove file in the table
+      $(this).closest('tr').remove();
+      total();
+    });
+  </script>
+@else
+  <script type="text/javascript">
+    $(document).on('click', '#remove', function () {
+      //remove file in the table
+      $(this).closest('tr').remove();
+      total();
+    });
+  </script>
+@endif
+
 
   

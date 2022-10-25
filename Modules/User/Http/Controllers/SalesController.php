@@ -427,32 +427,24 @@ class SalesController extends Controller
         if (strlen($request->product_id[0]) > 10) {
             return back()->with('error', 'Por favor, adicione un producto.');
         } else {
-
+            /** Get data of the sale */
             $sale = Sales::find($id);
 
-            foreach ($request->product_id as $key => $value) {
+            /** Get old items saved in order details in array*/
+            $order_details = DB::table('order_details')
+                ->where('order_details.sale_id', '=', $id)
+                ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+                ->pluck('product_id')
+                ->toArray();
 
-                if (intval($request->qty[$key]) <= 0) {
-                    return back()->with('error', 'Por favor, ingrese una cantidad válida.');
-                } else {
+            /** Check if in my new array items contain new id_product */
+            $differenceArray = array_diff($request->product_id, $order_details);
 
-                    $order_detail_id = DB::table('order_details')
-                        ->where('order_details.product_id', '=', $request->product_id[$key])
-                        ->where('order_details.sale_id', '=', $sale->id)
-                        ->select(
-                            'order_details.product_id',
-                        )
-                        ->first();
-
-                    /** if find product id, update item detail; else create new item detail */
-                    if ($order_detail_id) {
-                        DB::table('order_details')
-                            ->where('order_details.sale_id', '=', $sale->id)
-                            ->where('order_details.product_id', '=', $request->product_id[$key])
-                            ->update([
-                                'quantity' => $request->qty[$key],
-                                'amount' => $request->amount[$key]
-                            ]);
+            if (count($differenceArray) > 0) {
+                /** Array have news product_id, add news items order detail*/
+                foreach ($differenceArray as $key => $value) {
+                    if (intval($request->qty[$key]) <= 0) {
+                        return back()->with('error', 'Por favor, ingrese una cantidad válida.');
                     } else {
                         /** Save item detail sale */
                         $order = new OrderDetail();
@@ -462,6 +454,43 @@ class SalesController extends Controller
                         $order->price = $request->price[$key];
                         $order->amount = $request->amount[$key];
                         $order->save();
+                    }
+                }
+            } else {
+                /** Array not have news product_id, update values */
+                foreach ($request->product_id as $key => $value) {
+
+                    if (intval($request->qty[$key]) <= 0) {
+                        return back()->with('error', 'Por favor, ingrese una cantidad válida.');
+                    } else {
+
+                        /** if find product id, if exist product_id, update values else delete old product_id and create new item detail with the new product_id */
+                        $order_detail_id = DB::table('order_details')
+                            ->where('order_details.product_id', '=', $request->product_id[$key])
+                            ->where('order_details.sale_id', '=', $sale->id)
+                            ->select(
+                                'order_details.product_id',
+                            )
+                            ->first();
+
+                        if ($order_detail_id) {
+                            DB::table('order_details')
+                                ->where('order_details.sale_id', '=', $sale->id)
+                                ->where('order_details.product_id', '=', $request->product_id[$key])
+                                ->update([
+                                    'quantity' => $request->qty[$key],
+                                    'amount' => $request->amount[$key]
+                                ]);
+                        } else {
+                            /** Save item detail sale */
+                            $order = new OrderDetail();
+                            $order->product_id = $request->product_id[$key];
+                            $order->sale_id = $sale->id;
+                            $order->quantity = $request->qty[$key];
+                            $order->price = $request->price[$key];
+                            $order->amount = $request->amount[$key];
+                            $order->save();
+                        }
                     }
                 }
             }
@@ -674,6 +703,32 @@ class SalesController extends Controller
             $pdf = PDF::loadView('user::sales.invoicePDF.invoicePrintPDF', compact('user', 'sale', 'order_details', 'total_order'));
             return $pdf->stream();
             // return $pdf->download('pdfview.pdf');
+        }
+    }
+
+    public function destroyItemOrder(Request $request)
+    {
+        /** remove item order */
+        DB::table('order_details')
+            ->where('product_id', $request->id)
+            ->where('sale_id', $request->sale_id)
+            ->delete();
+
+        /** update total in sales */
+        $total_order = DB::table('order_details')
+            ->where('order_details.sale_id', '=', $request->sale_id)
+            ->sum('amount');
+
+        Sales::where('sales.id', '=', $request->sale_id)
+            ->update([
+                'total' => $total_order
+            ]);
+
+        /** return with response */
+        if ($request->ajax()) {
+            return response()->json(array(
+                'success' => 'Item Order deleted successfully.',
+            ));
         }
     }
 

@@ -353,6 +353,7 @@ class CustomerVisitController extends Controller
 
         $input = $request->all();
 
+
         if ($input['next_visit_date'] != null && $input['objective'] == null) {
             return back()->with('error', 'Por favor, agregue los Objetivos para la próxima visita marcada');
         }
@@ -408,30 +409,25 @@ class CustomerVisitController extends Controller
                     $sale['total'] = $total_order;
                     Sales::create($sale);
                 } else {
-                    foreach ($request->product_id as $key => $value) {
-                        if (intval($request->qty[$key]) <= 0) {
-                            return back()->with('error', 'Por favor, ingrese una cantidad válida.');
-                        } else {
 
-                            $order_detail_id = DB::table('order_details')
-                                ->where('order_details.product_id', '=', $request->product_id[$key])
-                                ->where('order_details.visit_id', '=', $customer_visit->id)
-                                ->select(
-                                    'order_details.product_id',
-                                )
-                                ->first();
+                    /** Get old items saved in order details in array*/
+                    $order_details = DB::table('order_details')
+                        ->where('order_details.visit_id', '=', $id)
+                        ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+                        ->pluck('product_id')
+                        ->toArray();
 
-                            /** if find product id, update item detail; else create new item detail */
-                            if ($order_detail_id) {
-                                DB::table('order_details')
-                                    ->where('order_details.visit_id', '=', $customer_visit->id)
-                                    ->where('order_details.product_id', '=', $request->product_id[$key])
-                                    ->update([
-                                        'quantity' => $request->qty[$key],
-                                        'amount' => $request->amount[$key]
-                                    ]);
+                    /** Check if in my new array items contain new id_product */
+                    $differenceArray = array_diff($request->product_id, $order_details);
+
+                    if (count($differenceArray) > 0) {
+                        
+                        /** Array have news product_id, add news items order detail*/
+                        foreach ($differenceArray as $key => $value) {
+                            if (intval($request->qty[$key]) <= 0) {
+                                return back()->with('error', 'Por favor, ingrese una cantidad válida.');
                             } else {
-                                /** Save item detail customer visit */
+                                /** Save order details of customer visit */
                                 $order = new OrderDetail();
                                 $order->product_id = $request->product_id[$key];
                                 $order->visit_id = $customer_visit->id;
@@ -439,6 +435,51 @@ class CustomerVisitController extends Controller
                                 $order->price = $request->price[$key];
                                 $order->amount = $request->amount[$key];
                                 $order->save();
+                            }
+                        }
+                    } else {
+                        /** Array not have news product_id, update values */
+                        foreach ($request->product_id as $key => $value) {
+                            if (intval($request->qty[$key]) <= 0) {
+                                return back()->with('error', 'Por favor, ingrese una cantidad válida.');
+                            } else {
+
+                                /** if find product id, if exist product_id, update values else delete old product_id and create new item detail with the new product_id */
+                                $order_detail_id = DB::table('order_details')
+                                    ->where('order_details.product_id', '=', $request->product_id[$key])
+                                    ->where('order_details.visit_id', '=', $customer_visit->id)
+                                    ->select(
+                                        'order_details.product_id',
+                                    )
+                                    ->first();
+
+                                if ($order_detail_id) {
+                                    DB::table('order_details')
+                                        ->where('order_details.visit_id', '=', $customer_visit->id)
+                                        ->where('order_details.product_id', '=', $request->product_id[$key])
+                                        ->update([
+                                            'quantity' => $request->qty[$key],
+                                            'amount' => $request->amount[$key]
+                                        ]);
+                                } else {
+
+                                    /** Add new item detail, with the new product_id in order detail */
+                                    $order = new OrderDetail();
+                                    $order->product_id = $request->product_id[$key];
+                                    $order->visit_id = $customer_visit->id;
+                                    $order->quantity = $request->qty[$key];
+                                    $order->price = $request->price[$key];
+                                    $order->amount = $request->amount[$key];
+                                    $order->save();
+
+                                    // /** delete old item product_id in order detail*/
+                                    // foreach ($request->product_id as $key => $value) {
+                                    //     DB::table('order_details')
+                                    //         ->where('product_id', $request->id)
+                                    //         ->where('visit_id', $customer_visit->id)
+                                    //         ->delete();
+                                    // }
+                                }
                             }
                         }
                     }
@@ -547,9 +588,9 @@ class CustomerVisitController extends Controller
             ->first();
 
         $user = DB::table('users')
-        ->where('users.idReference', '=', $idRefCurrentUser)
-        ->select('name','phone_1','doc_id','address','email','city','estate')
-        ->first();
+            ->where('users.idReference', '=', $idRefCurrentUser)
+            ->select('name', 'phone_1', 'doc_id', 'address', 'email', 'city', 'estate')
+            ->first();
 
         $order_details = DB::table('order_details')
             ->where('order_details.visit_id', '=', $request->customer_visit)
@@ -570,9 +611,35 @@ class CustomerVisitController extends Controller
             ->sum('amount');
 
         if ($request->has('download')) {
-            $pdf = PDF::loadView('user::customer_visits.invoicePDF.invoicePrintPDF', compact('user','customer_visit', 'order_details', 'total_order'));
+            $pdf = PDF::loadView('user::customer_visits.invoicePDF.invoicePrintPDF', compact('user', 'customer_visit', 'order_details', 'total_order'));
             return $pdf->stream();
             // return $pdf->download('pdfview.pdf');
+        }
+    }
+
+    public function destroyItemOrder(Request $request)
+    {
+        /** remove item order */
+        DB::table('order_details')
+            ->where('product_id', $request->id)
+            ->where('visit_id', $request->visit_id)
+            ->delete();
+
+        /** update total in sales */
+        $total_order = DB::table('order_details')
+            ->where('order_details.visit_id', '=', $request->visit_id)
+            ->sum('amount');
+
+        Sales::where('sales.visit_id', '=', $request->visit_id)
+            ->update([
+                'total' => $total_order
+            ]);
+
+        /** return with response */
+        if ($request->ajax()) {
+            return response()->json(array(
+                'success' => 'Item Order deleted successfully.',
+            ));
         }
     }
 

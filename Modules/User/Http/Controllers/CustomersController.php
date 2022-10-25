@@ -422,6 +422,22 @@ class CustomersController extends Controller
         return view('user::customers.index', compact('customers', 'search', 'categories'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
+    public function destroyItemOrder(Request $request)
+    {
+        /** remove item customer_parameters */
+        DB::table('customer_parameters')
+            ->where('potential_product_id', $request->id)
+            ->where('customer_id', $request->customer_id)
+            ->delete();
+
+        /** return with response */
+        if ($request->ajax()) {
+            return response()->json(array(
+                'message' => 'Item Order deleted successfully.',
+            ));
+        }
+    }
+
     public function destroy($id)
     {
         Customers::find($id)->delete();

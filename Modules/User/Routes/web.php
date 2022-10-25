@@ -70,6 +70,7 @@ Route::prefix('user')->group(function () {
             Route::get('/edit/{id}', 'SalesController@edit');
             Route::put('/update/{id}', 'SalesController@update');
             Route::delete('/delete/{id}', 'SalesController@destroy');
+            Route::delete('/deleteItemOrder', 'SalesController@destroyItemOrder');
             Route::get('/search', 'SalesController@search');
             Route::get('/generateInvoicePDF', 'SalesController@generateInvoicePDF');
         });
@@ -83,8 +84,22 @@ Route::prefix('user')->group(function () {
             Route::get('/edit/{id}', 'CustomerVisitController@edit');
             Route::put('/update/{id}', 'CustomerVisitController@update');
             Route::delete('/delete/{id}', 'CustomerVisitController@destroy');
+            Route::delete('/deleteItemOrder', 'CustomerVisitController@destroyItemOrder');
             Route::get('/search', 'CustomerVisitController@search');
             Route::get('/generateInvoicePDF', 'CustomerVisitController@generateInvoicePDF');
+        });
+
+        /*** Customers Routes ***/
+        Route::group(['prefix' => 'customers'], function () {
+            Route::get('/', 'CustomersController@index');
+            Route::get('/create', 'CustomersController@create');
+            Route::post('/create', 'CustomersController@store');
+            Route::get('/show/{id}', 'CustomersController@show');
+            Route::get('/edit/{id}', 'CustomersController@edit');
+            Route::put('/update/{id}', 'CustomersController@update');
+            Route::delete('/delete/{id}', 'CustomersController@destroy');
+            Route::delete('/deleteItemOrder', 'CustomersController@destroyItemOrder');
+            Route::get('/search', 'CustomersController@search');
         });
 
         /** Products Routes */
@@ -94,6 +109,27 @@ Route::prefix('user')->group(function () {
             Route::get('/getItemProduct', 'ProductsController@getItemProduct');
             Route::get('/search', 'ProductsController@search');
             Route::get('/findPrice', 'ProductsController@findPrice');
+        });
+
+        /*** User Routes ***/
+        Route::group(['prefix' => 'users'], function () {
+            Route::get('/', 'UserController@index');
+            Route::get('/profile/{id}', 'UserController@showProfile');
+            Route::get('/edit/profile/{id}', 'UserController@editProfile');
+            Route::put('/update/profile/{id}', 'UserController@updateProfile');
+        });
+
+        /** Charts & Graphics Routes */
+        Route::group(['prefix' => 'chart'], function () {
+            Route::get('machines', 'ChartController@index');
+        });
+
+        /*** Reports Routes ***/
+        Route::group(['prefix' => 'reports'], function () {
+            Route::get('/customers', 'ReportsController@customers');
+            Route::get('/customers/search', 'ReportsController@customers');
+            Route::get('/products', 'ReportsController@products');
+            Route::get('/schedules', 'ReportsController@schedules');
         });
 
         /*** ACL Routes ***/
@@ -119,39 +155,6 @@ Route::prefix('user')->group(function () {
                 Route::delete('/{id}/delete', 'ACL\PermissionsController@destroy');
                 Route::get('/search', 'ACL\PermissionsController@search');
             });
-        });
-
-        /*** User Routes ***/
-        Route::group(['prefix' => 'users'], function () {
-            Route::get('/', 'UserController@index');
-            Route::get('/profile/{id}', 'UserController@showProfile');
-            Route::get('/edit/profile/{id}', 'UserController@editProfile');
-            Route::put('/update/profile/{id}', 'UserController@updateProfile');
-        });
-
-        /** Charts & Graphics Routes */
-        Route::group(['prefix' => 'chart'], function () {
-            Route::get('machines', 'ChartController@index');
-        });
-
-        /*** Customers Routes ***/
-        Route::group(['prefix' => 'customers'], function () {
-            Route::get('/', 'CustomersController@index');
-            Route::get('/create', 'CustomersController@create');
-            Route::post('/create', 'CustomersController@store');
-            Route::get('/show/{id}', 'CustomersController@show');
-            Route::get('/edit/{id}', 'CustomersController@edit');
-            Route::put('/update/{id}', 'CustomersController@update');
-            Route::delete('/delete/{id}', 'CustomersController@destroy');
-            Route::get('/search', 'CustomersController@search');
-        });
-
-        /*** Reports Routes ***/
-        Route::group(['prefix' => 'reports'], function () {
-            Route::get('/customers', 'ReportsController@customers');
-            Route::get('/customers/search', 'ReportsController@customers');
-            Route::get('/products', 'ReportsController@products');
-            Route::get('/schedules', 'ReportsController@schedules');
         });
     });
 });

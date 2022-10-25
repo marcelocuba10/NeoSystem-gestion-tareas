@@ -222,3 +222,40 @@
   });
 
 </script> 
+
+@if ($customer != null)
+  <script type="text/javascript">
+    $(document).on('click', '#remove', function () {
+      var tr =$(this).parent().parent();
+      var id = tr.find('.product').val();
+      var customer_id = <?php echo json_encode($customer->id); ?>;
+      console.log('product id: ' + id + ' customer_id: ' + customer_id );
+      $.ajax({
+          type: 'DELETE',
+          url     :"{{ URL::to('/user/customers/deleteItemOrder') }}",
+          dataType: 'json',
+          data: {
+            "_method" : "DELETE",
+            '_token': '{{ csrf_token() }}',
+            'id':id,
+            'sale_id':sale_id
+          },
+          success:function (response) {
+            console.log('response: '+ response);
+          }
+      });
+
+      //remove file in the table
+      $(this).closest('tr').remove();
+      total();
+    });
+  </script>
+@else
+  <script type="text/javascript">
+    $(document).on('click', '#remove', function () {
+      //remove file in the table
+      $(this).closest('tr').remove();
+      total();
+    });
+  </script>
+@endif
