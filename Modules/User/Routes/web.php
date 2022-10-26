@@ -10,6 +10,9 @@ Route::prefix('user')->group(function () {
     /*** Login Routes ***/
     Route::group(['middleware' => ['guest']], function () {
 
+        /** CronJob */
+        Route::get('/appointments/cron', 'CronJobsController@cronjob');
+
         Route::get('/login', 'Auth\LoginController@show');
         Route::post('/login', 'Auth\LoginController@login');
 
