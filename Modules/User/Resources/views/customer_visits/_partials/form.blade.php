@@ -279,6 +279,7 @@
 
   $(document).ready(function(){
 
+    //check if customer_visit contain orders details and next_visit_date
     var action = document.getElementById("action").value;
     var next_visit_date = document.getElementById('date');
 
@@ -315,10 +316,6 @@
     $('tbody').delegate('.product', 'change', function () {
       var tr =$(this).parent().parent();
       var id = tr.find('.product').val();
-      var dataId = {'id':id};
-      console.log('product id: ' + id );
-      //document.getElementById('select_item').style.display = 'none';
-      //$('select:first-child').css({display:none;});
 
       $.ajax({
         type    : 'GET',
@@ -331,32 +328,59 @@
         success:function (response) {
           var data = response;
           var string_data = JSON.stringify(data); 
-          tr.find('.price').val(data.sale_price);
+
+          //convert number to currency format to show
+          var price = data.sale_price;
+          price_currency = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+          //price_currency = accounting.formatMoney(price, "", 0, ".", ".");
+          tr.find('.price').val(price_currency);
 
           var qty = 1;
           var amount = (qty * data.sale_price);
           tr.find('.qty').val(qty);
+
+          //convert number to currency format to show
+          amount = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+          //amount = accounting.formatMoney(amount, "", 0, ".", ".");
           tr.find('.amount').val(amount);
+
           total();
         }
       });
     });
 
-    //when write the quantity, calculate amount, total;
+    //when you type the quantity, it is calculated again subtotal and total
     $('tbody').delegate('.qty', 'keyup', function () {
       var tr = $(this).parent().parent();
       var qty = tr.find('.qty').val();
       var price = tr.find('.price').val();
+
+      //convert currency format to number
+      var price = Number(price.replace(/[^0-9.-]+/g,""));
+      
       var amount = (qty * price);
+
+      //convert number to currency format to show
+      amount = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      //amount = accounting.formatMoney(amount, "", 0, ".", ".");
       tr.find('.amount').val(amount);
+
       total();
     });
   });
 
   function total(){
     var total = 0;
-    $('.amount').each(function (i,e) {
+    $('.amount').each(function (index, element) {
       var amount =$(this).val()-0;
+      var amount2 = parseFloat($(this).val() || 0) ;
+      var amount3 = parseFloat($(this).val()).toFixed(3);
+      var amount4 = parseFloat(parseFloat($(this).val()).toFixed(3));
+      console.log('amount format 1: ' + amount);
+      console.log('amount format 2: ' + amount2);
+      console.log('amount format 3: ' + amount3);
+      console.log('amount format 4: ' + amount4);
+
       total += amount;
     })
     var total = formatNumber(total);

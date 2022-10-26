@@ -57,6 +57,7 @@
   <script src="{{ asset('public/adminLTE/js/polyfill.js') }}"></script>
   <script src="{{ asset('public/adminLTE/js/main.js') }}"></script>
   <script src="{{ asset('public/js/custom.js') }}"></script>
+  <script src="{{ asset('public/js/accounting.min.js') }}"></script>
   <script src="{{ asset('public/js/vanilla-masker.min.js') }}"></script>
   <script src="{{ asset('public/adminLTE/js/apexcharts.min.js') }}"></script>
   <script src="{{ asset('public/adminLTE/js/quill.min.js') }}"></script>

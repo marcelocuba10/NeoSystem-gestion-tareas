@@ -102,7 +102,6 @@
           </table>
         </div>
       </div>
-
     @endif
     <!-- end col -->
     <div class="col-5">
@@ -238,16 +237,15 @@
             "_method" : "DELETE",
             '_token': '{{ csrf_token() }}',
             'id':id,
-            'sale_id':sale_id
+            'customer_id':customer_id
           },
           success:function (response) {
-            console.log('response: '+ response);
+            console.log('response: '+ response.message);
           }
       });
 
       //remove file in the table
       $(this).closest('tr').remove();
-      total();
     });
   </script>
 @else
@@ -255,7 +253,6 @@
     $(document).on('click', '#remove', function () {
       //remove file in the table
       $(this).closest('tr').remove();
-      total();
     });
   </script>
 @endif

@@ -53,13 +53,6 @@
               <!-- end col -->
               <div class="col-6">
                 <div class="input-style-1">
-                  <label>Email</label>
-                  <input type="text" value="{{ $customer->email ?? old('email') }}" readonly>
-                </div>
-              </div>
-              <!-- end col -->
-              <div class="col-3">
-                <div class="input-style-1">
                   <label>Rubro</label>
                   <div class="select-position">
                     <select class="select2-multiple_1" multiple="multiple"  disabled="true">
@@ -71,72 +64,92 @@
                 </div>
               </div>
               <!-- end col -->
-              <div class="col-3">
-                <div class="input-style-1">
-                  <label>Equipos Potenciales</label>
-                  <div class="select-position">
-                    <select class="select2-multiple_2" multiple="multiple"  disabled="true">
-                      @foreach ($potential_products as $item)
-                        <option value="{{ $item->id }}" @if(!empty($customerPotentialProducts)) {{ in_array($item->id,$customerPotentialProducts)  ? 'selected' : '' }} @endif> {{ $item->name }} </option>
-                      @endforeach 
-                    </select>
-                  </div>
+              <div class="col-6" style="margin-top: -12px;">
+                <div class="table-wrapper table-responsive">
+                  <table class="table top-selling-table mb-30">
+                    <thead>
+                      <tr>
+                        <th><h6>Equipos Potenciales</h6></th>
+                        <th><h6>Cantidad Unidades</h6></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @php
+                        $c = 0;
+                      @endphp
+                      @foreach ($potential_products_selectd as $item_product)
+                        <tr>
+                          <td>
+                            <select name="potential_products[]" class="form-control product" disabled>
+                              @foreach($potential_products as $product)  
+                                <option {{ ( $product->id == $item_product->id) ? 'selected' : '' }}> {{ $product->name}} </option>
+                              @endforeach
+                            </select>
+                          </td>
+                          <td><input type="number" min="1" value="{{ $item_product->quantity }}" class="form-control qty" readonly></td>
+                        </tr>
+                        @php
+                          $c++;
+                        @endphp
+                      @endforeach
+                    </tbody>
+                  </table>
                 </div>
               </div>
               <!-- end col -->
-              <div class="col-2">
-                <div class="input-style-1">
-                  <label>Cantidad de Unidades</label>
-                  <input type="number" min="0" value="{{ $customer->unit_quantity ?? old('unit_quantity') }}" readonly>
-                </div>
-              </div>
-              <!-- end col -->
-              <div class="col-5">
+              <div class="col-6">
                 <div class="input-style-1">
                   <label>Resultado de la Visita</label>
                   <textarea type="text" value="{{ $customer->result_of_the_visit ?? old('result_of_the_visit') }}" readonly>{{ $customer->result_of_the_visit ?? old('result_of_the_visit') }}</textarea>
                 </div>
               </div>
               <!-- end col -->
-              <div class="col-5">
+              <div class="col-6">
                 <div class="input-style-1">
                   <label>Objetivos</label>
                   <textarea type="text" value="{{ $customer->objective ?? old('objective') }}" readonly>{{ $customer->objective ?? old('objective') }}</textarea>
                 </div>
               </div>
               <!-- end col -->
-              <div class="col-4">
+              <div class="col-6">
+                <div class="input-style-1">
+                  <label>Email</label>
+                  <input type="text" value="{{ $customer->email ?? old('email') }}" readonly>
+                </div>
+              </div>
+              <!-- end col -->
+              <div class="col-3">
                 <div class="input-style-1">
                   <label>Fecha Próxima Visita</label>
                   <input type="date" id="date" class="bg-gray" placeholder="DD/MM/YYYY" value="{{ $customer->next_visit_date ?? old('next_visit_date') }}" readonly>
                 </div>
               </div>
               <!-- end col -->
-              <div class="col-4">
+              <div class="col-3">
                 <div class="input-style-1">
                   <label>Hora Próxima Visita</label>
                     <input type="time" class="bg-gray" value="{{ $customer->next_visit_hour ?? old('next_visit_hour') }}" readonly>
                 </div>
               </div>
               <!-- end col -->
-              <div class="col-4">
-                <div class="form-check checkbox-style mb-30" style="margin-top: 40px;">
-                  <input @if(!empty($customer->is_vigia)) {{ $customer->is_vigia = 'on'  ? 'checked' : '' }} @endif class="form-check-input" type="checkbox" id="checkbox-not-robot" onclick="return false;">
-                  <label class="form-check-label" for="checkbox-not-robot" >¿Es Cliente Vigia?</label>
-                </div>
-              </div>
-              <!-- end col -->
-              <div class="col-6">
+              <div class="col-5">
                 <div class="input-style-1">
                   <label>Ciudad</label>
                   <input type="text" value="{{ $customer->city ?? old('city') }}" readonly>
                 </div>
               </div>
               <!-- end col -->
-              <div class="col-6">
+              <div class="col-4">
                 <div class="input-style-1">
                   <label>Departamento</label>
                   <input type="text" value="{{ $customer->estate ?? old('estate') }}" readonly>
+                </div>
+              </div>
+              <!-- end col -->
+              <div class="col-3">
+                <div class="form-check checkbox-style mb-30" style="margin-top: 40px;">
+                  <input @if(!empty($customer->is_vigia)) {{ $customer->is_vigia = 'on'  ? 'checked' : '' }} @endif class="form-check-input" type="checkbox" id="checkbox-not-robot" onclick="return false;">
+                  <label class="form-check-label" for="checkbox-not-robot" >¿Es Cliente Vigia?</label>
                 </div>
               </div>
               <!-- end col -->
@@ -147,7 +160,6 @@
                 </div>
               </div>
               <!-- end col -->
-
               <h6 class="mb-20">Actualice la ubicación del cliente desde la app móvil.</h6>
               <div id="map"></div>
 
@@ -156,6 +168,7 @@
                   <a class="main-btn primary-btn-outline m-2" href="{{ url('/user/customers') }}">Atrás</a>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
