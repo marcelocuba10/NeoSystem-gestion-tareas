@@ -91,7 +91,7 @@
     <div class="w-50 float-left mt-10">
         <p class="m-0 pt-5 text-bold w-100">Nº Pedido u Orden: <span class="gray-color">{{ $customer_visit->visit_number }}</span></p>
         <p class="m-0 pt-5 text-bold w-100">Emitida el: <span class="gray-color">{{ date('d/m/Y - H:i', strtotime($customer_visit->visit_date)) }}</span></p>
-        <p class="m-0 pt-5 text-bold w-100">-<span class="gray-color">-</span></p>
+        <p class="m-0 pt-5 text-bold w-100">Estado: <span class="gray-color">{{ $customer_visit->status }}</span></p>
     </div>
     <div class="float-right logo">
         <img src="./public/adminLTE/images/logo/logo-pyp.png">  

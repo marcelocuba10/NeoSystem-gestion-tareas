@@ -76,7 +76,7 @@
         <div class="col-lg-6 col-xl-6 col-xxl-6">
           <div class="card-style activity-card clients-table-card mb-30">
             <div class="title d-flex justify-content-between align-items-center">
-              <h6 class="mb-10">Visita Clientes</h6>
+              <h6 class="mb-10">Últimas Visitas Clientes</h6>
             </div>
             <div class="table-wrapper table-responsive">
               <table class="table">
@@ -92,15 +92,16 @@
                         <h5 class="text-medium">{{ $customer_visit->customer_name }}</h5>
                         <p><i class="lni lni-map-marker"></i>&nbsp;{{ $customer_visit->estate }} - &nbsp;{{ date('d/m/Y - H:i', strtotime($customer_visit->visit_date)) }}</p>
                       </td>
-                      <td>
-                        <span style="float: right;" class="status-btn 
-                        @if($customer_visit->status == 'Visitado') info-btn
-                        @elseIf($customer_visit->status == 'No Visitado') close-btn
-                        @elseIf($customer_visit->status == 'Cancelado') warning-btn
-                        @endif">
-                          {{ $customer_visit->status }}
-                        </span>
-                      </td>
+                        <td class="min-width">
+                          <span style="float: right;" class="status-btn 
+                          @if($customer_visit->status == 'Procesado') primary-btn
+                          @elseIf($customer_visit->status == 'No procesado') danger-btn
+                          @elseIf($customer_visit->status == 'Pendiente') primary-btn
+                          @elseIf($customer_visit->status == 'Cancelado') light-btn
+                          @endif">
+                            {{ $customer_visit->status }}
+                          </span>
+                        </td>
                       <td>
                         <div class="d-flex justify-content-end">
                           <a href="{{ url('/user/customer_visits/show/'.$customer_visit->id) }}" data-toggle="tooltip" data-placement="bottom" title="Ver">
@@ -145,8 +146,8 @@
                           {{ $appointment->action }}
                         </span>
                         @if(date('d/m/Y', strtotime($appointment->date)) < $currentDate )
-                          <span class="status-btn close-btn">
-                            Atrasado
+                          <span class="status-btn danger-btn">
+                            No procesado
                           </span>
                         @else
                           <span class="status-btn orange-btn">

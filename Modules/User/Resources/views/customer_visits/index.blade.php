@@ -40,33 +40,36 @@
                       <th><h6>Número</h6></th>
                       <th><h6>Cliente</h6></th>
                       <th><h6>Estado</h6></th>
-                      <th><h6>Presupuesto?</h6></th>
+                      <th><h6>Tipo</h6></th>
                       <th><h6>Creada el</h6></th>
-                      <th><h6>Acción</h6></th>
                       <th><h6>Acciones</h6></th>
                     </tr>
                   </thead>
                   <tbody>
                     @foreach ($customer_visits as $customer_visit)
                       <tr>
-                        <td class="text-sm"><h6 class="text-sm">{{ $customer_visit->visit_number }}</h6></td>
-                        <td class="min-width"><h5 class="text-bold text-dark"><a href="{{ url('/user/customer_visits/show/'.$customer_visit->id ) }}">{{ $customer_visit->customer_name }}</a></h5></td>
-                        <td class="min-width"><span class="status-btn primary-btn">{{ $customer_visit->status }}</span></td>
-                        @if ($customer_visit->type == 'Presupuesto')
-                          <td class="min-width"><p>Sí</p></td>
-                        @elseIf($customer_visit->type == 'Sin Presupuesto')
-                          <td class="min-width"><p>No</p></td>
-                        @endif
-                        <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ date('d/m/Y - H:i', strtotime($customer_visit->visit_date)) }}</p></td>
+                        <td class="text-sm"><h6 class="{{ ($customer_visit->status == 'Procesado' || $customer_visit->status == 'Pendiente') ? 'text-dark' : 'text-disabled' }}">{{ $customer_visit->visit_number }}</h6></td>
+                        <td class="min-width"><h5 class="text-bold {{ ($customer_visit->status == 'Procesado' || $customer_visit->status == 'Pendiente') ? 'text-dark' : 'text-disabled' }}"><a href="{{ url('/user/customer_visits/show/'.$customer_visit->id ) }}">{{ $customer_visit->customer_name }}</a></h5></td>
                         <td class="min-width">
                           <span class="status-btn 
-                          @if($customer_visit->action == 'Realizar Llamada') success-btn
+                          @if($customer_visit->status == 'Procesado') primary-btn
+                          @elseIf($customer_visit->status == 'No procesado') danger-btn
+                          @elseIf($customer_visit->status == 'Pendiente') primary-btn
+                          @elseIf($customer_visit->status == 'Cancelado') light-btn
+                          @endif">
+                            {{ $customer_visit->status }}
+                          </span>
+                        </td>
+                        <td class="min-width">
+                          <span class="status-btn 
+                          @if($customer_visit->action == 'Realizar Llamada') info-btn
                           @elseIf($customer_visit->action == 'Visitar Personalmente') orange-btn
-                          @elseIf($customer_visit->action == 'Enviar Presupuesto') info-btn
+                          @elseIf($customer_visit->action == 'Enviar Presupuesto') active-btn
                           @endif">
                             {{ $customer_visit->action }}
                           </span>
                         </td>
+                        <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ date('d/m/Y - H:i', strtotime($customer_visit->visit_date)) }}</p></td>
                         <td class="text-right">
                           <div class="btn-group">
                             <div class="action">
@@ -82,20 +85,24 @@
                               </a>
                             </div>
                             @can('customer_visit-edit')
-                            <div class="action">
-                              <a href="{{ url('/user/customer_visits/edit/'.$customer_visit->id) }}" data-toggle="tooltip" data-placement="bottom" title="Editar">
-                                <button class="text-info"><i class="lni lni-pencil"></i></button>
-                              </a>
-                            </div>
+                              @if ($customer_visit->status == 'Pendiente')
+                                <div class="action">
+                                  <a href="{{ url('/user/customer_visits/edit/'.$customer_visit->id) }}" data-toggle="tooltip" data-placement="bottom" title="Editar">
+                                    <button class="text-info"><i class="lni lni-pencil"></i></button>
+                                  </a>
+                                </div>
+                              @endif
                             @endcan
                             @can('customer_visit-delete')
-                            <form method="POST" action="{{ url('/user/customer_visits/delete/'.$customer_visit->id) }}" data-toggle="tooltip" data-placement="bottom" title="Eliminar">
-                              @csrf
-                              <div class="action">
-                                <input name="_method" type="hidden" value="DELETE">
-                                <button type="submit" class="text-danger"><i class="lni lni-trash-can"></i></button>
-                              </div>
-                            </form>
+                              @if ($customer_visit->status == 'Procesado' || $customer_visit->status == 'Pendiente')
+                                <form method="POST" action="{{ url('/user/customer_visits/delete/'.$customer_visit->id) }}" data-toggle="tooltip" data-placement="bottom" title="Cancelar">
+                                  @csrf
+                                  <div class="action">
+                                    <input name="_method" type="hidden" value="DELETE">
+                                    <button type="submit" class="text-danger"><i class="lni lni-trash-can"></i></button>
+                                  </div>
+                                </form>
+                              @endif
                             @endcan
                           </div>
                         </td>

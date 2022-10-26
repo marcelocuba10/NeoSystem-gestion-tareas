@@ -44,9 +44,9 @@ class CustomerVisitController extends Controller
                 'customers.estate'
             )
             ->orderBy('customer_visits.created_at', 'DESC')
-            ->paginate(10);
+            ->paginate(20);
 
-        return view('user::customer_visits.index', compact('customer_visits'))->with('i', (request()->input('page', 1) - 1) * 10);
+        return view('user::customer_visits.index', compact('customer_visits'))->with('i', (request()->input('page', 1) - 1) * 20);
     }
 
     public function create()
@@ -58,6 +58,7 @@ class CustomerVisitController extends Controller
 
         $customers = DB::table('customers')
             ->where('customers.idReference', '=', $idRefCurrentUser)
+            ->where('customers.status', '=', 1)
             ->select('customers.id', 'customers.name')
             ->get();
 
@@ -124,10 +125,8 @@ class CustomerVisitController extends Controller
             if (strlen($request->product_id[0]) > 10) {
                 return back()->with('error', 'Por favor, adicione un producto.');
             } else {
-
-                /** create temporal CustomerVisit */
                 $input['type'] = 'Presupuesto';
-                $input['status'] = 'Visitado';
+                $input['status'] = 'Pendiente';
                 $input['visit_date'] = Carbon::now();
                 $input['visit_number'] = $this->generateUniqueCodeVisit();
                 $input['seller_id'] = $idRefCurrentUser;
@@ -186,7 +185,7 @@ class CustomerVisitController extends Controller
 
             $input['visit_number'] = $this->generateUniqueCodeVisit();
             $input['type'] = 'Sin Presupuesto';
-            $input['status'] = 'Visitado';
+            $input['status'] = 'Pendiente';
             $input['visit_date'] = Carbon::now();
             $input['seller_id'] = $idRefCurrentUser;
             $customer_visit = CustomerVisit::create($input);
@@ -308,6 +307,7 @@ class CustomerVisitController extends Controller
 
         $customers = DB::table('customers')
             ->where('customers.idReference', '=', $idRefCurrentUser)
+            ->where('customers.status', '=', 1)
             ->select('customers.id', 'customers.name')
             ->get();
 
@@ -333,6 +333,8 @@ class CustomerVisitController extends Controller
 
     public function update(Request $request, $id)
     {
+        $idRefCurrentUser = Auth::user()->idReference;
+
         /** date validation, not less than 1980 and not greater than the current year **/
         $initialDate = '1980-01-01';
         $currentDate = (date('Y') + 2) . '-01-01'; //current date + 2 year
@@ -401,7 +403,7 @@ class CustomerVisitController extends Controller
 
                     $sale['invoice_number'] = $customer_visit->visit_number;
                     $sale['visit_id'] = $customer_visit->id;
-                    $sale['seller_id'] = Auth::user()->idReference;
+                    $sale['seller_id'] = $idRefCurrentUser;
                     $sale['customer_id'] = $customer_visit->customer_id;
                     $sale['order_date'] = $customer_visit->visit_date;
                     $sale['type'] = 'Presupuesto';
@@ -421,7 +423,7 @@ class CustomerVisitController extends Controller
                     $differenceArray = array_diff($request->product_id, $order_details);
 
                     if (count($differenceArray) > 0) {
-                        
+
                         /** Array have news product_id, add news items order detail*/
                         foreach ($differenceArray as $key => $value) {
                             if (intval($request->qty[$key]) <= 0) {
@@ -497,13 +499,49 @@ class CustomerVisitController extends Controller
                 /** add extra items in customer visit */
                 $input['type'] = 'Presupuesto';
                 $input['visit_date'] = Carbon::now();
-                $input['seller_id'] = Auth::user()->idReference;
+                $input['seller_id'] = $idRefCurrentUser;
                 $customer_visit->update($input);
             }
         } elseif ($request->isSetOrder == 'false') {
             $input['visit_date'] = Carbon::now();
             $customer_visit = CustomerVisit::find($id);
             $customer_visit->update($input);
+
+            /** check if next_visit_date is marked, create or update appointment */
+            if ($input['next_visit_date'] != 'No marcado') {
+
+                $appointment = DB::table('appointments')
+                    ->where('appointments.visit_id', '=', $customer_visit->id)
+                    ->first();
+
+
+
+                /** if appointment exist, update, else create new appointment */
+                if ($appointment) {
+
+                    DB::table('appointments')
+                        ->where('appointments.visit_id', '=', $customer_visit->id)
+                        ->where('appointments.idReference', '=', $idRefCurrentUser)
+                        ->update([
+                            'idReference' => $idRefCurrentUser,
+                            'visit_id' => $customer_visit->id,
+                            'customer_id' => $input['customer_id'],
+                            'date' => $input['next_visit_date'],
+                            'hour' => $input['next_visit_hour'],
+                            'action' => $input['action'],
+                            'status' => 'Pendiente'
+                        ]);
+                } else {
+                    $field['idReference'] = $idRefCurrentUser;
+                    $field['visit_id'] = $customer_visit->id;
+                    $field['customer_id'] = $input['customer_id'];
+                    $field['date'] = $input['next_visit_date'];
+                    $field['hour'] = $input['next_visit_hour'];
+                    $field['action'] =  $input['action'];
+                    $field['status'] = 'Pendiente';
+                    Appointment::create($field);
+                }
+            }
         }
 
         return redirect()->to('/user/customer_visits')->with('message', 'Visita Cliente actualizada correctamente.');
@@ -533,7 +571,7 @@ class CustomerVisitController extends Controller
                     'customers.estate'
                 )
                 ->orderBy('customer_visits.created_at', 'DESC')
-                ->paginate(10);
+                ->paginate(20);
         } else {
             $customer_visits = DB::table('customer_visits')
                 ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
@@ -557,7 +595,7 @@ class CustomerVisitController extends Controller
                 ->paginate();
         }
 
-        return view('user::customer_visits.index', compact('customer_visits', 'search'))->with('i', (request()->input('page', 1) - 1) * 10);
+        return view('user::customer_visits.index', compact('customer_visits', 'search'))->with('i', (request()->input('page', 1) - 1) * 20);
     }
 
     public function generateInvoicePDF(Request $request)
@@ -577,6 +615,7 @@ class CustomerVisitController extends Controller
                 'customer_visits.objective',
                 'customer_visits.action',
                 'customer_visits.type',
+                'customer_visits.status',
                 'customers.name AS customer_name',
                 'customers.estate',
                 'customers.doc_id',
@@ -645,7 +684,43 @@ class CustomerVisitController extends Controller
 
     public function destroy($id)
     {
-        CustomerVisit::find($id)->delete();
-        return redirect()->to('/user/customer_visits')->with('message', 'Visita cliente eliminado correctamente');
+        $idRefCurrentUser = Auth::user()->idReference;
+
+        $customer_visit = DB::table('customer_visits')
+            ->where('customer_visits.id', '=', $id)
+            ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+            ->select('id', 'status', 'next_visit_date', 'action')
+            ->first();
+
+        /** is have next_visit_date, need update status in the appointment*/
+        if ($customer_visit->next_visit_date != 'No marcado') {
+            DB::table('appointments')
+                ->where('appointments.visit_id', '=', $id)
+                ->where('appointments.idReference', '=', $idRefCurrentUser)
+                ->update([
+                    'status' => 'Cancelado', //appointment status canceled
+                ]);
+        }
+
+        /** is customer_visit have order, need update status in the sale*/
+        if ($customer_visit->action == 'Enviar Presupuesto') {
+            DB::table('sales')
+                ->where('sales.visit_id', '=', $id)
+                ->where('sales.seller_id', '=', $idRefCurrentUser)
+                ->update([
+                    'status' => 'Cancelado', //sale status canceled
+                ]);
+        }
+
+        DB::table('customer_visits')
+            ->where('customer_visits.id', '=', $id)
+            ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+            ->update([
+                'status' => 'Cancelado', //customer visit status canceled
+            ]);
+
+        //CustomerVisit::find($id)->delete();
+
+        return redirect()->to('/user/customer_visits')->with('message', 'Visita cliente cancelado correctamente');
     }
 }

@@ -34,7 +34,8 @@ class CustomersController extends Controller
                 'email',
                 'estate',
                 'phone',
-                'category'
+                'category',
+                'status'
             )
             ->orderBy('created_at', 'DESC')
             ->paginate(10);
@@ -371,20 +372,11 @@ class CustomersController extends Controller
                 ->select(
                     'id',
                     'name',
-                    'last_name',
-                    'category',
-                    'potential_products',
-                    'is_vigia',
                     'email',
-                    'address',
                     'estate',
                     'phone',
-                    'objective',
-                    'doc_id',
-                    'unit_quantity',
-                    'result_of_the_visit',
-                    'next_visit_date',
-                    'next_visit_hour'
+                    'category',
+                    'status'
                 )
                 ->orderBy('created_at', 'DESC')
                 ->paginate(10);
@@ -395,20 +387,11 @@ class CustomersController extends Controller
                 ->select(
                     'id',
                     'name',
-                    'last_name',
-                    'category',
-                    'potential_products',
-                    'is_vigia',
                     'email',
-                    'address',
                     'estate',
                     'phone',
-                    'objective',
-                    'doc_id',
-                    'unit_quantity',
-                    'result_of_the_visit',
-                    'next_visit_date',
-                    'next_visit_hour'
+                    'category',
+                    'status'
                 )
                 ->orderBy('created_at', 'DESC')
                 ->paginate();
@@ -440,7 +423,31 @@ class CustomersController extends Controller
 
     public function destroy($id)
     {
-        Customers::find($id)->delete();
-        return redirect()->to('/user/customers')->with('message', 'Customer deleted successfully');
+        $idRefCurrentUser = Auth::user()->idReference;
+
+        $customer = DB::table('customers')
+            ->where('customers.id', '=', $id)
+            ->select('id', 'status')
+            ->first();
+
+        if ($customer->status == 1) {
+            DB::table('customers')
+                ->where('customers.id', '=', $id)
+                ->where('customers.idReference', '=', $idRefCurrentUser)
+                ->update([
+                    'status' => 0, //customer status active
+                ]);
+        } elseif ($customer->status == 0) {
+            DB::table('customers')
+                ->where('customers.id', '=', $id)
+                ->where('customers.idReference', '=', $idRefCurrentUser)
+                ->update([
+                    'status' => 1, //customer status inactive
+                ]);
+        }
+
+        //Customers::find($id)->delete();
+
+        return redirect()->to('/user/customers')->with('message', 'Cliente eliminado correctamente.');
     }
 }

@@ -1,5 +1,6 @@
   @csrf
   <div class="row">
+    <!-- if sale is order and not contain visit_id, show data from sales -- editable -->
     @if ($sale->type == 'Presupuesto' && !$sale->visit_id)
       <div class="col-5">
         <div class="select-style-1">
@@ -13,119 +14,104 @@
           </div>
         </div>
       </div>
-      <!-- end col --> 
       <div class="col-3">
         <div class="input-style-1">
           <label>Fecha/Hora de Venta</label>
           <input type="text" name="visit_date" value="{{ date('d/m/Y - H:i', strtotime($currentDate)) }}" readonly>
         </div>
       </div>
-      <!-- end col -->
       <div class="col-sm-2">
         <div class="input-style-1">
           <label>Tipo</label>
           <input value="{{ $sale->type }}" type="text" readonly>
         </div>
       </div>
-      <!-- end col -->
       <div class="col-2">
         <div class="input-style-1">
           <label>Estado</label>
           <input type="text" value="{{ $sale->status }}" readonly>
         </div>
       </div>
-      <!-- end col -->
     @endif
 
-    @if($sale->type == 'Presupuesto' && $sale->visit_id)
-      <div class="col-4">
-        <div class="input-style-1">
-          <label>Cliente</label>
-          <input type="text" value="{{ $sale->customer_name ?? old('customer_name') }}" readonly>
-        </div>
-      </div>
-      <!-- end col -->
-      <div class="col-3">
-        <div class="input-style-1">
-          <label>Fecha/Hora de Visita</label>
-          <input type="text" value="{{ $sale->visit_date ?? old('visit_date') }}" readonly>
-        </div>
-      </div>
-      <!-- end col -->
-      <div class="col-3">
-        <div class="input-style-1">
-          <label>Fecha Próxima Visita</label>
-          <input type="text" value="{{ $sale->next_visit_date ?? old('next_visit_date') }}" readonly>
-        </div>
-      </div>
-      <!-- end col -->
-      <div class="col-2">
-        <div class="input-style-1">
-          <label>Hora Próxima Visita</label>
-            <input type="text" value="{{ $sale->next_visit_hour ?? old('next_visit_hour') }}" readonly>
-        </div>
-      </div>
-      <!-- end col -->
-      <div class="col-2">
-        <div class="input-style-1">
-          <label>Estado</label>
-          <input type="text" value="{{ $sale->status ?? old('status') }}" readonly>
-        </div>
-      </div>
-      <!-- end col -->
-      <div class="col-5">
-        <div class="input-style-1">
-          <label>Resultado de la Visita</label>
-          <textarea type="text" value="{{ $sale->result_of_the_visit }}" readonly>{{ $sale->result_of_the_visit }}</textarea>
-        </div>
-      </div>
-      <!-- end col -->
-      <div class="col-5">
-        <div class="input-style-1">
-          <label>Objetivos</label>
-          <textarea type="text" value="{{ $sale->objective ?? old('objective') }}" readonly>{{ $sale->objective ?? old('objective') }}</textarea>
-        </div>
-      </div>
-      <!-- end col -->
-    @endif
-
-
-    @if ($sale->type == 'Venta')
+    <!-- if sale contain not contain visit_id, show data from sale -- readonly -->
+    @if ($sale->type == 'Venta' && !$sale->visit_id)
       <div class="col-5">
         <div class="input-style-1">
           <label>Cliente</label>
           <input type="text" value="{{ $sale->customer_name ?? old('customer_name') }}" readonly>
         </div>
       </div>
-      <!-- end col -->
       <div class="col-3">
         <div class="input-style-1">
           <label>Fecha/Hora</label>
           <input type="text" value="{{ $sale->sale_date ?? old('sale_date') }}" readonly>
         </div>
       </div>
-      <!-- end col -->
       <div class="col-sm-2">
         <div class="input-style-1">
           <label>Tipo</label>
           <input value="{{ $sale->type }}" type="text" readonly>
         </div>
       </div>
-      <!-- end col -->
       <div class="col-2">
         <div class="input-style-1">
           <label>Estado</label>
           <input type="text" value="{{ $sale->status }}" readonly>
         </div>
       </div>
-      <!-- end col -->
     @endif
 
+    <!-- if sale contain visit_id, show data from customer visit -- readonly -->
+    @if($sale->visit_id)
+      <div class="col-4">
+        <div class="input-style-1">
+          <label>Cliente</label>
+          <input type="text" value="{{ $sale->customer_name ?? old('customer_name') }}" readonly>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="input-style-1">
+          <label>Fecha/Hora de Visita</label>
+          <input type="text" value="{{ $sale->visit_date ?? old('visit_date') }}" readonly>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="input-style-1">
+          <label>Fecha Próxima Visita</label>
+          <input type="text" value="{{ $sale->next_visit_date ?? old('next_visit_date') }}" readonly>
+        </div>
+      </div>
+      <div class="col-2">
+        <div class="input-style-1">
+          <label>Hora Próxima Visita</label>
+            <input type="text" value="{{ $sale->next_visit_hour ?? old('next_visit_hour') }}" readonly>
+        </div>
+      </div>
+      <div class="col-2">
+        <div class="input-style-1">
+          <label>Estado</label>
+          <input type="text" value="{{ $sale->status ?? old('status') }}" readonly>
+        </div>
+      </div>
+      <div class="col-5">
+        <div class="input-style-1">
+          <label>Resultado de la Visita</label>
+          <textarea type="text" value="{{ $sale->result_of_the_visit }}" readonly>{{ $sale->result_of_the_visit }}</textarea>
+        </div>
+      </div>
+      <div class="col-5">
+        <div class="input-style-1">
+          <label>Objetivos</label>
+          <textarea type="text" value="{{ $sale->objective ?? old('objective') }}" readonly>{{ $sale->objective ?? old('objective') }}</textarea>
+        </div>
+      </div>
+    @endif
 
     <h5 class="text-medium mb-20" >Detalles {{ $sale->type }}</h5>
 
+    <!-- if is order created with sales page -- editable -->
     @if ($sale->type == 'Presupuesto' && !$sale->visit_id)
-
       <div class="col-12" id="setOrder">
         <div class="table-wrapper table-responsive">
           <table class="table top-selling-table mb-50">
@@ -179,7 +165,8 @@
           </table>
         </div>
       </div>
-    @elseif($sale->type == 'Presupuesto' && $sale->visit_id)
+    <!-- if is order or sale created with customer_visit or sales page -- readonly -->  
+    @else
       <div class="table-responsive">
         <table class="invoice-table table">
           <thead style="background-color: #DAEFFE;">
@@ -225,7 +212,9 @@
           </tbody>
         </table>
       </div>
-    @elseif($sale->type == 'Venta')
+    @endif  
+    <!-- if is order created with customer_visit page -- readonly -->    
+    {{-- @elseif($sale->type == 'Venta')
       <div class="table-responsive">
         <table class="invoice-table table">
           <thead style="background-color: #DAEFFE;">
@@ -271,8 +260,9 @@
           </tbody>
         </table>
       </div>
-    @endif
+    @endif --}}
     
+    <!-- Actions buttons -->    
     @if ($sale->type == 'Presupuesto')
       <div class="col-12">
         <div class="button-group d-flex justify-content-center flex-wrap">
@@ -293,13 +283,17 @@
           </div>
         </div>
       </div>
-    @elseif($sale->type == 'Venta' && $sale->status != 'Cancelado')
+    @elseif($sale->type == 'Venta')
       <div class="col-12">
         <div class="button-group d-flex justify-content-center flex-wrap">
           <input type="hidden" name="sale_id" id="sale_id">
           <input type="hidden" name="invoice_number" id="invoice_number">
           <input type="hidden" name="cancelSale" id="cancelSale">
-          <button type="submit" data-id="{{$sale->id}}" data-invoice_number="{{$sale->invoice_number}}" class="main-btn danger-btn btn-hover m-2 btn-cancelSale">Cancelar Venta</button>
+          @can('sales-delete')
+            @if ($sale->status != 'Cancelado')
+              <button type="submit" data-id="{{$sale->id}}" data-invoice_number="{{$sale->invoice_number}}" class="main-btn danger-btn btn-hover m-2 btn-cancelSale">Cancelar Venta</button>
+            @endif
+          @endcan
           <div class="button-group d-flex justify-content-center flex-wrap">
             <a class="main-btn primary-btn-outline m-2" href="{{ url('/user/sales') }}">Atrás</a>
           </div>
@@ -421,16 +415,15 @@
       var tr =$(this).parent().parent();
       var id = tr.find('.product').val();
       var sale_id = <?php echo json_encode($sale->id); ?>;
-      console.log('product id: ' + id + ' visit_id: ' + sale_id );
       $.ajax({
           type: 'DELETE',
           url     :"{{ URL::to('/user/sales/deleteItemOrder') }}",
           dataType: 'json',
           data: {
             "_method" : "DELETE",
-            '_token': '{{ csrf_token() }}',
-            'id':id,
-            'sale_id':sale_id
+            '_token' : '{{ csrf_token() }}',
+            'id' : id,
+            'sale_id' : sale_id
           },
           success:function (response) {
             console.log('response: '+ response);

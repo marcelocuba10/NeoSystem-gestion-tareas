@@ -53,6 +53,7 @@ class AppointmentController extends Controller
 
         $customers = DB::table('customers')
             ->where('customers.idReference', '=', $idRefCurrentUser)
+            ->where('customers.status', '=', 1)
             ->select('customers.id', 'customers.name')
             ->get();
 
@@ -66,6 +67,8 @@ class AppointmentController extends Controller
 
     public function store(Request $request)
     {
+        $idRefCurrentUser = Auth::user()->idReference;
+
         /** date validation, not less than 1980 and not greater than the current year **/
         $initialDate = '1980-01-01';
         $currentDate = (date('Y') + 2) . '-01-01'; //current date + 2 year
@@ -80,8 +83,9 @@ class AppointmentController extends Controller
 
         $input = $request->all();
 
-        /** add the idReference of the user */
-        $input['idReference'] = Auth::user()->idReference;
+        /** Add input extra values */
+        $input['idReference'] = $idRefCurrentUser;
+        $input['status'] = 'Pendiente';
 
         Appointment::create($input);
 
@@ -95,6 +99,7 @@ class AppointmentController extends Controller
 
         $customers = DB::table('customers')
             ->where('customers.idReference', '=', $idRefCurrentUser)
+            ->where('customers.status', '=', 1)
             ->select('customers.id', 'customers.name')
             ->get();
 

@@ -119,6 +119,18 @@
     background-color: #9b51e0cf;
     color: #fff;
 }
+.status-btn.active-btn {
+    color: #fff;
+    background: #4a6cf7d6;
+}
+.danger-btn {
+    background: #d50100c7;
+    color: #fff;
+}
+
+.text-disabled {
+    color: #7A92A5 !important;
+}
 
 .value-button {
     display: inline-block;

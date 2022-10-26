@@ -32,158 +32,126 @@
           <div class="card-style mb-30">
 
             <div class="row">
-              <div class="col-5">
-                <div class="input-style-1">
-                  <label>Cliente</label>
-                  <input type="text" value="{{ $sale->customer_name ?? old('customer_name') }}" readonly>
+              @if (!$sale->visit_id)
+
+                <div class="col-5">
+                  <div class="input-style-1">
+                    <label>Cliente</label>
+                    <input type="text" value="{{ $sale->customer_name ?? old('customer_name') }}" readonly>
+                  </div>
                 </div>
-              </div>
-              <!-- end col -->
-              @if ($sale->type == 'Venta')
                 <div class="col-3">
                   <div class="input-style-1">
                     <label>Fecha/Hora</label>
                     <input type="text" value="{{ date('d/m/Y - H:i', strtotime($sale->sale_date)) }}" readonly>
                   </div>
                 </div>
-                <!-- end col -->
                 <div class="col-2">
                   <div class="input-style-1">
                     <label>Tipo</label>
                     <input type="text" value="{{ $sale->type }}" readonly>
                   </div>
                 </div>
-                <!-- end col -->
                 <div class="col-2">
                   <div class="input-style-1">
                     <label>Estado</label>
                     <input type="text" value="{{ $sale->status }}" readonly>
                   </div>
                 </div>
-                <!-- end col -->
-              @elseif($sale->type == 'Presupuesto')
-                @if ($sale->visit_id)
-                  <div class="col-3">
-                    <div class="input-style-1">
-                      <label>Fecha/Hora de Visita</label>
-                      <input type="text" value="{{ $sale->visit_date ?? old('visit_date') }}" readonly>
-                    </div>
+
+              @else
+
+                <div class="col-5">
+                  <div class="input-style-1">
+                    <label>Cliente</label>
+                    <input type="text" value="{{ $sale->customer_name ?? old('customer_name') }}" readonly>
                   </div>
-                  <!-- end col -->
-                  <div class="col-2">
-                    <div class="input-style-1">
-                      <label>Fecha Próxima Visita</label>
-                      <input type="text" value="{{ $sale->next_visit_date ?? old('next_visit_date') }}" readonly>
-                    </div>
+                </div>
+                <div class="col-3">
+                  <div class="input-style-1">
+                    <label>Fecha/Hora de Visita</label>
+                    <input type="text" value="{{ $sale->visit_date ?? old('visit_date') }}" readonly>
                   </div>
-                  <!-- end col -->
-                  <div class="col-2">
-                    <div class="input-style-1">
-                      <label>Hora Próxima Visita</label>
-                        <input type="text" value="{{ $sale->next_visit_hour ?? old('next_visit_hour') }}" readonly>
-                    </div>
+                </div>
+                <div class="col-2">
+                  <div class="input-style-1">
+                    <label>Fecha Próxima Visita</label>
+                    <input type="text" value="{{ $sale->next_visit_date ?? old('next_visit_date') }}" readonly>
                   </div>
-                  <!-- end col -->
-                  <div class="col-2">
-                    <div class="input-style-1">
-                      <label>Estado</label>
-                      <input type="text" value="{{ $sale->status ?? old('status') }}" readonly>
-                    </div>
+                </div>
+                <div class="col-2">
+                  <div class="input-style-1">
+                    <label>Hora Próxima Visita</label>
+                      <input type="text" value="{{ $sale->next_visit_hour ?? old('next_visit_hour') }}" readonly>
                   </div>
-                  <!-- end col -->
-                  <div class="col-5">
-                    <div class="input-style-1">
-                      <label>Resultado de la Visita</label>
-                      <textarea type="text" value="{{ $sale->result_of_the_visit }}" readonly>{{ $sale->result_of_the_visit }}</textarea>
-                    </div>
+                </div>
+                <div class="col-2">
+                  <div class="input-style-1">
+                    <label>Estado</label>
+                    <input type="text" value="{{ $sale->status ?? old('status') }}" readonly>
                   </div>
-                  <!-- end col -->
-                  <div class="col-5">
-                    <div class="input-style-1">
-                      <label>Objetivos</label>
-                      <textarea type="text" value="{{ $sale->objective ?? old('objective') }}" readonly>{{ $sale->objective ?? old('objective') }}</textarea>
-                    </div>
+                </div>
+                <div class="col-5">
+                  <div class="input-style-1">
+                    <label>Resultado de la Visita</label>
+                    <textarea type="text" value="{{ $sale->result_of_the_visit }}" readonly>{{ $sale->result_of_the_visit }}</textarea>
                   </div>
-                  <!-- end col -->
-                @else
-                  <div class="col-3">
-                    <div class="input-style-1">
-                      <label>Fecha/Hora</label>
-                      <input type="text" value="{{ date('d/m/Y - H:i', strtotime($sale->sale_date)) }}" readonly>
-                    </div>
+                </div>
+                <div class="col-5">
+                  <div class="input-style-1">
+                    <label>Objetivos</label>
+                    <textarea type="text" value="{{ $sale->objective ?? old('objective') }}" readonly>{{ $sale->objective ?? old('objective') }}</textarea>
                   </div>
-                  <!-- end col -->
-                  <div class="col-2">
-                    <div class="input-style-1">
-                      <label>Tipo</label>
-                      <input type="text" value="{{ $sale->type }}" readonly>
-                    </div>
-                  </div>
-                  <!-- end col -->
-                  <div class="col-2">
-                    <div class="input-style-1">
-                      <label>Estado</label>
-                      <input type="text" value="{{ $sale->status }}" readonly>
-                    </div>
-                  </div>
-                  <!-- end col -->
-                @endif
+                </div>
+
               @endif
               
-              @if ($sale->type == 'Presupuesto')
-                <h5 class="text-medium mb-20" >Detalles {{ $sale->type }}</h5>
-                <div class="table-responsive">
-                  <table class="invoice-table table">
-                    <thead style="background-color: #DAEFFE;">
+              <h5 class="text-medium mb-20" >Detalles {{ $sale->type }}</h5>
+              <div class="table-responsive">
+                <table class="invoice-table table">
+                  <thead style="background-color: #DAEFFE;">
+                    <tr>
+                      <th>
+                        <h6 class="text-sm text-medium">Cod</h6>
+                      </th>
+                      <th>
+                        <h6 class="text-sm text-medium">Producto</h6>
+                      </th>
+                      <th>
+                        <h6 class="text-sm text-medium">Precio</h6>
+                      </th>
+                      <th>
+                        <h6 class="text-sm text-medium">Cantidad</h6>
+                      </th>
+                      <th>
+                        <h6 class="text-sm text-medium">SubTotal</h6>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach ($order_detail as $item_order)
                       <tr>
-                        <th>
-                          <h6 class="text-sm text-medium">Cod</h6>
-                        </th>
-                        <th>
-                          <h6 class="text-sm text-medium">Producto</h6>
-                        </th>
-                        <th>
-                          <h6 class="text-sm text-medium">Precio</h6>
-                        </th>
-                        <th>
-                          <h6 class="text-sm text-medium">Cantidad</h6>
-                        </th>
-                        <th>
-                          <h6 class="text-sm text-medium">SubTotal</h6>
-                        </th>
+                        <td><p class="text-sm">{{ $item_order->custom_code }}</td>
+                        <td><p class="text-sm" data-toggle="tooltip" data-placement="bottom" title="{{ $item_order->name }}">{{ Str::limit($item_order->name, 65) }}</p></td>
+                        <td><p class="text-sm">G$ {{number_format($item_order->price, 0)}}</p></td>
+                        <td><p class="text-sm">{{ $item_order->quantity }}</p></td>
+                        <td><p class="text-sm">G$ {{number_format($item_order->amount, 0)}}</p></td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      @foreach ($order_detail as $item_order)
-                        <tr>
-                          <td><p class="text-sm">{{ $item_order->custom_code }}</td>
-                          <td><p class="text-sm" data-toggle="tooltip" data-placement="bottom" title="{{ $item_order->name }}">{{ Str::limit($item_order->name, 65) }}</p></td>
-                          <td><p class="text-sm">G$ {{number_format($item_order->price, 0)}}</p></td>
-                          <td><p class="text-sm">{{ $item_order->quantity }}</p></td>
-                          <td><p class="text-sm">G$ {{number_format($item_order->amount, 0)}}</p></td>
-                        </tr>
-                      @endforeach
-                      <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>
-                          <h4>Total</h4>
-                        </td>
-                        <td>
-                          <h4>G$ {{number_format($total_order, 0)}}</h4>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              @else
-                <div class="title mb-30">
-                  <hr>
-                  <h6>Sin presupuesto.</h6>
-                  <hr>
-                </div>
-              @endif
+                    @endforeach
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>
+                        <h4>Total</h4>
+                      </td>
+                      <td>
+                        <h4>G$ {{number_format($total_order, 0)}}</h4>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
           
               <div class="col-12">
                 <div class="button-group d-flex justify-content-center flex-wrap">

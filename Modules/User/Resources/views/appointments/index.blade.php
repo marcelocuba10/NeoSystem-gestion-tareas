@@ -83,11 +83,11 @@
                     <tr>
                       <th><h6>#</h6></th>
                       <th><h6>Cliente</h6></th>
-                      <th><h6>Teléfono</h6></th>
                       <th><h6>Localidad</h6></th>
-                      <th><h6>Acción</h6></th>
                       <th><h6>Fecha</h6></th>
                       <th><h6>Hora</h6></th>
+                      <th><h6>Acción</h6></th>
+                      <th><h6>Estado</h6></th>
                       <th><h6>Acciones</h6></th>
                     </tr>
                   </thead>
@@ -97,22 +97,32 @@
                         <tr>
                           <td class="text-sm"><h6 class="text-sm">{{ ++$i }}</h6></td>
                           @if ($appointment->visit_id)
-                            <td class="min-width"><h5 class="text-bold text-dark"><a href="{{ url('/user/customer_visits/show/'.$appointment->visit_id ) }}">{{ $appointment->customer_name }}</a></h5></td>
+                            <td class="min-width"><h5 class="text-bold {{ ($appointment->status == 'Procesado' || $appointment->status == 'Pendiente') ? 'text-dark' : 'text-disabled' }}"><a href="{{ url('/user/customer_visits/show/'.$appointment->visit_id ) }}">{{ $appointment->customer_name }}</a></h5></td>
                           @else
                             <td class="min-width"><h5 class="text-bold text-dark"><a href="{{ url('/user/appointments/show/'.$appointment->id ) }}">{{ $appointment->customer_name }}</a></h5></td>
                           @endif
-                          <td class="min-width"><p>{{ $appointment->customer_phone }}</p></td>
                           <td class="min-width"><p><i class="lni lni-map-marker mr-10"></i>{{ $appointment->customer_estate }}</p></td>
+                          <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ date('d/m/Y', strtotime($appointment->date)) }}</p></td>
+                          <td class="min-width"><p><i class="lni lni-timer mr-10"></i>{{ $appointment->hour }}</p></td>
                           <td class="min-width">
                             <span class="status-btn 
-                            @if($appointment->action == 'Realizar Llamada') info-btn
-                            @elseIf($appointment->action == 'Visitar Personalmente') orange-btn
-                            @endif">
+                              @if($appointment->action == 'Realizar Llamada') info-btn
+                              @elseIf($appointment->action == 'Visitar Personalmente') orange-btn
+                              @elseIf($appointment->action == 'Enviar Presupuesto') active-btn
+                              @endif">
                               {{ $appointment->action }}
                             </span>
                           </td>
-                          <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ date('d/m/Y', strtotime($appointment->date)) }}</p></td>
-                          <td class="min-width"><p><i class="lni lni-timer mr-10"></i>{{ $appointment->hour }}</p></td>
+                          <td class="min-width">
+                            <span class="status-btn 
+                              @if($appointment->status == 'Procesado') primary-btn
+                              @elseIf($appointment->status == 'No procesado') danger-btn
+                              @elseIf($appointment->status == 'Pendiente') primary-btn
+                              @elseIf($appointment->status == 'Cancelado') light-btn
+                              @endif">
+                              {{ $appointment->status }}
+                            </span>
+                          </td>
                           <td class="text-right">
                             <div class="btn-group">
                               @if ($appointment->visit_id)
@@ -121,22 +131,15 @@
                                     <button class="text-active"><i class="lni lni-eye"></i></button>
                                   </a>
                                 </div>
-                                @can('appointment-edit')
-                                  <div class="action">
-                                    <a href="{{ url('/user/customer_visits/edit/'.$appointment->visit_id) }}" data-toggle="tooltip" data-placement="bottom" title="Editar">
-                                      <button class="text-info"><i class="lni lni-pencil"></i></button>
-                                    </a>
-                                  </div>
-                                @endcan
-                                @can('appointment-delete')
-                                  <form method="POST" action="{{ url('/user/customer_visits/delete/'.$appointment->visit_id) }}" data-toggle="tooltip" data-placement="bottom" title="Eliminar">
-                                    @csrf
+                                @if ($appointment->status == 'Procesado' || $appointment->status == 'Pendiente')
+                                  @can('appointment-edit')
                                     <div class="action">
-                                      <input name="_method" type="hidden" value="DELETE">
-                                      <button type="submit" class="text-danger"><i class="lni lni-trash-can"></i></button>
+                                      <a href="{{ url('/user/customer_visits/edit/'.$appointment->visit_id) }}" data-toggle="tooltip" data-placement="bottom" title="Editar">
+                                        <button class="text-info"><i class="lni lni-pencil"></i></button>
+                                      </a>
                                     </div>
-                                  </form>
-                                @endcan
+                                  @endcan
+                                @endif
                               @else
                                 <div class="action">
                                   <a href="{{ url('/user/appointments/show/'.$appointment->id) }}" data-toggle="tooltip" data-placement="bottom" title="Ver">
