@@ -181,7 +181,12 @@ $(document).ready(function(){
       success:function (response) {
         var data = response;
         var string_data = JSON.stringify(data); 
-        tr.find('.price').val(data.sale_price);
+
+        //convert number to currency format to show
+        var price = data.sale_price;
+        price_currency = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        //price_currency = accounting.formatMoney(price, "", 0, ".", ".");
+        tr.find('.price').val(price_currency);
 
         var qty = 1;
         var amount = (qty * data.sale_price);
@@ -197,6 +202,10 @@ $(document).ready(function(){
     var tr = $(this).parent().parent();
     var qty = tr.find('.qty').val();
     var price = tr.find('.price').val();
+
+    //convert currency format to number
+    var price = Number(price.replace(/[^0-9.-]+/g,""));
+
     var amount = (qty * price);
     tr.find('.amount').val(amount);
     total();

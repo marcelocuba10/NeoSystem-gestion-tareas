@@ -19,9 +19,12 @@ class CronJobsController extends Controller
     public function cronjob()
     {
         $currentDate = Carbon::now()->format('Y-m-d');
+        $currentHour = Carbon::now()->format('H:i');
 
         $late_appointments = DB::table('appointments')
-            ->where('appointments.date', '<', $currentDate)
+            ->where('appointments.date', '<=', $currentDate)
+            ->where('appointments.status', '=', 'Pendiente')
+            ->where('appointments.hour', '<', $currentHour)
             ->select(
                 'appointments.id',
                 'appointments.visit_id',

@@ -340,7 +340,7 @@
           tr.find('.qty').val(qty);
 
           //convert number to currency format to show
-          amount = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+          //amount = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
           //amount = accounting.formatMoney(amount, "", 0, ".", ".");
           tr.find('.amount').val(amount);
 
@@ -361,7 +361,7 @@
       var amount = (qty * price);
 
       //convert number to currency format to show
-      amount = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      //amount = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       //amount = accounting.formatMoney(amount, "", 0, ".", ".");
       tr.find('.amount').val(amount);
 
@@ -373,13 +373,13 @@
     var total = 0;
     $('.amount').each(function (index, element) {
       var amount =$(this).val()-0;
-      var amount2 = parseFloat($(this).val() || 0) ;
-      var amount3 = parseFloat($(this).val()).toFixed(3);
-      var amount4 = parseFloat(parseFloat($(this).val()).toFixed(3));
-      console.log('amount format 1: ' + amount);
-      console.log('amount format 2: ' + amount2);
-      console.log('amount format 3: ' + amount3);
-      console.log('amount format 4: ' + amount4);
+      // var amount2 = parseFloat($(this).val() || 0) ;
+      // var amount3 = parseFloat($(this).val()).toFixed(3);
+      // var amount4 = parseFloat(parseFloat($(this).val()).toFixed(3));
+      // console.log('amount format 1: ' + amount);
+      // console.log('amount format 2: ' + amount2);
+      // console.log('amount format 3: ' + amount3);
+      // console.log('amount format 4: ' + amount4);
 
       total += amount;
     })
