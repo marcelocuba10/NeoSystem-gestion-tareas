@@ -61,6 +61,7 @@
   <script src="{{ asset('public/adminLTE/js/polyfill.js') }}"></script>
   <script src="{{ asset('public/adminLTE/js/main.js') }}"></script>
   <script src="{{ asset('public/js/custom.js') }}"></script>
+  <script src="{{ asset('public/js/accounting.min.js') }}"></script>
   <script src="{{ asset('public/js/vanilla-masker.min.js') }}"></script>
   <script src="{{ asset('public/adminLTE/js/apexcharts.min.js') }}"></script>
   <script src="{{ asset('public/adminLTE/js/quill.min.js') }}"></script>
@@ -70,32 +71,55 @@
   <!-- ========= Maskmoney files linkup ======== -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-maskmoney/3.0.2/jquery.maskMoney.min.js" type="text/javascript"></script>
 
+  <!-- ========= MultiSelect linkup ======== -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
   <!-- ========= Scripts ======== -->
   <script>
+    $(document).ready(function() {
+      $('.select2-multiple_1').select2({
+        placeholder: "Seleccione Rubro..",
+        allowClear: true,
+        width: '100%',
+      });
+    });
+    $(document).ready(function() {
+      $('.select2-multiple_2').select2({
+        placeholder: "Seleccione Equipos..",
+        allowClear: true,
+        width: '100%',
+      });
+    });
+  </script>
 
+  <script>
     /** ========= InputMask Currency ======== **/
     $(function() {
-        $('#currency_1').maskMoney({
-          precision: 3,
-          thousands: '.',
-          decimal: '.'
-        });
-        $('#currency_2').maskMoney({
-          precision: 3,
-          thousands: '.',
-          decimal: '.'
-        });
+      $('#currency_1').maskMoney({
+        precision: 3,
+        thousands: '.',
+        decimal: '.'
+      });
+      $('#currency_2').maskMoney({
+        precision: 3,
+        thousands: '.',
+        decimal: '.'
+      });
     })
+  </script>
+  
+  <script>
 
     /** ========= Alert hide ======== **/
     $(document).ready(function() {
         setTimeout(function() {
             $(".alert-success").alert('close');
-        }, 2500);
+        }, 3500);
     
         setTimeout(function() {
             $(".alert-danger").alert('close');
-        }, 2500);
+        }, 3500);
     });
 
     /** ========= InputMask ======== **/
@@ -103,6 +127,7 @@
     function readyInputMask() {
       VMasker(document.getElementById("phone")).maskPattern('(999) 999 999');
       VMasker(document.getElementById("date")).maskPattern('99/99/9999');
+      VMasker(document.getElementById("date_2")).maskPattern('99/99/9999');
     }
 
     /** ========= Tooltip ======== **/

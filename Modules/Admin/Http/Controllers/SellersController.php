@@ -6,15 +6,10 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 //use Illuminate\Routing\Controller;
 use App\Http\Controllers\Controller;
-use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Modules\User\Entities\User;
-
-//spatie
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 
 class SellersController extends Controller
 {
@@ -96,7 +91,7 @@ class SellersController extends Controller
             'status' => 'required|integer|between:0,1',
             'city' => 'nullable|max:50|min:5',
             'estate' => 'required|max:50|min:5',
-            'address' => 'nullable|max:255|min:5',
+            'address' => 'nullable|max:255|min:4',
             'email' => 'nullable|max:50|min:5|email:rfc,dns|unique:users,email',
             'password' => 'required|max:50|min:5',
             'confirm_password' => 'required|max:50|min:5|same:password',
@@ -159,7 +154,25 @@ class SellersController extends Controller
         $userStatus = $user->status;
         $userEstate = $user->estate;
 
-        return view('admin::sellers.show', compact('user', 'status', 'userEstate', 'estates'));
+        /** Get visits by agent */
+        $customer_visits = DB::table('customer_visits')
+            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+            ->where('customer_visits.seller_id', '=', $user->idReference)
+            ->select(
+                'customer_visits.id',
+                'customer_visits.visit_number',
+                'customer_visits.visit_date',
+                'customer_visits.next_visit_date',
+                'customer_visits.status',
+                'customer_visits.type',
+                'customer_visits.action',
+                'customers.name AS customer_name',
+                'customers.estate'
+            )
+            ->orderBy('customer_visits.created_at', 'DESC')
+            ->paginate(20);
+
+        return view('admin::sellers.show', compact('customer_visits', 'user', 'status', 'userEstate', 'estates'));
     }
 
     public function edit($id)
@@ -211,7 +224,7 @@ class SellersController extends Controller
             'status' => 'required|integer|between:0,1',
             'city' => 'nullable|max:50|min:5',
             'estate' => 'required|max:50|min:5',
-            'address' => 'nullable|max:255|min:5',
+            'address' => 'nullable|max:255|min:4',
             'email' => 'required|max:50|min:5|email:rfc,dns|unique:users,email,' . $id,
             'password' => 'nullable|max:50|min:5',
             'confirm_password' => 'nullable|max:20|min:5|same:password',

@@ -1,60 +1,53 @@
-@csrf
-<div class="row">
+  @csrf
+  <div class="row">
     <div class="col-6">
       <div class="input-style-1">
         <label>(*) Razón Social</label>
         <input name="name" value="{{ $user->name ?? old('name') }}" type="text" class="bg-transparent">
       </div>
     </div>
-    <!-- end col -->
     <div class="col-6">
       <div class="input-style-1">
         <label>(*) Nombre del Encargado</label>
         <input name="seller_contact_1" value="{{ $user->seller_contact_1 ?? old('seller_contact_1') }}" type="text" class="bg-transparent">
       </div>
     </div>
-    <!-- end col -->
-    <div class="col-6">
-        <div class="input-style-1">
-            <label>(*) Email</label>
-            <input name="email" value="{{ $user->email ?? old('email') }}" type="email" class="bg-transparent">
-        </div>
-    </div>
-    <!-- end col -->
     <div class="col-6">
       <div class="input-style-1">
-          <label>(*) Contraseña</label>
-          <input name="password" type="password" class="bg-transparent">
-          @if ($user)
-            <span class="form-text m-b-none">Déjelo en blanco si no desea cambiar la contraseña</span>
-          @endif
+        <label>(*) Email</label>
+        <input name="email" value="{{ $user->email ?? old('email') }}" type="email" class="bg-transparent">
       </div>
     </div>
-    <!-- end col -->
     <div class="col-6">
       <div class="input-style-1">
-          <label>(*) Confirmar Contraseña</label>
-          <input name="confirm_password" type="password" class="bg-transparent">
-          @if ($user)
-            <span class="form-text m-b-none">Déjelo en blanco si no desea cambiar la contraseña</span>
-          @endif
+        <label>(*) Contraseña</label>
+        <input name="password" type="password" class="bg-transparent">
+        @if ($user)
+          <span class="form-text m-b-none">Déjelo en blanco si no desea cambiar la contraseña</span>
+        @endif
       </div>
     </div>
-    <!-- end col -->
+    <div class="col-6">
+      <div class="input-style-1">
+        <label>(*) Confirmar Contraseña</label>
+        <input name="confirm_password" type="password" class="bg-transparent">
+        @if ($user)
+          <span class="form-text m-b-none">Déjelo en blanco si no desea cambiar la contraseña</span>
+        @endif
+      </div>
+    </div>
     <div class="col-3">
       <div class="input-style-1">
         <label>Teléfono 1</label>
         <input name="phone_1" value="{{ $user->phone_1 ?? old('phone_1') }}" type="text" class="bg-transparent">
       </div>
     </div>
-    <!-- end col -->
     <div class="col-3">
       <div class="input-style-1">
         <label>Teléfono 2</label>
         <input name="phone_2" value="{{ $user->phone_2 ?? old('phone_2') }}" type="text" class="bg-transparent">
       </div>
     </div>
-    <!-- end col -->
     @if ($currentUserRole == 'SuperAdmin')
       <div class="col-2">
         <div class="select-style-1">
@@ -81,21 +74,18 @@
         </div>
       </div>
     @endif
-    <!-- end col -->
     <div class="col-3">
       <div class="input-style-1">
         <label>(*) Doc Identidad / RUC</label>
         <input name="doc_id" value="{{ $user->doc_id ?? old('doc_id') }}" type="text" class="bg-transparent">
       </div>
     </div>
-    <!-- end col -->
     <div class="col-4">
       <div class="input-style-1">
         <label>Ciudad</label>
         <input name="city" value="{{ $user->city ?? old('city') }}" type="text" class="bg-transparent">
       </div>
     </div>
-    <!-- end col -->
     <div class="col-4">
       <div class="select-style-1">
         <label>(*) Departamento</label>
@@ -108,14 +98,12 @@
         </div>
       </div>
     </div>
-    <!-- end col -->
     <div class="col-8">
       <div class="input-style-1">
         <label>Dirección</label>
         <input name="address" value="{{ $user->address ?? old('address') }}" type="text" class="bg-transparent">
       </div>
     </div>
-    <!-- end col -->
 
     <div class="col-12">
       <div class="button-group d-flex justify-content-center flex-wrap">
@@ -123,5 +111,4 @@
         <a class="main-btn primary-btn-outline m-2" href="{{ url('/admin/sellers') }}">Atrás</a>
       </div>
     </div>
-
-</div>
+  </div>

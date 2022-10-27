@@ -72,9 +72,9 @@ class ReportsController extends Controller
             ->select(
                 'id',
                 'name',
-                'code',
+                'custom_code',
                 'sale_price',
-                'inventory',
+                'updated_at',
             )
             ->orderBy('created_at', 'DESC')
             ->paginate(30);
@@ -84,9 +84,9 @@ class ReportsController extends Controller
                 ->select(
                     'id',
                     'name',
-                    'code',
+                    'custom_code',
                     'sale_price',
-                    'inventory',
+                    'updated_at',
                 )
                 ->orderBy('code', 'DESC')
                 ->get();

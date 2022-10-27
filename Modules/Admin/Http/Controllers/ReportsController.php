@@ -75,9 +75,10 @@ class ReportsController extends Controller
                 'id',
                 'name',
                 'code',
+                'custom_code',
                 'purchase_price',
                 'sale_price',
-                'inventory',
+                'updated_at',
             )
             ->orderBy('created_at', 'DESC')
             ->paginate(30);
@@ -88,9 +89,10 @@ class ReportsController extends Controller
                     'id',
                     'name',
                     'code',
+                    'custom_code',
                     'purchase_price',
                     'sale_price',
-                    'inventory',
+                    'updated_at',
                 )
                 ->orderBy('code', 'DESC')
                 ->get();

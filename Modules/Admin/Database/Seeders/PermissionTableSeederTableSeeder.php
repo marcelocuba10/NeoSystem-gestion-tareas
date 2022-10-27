@@ -17,6 +17,12 @@ class PermissionTableSeederTableSeeder extends Seeder
     {
         Model::unguard();
         $permissions = [
+
+            'customer_visit-sa-list',
+            'customer_visit-sa-create',
+            'customer_visit-sa-edit',
+            'customer_visit-sa-delete',
+
             'multimedia-sa-list',
             'multimedia-sa-create',
             'multimedia-sa-edit',

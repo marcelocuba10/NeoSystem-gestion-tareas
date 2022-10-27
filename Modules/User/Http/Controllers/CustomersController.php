@@ -299,8 +299,7 @@ class CustomersController extends Controller
                     return back()->with('error', 'Por favor, ingrese una cantidad válida en Producto Potencial.');
                 } else {
 
-                    // y si el id esta cadastrado pero ahora no encuentra es porque elimino del array. por ende tiene que eliminarse de la tabla
-
+                    // get product_id
                     $potential_product_id = DB::table('customer_parameters')
                         ->where('customer_parameters.customer_id', '=', $customer->id)
                         ->where('customer_parameters.potential_product_id', '=', $request->potential_products[$key])
@@ -309,7 +308,7 @@ class CustomersController extends Controller
                         )
                         ->first();
 
-                    /** if find product id, update potential product; else create new potential product */
+                    /** if find product_id, update potential product; else create new potential product */
                     if ($potential_product_id) {
                         DB::table('customer_parameters')
                             ->where('customer_parameters.customer_id', '=', $customer->id)
@@ -333,20 +332,14 @@ class CustomersController extends Controller
                 $ifCatExist = DB::table('customer_parameters')
                     ->leftjoin('customers', 'customers.id', '=', 'customer_parameters.customer_id')
                     ->where('customer_parameters.category_id', '=', $request->category[$key])
+                    ->where('customer_parameters.customer_id', '=', $customer->id)
                     ->select(
                         'customer_parameters.category_id',
                     )
                     ->first();
 
                 /** if find category id, update category; */
-                if ($ifCatExist) {
-                    DB::table('customer_parameters')
-                        ->where('customer_parameters.customer_id', '=', $customer->id)
-                        ->where('customer_parameters.potential_product_id', '=', $request->potential_products[$key])
-                        ->update([
-                            'quantity' => $request->qty[$key],
-                        ]);
-                } else {
+                if (!$ifCatExist) {
                     /** Save new category in table customer_parameters */
                     $item = new CustomerParameters();
                     $item->customer_id = $customer->id;

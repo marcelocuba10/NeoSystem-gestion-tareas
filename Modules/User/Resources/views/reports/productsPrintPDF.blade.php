@@ -9,9 +9,10 @@
                 margin: auto;
                 width: 100%;
                 font-family:  'Times New Roman', Times, serif;
+                table-layout: auto;
             }
             .table th h6 {
-                    font-size: 14px;
+                    font-size: 12px;
                 }
             tr    { 
                 page-break-inside:avoid; 
@@ -28,6 +29,18 @@
                 border: rgb(59, 59, 59) 1px solid;
                 padding: 5px;
                 text-align: center;
+                font-size: 12px;
+            }
+            table thead th:nth-child(0),
+            table thead th:nth-child(1){
+            width: 15%;
+            }
+
+            table thead th:nth-child(2){
+            width: 50%;
+            }
+            table thead th:nth-child(3){
+            width: 20%;
             }
             @page {
                 size: a4 landscape;
@@ -43,16 +56,16 @@
                     <th>Código</th>
                     <th>Nombre</th>
                     <th>Precio</th>
-                    <th>Inventario</th>
+                    <th>Actualizado el</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($products as $product)
                 <tr>
-                    <td>{{ $product->code }}</td>
-                    <td>{{ $product->name }}</td>
-                    <td>G$ {{number_format($product->sale_price, 0)}}</td>
-                    <td>{{ $product->inventory }}</td>
+                    <td class="shrink">{{ $product->custom_code }}</td>
+                    <td class="shrink">{{ $product->name }}</td>
+                    <td class="shrink">G$ {{number_format($product->sale_price, 0)}}</td>
+                    <td class="shrink">{{ $product->updated_at }}</td>
                 </tr>
                 @endforeach
             </tbody>

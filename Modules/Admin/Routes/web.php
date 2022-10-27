@@ -47,6 +47,33 @@ Route::prefix('admin')->group(function () {
             Route::delete('delete-file/{id}', 'MultimediaController@destroyFile');
         });
 
+        /*** Customers Routes ***/
+        Route::group(['prefix' => 'customers'], function () {
+            Route::get('/', 'CustomersController@index');
+            Route::get('/create', 'CustomersController@create');
+            Route::post('/create', 'CustomersController@store');
+            Route::get('/show/{id}', 'CustomersController@show');
+            Route::get('/edit/{id}', 'CustomersController@edit');
+            Route::put('/update/{id}', 'CustomersController@update');
+            Route::delete('/delete/{id}', 'CustomersController@destroy');
+            Route::delete('/deleteItemOrder', 'CustomersController@destroyItemOrder');
+            Route::get('/search', 'CustomersController@search');
+        });
+
+        /*** Customer Visits Routes ***/
+        Route::group(['prefix' => 'customer_visits'], function () {
+            Route::get('/', 'CustomerVisitController@index');
+            Route::get('/create', 'CustomerVisitController@create');
+            Route::post('/create', 'CustomerVisitController@store');
+            Route::get('/show/{id}', 'CustomerVisitController@show');
+            Route::get('/edit/{id}', 'CustomerVisitController@edit');
+            Route::put('/update/{id}', 'CustomerVisitController@update');
+            Route::delete('/delete/{id}', 'CustomerVisitController@destroy');
+            Route::delete('/deleteItemOrder', 'CustomerVisitController@destroyItemOrder');
+            Route::get('/search', 'CustomerVisitController@search');
+            Route::get('/generateInvoicePDF', 'CustomerVisitController@generateInvoicePDF');
+        });
+
         /** Products Routes */
         Route::group(['prefix' => 'products'], function () {
             Route::get('/', 'ProductsController@index');
