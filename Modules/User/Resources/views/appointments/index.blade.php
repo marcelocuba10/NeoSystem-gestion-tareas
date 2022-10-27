@@ -116,7 +116,7 @@
                           <td class="min-width">
                             <span class="status-btn 
                               @if($appointment->status == 'Procesado') primary-btn
-                              @elseIf($appointment->status == 'No procesado') danger-btn
+                              @elseIf($appointment->status == 'No Procesado') danger-btn
                               @elseIf($appointment->status == 'Pendiente') primary-btn
                               @elseIf($appointment->status == 'Cancelado') light-btn
                               @endif">

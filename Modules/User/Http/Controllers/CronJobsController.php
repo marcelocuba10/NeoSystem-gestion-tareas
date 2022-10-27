@@ -20,9 +20,7 @@ class CronJobsController extends Controller
     {
         $currentDate = Carbon::now()->format('Y-m-d');
 
-        //dd($currentDate);
-
-        $appointments = DB::table('appointments')
+        $late_appointments = DB::table('appointments')
             ->where('appointments.date', '<', $currentDate)
             ->select(
                 'appointments.id',
@@ -35,7 +33,30 @@ class CronJobsController extends Controller
             )
             ->get();
 
-            dd($appointments);
+        if ($late_appointments) {
+            foreach ($late_appointments as $value) {
+                /** if contain visit_id, update status in customer visit */
+                if ($value->visit_id) {
+                    DB::table('customer_visits')
+                        ->where('customer_visits.id', '=', $value->visit_id)
+                        ->update([
+                            'status' => 'No Procesado',
+                        ]);
+
+                    DB::table('appointments')
+                        ->where('appointments.id', '=', $value->id)
+                        ->update([
+                            'status' => 'No Procesado',
+                        ]);
+                } else {
+                    DB::table('appointments')
+                        ->where('appointments.id', '=', $value->id)
+                        ->update([
+                            'status' => 'No Procesado',
+                        ]);
+                }
+            }
+        }
 
         return json_encode('complete');
     }

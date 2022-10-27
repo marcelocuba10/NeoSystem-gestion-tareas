@@ -53,7 +53,7 @@
                         <td class="min-width">
                           <span class="status-btn 
                           @if($customer_visit->status == 'Procesado') primary-btn
-                          @elseIf($customer_visit->status == 'No procesado') danger-btn
+                          @elseIf($customer_visit->status == 'No Procesado') danger-btn
                           @elseIf($customer_visit->status == 'Pendiente') primary-btn
                           @elseIf($customer_visit->status == 'Cancelado') light-btn
                           @endif">

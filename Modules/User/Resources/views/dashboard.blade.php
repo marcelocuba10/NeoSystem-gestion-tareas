@@ -95,7 +95,7 @@
                         <td class="min-width">
                           <span style="float: right;" class="status-btn 
                           @if($customer_visit->status == 'Procesado') primary-btn
-                          @elseIf($customer_visit->status == 'No procesado') danger-btn
+                          @elseIf($customer_visit->status == 'No Procesado') danger-btn
                           @elseIf($customer_visit->status == 'Pendiente') primary-btn
                           @elseIf($customer_visit->status == 'Cancelado') light-btn
                           @endif">
@@ -147,7 +147,7 @@
                         </span>
                         @if(date('d/m/Y', strtotime($appointment->date)) < $currentDate )
                           <span class="status-btn danger-btn">
-                            No procesado
+                            No Procesado
                           </span>
                         @else
                           <span class="status-btn orange-btn">
