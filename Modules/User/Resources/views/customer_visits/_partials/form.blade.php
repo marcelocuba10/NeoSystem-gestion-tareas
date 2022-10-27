@@ -410,7 +410,7 @@
       console.log('product id: ' + id + ' visit_id: ' + visit_id );
       $.ajax({
           type: 'DELETE',
-          url     :"{{ URL::to('/user/customer_visits/destroyItemOrder') }}",
+          url     :"{{ URL::to('/user/customer_visits/deleteItemOrder') }}",
           dataType: 'json',
           data: {
             "_method" : "DELETE",

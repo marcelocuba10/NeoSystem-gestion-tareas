@@ -18,13 +18,11 @@ class CronJobsController extends Controller
 
     public function cronjob()
     {
-        $currentDate = Carbon::now()->format('Y-m-d');
-        $currentHour = Carbon::now()->format('H:i');
+        $currentDateHour = Carbon::now()->format('Y-m-d H:i');
 
+        /** get all appointments with status Pending */
         $late_appointments = DB::table('appointments')
-            ->where('appointments.date', '<=', $currentDate)
             ->where('appointments.status', '=', 'Pendiente')
-            ->where('appointments.hour', '<', $currentHour)
             ->select(
                 'appointments.id',
                 'appointments.visit_id',
@@ -36,9 +34,13 @@ class CronJobsController extends Controller
             )
             ->get();
 
-        if ($late_appointments) {
-            foreach ($late_appointments as $value) {
-                /** if contain visit_id, update status in customer visit */
+        foreach ($late_appointments as $value) {
+            /** concatenate date + hour */
+            $valueDateHour = $value->date . ' ' . $value->hour;
+
+            /** if pass condition, alter status for not processed*/
+            if ($valueDateHour < $currentDateHour) {
+                /** if appointment contain relation with customer visit, alter status in two tables */
                 if ($value->visit_id) {
                     DB::table('customer_visits')
                         ->where('customer_visits.id', '=', $value->visit_id)

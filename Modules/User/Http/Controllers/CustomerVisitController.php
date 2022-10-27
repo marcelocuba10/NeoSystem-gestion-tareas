@@ -142,7 +142,7 @@ class CustomerVisitController extends Controller
                         $order->product_id = $request->product_id[$key];
                         $order->visit_id = $customer_visit->id;
                         $order->quantity = $request->qty[$key];
-                        $order->price = $request->price[$key];
+                        $order->price = str_replace(',','',$request->price[$key]);
                         $order->amount = $request->amount[$key];
                         $order->save();
 
@@ -391,7 +391,7 @@ class CustomerVisitController extends Controller
                             $order->product_id = $request->product_id[$key];
                             $order->visit_id = $customer_visit->id;
                             $order->quantity = $request->qty[$key];
-                            $order->price = $request->price[$key];
+                            $order->price = str_replace(',','',$request->price[$key]);
                             $order->amount = $request->amount[$key];
                             $order->save();
                         }
@@ -434,7 +434,7 @@ class CustomerVisitController extends Controller
                                 $order->product_id = $request->product_id[$key];
                                 $order->visit_id = $customer_visit->id;
                                 $order->quantity = $request->qty[$key];
-                                $order->price = $request->price[$key];
+                                $order->price = str_replace(',','',$request->price[$key]);
                                 $order->amount = $request->amount[$key];
                                 $order->save();
                             }
@@ -470,7 +470,7 @@ class CustomerVisitController extends Controller
                                     $order->product_id = $request->product_id[$key];
                                     $order->visit_id = $customer_visit->id;
                                     $order->quantity = $request->qty[$key];
-                                    $order->price = $request->price[$key];
+                                    $order->price = str_replace(',','',$request->price[$key]);
                                     $order->amount = $request->amount[$key];
                                     $order->save();
 

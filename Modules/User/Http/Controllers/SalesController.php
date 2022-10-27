@@ -137,7 +137,7 @@ class SalesController extends Controller
                     $order->sale_id = $sale->id;
                     $order->product_id = $request->product_id[$key];
                     $order->quantity = $request->qty[$key];
-                    $order->price = $request->price[$key];
+                    $order->price = str_replace(',','',$request->price[$key]);
                     $order->amount = $request->amount[$key];
                     $order->save();
 
@@ -435,7 +435,7 @@ class SalesController extends Controller
                             $order->product_id = $request->product_id[$key];
                             $order->sale_id = $sale->id;
                             $order->quantity = $request->qty[$key];
-                            $order->price = $request->price[$key];
+                            $order->price = str_replace(',','',$request->price[$key]);
                             $order->amount = $request->amount[$key];
                             $order->save();
                         }
@@ -471,7 +471,7 @@ class SalesController extends Controller
                                 $order->product_id = $request->product_id[$key];
                                 $order->sale_id = $sale->id;
                                 $order->quantity = $request->qty[$key];
-                                $order->price = $request->price[$key];
+                                $order->price = str_replace(',','',$request->price[$key]);
                                 $order->amount = $request->amount[$key];
                                 $order->save();
                             }

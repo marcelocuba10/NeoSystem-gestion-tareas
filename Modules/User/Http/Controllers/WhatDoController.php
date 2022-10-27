@@ -53,8 +53,8 @@ class WhatDoController extends Controller
             ->get();
 
         $status = [
-            'Visitado',
-            'No Visitado',
+            'Procesado',
+            'No Procesado',
             'Cancelado'
         ];
 
@@ -363,8 +363,8 @@ class WhatDoController extends Controller
             ->pluck('name', 'name');
 
         $status = [
-            'Visitado',
-            'No Atendido',
+            'Procesado',
+            'No Procesado',
             'Cancelado'
         ];
 
