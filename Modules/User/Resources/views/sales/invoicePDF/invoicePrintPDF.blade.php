@@ -94,7 +94,7 @@
         <p class="m-0 pt-5 text-bold w-100">Estado: <span class="gray-color">{{ $sale->status }}</span></p>
     </div>
     <div class="float-right logo">
-        <img src="./adminLTE/images/logo/logo-pyp.png">  
+        <img src="{{ asset('public/adminLTE/images/logo/logo-pyp.png') }}">  
     </div>
     <div style="clear: both;"></div>
 </div>

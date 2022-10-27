@@ -35,11 +35,28 @@
       <div class="select-style-1">
         <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Acciones</label>
         <div class="select-position">
-          <select name="action" id="action" @if($customer_visit) {{ ($customer_visit->action == 'Enviar Presupuesto') ? 'disabled class=bg-gray' : '' }} @endif>
-            @foreach ($actions as $item)
-              <option value="{{ $item }}" @if($customer_visit) {{ ($item == $customer_visit->action) ? 'selected' : '' }} @endif> {{ $item}} </option>
-            @endforeach 
-          </select> 
+          @if ($customer_visit)
+            @if ($customer_visit->action == 'Enviar Presupuesto')
+              <input type="hidden" name="action" value="{{ $customer_visit->action }}">
+              <select name="action" id="action" {{ ($customer_visit->action == 'Enviar Presupuesto') ? 'disabled class=bg-gray' : '' }}>
+                @foreach ($actions as $item)
+                  <option value="{{ $item }}" @if($customer_visit) {{ ($item == $customer_visit->action) ? 'selected' : '' }} @endif> {{ $item}} </option>
+                @endforeach 
+              </select> 
+            @else
+            <select name="action" id="action">
+              @foreach ($actions as $item)
+                <option value="{{ $item }}" @if($customer_visit) {{ ($item == $customer_visit->action) ? 'selected' : '' }} @endif> {{ $item}} </option>
+              @endforeach 
+            </select> 
+            @endif
+          @else
+            <select name="action" id="action">
+              @foreach ($actions as $item)
+                <option value="{{ $item }}"> {{ $item}} </option>
+              @endforeach 
+            </select> 
+          @endif
         </div>
       </div>
     </div>

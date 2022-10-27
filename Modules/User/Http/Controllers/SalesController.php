@@ -645,7 +645,7 @@ class SalesController extends Controller
             ->orderBy('sales.created_at', 'DESC')
             ->first();
 
-        if ($sale->type == 'Venta') {
+        if (!$sale->visit_id) {
             $order_details = DB::table('order_details')
                 ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
                 ->where('order_details.sale_id', '=', $request->saleId)
@@ -663,7 +663,7 @@ class SalesController extends Controller
             $total_order = DB::table('order_details')
                 ->where('order_details.sale_id', '=', $request->saleId)
                 ->sum('amount');
-        } elseif ($sale->type == 'Presupuesto' && $sale->visit_id) {
+        } elseif ($sale->visit_id) {
             $order_details = DB::table('order_details')
                 ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
                 ->where('order_details.visit_id', '=', $sale->visit_id)
@@ -680,24 +680,6 @@ class SalesController extends Controller
 
             $total_order = DB::table('order_details')
                 ->where('order_details.visit_id', '=', $sale->visit_id)
-                ->sum('amount');
-        } elseif ($sale->type == 'Presupuesto' && !$sale->visit_id) {
-            $order_details = DB::table('order_details')
-                ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
-                ->where('order_details.sale_id', '=', $request->saleId)
-                ->select(
-                    'order_details.product_id',
-                    'order_details.price',
-                    'order_details.quantity',
-                    'order_details.amount',
-                    'products.custom_code',
-                    'products.name',
-                )
-                ->orderBy('order_details.created_at', 'DESC')
-                ->get();
-
-            $total_order = DB::table('order_details')
-                ->where('order_details.sale_id', '=', $request->saleId)
                 ->sum('amount');
         }
 
