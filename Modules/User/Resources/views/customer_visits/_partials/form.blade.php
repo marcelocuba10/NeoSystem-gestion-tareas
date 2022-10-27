@@ -12,14 +12,12 @@
         </div>
       </div>
     </div>
-    <!-- end col --> 
     <div class="col-3">
       <div class="input-style-1">
         <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Fecha/Hora de Visita</label>
         <input type="text" name="visit_date" placeholder="DD/MM/YYYY" value="{{ $currentDate }}" readonly>
       </div>
     </div>
-    <!-- end col -->
     <div class="col-3">
       <div class="input-style-1">
         <label>Fecha Próxima Paso</label>
@@ -27,19 +25,17 @@
         <span id="msg1" style="display: none" class="form-text m-b-none">Es necesario agregar la <b>Hora</b> y <b>Objetivos</b></span>
       </div>
     </div>
-    <!-- end col -->
     <div class="col-2">
       <div class="input-style-1">
         <label>Hora Próxima Paso</label>
           <input type="time" name="next_visit_hour" value="{{ $customer_visit->next_visit_hour ?? old('next_visit_hour') }}" class="bg-transparent">
       </div>
     </div>
-    <!-- end col -->
     <div class="col-sm-3">
       <div class="select-style-1">
         <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Acciones</label>
         <div class="select-position">
-          <select name="action" id="action">
+          <select name="action" id="action" @if($customer_visit) {{ ($customer_visit->action == 'Enviar Presupuesto') ? 'disabled class=bg-gray' : '' }} @endif>
             @foreach ($actions as $item)
               <option value="{{ $item }}" @if($customer_visit) {{ ($item == $customer_visit->action) ? 'selected' : '' }} @endif> {{ $item}} </option>
             @endforeach 
@@ -47,21 +43,18 @@
         </div>
       </div>
     </div>
-    <!-- end col -->
     <div class="col-4">
       <div class="input-style-1">
         <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Resultado de la Visita</label>
         <textarea type="text" name="result_of_the_visit" value="{{ $customer_visit->result_of_the_visit ?? old('result_of_the_visit') }}" class="bg-transparent">{{ $customer_visit->result_of_the_visit ?? old('result_of_the_visit') }}</textarea>
       </div>
     </div>
-    <!-- end col -->
     <div class="col-5">
       <div class="input-style-1" id="objective" style="display: none">
         <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Objetivos</label>
         <textarea type="text" name="objective" value="{{ $customer_visit->objective ?? old('objective') }}" class="bg-transparent">{{ $customer_visit->objective ?? old('objective') }}</textarea>
       </div>
     </div>
-    <!-- end col -->
     
     {{-- <div class="col-12">
       <div class="form-check checkbox-style mb-30">
@@ -132,7 +125,9 @@
             <a class="main-btn primary-btn-outline m-2" href="{{ url('/user/customer_visits') }}">Atrás</a>
           </div>
         </div>
+
       @elseif($customer_visit->type == 'Sin Presupuesto')
+
         <div class="col-12" id="setOrder" style="display: none">
           <div class="table-wrapper table-responsive">
             <table class="table top-selling-table mb-50">
@@ -181,8 +176,11 @@
             <a class="main-btn primary-btn-outline m-2" href="{{ url('/user/customer_visits') }}">Atrás</a>
           </div>
         </div>
+
       @endif
+
     @else
+
       <div class="col-12" id="setOrder" style="display: none">
         <div class="table-wrapper table-responsive">
           <table class="table top-selling-table mb-50">
@@ -231,7 +229,9 @@
           <a class="main-btn primary-btn-outline m-2" href="{{ url('/user/customer_visits') }}">Atrás</a>
         </div>
       </div>
+
     @endif
+
   </div>
 </div>
 
@@ -299,11 +299,6 @@
     }
 
     //When get data from Edit, calculate Total;
-    var tr = $(this).parent().parent();
-    var qty = tr.find('.qty').val();
-    var price = tr.find('.price').val();
-    var amount = (qty * price);
-    tr.find('.amount').val(amount);
     total();
 
     //When select product, focus on input quantity;
@@ -322,8 +317,8 @@
         url     :"{{ URL::to('/user/products/findPrice') }}",
         dataType: 'json',
         data: {
-          "_token": $('meta[name="csrf-token"]').attr('content'), 
-          'id':id
+          '_token' : '{{ csrf_token() }}',
+          'id' : id
         },
         success:function (response) {
           var data = response;
@@ -407,16 +402,15 @@
       var tr =$(this).parent().parent();
       var id = tr.find('.product').val();
       var visit_id = <?php echo json_encode($customer_visit->id); ?>;
-      console.log('product id: ' + id + ' visit_id: ' + visit_id );
       $.ajax({
           type: 'DELETE',
-          url     :"{{ URL::to('/user/customer_visits/deleteItemOrder') }}",
+          url     : "{{ URL::to('/user/customer_visits/deleteItemOrder') }}",
           dataType: 'json',
           data: {
             "_method" : "DELETE",
-            '_token': '{{ csrf_token() }}',
-            'id':id,
-            'visit_id':visit_id
+            '_token' : '{{ csrf_token() }}',
+            'id' : id,
+            'visit_id' : visit_id
           },
           success:function (response) {
             console.log('response: '+ response);
