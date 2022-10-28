@@ -32,7 +32,7 @@ class HomeController extends Controller
                 'customers.phone',
             )
             ->orderBy('customer_visits.created_at', 'DESC')
-            ->paginate(5);
+            ->paginate(7);
 
         $cant_customers = DB::table('customers')
             ->count();
@@ -42,6 +42,7 @@ class HomeController extends Controller
 
         $appointments = DB::table('appointments')
             ->leftjoin('customers', 'customers.id', '=', 'appointments.customer_id')
+            ->leftjoin('customer_visits', 'customer_visits.id', '=', 'appointments.visit_id')
             ->select(
                 'appointments.id',
                 'customers.name AS customer_name',
@@ -70,7 +71,31 @@ class HomeController extends Controller
             ->where('visit_date', '<', Carbon::now()->subDays(90))
             ->count();
 
+        $visits_cancel_count = DB::table('customer_visits')
+            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+            ->where('customer_visits.status', '=', 'Cancelado')
+            ->count();
+
+        $visits_process_count = DB::table('customer_visits')
+            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+            ->where('customer_visits.status', '=', 'Procesado')
+            ->count();
+
+        $visits_no_process_count = DB::table('customer_visits')
+            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+            ->where('customer_visits.status', '=', 'No Procesado')
+            ->count();
+
+        $visits_pending_count = DB::table('customer_visits')
+            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+            ->where('customer_visits.status', '=', 'Pendiente')
+            ->count(); 
+
         return view('admin::dashboard', compact(
+            'visits_cancel_count',
+            'visits_pending_count',
+            'visits_process_count',
+            'visits_no_process_count',
             'customer_visits',
             'cant_customers',
             'cant_sellers',

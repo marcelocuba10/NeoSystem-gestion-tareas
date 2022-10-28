@@ -12,10 +12,6 @@
               <a href="{{ url('/admin/whatdo') }}" class="main-btn success-btn btn-hover btn-sm"><i class="lni lni-map-marker mr-5"></i>Visualizar Lista</a>
             </div>
           </div>
-          <div class="col-md-4">
-            <div class="right">
-            </div>
-          </div>
         </div>
       </div>
       <!-- ========== title-wrapper end ========== -->
@@ -55,6 +51,7 @@
         var infowindow = new google.maps.InfoWindow();
 
         for (i = 0; i < locations.length; i++) { 
+          console.log(i);
           addMarker(locations[i]);
         }
 
@@ -65,10 +62,9 @@
         var next_visit_date = marker.next_visit_date;
         var next_visit_hour = marker.next_visit_hour;
         var estate = marker.estate;
+        var action = marker.action;
 
-        console.log(customer_id);
-
-        var html = "<b style='overflow: hidden;font-weight: 500;font-size: 14px;color:#333'>" + customer_name + "</b> <br/>Visitado: " + visit_date +",<br/>Localidad: "+ estate +",<br/>Próxima Visita: "+ next_visit_date +",<br/>Hora: "+ next_visit_hour + "<br/><a href='/admin/customers/show/"+ customer_id + "'>Ver Ficha Cliente</a>";
+        var html = "<b style='overflow: hidden;font-weight: 500;font-size: 14px;color:#333'>" + customer_name + "</b> <br/>Visitado: " + visit_date +",<br/>Localidad: "+ estate +",<br/>Próxima Visita: "+ next_visit_date +",<br/>Hora: "+ next_visit_hour + ",<br/>Acción: "+ action + "<br/><a href='/facundo/admin/customers/show/"+customer_id+"'>Ver Ficha Cliente</a>";
 
         const then = new Date(visit_date); //visit_date
         const now = new Date(); //current date
@@ -78,7 +74,6 @@
         // convert ms to days                 hour   min  sec   ms
         const daysBetweenDates = msBetweenDates / (24 * 60 * 60 * 1000);
 
-        console.log(daysBetweenDates);
         if (daysBetweenDates < 30) {
           console.log('visitado hace menos de 30 días');
           let a=(daysBetweenDates)/(1000*60*60*24);

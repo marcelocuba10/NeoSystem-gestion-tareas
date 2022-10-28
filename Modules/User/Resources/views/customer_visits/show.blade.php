@@ -35,52 +35,45 @@
               <div class="col-4">
                 <div class="input-style-1">
                   <label>Cliente</label>
-                  <input type="text" value="{{ $customer_visit->customer_name ?? old('customer_name') }}" readonly>
+                  <input type="text" value="{{ $customer_visit->customer_name }}" readonly>
                 </div>
               </div>
-              <!-- end col -->
               <div class="col-3">
                 <div class="input-style-1">
                   <label>Fecha/Hora de Visita</label>
                   <input type="text" value="{{ date('d/m/Y - H:i', strtotime($customer_visit->visit_date)) }}" readonly>
                 </div>
               </div>
-              <!-- end col -->
               <div class="col-3">
                 <div class="input-style-1">
                   <label>Fecha Próxima Visita</label>
-                  <input type="text" value="{{ date('d/m/Y', strtotime($customer_visit->next_visit_date)) }}" readonly>
+                  <input type="text" value="@if($customer_visit->next_visit_date == 'No marcado') {{ $customer_visit->next_visit_date }} @else {{ date('d/m/Y', strtotime($customer_visit->next_visit_date)) }} @endif" readonly>
                 </div>
               </div>
-              <!-- end col -->
               <div class="col-2">
                 <div class="input-style-1">
                   <label>Hora Próxima Visita</label>
-                    <input type="text" value="{{ $customer_visit->next_visit_hour ?? old('next_visit_hour') }}" readonly>
+                    <input type="text" value="{{ $customer_visit->next_visit_hour }}" readonly>
                 </div>
               </div>
-              <!-- end col -->
               <div class="col-3">
                 <div class="input-style-1">
                   <label>Acción</label>
                   <input type="text" value="{{ $customer_visit->action ?? old('action') }}" readonly>
                 </div>
               </div>
-              <!-- end col -->
               <div class="col-4">
                 <div class="input-style-1">
                   <label>Resultado de la Visita</label>
                   <textarea type="text" value="{{ $customer_visit->result_of_the_visit }}" readonly>{{ $customer_visit->result_of_the_visit }}</textarea>
                 </div>
               </div>
-              <!-- end col -->
               <div class="col-5">
                 <div class="input-style-1">
                   <label>Objetivos</label>
                   <textarea type="text" value="{{ $customer_visit->objective ?? old('objective') }}" readonly>{{ $customer_visit->objective ?? old('objective') }}</textarea>
                 </div>
               </div>
-              <!-- end col -->
 
               @if ($customer_visit->type == 'Presupuesto')
                 <h5 class="text-medium mb-20" >Detalles {{ $customer_visit->type }}</h5>

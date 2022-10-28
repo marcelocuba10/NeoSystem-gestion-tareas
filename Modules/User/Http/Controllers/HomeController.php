@@ -34,7 +34,7 @@ class HomeController extends Controller
                 'customers.phone',
             )
             ->orderBy('customer_visits.created_at', 'DESC')
-            ->paginate(5);
+            ->paginate(7);
 
         $cant_customers = DB::table('customers')
             ->where('customers.idReference', '=', $idRefCurrentUser)

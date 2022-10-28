@@ -249,6 +249,8 @@ class CustomerVisitController extends Controller
             ->orderBy('customer_visits.created_at', 'DESC')
             ->first();
 
+            // dd($customer_visit);
+
         $order_details = DB::table('order_details')
             ->where('order_details.visit_id', '=', $id)
             ->leftjoin('products', 'products.id', '=', 'order_details.product_id')

@@ -47,7 +47,7 @@
               <div class="col-3">
                 <div class="input-style-1">
                   <label>Fecha Próxima Visita</label>
-                  <input type="text" value="{{ date('d/m/Y', strtotime($customer_visit->next_visit_date)) }}" readonly>
+                  <input type="text" value="@if($customer_visit->next_visit_date == 'No marcado') {{ $customer_visit->next_visit_date }} @else {{ date('d/m/Y', strtotime($customer_visit->next_visit_date)) }} @endif" readonly>
                 </div>
               </div>
               <div class="col-2">

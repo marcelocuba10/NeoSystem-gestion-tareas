@@ -2,7 +2,7 @@
   <aside class="sidebar-nav-wrapper style-2">
     <div class="navbar-logo">
       <a href="{{ url('/') }}">
-        <img src="{{ asset('/public/adminLTE/images/logo/logo-pyp.png') }}" alt="logo" width="175px" height="58px"/>
+        <img src="{{ asset('public/adminLTE/images/logo/logo-pyp.png') }}" alt="logo" style="width: 180px;"/>
       </a>
     </div>
     <nav class="sidebar-nav">

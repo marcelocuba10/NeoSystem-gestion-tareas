@@ -133,11 +133,11 @@
                       <div class="todo-content">
                         <p class="text-sm mb-2">
                           <i class="lni lni-calendar"></i>
-                          Fecha: {{ date('d/m/Y', strtotime($appointment->date)) }}
+                          Fecha: {{ date('d/m/Y', strtotime($appointment->date)) }} | <i class="lni lni-alarm-clock"></i> Hora: {{ $appointment->hour }}
                         </p>
                         <a href="{{ url('/admin/appointments/show/'.$appointment->id ) }}"><h5 class="text-bold mb-10">{{ $appointment->customer_name }}</h5></a>
                         <p class="text-sm">
-                          <i class="lni lni-alarm-clock"></i>
+                          <i class="lni lni-user"></i>
                           Hora: {{ $appointment->hour }}
                         </p>
                       </div>
@@ -191,57 +191,64 @@
 
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script type="text/javascript">
+    
+  var visits_cancel_count = <?php echo json_encode($visits_cancel_count); ?>;
+  var visits_process_count = <?php echo json_encode($visits_process_count); ?>;
+  var visits_no_process_count = <?php echo json_encode($visits_no_process_count); ?>;
+  var visits_pending_count = <?php echo json_encode($visits_pending_count); ?>;
 
-
-    // Data retrieved from https://netmarketshare.com
-Highcharts.chart('container', {
-    chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie'
-    },
-    title: {
-        text: 'Gráfico visitas clientes durante 30 días'
-    },
-    tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-    },
-    accessibility: {
-        point: {
-            valueSuffix: '%'
-        }
-    },
-    plotOptions: {
-        pie: {
-            allowPointSelect: true,
-            cursor: 'pointer',
-            dataLabels: {
-                enabled: true,
-                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-            }
-        }
-    },
-    series: [{
-        name: 'Visitas',
-        colorByPoint: true,
-        data: [{
-            name: 'Visitados',
-            y: 50.00,
-            sliced: true,
-            selected: true,
-            color: '#4caf50e3',
-        }, {
-            name: 'No Visitados',
-            y: 30.00,
-            color: '#d50100c7',
-        },  {
-            name: 'Cancelados',
-            y: 20.00,
-            color: '#ffc107',
-        }]
-    }]
-});
+  Highcharts.chart('container', {
+      chart: {
+          plotBackgroundColor: null,
+          plotBorderWidth: null,
+          plotShadow: false,
+          type: 'pie'
+      },
+      title: {
+          text: 'Estado de visitas clientes durante 30 días'
+      },
+      tooltip: {
+          pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+      },
+      accessibility: {
+          point: {
+              valueSuffix: '%'
+          }
+      },
+      plotOptions: {
+          pie: {
+              allowPointSelect: true,
+              cursor: 'pointer',
+              dataLabels: {
+                  enabled: true,
+                  format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+              }
+          }
+      },
+      series: [{
+          name: 'Visitas',
+          colorByPoint: true,
+          data: [{
+              name: 'Visitados',
+              y: visits_process_count,
+              sliced: true,
+              selected: true,
+              color: '#4caf50e3',
+          }, {
+              name: 'No Visitados',
+              y: visits_no_process_count,
+              color: '#d50100c7',
+          }, {
+              name: 'Pendiente',
+              y: visits_pending_count,
+              color: '#fb7d33',
+          }, {
+              name: 'Cancelados',
+              y: visits_cancel_count,
+              color: '#ffc107',
+          }]
+      }]
+  });
 
 </script>
 @endsection

@@ -1,11 +1,10 @@
   <table class="table table-hover">
     <thead>
       <tr>
-        <th><h6>#</h6></th>
+        <th><h6>Número</h6></th>
         <th><h6>Cliente</h6></th>
         <th><h6>Estado</h6></th>
         <th><h6>Rubro</h6></th>
-        <th><h6>Fecha Prox Visita</h6></th>
         <th><h6>Localidad</h6></th>
         <th><h6>Creada el</h6></th>
         <th><h6>Acciones</h6></th>
@@ -15,7 +14,7 @@
       @if (count($customer_visits) > 0 )
         @foreach ($customer_visits as $customer_visit)
           <tr>
-            <td class="text-sm"><h6 class="text-sm">{{ ++$i }}</h6></td>
+            <td class="text-sm"><h6 class="{{ ($customer_visit->status == 'Procesado' || $customer_visit->status == 'Pendiente') ? 'text-dark' : 'text-disabled' }}">{{ $customer_visit->visit_number }}</h6></td>
             <td class="min-width"><h5 class="text-bold text-dark"><a href="{{ url('/user/customer_visits/show/'.$customer_visit->id ) }}">{{ $customer_visit->customer_name }}</a></h5></td>
             <td class="min-width">
               <span class="status-btn 
@@ -34,7 +33,6 @@
                     </span>
                   @endforeach 
             </td>
-            <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ date('d/m/Y', strtotime($customer_visit->next_visit_date)) }}</p></td>
             <td class="min-width"><p>{{ $customer_visit->estate }}</p></td>
             <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ date('d/m/Y', strtotime($customer_visit->visit_date)) }}</p></td>
             <td class="text-right">

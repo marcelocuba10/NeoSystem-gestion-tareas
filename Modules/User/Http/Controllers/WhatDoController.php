@@ -26,27 +26,6 @@ class WhatDoController extends Controller
 
     public function index()
     {
-        $idRefCurrentUser = Auth::user()->idReference;
-        $customer_visits = DB::table('customer_visits')
-            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-            ->leftjoin('customer_parameters', 'customer_parameters.customer_id', '=', 'customers.id')
-            ->leftjoin('parameters', 'parameters.id', '=', 'customer_parameters.category_id')
-            ->where('customer_parameters.category_id', '!=', 0)
-            ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
-            ->select(
-                'customer_visits.id',
-                'customer_visits.visit_date',
-                'customer_visits.next_visit_date',
-                'customer_visits.status',
-                'customer_visits.type',
-                'customers.name AS customer_name',
-                'customers.estate',
-                'customers.category',
-                'parameters.name'
-            )
-            ->orderBy('customer_visits.created_at', 'DESC')
-            ->paginate(10);
-
         $categories = DB::table('parameters')
             ->where('type', '=', 'Rubro')
             ->select('id', 'name')
@@ -88,28 +67,33 @@ class WhatDoController extends Controller
             ->where('type', '=', 'Equipos Potenciales')
             ->get();
 
-        return view('user::whatdo.index', compact('customer_visits', 'categories', 'potential_products', 'estates', 'status', 'visits_labels'))->with('i', (request()->input('page', 1) - 1) * 10);
+        return view('user::whatdo.index', compact('categories', 'potential_products', 'estates', 'status', 'visits_labels'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
     public function visit_on_map()
     {
         $idRefCurrentUser = Auth::user()->idReference;
+
         $customer_visits = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
             ->select(
                 'customer_visits.id',
+                'customer_visits.visit_number',
                 'customer_visits.visit_date',
                 'customer_visits.next_visit_date',
                 'customer_visits.next_visit_hour',
                 'customer_visits.status',
                 'customer_visits.type',
+                'customer_visits.action',
+                'customers.id AS customer_id',
                 'customers.name AS customer_name',
                 'customers.city',
                 'customers.estate',
                 'customers.latitude',
                 'customers.longitude',
             )
+            ->groupBy('customers.id')
             ->orderBy('customer_visits.created_at', 'DESC')
             ->get();
 
@@ -128,6 +112,7 @@ class WhatDoController extends Controller
                 ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
                 ->select(
                     'customer_visits.id',
+                    'customer_visits.visit_number',
                     'customer_visits.visit_date',
                     'customer_visits.next_visit_date',
                     'customer_visits.status',
@@ -137,7 +122,7 @@ class WhatDoController extends Controller
                     'customers.category'
                 )
                 ->orderBy('customer_visits.created_at', 'DESC')
-                ->paginate(10);
+                ->get();
         } else {
 
             if ($type == 'estate') {
@@ -147,6 +132,7 @@ class WhatDoController extends Controller
                     ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
                     ->select(
                         'customer_visits.id',
+                        'customer_visits.visit_number',
                         'customer_visits.visit_date',
                         'customer_visits.next_visit_date',
                         'customer_visits.status',
@@ -156,14 +142,15 @@ class WhatDoController extends Controller
                         'customers.category'
                     )
                     ->orderBy('customer_visits.created_at', 'DESC')
-                    ->paginate(10);
+                    ->get();
             } elseif ($type == 'status') {
                 $customer_visits = DB::table('customer_visits')
                     ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-                    ->where('customer_visits.status', 'LIKE', "%{$filter}%")
+                    ->where('customer_visits.status', 'LIKE', "{$filter}%")
                     ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
                     ->select(
                         'customer_visits.id',
+                        'customer_visits.visit_number',
                         'customer_visits.visit_date',
                         'customer_visits.next_visit_date',
                         'customer_visits.status',
@@ -173,7 +160,7 @@ class WhatDoController extends Controller
                         'customers.category'
                     )
                     ->orderBy('customer_visits.created_at', 'DESC')
-                    ->paginate(10);
+                    ->get();
             } elseif ($type == 'category') {
                 $customer_visits = DB::table('customer_visits')
                     ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
@@ -182,6 +169,7 @@ class WhatDoController extends Controller
                     ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
                     ->select(
                         'customer_visits.id',
+                        'customer_visits.visit_number',
                         'customer_visits.visit_date',
                         'customer_visits.next_visit_date',
                         'customer_visits.status',
@@ -191,7 +179,7 @@ class WhatDoController extends Controller
                         'customers.category'
                     )
                     ->orderBy('customer_visits.created_at', 'DESC')
-                    ->paginate(10);
+                    ->get();
             } elseif ($type == 'potential_products') {
                 $customer_visits = DB::table('customer_visits')
                     ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
@@ -200,6 +188,7 @@ class WhatDoController extends Controller
                     ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
                     ->select(
                         'customer_visits.id',
+                        'customer_visits.visit_number',
                         'customer_visits.visit_date',
                         'customer_visits.next_visit_date',
                         'customer_visits.status',
@@ -209,7 +198,7 @@ class WhatDoController extends Controller
                         'customers.category'
                     )
                     ->orderBy('customer_visits.created_at', 'DESC')
-                    ->paginate(10);
+                    ->get();
 
                 // } elseif ($type == 'visit_date') {
                 //     $customer_visits = DB::table('customer_visits')
@@ -218,6 +207,7 @@ class WhatDoController extends Controller
                 //         ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
                 //         ->select(
                 //             'customer_visits.id',
+                //             'customer_visits.visit_number',
                 //             'customer_visits.visit_date',
                 //             'customer_visits.next_visit_date',
                 //             'customer_visits.status',
@@ -227,7 +217,7 @@ class WhatDoController extends Controller
                 //             'customers.category'
                 //         )
                 //         ->orderBy('customer_visits.created_at', 'DESC')
-                //         ->paginate(10);
+                //         ->get();
             } elseif ($type == 'visit_date') {
 
                 if ($filter == 'Menos de 30 días') {
@@ -237,6 +227,7 @@ class WhatDoController extends Controller
                         ->where('visit_date', '>', Carbon::now()->subDays(30))
                         ->select(
                             'customer_visits.id',
+                            'customer_visits.visit_number',
                             'customer_visits.visit_date',
                             'customer_visits.next_visit_date',
                             'customer_visits.status',
@@ -246,7 +237,7 @@ class WhatDoController extends Controller
                             'customers.category'
                         )
                         ->orderBy('customer_visits.created_at', 'DESC')
-                        ->paginate(10);
+                        ->get();
                 }
 
                 if ($filter == 'Más de 30 días') {
@@ -256,6 +247,7 @@ class WhatDoController extends Controller
                         ->where('visit_date', '<', Carbon::now()->subDays(30))
                         ->select(
                             'customer_visits.id',
+                            'customer_visits.visit_number',
                             'customer_visits.visit_date',
                             'customer_visits.next_visit_date',
                             'customer_visits.status',
@@ -265,7 +257,7 @@ class WhatDoController extends Controller
                             'customers.category'
                         )
                         ->orderBy('customer_visits.created_at', 'DESC')
-                        ->paginate(10);
+                        ->get();
                 }
 
                 if ($filter == 'Más de 90 días') {
@@ -275,6 +267,7 @@ class WhatDoController extends Controller
                         ->where('visit_date', '<', Carbon::now()->subDays(90))
                         ->select(
                             'customer_visits.id',
+                            'customer_visits.visit_number',
                             'customer_visits.visit_date',
                             'customer_visits.next_visit_date',
                             'customer_visits.status',
@@ -284,7 +277,7 @@ class WhatDoController extends Controller
                             'customers.category'
                         )
                         ->orderBy('customer_visits.created_at', 'DESC')
-                        ->paginate(10);
+                        ->get();
                 }
             } elseif ($type == 'next_visit_date') {
 
@@ -294,6 +287,7 @@ class WhatDoController extends Controller
                     ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
                     ->select(
                         'customer_visits.id',
+                        'customer_visits.visit_number',
                         'customer_visits.visit_date',
                         'customer_visits.next_visit_date',
                         'customer_visits.status',
@@ -303,7 +297,7 @@ class WhatDoController extends Controller
                         'customers.category'
                     )
                     ->orderBy('customer_visits.created_at', 'DESC')
-                    ->paginate(10);
+                    ->get();
             }
         }
 
@@ -312,7 +306,7 @@ class WhatDoController extends Controller
             ->select('id', 'name')
             ->get();
 
-        return View::make('user::whatdo._partials.datatable', compact('customer_visits', 'filter', 'categories'))->with('i', (request()->input('page', 1) - 1) * 10);
+        return View::make('user::whatdo._partials.datatable', compact('customer_visits', 'filter', 'categories'));
     }
 
     public function search(Request $request)
@@ -326,6 +320,7 @@ class WhatDoController extends Controller
                 ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
                 ->select(
                     'customer_visits.id',
+                    'customer_visits.visit_number',
                     'customer_visits.visit_date',
                     'customer_visits.next_visit_date',
                     'customer_visits.status',
@@ -335,7 +330,7 @@ class WhatDoController extends Controller
                     'customers.category'
                 )
                 ->orderBy('customer_visits.created_at', 'DESC')
-                ->paginate(10);
+                ->get();
         } else {
             $customer_visits = DB::table('customer_visits')
                 ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
@@ -343,6 +338,7 @@ class WhatDoController extends Controller
                 ->where('customers.name', 'LIKE', "%{$search}%")
                 ->select(
                     'customer_visits.id',
+                    'customer_visits.visit_number',
                     'customer_visits.visit_date',
                     'customer_visits.next_visit_date',
                     'customer_visits.next_visit_hour',
@@ -355,7 +351,7 @@ class WhatDoController extends Controller
                     'customers.category'
                 )
                 ->orderBy('customer_visits.created_at', 'DESC')
-                ->paginate();
+                ->get();
         }
 
         $customers_categories = DB::table('parameters')
@@ -399,6 +395,6 @@ class WhatDoController extends Controller
             ->select('id', 'name')
             ->get();
 
-        return View::make('user::whatdo._partials.datatable', compact('customer_visits', 'search', 'categories'))->with('i', (request()->input('page', 1) - 1) * 10);
+        return View::make('user::whatdo._partials.datatable', compact('customer_visits', 'search', 'categories'));
     }
 }
