@@ -79,6 +79,12 @@
             <li>
               <a href="{{ url('/admin/reports/sellers') }}" class="{{ (request()->is('admin/reports/sellers')) ? 'active' : '' }}">Agentes</a>
             </li>
+            <li>
+              <a href="{{ url('/admin/whatdo') }}" class="{{ (request()->is('/admin/whatdo')) ? 'active' : '' }}">Visitas Clientes</a>
+            </li>
+            <li>
+              <a href="{{ url('/admin/whatdo/visit_on_map') }}" class="{{ (request()->is('/admin/whatdo/visit_on_map')) ? 'active' : '' }}">Zona Geográfica</a>
+            </li>
             <li >
               <a href="{{ url('/admin/reports/products') }}" class="{{ (request()->is('admin/reports/products')) ? 'active' : '' }}">Productos</a>
             </li>

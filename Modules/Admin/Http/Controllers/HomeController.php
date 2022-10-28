@@ -2,15 +2,13 @@
 
 namespace Modules\Admin\Http\Controllers;
 
-use Illuminate\Contracts\Support\Renderable;
-use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('auth:admin', ['except' => ['logout']]);
@@ -18,28 +16,69 @@ class HomeController extends Controller
 
     public function index()
     {
-        $idRefCurrentUser = Auth::user()->idReference;
+        $currentDate = Carbon::now()->format('d/m/Y');
 
-        $sellers = DB::table('users')
-            ->select('id', 'name', 'last_name', 'idReference', 'status')
-            ->where('main_user', '=', 1)
-            ->orderBy('created_at', 'DESC')
-            ->limit(7)
-            ->get();
+        $customer_visits = DB::table('customer_visits')
+            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+            ->select(
+                'customer_visits.id',
+                'customer_visits.visit_number',
+                'customer_visits.visit_date',
+                'customer_visits.next_visit_date',
+                'customer_visits.status',
+                'customer_visits.type',
+                'customers.name AS customer_name',
+                'customers.estate',
+                'customers.phone',
+            )
+            ->orderBy('customer_visits.created_at', 'DESC')
+            ->paginate(5);
 
-        $products = DB::table('products')
-            ->select('id', 'name', 'inventory')
-            ->orderBy('created_at', 'DESC')
-            ->limit(7)
-            ->get();
+        $cant_customers = DB::table('customers')
+            ->count();
 
         $cant_sellers = DB::table('users')
-            ->where('main_user', '=', 1)
             ->count();
 
-        $cant_products = DB::table('products')
+        $appointments = DB::table('appointments')
+            ->leftjoin('customers', 'customers.id', '=', 'appointments.customer_id')
+            ->select(
+                'appointments.id',
+                'customers.name AS customer_name',
+                'customers.phone AS customer_phone',
+                'customers.estate AS customer_estate',
+                'date',
+                'hour',
+                'action',
+                'observation',
+            )
+            ->orderBy('appointments.created_at', 'DESC')
+            ->paginate(5);
+
+        $visited_less_30_days = DB::table('customer_visits')
+            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+            ->where('visit_date', '>', Carbon::now()->subDays(30))
             ->count();
 
-        return view('admin::dashboard', compact('products', 'sellers', 'cant_sellers', 'cant_products'));
+        $visited_more_30_days = DB::table('customer_visits')
+            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+            ->where('visit_date', '<', Carbon::now()->subDays(30))
+            ->count();
+
+        $visited_more_90_days = DB::table('customer_visits')
+            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+            ->where('visit_date', '<', Carbon::now()->subDays(90))
+            ->count();
+
+        return view('admin::dashboard', compact(
+            'customer_visits',
+            'cant_customers',
+            'cant_sellers',
+            'appointments',
+            'currentDate',
+            'visited_less_30_days',
+            'visited_more_30_days',
+            'visited_more_90_days'
+        ));
     }
 }

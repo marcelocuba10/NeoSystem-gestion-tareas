@@ -11,11 +11,10 @@
               <h2>Bienvenido a {{ config('app.name') }}</h2>
             </div>
           </div>
-          <!-- end col -->
         </div>
-        <!-- end row -->
       </div>
       <!-- ========== title-wrapper end ========== -->
+
       <div class="row">
         <div class="col-xl-3 col-lg-4 col-sm-6">
           <div class="icon-card mb-30">
@@ -23,146 +22,226 @@
               <i class="lni lni-users"></i>
             </div>
             <div class="content">
-              <h6 class="mb-10">Total Vendedores</h6>
-              <h3 class="text-bold mb-10">{{ $cant_sellers }}</h3>
+              <h6 class="mb-10">Visita a clientes</h6>
+              <h3 class="text-bold mb-10">{{ $visited_less_30_days }}</h3>
+              <p class="text-sm text-success">
+                <span class="text-gray">(menos de 30 días)</span>
+              </p>
             </div>
           </div>
-          <!-- End Icon Cart -->
         </div>
-        <!-- End Col -->
         <div class="col-xl-3 col-lg-4 col-sm-6">
           <div class="icon-card mb-30">
             <div class="icon orange">
-              <i class="lni lni-user"></i>
+              <i class="lni lni-users"></i>
             </div>
             <div class="content">
-              <h6 class="mb-10">Total Productos</h6>
-              <h3 class="text-bold mb-10">{{$cant_products}}</h3>
+              <h6 class="mb-10">Visita a clientes</h6>
+              <h3 class="text-bold mb-10">{{ $visited_more_30_days }}</h3>
+              <p class="text-sm text-success">
+                <span class="text-gray">(más de 30 días)</span>
+              </p>
             </div>
           </div>
-          <!-- End Icon Cart -->
         </div>
-        <!-- End Col -->
         <div class="col-xl-3 col-lg-4 col-sm-6">
           <div class="icon-card mb-30">
             <div class="icon success">
-              <i class="lni lni-graph"></i>
+              <i class="lni lni-users"></i>
             </div>
             <div class="content">
-              <h6 class="mb-10">Información AA</h6>
-              <h3 class="text-bold mb-10">121212</h3>
+              <h6 class="mb-10">Visita a clientes</h6>
+              <h3 class="text-bold mb-10">{{ $visited_more_90_days }}</h3>
+              <p class="text-sm text-success">
+                <span class="text-gray">(más de 90 días)</span>
+              </p>
             </div>
           </div>
-          <!-- End Icon Cart -->
         </div>
-        <!-- End Col -->
         <div class="col-xl-3 col-lg-4 col-sm-6">
           <div class="icon-card mb-30">
             <div class="icon primary">
-              <i class="lni lni-credit-cards"></i>
+              <i class="lni lni-users"></i>
             </div>
             <div class="content">
-              {{-- @php
-                use Modules\User\Entities\Machines;
-                $cant_machines = Machines::count(); 
-              @endphp --}}
-              <h6 class="mb-10">Información DD</h6>
-              <h3 class="text-bold mb-10">$24,567</h3>
+              <h6 class="mb-10">Total Clientes</h6>
+              <h3 class="text-bold mb-10">{{ $cant_customers }}</h3>
             </div>
           </div>
-          <!-- End Icon Cart -->
         </div>
-        <!-- End Col -->
       </div>
-      <!-- End Row -->
+
       <div class="row">
-        <div class="col-md-6 col-lg-3 col-xl-6 col-xxl-3">
-          <div class="card-style mb-30">
-            <div class="title d-flex flex-wrap align-items-center justify-content-between mb-10">
-              <div class="left">
-                <h6 class="text-medium mb-2">Agentes Registrados</h6>
-              </div>
-              <div class="right mb-2">
-              </div>
+        <!-- Customer visits -->
+        <div class="col-lg-6 col-xl-6 col-xxl-6">
+          <div class="card-style activity-card clients-table-card mb-30">
+            <div class="title d-flex justify-content-between align-items-center">
+              <h6 class="mb-10">Últimas Visitas Clientes</h6>
             </div>
-            <!-- End Title -->
-
-            <div class="table-responsive">
-              <table class="table sell-order-table">
-                <thead>
-                  <tr>
-                    <th>
-                      <h6 class="text-sm fw-500">Nombre</h6>
-                    </th>
-                    <th>
-                      <h6 class="text-sm fw-500">ID referencia</h6>
-                    </th>
-                    <th class="text-end">
-                      <h6 class="text-sm fw-500">Status</h6>
-                    </th>
-                  </tr>
-                </thead>
+            <div class="table-wrapper table-responsive">
+              <table class="table">
                 <tbody>
-                  @foreach ($sellers as $seller)
+                  @foreach ($customer_visits as $customer_visit)
                     <tr>
-                        <td><p class="text-sm fw-500 text-gray"><a href="{{ url('/admin/sellers/show/'.$seller->id) }}">{{ $seller->name ?? old('name') }} {{ $seller->last_name ?? old('last_name') }}</a></p></td>
-                        <td><p class="text-sm fw-500 text-gray">{{ $seller->idReference }}</p></td>
-                        <td><p class="text-sm fw-500 text-gray text-end">{{ $seller->status }}</p></td>
+                      <td>
+                        <div class="employee-image">
+                          <img src="{{ asset('/public/images/user-icon-business-man-flat-png-transparent.png') }}" alt="">
+                        </div>
+                      </td>
+                      <td class="employee-info">
+                        <h5 class="text-medium">{{ $customer_visit->customer_name }}</h5>
+                        <p><i class="lni lni-map-marker"></i>&nbsp;{{ $customer_visit->estate }} - &nbsp;{{ date('d/m/Y - H:i', strtotime($customer_visit->visit_date)) }}</p>
+                      </td>
+                        <td class="min-width">
+                          <span style="float: right;" class="status-btn 
+                          @if($customer_visit->status == 'Procesado') primary-btn
+                          @elseIf($customer_visit->status == 'No Procesado') danger-btn
+                          @elseIf($customer_visit->status == 'Pendiente') primary-btn
+                          @elseIf($customer_visit->status == 'Cancelado') light-btn
+                          @endif">
+                            {{ $customer_visit->status }}
+                          </span>
+                        </td>
+                      <td>
+                        <div class="d-flex justify-content-end">
+                          <a href="{{ url('/admin/customer_visits/show/'.$customer_visit->id) }}" data-toggle="tooltip" data-placement="bottom" title="Ver">
+                            <button class="status-btn primary-btn border-0 m-1">
+                              Ver
+                            </button>
+                          </a>
+                        </div>
+                      </td>
                     </tr>
                   @endforeach
                 </tbody>
               </table>
-              <a href="{{ url('/admin/sellers') }}"><p class="text-sm mb-20">Ver más..</p></a>
             </div>
           </div>
         </div>
-        <!-- End Col -->
-        <div class="col-md-6 col-lg-3 col-xl-6 col-xxl-3">
-          <div class="card-style mb-30">
-            <div class="title d-flex flex-wrap align-items-center justify-content-between mb-10">
-              <div class="left">
-                <h6 class="text-medium mb-2">Productos Registrados</h6>
-              </div>
-              <div class="right mb-2">
-              </div>
-            </div>
-            <!-- End Title -->
 
-            <div class="table-responsive">
-              <table class="table sell-order-table">
-                <thead>
-                  <tr>
-                    <th>
-                      <h6 class="text-sm fw-500">Nombre</h6>
-                    </th>
-                    <th>
-                      <h6 class="text-sm fw-500">Stock</h6>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @foreach ($products as $product)
-                    <tr>
-                      <td><p class="text-sm fw-500 text-gray"><a href="{{ url('/admin/products/show/'.$product->id) }}">{{ $product->name ?? old('name') }}</a></p></td>
-                      <td><p class="text-sm fw-500 text-gray">{{ $product->inventory }}</p></td>
-                    </tr>
+        <!-- Appointments -->
+        <div class="col-lg-6 col-xl-6 col-xxl-6">
+          <div class="card-style mb-30">
+            <div class="title mb-10 d-flex justify-content-between align-items-center">
+              <h6 class="mb-10">Agenda de Visitas y Llamadas</h6>
+            </div>
+            <div class="todo-list-wrapper">
+              <ul>
+                @if (count($appointments) > 0 )
+                  @foreach ($appointments as $appointment)
+                    <li class="todo-list-item primary">
+                      <div class="todo-content">
+                        <p class="text-sm mb-2">
+                          <i class="lni lni-calendar"></i>
+                          Fecha: {{ date('d/m/Y', strtotime($appointment->date)) }}
+                        </p>
+                        <a href="{{ url('/admin/appointments/show/'.$appointment->id ) }}"><h5 class="text-bold mb-10">{{ $appointment->customer_name }}</h5></a>
+                        <p class="text-sm">
+                          <i class="lni lni-alarm-clock"></i>
+                          Hora: {{ $appointment->hour }}
+                        </p>
+                      </div>
+                      <div class="todo-status">
+                        <span class="status-btn primary-btn text-bold">
+                          {{ $appointment->action }}
+                        </span>
+                        @if(date('d/m/Y', strtotime($appointment->date)) < $currentDate )
+                          <span class="status-btn danger-btn">
+                            No Procesado
+                          </span>
+                        @else
+                          <span class="status-btn orange-btn">
+                            Pendiente
+                          </span>
+                        @endif
+                      </div>
+                    </li>
                   @endforeach
-                </tbody>
-              </table>
-              <a href="{{ url('/admin/products') }}"><p class="text-sm mb-20">Ver más..</p></a>
+                @else
+                  <tr>
+                    <td class="text-sm"></td>
+                    <td class="min-width"></td>
+                    <td class="min-width"></td>
+                    <td class="min-width"></td>
+                    <td class="min-width">Sin resultados encontrados</td>
+                    <td class="min-width"></td>
+                    <td class="min-width"></td>
+                    <td class="min-width"></td>
+                  </tr>
+                @endif
+              </ul>
             </div>
           </div>
         </div>
-        <div class="col-lg-6 col-xl-12 col-xxl-6">
-          <div class="card-style calendar-card mb-30">
-            <div id="calendar-mini"></div>
-          </div>
-        </div>
-        <!-- End Col -->
       </div>
-      <!-- End Row -->
-
     </div>
-    <!-- end container -->
 </section>
+
+<section class="section">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-6 col-xl-6 col-xxl-6">
+        <div class="card-style mb-30">
+          <div id="container"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script type="text/javascript">
+
+
+    // Data retrieved from https://netmarketshare.com
+Highcharts.chart('container', {
+    chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+    },
+    title: {
+        text: 'Gráfico visitas clientes durante 30 días'
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    accessibility: {
+        point: {
+            valueSuffix: '%'
+        }
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: true,
+                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+            }
+        }
+    },
+    series: [{
+        name: 'Visitas',
+        colorByPoint: true,
+        data: [{
+            name: 'Visitados',
+            y: 50.00,
+            sliced: true,
+            selected: true,
+            color: '#4caf50e3',
+        }, {
+            name: 'No Visitados',
+            y: 30.00,
+            color: '#d50100c7',
+        },  {
+            name: 'Cancelados',
+            y: 20.00,
+            color: '#ffc107',
+        }]
+    }]
+});
+
+</script>
 @endsection

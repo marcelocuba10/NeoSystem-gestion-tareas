@@ -47,6 +47,20 @@ Route::prefix('admin')->group(function () {
             Route::delete('delete-file/{id}', 'MultimediaController@destroyFile');
         });
 
+        /*** WhatCanDo Routes ***/
+        Route::group(['prefix' => 'whatdo'], function () {
+            Route::get('/', 'WhatDoController@index');
+            Route::get('/create', 'WhatDoController@create');
+            Route::post('/create', 'WhatDoController@store');
+            Route::get('/show/{id}', 'WhatDoController@show');
+            Route::get('/edit/{id}', 'WhatDoController@edit');
+            Route::put('/update/{id}', 'WhatDoController@update');
+            Route::delete('/delete/{id}', 'WhatDoController@destroy');
+            Route::get('/search', 'WhatDoController@search');
+            Route::get('/filter', 'WhatDoController@filter');
+            Route::get('/visit_on_map', 'WhatDoController@visit_on_map');
+        });
+
         /*** Customers Routes ***/
         Route::group(['prefix' => 'customers'], function () {
             Route::get('/', 'CustomersController@index');
