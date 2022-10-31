@@ -185,6 +185,11 @@
           <div id="container"></div>
         </div>
       </div>
+      <div class="col-lg-6 col-xl-6 col-xxl-6">
+        <div class="card-style mb-30">
+          <div id="container_2"></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -249,6 +254,63 @@
           }]
       }]
   });
+
+  var salesCountByMonth = <?php echo json_encode($salesCountByMonth); ?>;
+  var salesCancelCountByMonth = <?php echo json_encode($salesCancelCountByMonth); ?>;
+  var ordersCountByMonth = <?php echo json_encode($ordersCountByMonth); ?>;
+  var ordersCancelCountByMonth = <?php echo json_encode($ordersCancelCountByMonth); ?>;
+
+  var salesPeriods = <?php echo json_encode($salesPeriods); ?>;
+
+  Highcharts.chart('container_2', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'Ventas y Presupuestos - 2022'
+    },
+    xAxis: {
+      categories: salesPeriods,
+        crosshair: true
+    },
+    yAxis: {
+        title: {
+            useHTML: true,
+            text: 'Ventas y Presupuestos'
+        }
+    },
+    tooltip: {
+        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+        footerFormat: '</table>',
+        shared: true,
+        useHTML: true
+    },  
+    plotOptions: {
+        column: {
+            pointPadding: 0.2,
+            borderWidth: 0
+        }
+    },
+    series: [{
+        name: 'Ventas Concretadas',
+        data: salesCountByMonth
+
+      }, {
+        name: 'Ventas Canceladas',
+        data: salesCancelCountByMonth
+
+    }, {
+        name: 'Presupuestos',
+        data: ordersCountByMonth
+
+    }, {
+        name: 'Presupuestos Cancelados',
+        data: ordersCancelCountByMonth
+
+    }]
+});
 
 </script>
 @endsection

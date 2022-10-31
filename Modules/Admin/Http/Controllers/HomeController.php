@@ -3,6 +3,7 @@
 namespace Modules\Admin\Http\Controllers;
 
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +18,7 @@ class HomeController extends Controller
     public function index()
     {
         $currentDate = Carbon::now()->format('d/m/Y');
+        $currentOnlyYear = Carbon::now()->format('Y');
 
         $customer_visits = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
@@ -48,10 +50,10 @@ class HomeController extends Controller
                 'customers.name AS customer_name',
                 'customers.phone AS customer_phone',
                 'customers.estate AS customer_estate',
-                'date',
-                'hour',
-                'action',
-                'observation',
+                'appointments.date',
+                'appointments.hour',
+                'appointments.action',
+                'appointments.observation',
             )
             ->orderBy('appointments.created_at', 'DESC')
             ->paginate(5);
@@ -89,9 +91,59 @@ class HomeController extends Controller
         $visits_pending_count = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customer_visits.status', '=', 'Pendiente')
-            ->count(); 
+            ->count();
+
+        $getSalesCountByMonth = DB::table('sales')
+            ->selectRaw("count(id) as total, date_format(created_at, '%b %Y') as period")  //Essentially, what this selection date_format(created_at, '%b %Y') does is that it maps the created_at field into a string containing the field's month and year, like 'Mar 2022'.
+            ->whereYear('created_at', '>=', $currentOnlyYear)
+            ->where('type', '=', 'Venta')
+            ->where('status', '=', 'Procesado')
+            ->orderBy('created_at', 'ASC')
+            ->groupBy('period')
+            ->get();
+
+        $getSalesCancelCountByMonth = DB::table('sales')
+            ->selectRaw("count(id) as total, date_format(created_at, '%b %Y') as period")  //Essentially, what this selection date_format(created_at, '%b %Y') does is that it maps the created_at field into a string containing the field's month and year, like 'Mar 2022'.
+            ->whereYear('created_at', '>=', $currentOnlyYear)
+            ->where('type', '=', 'Venta')
+            ->where('status', '=', 'Cancelado')
+            ->orderBy('created_at', 'ASC')
+            ->groupBy('period')
+            ->get();
+
+        $getOrdersCountByMonth = DB::table('sales')
+            ->selectRaw("count(id) as total, date_format(created_at, '%b %Y') as period")  //Essentially, what this selection date_format(created_at, '%b %Y') does is that it maps the created_at field into a string containing the field's month and year, like 'Mar 2022'.
+            ->whereYear('created_at', '>=', $currentOnlyYear)
+            ->where('type', '=', 'Venta')
+            ->where('visit_id', '!=', null)
+            ->orderBy('created_at', 'ASC')
+            ->groupBy('period')
+            ->get();
+
+            dd($getOrdersCountByMonth);
+
+        $getOrdersCancelCountByMonth = DB::table('sales')
+            ->selectRaw("count(id) as total, date_format(created_at, '%b %Y') as period")  //Essentially, what this selection date_format(created_at, '%b %Y') does is that it maps the created_at field into a string containing the field's month and year, like 'Mar 2022'.
+            ->whereYear('created_at', '>=', $currentOnlyYear)
+            ->where('type', '=', 'Presupuesto')
+            ->where('status', '=', 'Cancelado')
+            ->orderBy('created_at', 'ASC')
+            ->groupBy('period')
+            ->get();
+
+        $salesCountByMonth = $getSalesCountByMonth->pluck('total')->toArray();
+        $salesCancelCountByMonth = $getSalesCancelCountByMonth->pluck('total')->toArray();
+        $ordersCountByMonth = $getOrdersCountByMonth->pluck('total')->toArray();
+        $ordersCancelCountByMonth = $getOrdersCancelCountByMonth->pluck('total')->toArray();
+
+        $salesPeriods = $getSalesCountByMonth->pluck('period')->toArray();
 
         return view('admin::dashboard', compact(
+            'salesCountByMonth',
+            'salesCancelCountByMonth',
+            'ordersCountByMonth',
+            'ordersCancelCountByMonth',
+            'salesPeriods',
             'visits_cancel_count',
             'visits_pending_count',
             'visits_process_count',
