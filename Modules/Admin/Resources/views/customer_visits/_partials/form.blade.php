@@ -15,7 +15,7 @@
     <div class="col-3">
       <div class="input-style-1">
         <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Fecha/Hora de Visita</label>
-        <input type="text" name="visit_date" placeholder="DD/MM/YYYY" value="{{ date('d/m/Y - H:i', strtotime($currentDate)) }}" readonly>
+        <input type="text" name="visit_date" placeholder="DD/MM/YYYY" value="@if($customer_visit) {{ date('d/m/Y - H:i', strtotime($customer_visit->visit_date)) }} @else {{ $currentDate }} @endif" readonly>
       </div>
     </div>
     <div class="col-3">

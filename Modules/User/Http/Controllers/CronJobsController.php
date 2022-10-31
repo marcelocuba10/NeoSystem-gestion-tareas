@@ -20,6 +20,8 @@ class CronJobsController extends Controller
     {
         $currentDateHour = Carbon::now()->format('Y-m-d H:i');
 
+        \Log::info("CronJob executed: " . $currentDateHour);
+
         /** get all appointments with status Pending */
         $late_appointments = DB::table('appointments')
             ->where('appointments.status', '=', 'Pendiente')

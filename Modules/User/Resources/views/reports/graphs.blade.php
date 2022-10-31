@@ -103,12 +103,27 @@
       }]
   });
 
-  var salesCountByMonth = <?php echo json_encode($salesCountByMonth); ?>;
-  var salesCancelCountByMonth = <?php echo json_encode($salesCancelCountByMonth); ?>;
-  var ordersCountByMonth = <?php echo json_encode($ordersCountByMonth); ?>;
-  var ordersCancelCountByMonth = <?php echo json_encode($ordersCancelCountByMonth); ?>;
-
   var salesPeriods = <?php echo json_encode($salesPeriods); ?>;
+
+  var salesCountByMonth = <?php 
+    $data = json_encode($salesCountByMonth);
+    echo str_replace('"', '', $data);
+  ?>;
+
+  var salesCancelCountByMonth = <?php 
+    $data = json_encode($salesCancelCountByMonth);
+    echo str_replace('"', '', $data);
+  ?>;
+
+  var ordersCountByMonth = <?php 
+    $data = json_encode($ordersCountByMonth);
+    echo str_replace('"', '', $data);
+  ?>;
+
+  var ordersCancelCountByMonth = <?php 
+    $data = json_encode($ordersCancelCountByMonth);
+    echo str_replace('"', '', $data);
+  ?>;
 
   Highcharts.chart('container_2', {
     chart: {
