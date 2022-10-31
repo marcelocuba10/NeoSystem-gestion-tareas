@@ -190,6 +190,7 @@ Route::prefix('admin')->group(function () {
         Route::group(['prefix' => 'reports'], function () {
             Route::get('/sellers', 'ReportsController@sellers');
             Route::get('/products', 'ReportsController@products');
+            Route::get('/graphs', 'ReportsController@graphs');
         });
     });
 });

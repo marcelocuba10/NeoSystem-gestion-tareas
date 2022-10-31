@@ -22,6 +22,7 @@ class CreateSalesTable extends Migration
             $table->string('sale_date')->nullable();
             $table->string('order_date')->nullable();
             $table->string('type');
+            $table->string('previous_type');
             $table->string('status');
             $table->decimal('total', 12, 0);
             $table->timestamps();

@@ -187,6 +187,13 @@
       </div>
       <div class="col-lg-6 col-xl-6 col-xxl-6">
         <div class="card-style mb-30">
+          <div id="container_3"></div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12 col-xl-12 col-xxl-12">
+        <div class="card-style mb-30">
           <div id="container_2"></div>
         </div>
       </div>
@@ -202,6 +209,8 @@
   var visits_no_process_count = <?php echo json_encode($visits_no_process_count); ?>;
   var visits_pending_count = <?php echo json_encode($visits_pending_count); ?>;
 
+  console.log(visits_cancel_count);
+
   Highcharts.chart('container', {
       chart: {
           plotBackgroundColor: null,
@@ -210,10 +219,10 @@
           type: 'pie'
       },
       title: {
-          text: 'Estado de visitas clientes durante 30 días'
+          text: 'Estado de Visitas Clientes durante 30 días'
       },
       tooltip: {
-          pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+          pointFormat: "{series.name}({point.y}): <b>{point.percentage:.1f}%</b>"
       },
       accessibility: {
           point: {
@@ -231,7 +240,7 @@
           }
       },
       series: [{
-          name: 'Visitas',
+          name: 'Total',
           colorByPoint: true,
           data: [{
               name: 'Visitados',
@@ -310,7 +319,56 @@
         data: ordersCancelCountByMonth
 
     }]
-});
+  });
+
+
+  var salesCountByMonth = <?php echo json_encode($sales_count); ?>;
+  var ordersCountByMonth = <?php echo json_encode($orders_count); ?>;
+
+  Highcharts.chart('container_3', {
+      chart: {
+          plotBackgroundColor: null,
+          plotBorderWidth: null,
+          plotShadow: false,
+          type: 'pie'
+      },
+      title: {
+          text: 'Estado de Ventas durante 30 días'
+      },
+      tooltip: {
+          pointFormat: "{series.name}({point.y}): <b>{point.percentage:.1f}%</b>"
+      },
+      accessibility: {
+          point: {
+              valueSuffix: '%'
+          }
+      },
+      plotOptions: {
+          pie: {
+              allowPointSelect: true,
+              cursor: 'pointer',
+              dataLabels: {
+                  enabled: true,
+                  format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+              }
+          }
+      },
+      series: [{
+          name: 'Total',
+          colorByPoint: true,
+          data: [{
+              name: 'Ventas',
+              y: salesCountByMonth,
+              sliced: true,
+              selected: true,
+              color: '#4a6cf7',
+          }, {
+              name: 'Presupuestos',
+              y: ordersCountByMonth,
+              color: '#c1e4fe',
+          }]
+      }]
+  });
 
 </script>
 @endsection

@@ -17,6 +17,7 @@ class Sales extends Model
         'sale_date',
         'order_date',
         'type',
+        'previous_type',
         'status',
         'total'
     ];

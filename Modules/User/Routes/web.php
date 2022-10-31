@@ -133,6 +133,7 @@ Route::prefix('user')->group(function () {
             Route::get('/customers/search', 'ReportsController@customers');
             Route::get('/products', 'ReportsController@products');
             Route::get('/schedules', 'ReportsController@schedules');
+            Route::get('/graphs', 'ReportsController@graphs');
         });
 
         /*** ACL Routes ***/

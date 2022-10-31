@@ -121,8 +121,10 @@ class SalesController extends Controller
 
             if ($input['type'] == 'Venta') {
                 $input['status'] = 'Procesado';
+                $input['previous_type'] = 'Venta';
             } elseif ($input['type'] == 'Presupuesto') {
                 $input['status'] = 'Pendiente';
+                $input['previous_type'] = 'Presupuesto';
             }
 
             $sale = Sales::create($input);

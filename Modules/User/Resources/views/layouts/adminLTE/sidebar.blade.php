@@ -111,9 +111,18 @@
             </span>
             <span class="text">Informes</span>
           </a>
-          <ul id="ddmenu_1" class="dropdown-nav" style="{{ (request()->is('user/reports/*')) ? '' : 'display:none' }}">
+          <ul id="ddmenu_1" class="dropdown-nav" style="{{ (request()->is('user/reports/*')) || (request()->is('user/whatdo/*')) ? '' : 'display:none' }}">
             <li >
               <a href="{{ url('/user/reports/customers') }}" class="{{ (request()->is('user/reports/customers')) ? 'active' : '' }}">Clientes</a>
+            </li>
+            <li>
+              <a href="{{ url('/user/whatdo') }}" class="{{ (request()->is('/user/whatdo')) ? 'active' : '' }}">Visitas Clientes</a>
+            </li>
+            <li>
+              <a href="{{ url('/user/whatdo/visit_on_map') }}" class="{{ (request()->is('/user/whatdo/visit_on_map')) ? 'active' : '' }}">Zona Geográfica</a>
+            </li>
+            <li>
+              <a href="{{ url('/user/reports/graphs') }}" class="{{ (request()->is('/user/reports/graphs')) ? 'active' : '' }}">Gráficos</a>
             </li>
             <li >
               <a href="{{ url('/user/reports/products') }}" class="{{ (request()->is('user/reports/products')) ? 'active' : '' }}">Productos</a>

@@ -157,6 +157,7 @@ class CustomerVisitController extends Controller
                     $sale['customer_id'] = $customer_visit->customer_id;
                     $sale['order_date'] = $customer_visit->visit_date;
                     $sale['type'] = 'Presupuesto';
+                    $sale['previous_type'] = 'Presupuesto';
                     $sale['status'] = 'Pendiente';
                     $sale['total'] = $total_order;
                     Sales::create($sale);
@@ -396,6 +397,7 @@ class CustomerVisitController extends Controller
                     $sale['customer_id'] = $customer_visit->customer_id;
                     $sale['order_date'] = $customer_visit->visit_date;
                     $sale['type'] = 'Presupuesto';
+                    $sale['previous_type'] = 'Presupuesto';
                     $sale['status'] = 'Pendiente';
                     $sale['total'] = $total_order;
                     Sales::create($sale);

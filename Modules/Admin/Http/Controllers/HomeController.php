@@ -58,6 +58,7 @@ class HomeController extends Controller
             ->orderBy('appointments.created_at', 'DESC')
             ->paginate(5);
 
+        /** For info cards */
         $visited_less_30_days = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('visit_date', '>', Carbon::now()->subDays(30))
@@ -73,6 +74,7 @@ class HomeController extends Controller
             ->where('visit_date', '<', Carbon::now()->subDays(90))
             ->count();
 
+        /** For Pie Chart */
         $visits_cancel_count = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customer_visits.status', '=', 'Cancelado')
@@ -93,6 +95,17 @@ class HomeController extends Controller
             ->where('customer_visits.status', '=', 'Pendiente')
             ->count();
 
+        $sales_count = DB::table('sales')
+            ->where('previous_type', '=', 'Venta')
+            ->where('status', '=', 'Procesado')
+            ->count();
+
+        $orders_count = DB::table('sales')
+            ->where('previous_type', '=', 'Presupuesto')
+            ->where('status', '!=', 'Cancelado')
+            ->count();
+
+        /** For Column Chart */
         $getSalesCountByMonth = DB::table('sales')
             ->selectRaw("count(id) as total, date_format(created_at, '%b %Y') as period")  //Essentially, what this selection date_format(created_at, '%b %Y') does is that it maps the created_at field into a string containing the field's month and year, like 'Mar 2022'.
             ->whereYear('created_at', '>=', $currentOnlyYear)
@@ -114,18 +127,16 @@ class HomeController extends Controller
         $getOrdersCountByMonth = DB::table('sales')
             ->selectRaw("count(id) as total, date_format(created_at, '%b %Y') as period")  //Essentially, what this selection date_format(created_at, '%b %Y') does is that it maps the created_at field into a string containing the field's month and year, like 'Mar 2022'.
             ->whereYear('created_at', '>=', $currentOnlyYear)
-            ->where('type', '=', 'Venta')
-            ->where('visit_id', '!=', null)
+            ->where('previous_type', '=', 'Presupuesto')
+            ->where('status', '!=', 'Cancelado')
             ->orderBy('created_at', 'ASC')
             ->groupBy('period')
             ->get();
 
-            dd($getOrdersCountByMonth);
-
         $getOrdersCancelCountByMonth = DB::table('sales')
             ->selectRaw("count(id) as total, date_format(created_at, '%b %Y') as period")  //Essentially, what this selection date_format(created_at, '%b %Y') does is that it maps the created_at field into a string containing the field's month and year, like 'Mar 2022'.
             ->whereYear('created_at', '>=', $currentOnlyYear)
-            ->where('type', '=', 'Presupuesto')
+            ->where('previous_type', '=', 'Presupuesto')
             ->where('status', '=', 'Cancelado')
             ->orderBy('created_at', 'ASC')
             ->groupBy('period')
@@ -139,6 +150,8 @@ class HomeController extends Controller
         $salesPeriods = $getSalesCountByMonth->pluck('period')->toArray();
 
         return view('admin::dashboard', compact(
+            'sales_count',
+            'orders_count',
             'salesCountByMonth',
             'salesCancelCountByMonth',
             'ordersCountByMonth',
