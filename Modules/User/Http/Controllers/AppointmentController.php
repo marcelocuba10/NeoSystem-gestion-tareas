@@ -113,6 +113,7 @@ class AppointmentController extends Controller
 
     public function update(Request $request, $id)
     {
+        $idRefCurrentUser = Auth::user()->idReference;
         /** date validation, not less than 1980 and not greater than the current year **/
         $initialDate = '1980-01-01';
         $currentDate = (date('Y') + 2) . '-01-01'; //current date + 2 year
@@ -130,7 +131,19 @@ class AppointmentController extends Controller
         $Appointment = Appointment::find($id);
         $Appointment->update($input);
 
-        return redirect()->to('/user/appointments')->with('message', 'Agenda actualizada correctamente');
+        /** Check if button pending to process is checked, change status to processs in customer visits and appointments */
+        if ($request->pendingToProcess == true) {
+
+            DB::table('appointments')
+                ->where('appointments.id', '=', $id)
+                ->where('appointments.idReference', '=', $idRefCurrentUser)
+                ->update([
+                    'status' => 'Procesado'
+                ]);
+            return redirect()->to('/user/appointments')->with('message', 'Agenda actualizada correctamente.');
+        } else {
+            return back()->with('message', 'Agenda actualizada correctamente.');
+        }
     }
 
     public function filter(Request $request)

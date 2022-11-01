@@ -8,7 +8,7 @@
       <div class="row align-items-center">
         <div class="col-md-6">
           <div class="title mb-30">
-            <h2>Detalle de la Agenda</h2>
+            <h2>Detalle de la Agenda <span class="span-form">{{ $appointment->status }}</span></h2>
           </div>
         </div>
         <div class="col-md-6">
@@ -38,35 +38,30 @@
                   <input type="text" value="{{ $appointment->customer_name ?? old('customer_name') }}" readonly>
                 </div>
               </div>
-              <!-- end col -->
               <div class="col-3">
                 <div class="input-style-1">
                   <label>Fecha</label>
                   <input type="text" value="{{ date('d/m/Y', strtotime($appointment->date)) }}" readonly>
                 </div>
               </div>
-              <!-- end col -->
               <div class="col-3">
                 <div class="input-style-1">
                   <label>Hora</label>
                   <input type="text" value="{{ $appointment->hour ?? old('hour') }}" readonly>
                 </div>
               </div>
-              <!-- end col -->
               <div class="col-3">
                 <div class="input-style-1">
                   <label>Acción</label>
                   <input type="text" value="{{ $appointment->action ?? old('action') }}" readonly>
                 </div>
               </div>
-              <!-- end col -->
               <div class="col-9">
                 <div class="input-style-1">
                   <label>Nota/Observación</label>
                   <textarea type="text" value="{{ $appointment->observation ?? old('observation') }}" readonly>{{ $appointment->observation ?? old('observation') }}</textarea>
                 </div>
               </div>
-              <!-- end col -->
 
               <div class="col-12">
                 <div class="button-group d-flex justify-content-center flex-wrap">

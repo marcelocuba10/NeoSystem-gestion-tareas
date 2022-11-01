@@ -561,10 +561,11 @@ class CustomerVisitController extends Controller
                 ->update([
                     'status' => 'Procesado'
                 ]);
-        }
 
-        return back()->with('message', 'Visita Cliente actualizada correctamente.');
-        //return redirect()->to('/user/customer_visits')->with('message', 'Visita Cliente actualizada correctamente.');
+            return redirect()->to('/user/customer_visits')->with('message', 'Visita Cliente actualizada correctamente.');
+        } else {
+            return back()->with('message', 'Visita Cliente actualizada correctamente.');
+        }
     }
 
     public function search(Request $request)

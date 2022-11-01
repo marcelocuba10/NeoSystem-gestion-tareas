@@ -291,7 +291,7 @@
           <input type="hidden" name="cancelSale" id="cancelSale">
           @can('sales-delete')
             @if ($sale->status != 'Cancelado')
-              <button type="submit" data-id="{{$sale->id}}" data-invoice_number="{{$sale->invoice_number}}" class="main-btn danger-btn btn-hover m-2 btn-cancelSale">Cancelar Venta</button>
+              <button type="submit" data-id="{{$sale->id}}" data-invoice_number="{{$sale->invoice_number}}" class="main-btn danger-btn btn-hover m-2 btn-cancelSale show_confirm">Cancelar Venta</button>
             @endif
           @endcan
           <div class="button-group d-flex justify-content-center flex-wrap">
@@ -302,6 +302,28 @@
     @endif
 
   </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+<script type="text/javascript">
+  $('.show_confirm').click(function(event) {
+        var form =  $(this).closest("form");
+        var name = $(this).data("name");
+        event.preventDefault();
+        swal({
+            title: '¿Está seguro que desea cancelar esta venta?',
+            // text: "Si eliminas esto, desaparecerá para siempre.",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+            buttons: ["No", "Sí"],
+        })
+        .then((willDelete) => {
+          if (willDelete) {
+            form.submit();
+          }
+        });
+    });
+</script>
 
 <script type="text/javascript">
 
