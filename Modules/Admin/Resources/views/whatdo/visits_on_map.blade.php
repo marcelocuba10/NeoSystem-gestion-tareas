@@ -61,10 +61,10 @@
         var visit_date = marker.visit_date;
         var next_visit_date = marker.next_visit_date;
         var next_visit_hour = marker.next_visit_hour;
-        var estate = marker.estate;
+        var status = marker.status;
         var action = marker.action;
 
-        var html = "<b style='overflow: hidden;font-weight: 500;font-size: 14px;color:#333'>" + customer_name + "</b> <br/>Visitado: " + visit_date +",<br/>Localidad: "+ estate +",<br/>Próxima Visita: "+ next_visit_date +",<br/>Hora: "+ next_visit_hour + ",<br/>Acción: "+ action + "<br/><a href='/facundo/admin/customers/show/"+customer_id+"'>Ver Ficha Cliente</a>";
+        var html = "<b style='overflow: hidden;font-weight: 500;font-size: 14px;color:#333'>" + customer_name + "</b> <br/>Visitado: " + visit_date +",<br/>Próxima Paso: "+ next_visit_date +",<br/>Hora: "+ next_visit_hour + ",<br/>Acción: " + action + ",<br/>Estado: " + status + "<br/><a href='/facundo/user/customers/show/"+ customer_id +"'>Ver Ficha Cliente</a>";
 
         const then = new Date(visit_date); //visit_date
         const now = new Date(); //current date

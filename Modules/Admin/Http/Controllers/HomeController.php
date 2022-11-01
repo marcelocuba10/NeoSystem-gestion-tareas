@@ -20,6 +20,11 @@ class HomeController extends Controller
         $currentDate = Carbon::now()->format('d/m/Y');
         $currentOnlyYear = Carbon::now()->format('Y');
 
+        $currentMonth = Carbon::now()->format('m');
+
+        Carbon::setlocale('ES');
+        $currentMonthName = Carbon::parse(Carbon::now()->format('Y/m/d'))->translatedFormat('F');
+
         $customer_visits = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->select(
@@ -77,32 +82,40 @@ class HomeController extends Controller
         /** For Pie Chart */
         $visits_cancel_count = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+            ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('customer_visits.status', '=', 'Cancelado')
             ->count();
 
         $visits_process_count = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+            ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('customer_visits.status', '=', 'Procesado')
             ->count();
 
         $visits_no_process_count = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+            ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('customer_visits.status', '=', 'No Procesado')
             ->count();
 
         $visits_pending_count = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+            ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('customer_visits.status', '=', 'Pendiente')
             ->count();
 
         $sales_count = DB::table('sales')
             ->where('previous_type', '=', 'Venta')
-            ->where('status', '=', 'Procesado')
+            ->whereMonth('sales.created_at', $currentMonth) //get data current month 11,12 etc
+            ->where('sales.previous_type', '=', 'Venta')
+            ->where('sales.status', '=', 'Procesado')
             ->count();
 
         $orders_count = DB::table('sales')
             ->where('previous_type', '=', 'Presupuesto')
-            ->where('status', '!=', 'Cancelado')
+            ->whereMonth('sales.created_at', $currentMonth) //get data current month 11,12 etc
+            ->where('sales.previous_type', '=', 'Presupuesto')
+            ->where('sales.status', '!=', 'Cancelado')
             ->count();
 
         /** For Column Chart */
@@ -150,6 +163,7 @@ class HomeController extends Controller
         $salesPeriods = $getSalesCountByMonth->pluck('period')->toArray();
 
         return view('admin::dashboard', compact(
+            'currentMonthName',
             'sales_count',
             'orders_count',
             'salesCountByMonth',
@@ -166,6 +180,7 @@ class HomeController extends Controller
             'cant_sellers',
             'appointments',
             'currentDate',
+            'currentOnlyYear',
             'visited_less_30_days',
             'visited_more_30_days',
             'visited_more_90_days'

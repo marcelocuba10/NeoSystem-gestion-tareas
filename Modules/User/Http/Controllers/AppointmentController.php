@@ -5,9 +5,11 @@ namespace Modules\User\Http\Controllers;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Modules\User\Entities\Appointment;
+use Modules\User\Entities\CustomerVisit;
 
 class AppointmentController extends Controller
 {
@@ -30,6 +32,7 @@ class AppointmentController extends Controller
             ->where('appointments.idReference', '=', $idRefCurrentUser)
             ->select(
                 'appointments.id',
+                'appointments.visit_number',
                 'appointments.visit_id',
                 'appointments.date',
                 'appointments.hour',
@@ -38,12 +41,11 @@ class AppointmentController extends Controller
                 'appointments.observation',
                 'customers.name AS customer_name',
                 'customers.phone AS customer_phone',
-                'customers.estate AS customer_estate',
             )
             ->orderBy('appointments.created_at', 'DESC')
-            ->paginate(10);
+            ->paginate(20);
 
-        return view('user::appointments.index', compact('appointments'))->with('i', (request()->input('page', 1) - 1) * 10);
+        return view('user::appointments.index', compact('appointments'))->with('i', (request()->input('page', 1) - 1) * 20);
     }
 
     public function create()
@@ -83,13 +85,39 @@ class AppointmentController extends Controller
 
         $input = $request->all();
 
-        /** Add input extra values */
-        $input['idReference'] = $idRefCurrentUser;
-        $input['status'] = 'Pendiente';
+        /** Create new visit customer */
+        $field['visit_number'] = $this->generateUniqueCodeVisit();
+        $field['customer_id'] = $input['customer_id'];
+        $field['seller_id'] = $idRefCurrentUser;
+        $field['visit_date'] = Carbon::now();
+        $field['next_visit_date'] = $input['date'];
+        $field['next_visit_hour'] = $input['hour'];
+        $field['objective'] = null;
+        $field['result_of_the_visit'] = null;
+        $field['action'] = $input['action'];
+        $field['type'] = 'Sin Presupuesto';
+        $field['status'] = 'Pendiente';
+        $customer_visit = CustomerVisit::create($field);
 
-        Appointment::create($input);
+        /** Add input extra values and create new appointment */
+        $input['idReference'] = $idRefCurrentUser;
+        $input['visit_number'] = $customer_visit->visit_number;
+        $input['visit_id'] = $customer_visit->id;
+        $input['status'] = 'Pendiente';
+        $appointment = Appointment::create($input);
 
         return redirect()->to('/user/appointments')->with('message', 'Agendado Correctamente');
+    }
+
+    public function generateUniqueCodeVisit()
+    {
+        do {
+            $visit_number = random_int(100000, 999999);
+        } while (
+            DB::table('customer_visits')->where("visit_number", "=", $visit_number)->first()
+        );
+
+        return $visit_number;
     }
 
     public function edit($id)
@@ -157,6 +185,7 @@ class AppointmentController extends Controller
                 ->where('appointments.idReference', '=', $idRefCurrentUser)
                 ->select(
                     'appointments.id',
+                    'appointments.visit_number',
                     'appointments.visit_id',
                     'appointments.date',
                     'appointments.hour',
@@ -165,7 +194,6 @@ class AppointmentController extends Controller
                     'appointments.observation',
                     'customers.name AS customer_name',
                     'customers.phone AS customer_phone',
-                    'customers.estate AS customer_estate',
                 )
                 ->orderBy('appointments.created_at', 'DESC')
                 ->paginate(10);
@@ -176,6 +204,7 @@ class AppointmentController extends Controller
                 ->where('appointments.action', 'LIKE', "%{$filter}%")
                 ->select(
                     'appointments.id',
+                    'appointments.visit_number',
                     'appointments.visit_id',
                     'appointments.date',
                     'appointments.hour',
@@ -184,7 +213,6 @@ class AppointmentController extends Controller
                     'appointments.observation',
                     'customers.name AS customer_name',
                     'customers.phone AS customer_phone',
-                    'customers.estate AS customer_estate',
                 )
                 ->orderBy('appointments.created_at', 'DESC')
                 ->paginate(10);
@@ -202,6 +230,7 @@ class AppointmentController extends Controller
             ->where('appointments.id', '=', $id)
             ->select(
                 'appointments.id',
+                'appointments.visit_number',
                 'appointments.visit_id',
                 'appointments.date',
                 'appointments.hour',
@@ -234,6 +263,7 @@ class AppointmentController extends Controller
                 ->where('appointments.idReference', '=', $idRefCurrentUser)
                 ->select(
                     'appointments.id',
+                    'appointments.visit_number',
                     'appointments.visit_id',
                     'appointments.date',
                     'appointments.hour',
@@ -242,10 +272,9 @@ class AppointmentController extends Controller
                     'appointments.observation',
                     'customers.name AS customer_name',
                     'customers.phone AS customer_phone',
-                    'customers.estate AS customer_estate',
                 )
                 ->orderBy('appointments.created_at', 'DESC')
-                ->paginate(10);
+                ->paginate(20);
         } else {
             $appointments = DB::table('appointments')
                 ->leftjoin('customers', 'customers.id', '=', 'appointments.customer_id')
@@ -253,6 +282,7 @@ class AppointmentController extends Controller
                 ->where('customers.name', 'LIKE', "%{$search}%")
                 ->select(
                     'appointments.id',
+                    'appointments.visit_number',
                     'appointments.visit_id',
                     'appointments.date',
                     'appointments.hour',
@@ -261,13 +291,12 @@ class AppointmentController extends Controller
                     'appointments.observation',
                     'customers.name AS customer_name',
                     'customers.phone AS customer_phone',
-                    'customers.estate AS customer_estate',
                 )
                 ->orderBy('appointments.created_at', 'DESC')
                 ->paginate();
         }
 
-        return view('user::appointments.index', compact('appointments', 'search'))->with('i', (request()->input('page', 1) - 1) * 10);
+        return view('user::appointments.index', compact('appointments', 'search'))->with('i', (request()->input('page', 1) - 1) * 20);
     }
 
     public function destroy($id)

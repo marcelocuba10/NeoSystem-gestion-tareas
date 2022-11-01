@@ -14,7 +14,7 @@
     </div>
     <div class="col-3">
       <div class="input-style-1">
-        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Fecha/Hora de Visita</label>
+        <label>Fecha/Hora</label>
         <input type="text" name="visit_date" placeholder="DD/MM/YYYY" value="@if($customer_visit) {{ date('d/m/Y - H:i', strtotime($customer_visit->visit_date)) }} @else {{ $currentDate }} @endif" readonly>
       </div>
     </div>
@@ -62,14 +62,18 @@
     </div>
     <div class="col-4">
       <div class="input-style-1">
-        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Resultado de la Visita</label>
+        @if ($customer_visit)
+          <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Resultados de la Visita/Llamada</label>
+        @else
+          <label>Resultados de la Visita/Llamada</label>
+        @endif
         <textarea type="text" name="result_of_the_visit" value="{{ $customer_visit->result_of_the_visit ?? old('result_of_the_visit') }}" class="bg-transparent">{{ $customer_visit->result_of_the_visit ?? old('result_of_the_visit') }}</textarea>
       </div>
     </div>
     <div class="col-5">
       <div class="input-style-1" id="objective" style="display: none">
-        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Objetivos</label>
-        <textarea type="text" name="objective" value="{{ $customer_visit->objective ?? old('objective') }}" class="bg-transparent">{{ $customer_visit->objective ?? old('objective') }}</textarea>
+        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Objetivos Visita/Llamada</label>
+        <textarea type="text" name="objective" value="{{ $customer_visit->objective ?? old('objective') }}" class="bg-transparent" placeholder="Qué quiero lograr y en cuanto tiempo">{{ $customer_visit->objective ?? old('objective') }}</textarea>
       </div>
     </div>
     

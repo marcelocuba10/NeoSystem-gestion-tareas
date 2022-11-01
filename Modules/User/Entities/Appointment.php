@@ -13,6 +13,7 @@ class Appointment extends Model
         'idReference',
         'customer_id',
         'visit_id',
+        'visit_number',
         'date',
         'hour',
         'action',

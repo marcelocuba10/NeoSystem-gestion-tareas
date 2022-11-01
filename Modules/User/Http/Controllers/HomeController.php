@@ -19,7 +19,11 @@ class HomeController extends Controller
         $idRefCurrentUser = Auth::user()->idReference;
         $currentDate = Carbon::now()->format('d/m/Y');
         $currentOnlyYear = Carbon::now()->format('Y');
+        $currentMonth = Carbon::now()->format('m');
 
+        Carbon::setlocale('ES');
+        $currentMonthName = Carbon::parse(Carbon::now()->format('Y/m/d'))->translatedFormat('F');
+   
         $customer_visits = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
@@ -79,30 +83,35 @@ class HomeController extends Controller
         $visits_cancel_count = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customers.idReference', '=', $idRefCurrentUser)
+            ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('customer_visits.status', '=', 'Cancelado')
             ->count();
 
         $visits_process_count = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customers.idReference', '=', $idRefCurrentUser)
+            ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('customer_visits.status', '=', 'Procesado')
             ->count();
 
         $visits_no_process_count = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customers.idReference', '=', $idRefCurrentUser)
+            ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('customer_visits.status', '=', 'No Procesado')
             ->count();
 
         $visits_pending_count = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customers.idReference', '=', $idRefCurrentUser)
+            ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('customer_visits.status', '=', 'Pendiente')
             ->count();
 
         $sales_count = DB::table('sales')
             ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
             ->where('customers.idReference', '=', $idRefCurrentUser)
+            ->whereMonth('sales.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('sales.previous_type', '=', 'Venta')
             ->where('sales.status', '=', 'Procesado')
             ->count();
@@ -110,6 +119,7 @@ class HomeController extends Controller
         $orders_count = DB::table('sales')
             ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
             ->where('customers.idReference', '=', $idRefCurrentUser)
+            ->whereMonth('sales.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('sales.previous_type', '=', 'Presupuesto')
             ->where('sales.status', '!=', 'Cancelado')
             ->count();
@@ -153,6 +163,7 @@ class HomeController extends Controller
             ->where('customers.idReference', '=', $idRefCurrentUser)
             ->selectRaw("count(sales.id) as total, date_format(sales.created_at, '%b %Y') as period")  //Essentially, what this selection date_format(created_at, '%b %Y') does is that it maps the created_at field into a string containing the field's month and year, like 'Mar 2022'.
             ->whereYear('sales.created_at', '>=', $currentOnlyYear)
+            ->where('sales.type', '=', 'Presupuesto')
             ->where('sales.previous_type', '=', 'Presupuesto')
             ->where('sales.status', '=', 'Cancelado')
             ->orderBy('sales.created_at', 'ASC')
@@ -167,10 +178,12 @@ class HomeController extends Controller
         $salesPeriods = $getSalesCountByMonth->pluck('period')->toArray();
 
         return view('user::dashboard', compact(
+            'currentMonthName',
             'customer_visits',
             'cant_customers',
             'appointments',
             'currentDate',
+            'currentOnlyYear',
             'visited_less_30_days',
             'visited_more_30_days',
             'visited_more_90_days',

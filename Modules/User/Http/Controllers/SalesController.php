@@ -596,7 +596,8 @@ class SalesController extends Controller
                 ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
                 ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
                 ->where('customers.name', 'LIKE', "%{$search}%")
-                ->Where('customers.idReference', '=', $idRefCurrentUser)
+                ->orWhere('sales.invoice_number', 'LIKE', "%{$search}%")
+                ->where('customers.idReference', '=', $idRefCurrentUser)
                 ->select(
                     'sales.id',
                     'sales.invoice_number',

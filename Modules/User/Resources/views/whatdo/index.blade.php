@@ -46,7 +46,7 @@
                       </li>
                       <li>
                         <div class="select-style-1">
-                          <label>Rubro</label>
+                          <label>Rubro / Categoría</label>
                           <div class="select-position select-sm">
                             <select class="light-bg" id="category">>
                               @foreach ($categories as $item)

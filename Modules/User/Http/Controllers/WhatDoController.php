@@ -86,15 +86,14 @@ class WhatDoController extends Controller
                 'customer_visits.status',
                 'customer_visits.type',
                 'customer_visits.action',
-                'customers.id AS customer_id',
+                'customer_visits.customer_id',
                 'customers.name AS customer_name',
                 'customers.city',
-                'customers.estate',
                 'customers.latitude',
                 'customers.longitude',
             )
-            ->groupBy('customers.id')
-            ->orderBy('customer_visits.created_at', 'DESC')
+            //->groupBy('customer_visits.customer_id')
+            ->orderBy('customer_visits.visit_date', 'ASC')
             ->get();
 
         return view('user::whatdo.visits_on_map', compact('customer_visits',));

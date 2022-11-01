@@ -196,6 +196,7 @@
   var visits_process_count = <?php echo json_encode($visits_process_count); ?>;
   var visits_no_process_count = <?php echo json_encode($visits_no_process_count); ?>;
   var visits_pending_count = <?php echo json_encode($visits_pending_count); ?>;
+  var currentMonthName = <?php echo json_encode($currentMonthName); ?>;
 
   Highcharts.chart('container', {
       chart: {
@@ -205,7 +206,7 @@
           type: 'pie'
       },
       title: {
-          text: 'Estado de Visitas Clientes durante 30 días'
+          text: 'Estado de Visitas Clientes mes - ' + currentMonthName
       },
       tooltip: {
           pointFormat: "{series.name}({point.y}): <b>{point.percentage:.1f}%</b>"
@@ -251,6 +252,7 @@
   });
 
   var salesPeriods = <?php echo json_encode($salesPeriods); ?>;
+  var currentOnlyYear = <?php echo json_encode($currentOnlyYear); ?>;
 
   var salesCountByMonth = <?php 
     $data = json_encode($salesCountByMonth);
@@ -277,7 +279,7 @@
         type: 'column'
     },
     title: {
-        text: 'Ventas y Presupuestos - 2022'
+        text: 'Ventas y Presupuestos - ' + currentOnlyYear
     },
     xAxis: {
       categories: salesPeriods,
@@ -334,7 +336,7 @@
           type: 'pie'
       },
       title: {
-          text: 'Estado de Ventas durante 30 días'
+          text: 'Estado de Ventas mes - ' + currentMonthName
       },
       tooltip: {
           pointFormat: "{series.name}({point.y}): <b>{point.percentage:.1f}%</b>"

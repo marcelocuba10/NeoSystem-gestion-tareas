@@ -94,7 +94,7 @@ class CustomerVisitController extends Controller
             'next_visit_date' => 'nullable|date|after_or_equal:today|before:' . $currentDate,
             'next_visit_hour' => 'nullable|max:5|min:5',
             'action' => 'required|max:30|min:5',
-            'result_of_the_visit' => 'required|max:1000|min:3',
+            'result_of_the_visit' => 'nullable|max:1000|min:3',
             'objective' => 'nullable|max:1000|min:3',
             'product_id' => 'required',
             'qty' => 'required',
@@ -194,6 +194,7 @@ class CustomerVisitController extends Controller
             /** check if next_visit_date is marked, do appointment */
             if ($input['next_visit_date'] != 'No marcado') {
                 $field['idReference'] = $idRefCurrentUser;
+                $field['visit_number'] = $customer_visit->visit_number;
                 $field['visit_id'] = $customer_visit->id;
                 $field['customer_id'] = $input['customer_id'];
                 $field['date'] = $input['next_visit_date'];
@@ -597,6 +598,7 @@ class CustomerVisitController extends Controller
             $customer_visits = DB::table('customer_visits')
                 ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
                 ->where('customers.idReference', '=', $idRefCurrentUser)
+                ->orWhere('customer_visits.visit_number', 'LIKE', "%{$search}%")
                 ->where('customers.name', 'LIKE', "%{$search}%")
                 ->select(
                     'customer_visits.id',

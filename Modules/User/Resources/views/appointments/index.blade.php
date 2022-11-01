@@ -81,9 +81,8 @@
                 <table class="table table-hover">
                   <thead>
                     <tr>
-                      <th><h6>#</h6></th>
+                      <th><h6>Número</h6></th>
                       <th><h6>Cliente</h6></th>
-                      <th><h6>Localidad</h6></th>
                       <th><h6>Fecha</h6></th>
                       <th><h6>Hora</h6></th>
                       <th><h6>Acción</h6></th>
@@ -95,13 +94,12 @@
                     @if (count($appointments) > 0 )
                       @foreach ($appointments as $appointment)
                         <tr>
-                          <td class="text-sm"><h6 class="text-sm">{{ ++$i }}</h6></td>
+                          <td class="text-sm"><h6 class="{{ ($appointment->status == 'Procesado' || $appointment->status == 'Pendiente') ? 'text-dark' : 'text-disabled' }}">{{ $appointment->visit_number }}</h6></td>
                           @if ($appointment->visit_id)
                             <td class="min-width"><h5 class="text-bold {{ ($appointment->status == 'Procesado' || $appointment->status == 'Pendiente') ? 'text-dark' : 'text-disabled' }}"><a href="{{ url('/user/customer_visits/show/'.$appointment->visit_id ) }}">{{ $appointment->customer_name }}</a></h5></td>
                           @else
                             <td class="min-width"><h5 class="text-bold text-dark"><a href="{{ url('/user/appointments/show/'.$appointment->id ) }}">{{ $appointment->customer_name }}</a></h5></td>
                           @endif
-                          <td class="min-width"><p><i class="lni lni-map-marker mr-10"></i>{{ $appointment->customer_estate }}</p></td>
                           <td class="min-width"><p><i class="lni lni-calendar mr-10"></i>{{ date('d/m/Y', strtotime($appointment->date)) }}</p></td>
                           <td class="min-width"><p><i class="lni lni-timer mr-10"></i>{{ $appointment->hour }}</p></td>
                           <td class="min-width">
