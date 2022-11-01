@@ -131,15 +131,15 @@
                                     <button class="text-active"><i class="lni lni-eye"></i></button>
                                   </a>
                                 </div>
-                                @if ($appointment->status == 'Procesado' || $appointment->status == 'Pendiente')
-                                  @can('appointment-edit')
+                                @can('appointment-edit')
+                                  @if ($appointment->status == 'Pendiente')
                                     <div class="action">
                                       <a href="{{ url('/user/customer_visits/edit/'.$appointment->visit_id) }}" data-toggle="tooltip" data-placement="bottom" title="Editar">
                                         <button class="text-info"><i class="lni lni-pencil"></i></button>
                                       </a>
                                     </div>
-                                  @endcan
-                                @endif
+                                  @endif
+                                @endcan
                               @else
                                 <div class="action">
                                   <a href="{{ url('/user/appointments/show/'.$appointment->id) }}" data-toggle="tooltip" data-placement="bottom" title="Ver">
@@ -147,18 +147,20 @@
                                   </a>
                                 </div>
                                 @can('appointment-edit')
-                                  <div class="action">
-                                    <a href="{{ url('/user/appointments/edit/'.$appointment->id) }}" data-toggle="tooltip" data-placement="bottom" title="Editar">
-                                      <button class="text-info"><i class="lni lni-pencil"></i></button>
-                                    </a>
-                                  </div>
+                                  @if ($appointment->status == 'Pendiente')
+                                    <div class="action">
+                                      <a href="{{ url('/user/appointments/edit/'.$appointment->id) }}" data-toggle="tooltip" data-placement="bottom" title="Editar">
+                                        <button class="text-info"><i class="lni lni-pencil"></i></button>
+                                      </a>
+                                    </div>
+                                  @endif
                                 @endcan
                                 @can('appointment-delete')
                                   <form method="POST" action="{{ url('/user/appointments/delete/'.$appointment->id) }}" data-toggle="tooltip" data-placement="bottom" title="Eliminar">
                                     @csrf
                                     <div class="action">
                                       <input name="_method" type="hidden" value="DELETE">
-                                      <button type="submit" class="text-danger"><i class="lni lni-trash-can"></i></button>
+                                      <button type="submit" class="text-danger show_confirm"><i class="lni lni-trash-can"></i></button>
                                     </div>
                                   </form>
                                 @endcan
@@ -194,4 +196,25 @@
     </div>
   </section>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+  <script type="text/javascript">
+    $('.show_confirm').click(function(event) {
+          var form =  $(this).closest("form");
+          var name = $(this).data("name");
+          event.preventDefault();
+          swal({
+              title: '¿Está seguro que desea eliminar este registro?',
+              // text: "Si eliminas esto, desaparecerá para siempre.",
+              icon: "warning",
+              buttons: true,
+              dangerMode: true,
+              buttons: ["No", "Sí"],
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+              form.submit();
+            }
+          });
+      });
+  </script>
 @endsection

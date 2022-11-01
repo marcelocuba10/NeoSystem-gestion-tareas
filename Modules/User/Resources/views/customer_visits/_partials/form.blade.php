@@ -80,6 +80,7 @@
       </div>
     </div> --}}
 
+    {{-- Update visit customer --}}
     @if ($customer_visit)
       @if ($customer_visit->type == 'Presupuesto')
         <div class="col-12" id="setOrder">
@@ -138,7 +139,7 @@
         <div class="col-12">
           <div class="button-group d-flex justify-content-center flex-wrap">
             <input type="hidden" name="isSetOrder" id="isSetOrder">
-            <button type="submit" class="main-btn primary-btn btn-hover m-2">{{ ($customer_visit)  ? ' Actualizar' : 'Guardar' }}</button>
+            <button type="submit" class="main-btn primary-btn btn-hover m-2">Actualizar</button>
             <a class="main-btn primary-btn-outline m-2" href="{{ url('/user/customer_visits') }}">Atrás</a>
           </div>
         </div>
@@ -189,13 +190,15 @@
         <div class="col-12">
           <div class="button-group d-flex justify-content-center flex-wrap">
             <input type="hidden" name="isSetOrder" id="isSetOrder">
-            <button type="submit" class="main-btn primary-btn btn-hover m-2">{{ ($customer_visit)  ? ' Actualizar' : 'Guardar' }}</button>
+            <input type="hidden" name="pendingToProcess" id="pendingToProcess">
+            <button type="submit" class="main-btn primary-btn btn-hover m-2 btn-pendingToProcess">Marcar como Procesado</button>
+            <button type="submit" class="main-btn primary-btn-outline btn-hover m-2">Actualizar</button>
             <a class="main-btn primary-btn-outline m-2" href="{{ url('/user/customer_visits') }}">Atrás</a>
           </div>
         </div>
-
       @endif
 
+    {{-- New customer visit --}}
     @else
 
       <div class="col-12" id="setOrder" style="display: none">
@@ -242,7 +245,7 @@
       <div class="col-12">
         <div class="button-group d-flex justify-content-center flex-wrap">
           <input type="hidden" name="isSetOrder" id="isSetOrder">
-          <button type="submit" class="main-btn primary-btn btn-hover m-2">{{ ($customer_visit)  ? ' Actualizar' : 'Guardar' }}</button>
+          <button type="submit" class="main-btn primary-btn btn-hover m-2">Guardar</button>
           <a class="main-btn primary-btn-outline m-2" href="{{ url('/user/customer_visits') }}">Atrás</a>
         </div>
       </div>
@@ -295,6 +298,11 @@
   }
 
   $(document).ready(function(){
+
+    // Pass parameter to controller change status visitu customer pending to processed 
+    $(".btn-pendingToProcess").click(function() {
+      $("#pendingToProcess").val(true);
+    });
 
     //check if customer_visit contain orders details and next_visit_date
     var action = document.getElementById("action").value;

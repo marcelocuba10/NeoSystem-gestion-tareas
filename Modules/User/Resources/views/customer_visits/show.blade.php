@@ -8,7 +8,7 @@
       <div class="row align-items-center">
         <div class="col-md-6">
           <div class="title mb-30">
-            <h2>Detalle Visita Cliente - n.º {{ $customer_visit->visit_number }}</h2>
+            <h2>Detalle Visita Cliente - n.º {{ $customer_visit->visit_number }} <span class="span-form">{{ $customer_visit->status }}</span></h2>
           </div>
         </div>
         <div class="col-md-6">

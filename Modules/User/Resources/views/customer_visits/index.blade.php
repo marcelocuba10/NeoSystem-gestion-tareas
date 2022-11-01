@@ -99,7 +99,7 @@
                                   @csrf
                                   <div class="action">
                                     <input name="_method" type="hidden" value="DELETE">
-                                    <button type="submit" class="text-danger"><i class="lni lni-trash-can"></i></button>
+                                    <button type="submit" class="text-danger show_confirm"><i class="lni lni-trash-can"></i></button>
                                   </div>
                                 </form>
                               @endif
@@ -123,4 +123,25 @@
     </div>
   </section>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+  <script type="text/javascript">
+    $('.show_confirm').click(function(event) {
+          var form =  $(this).closest("form");
+          var name = $(this).data("name");
+          event.preventDefault();
+          swal({
+              title: '¿Está seguro que desea cancelar este registro?',
+              // text: "Si eliminas esto, desaparecerá para siempre.",
+              icon: "warning",
+              buttons: true,
+              dangerMode: true,
+              buttons: ["No", "Sí"],
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+              form.submit();
+            }
+          });
+      });
+  </script>
 @endsection

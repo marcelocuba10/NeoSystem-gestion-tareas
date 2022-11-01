@@ -237,6 +237,7 @@ class CustomerVisitController extends Controller
                 'customer_visits.objective',
                 'customer_visits.action',
                 'customer_visits.type',
+                'customer_visits.status',
                 'customers.name AS customer_name',
                 'customers.estate'
             )
@@ -283,6 +284,7 @@ class CustomerVisitController extends Controller
                 'customer_visits.objective',
                 'customer_visits.action',
                 'customer_visits.type',
+                'customer_visits.status',
                 'customers.name AS customer_name',
                 'customers.estate',
             )

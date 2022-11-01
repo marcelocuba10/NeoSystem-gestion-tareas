@@ -142,7 +142,7 @@ class CustomerVisitController extends Controller
                         $order->product_id = $request->product_id[$key];
                         $order->visit_id = $customer_visit->id;
                         $order->quantity = $request->qty[$key];
-                        $order->price = str_replace(',','',$request->price[$key]);
+                        $order->price = str_replace(',', '', $request->price[$key]);
                         $order->amount = $request->amount[$key];
                         $order->save();
 
@@ -244,13 +244,14 @@ class CustomerVisitController extends Controller
                 'customer_visits.objective',
                 'customer_visits.action',
                 'customer_visits.type',
+                'customer_visits.status',
                 'customers.name AS customer_name',
                 'customers.estate'
             )
             ->orderBy('customer_visits.created_at', 'DESC')
             ->first();
 
-            // dd($customer_visit);
+        // dd($customer_visit);
 
         $order_details = DB::table('order_details')
             ->where('order_details.visit_id', '=', $id)
@@ -293,6 +294,7 @@ class CustomerVisitController extends Controller
                 'customer_visits.objective',
                 'customer_visits.action',
                 'customer_visits.type',
+                'customer_visits.status',
                 'customers.name AS customer_name',
                 'customers.estate',
             )
@@ -393,7 +395,7 @@ class CustomerVisitController extends Controller
                             $order->product_id = $request->product_id[$key];
                             $order->visit_id = $customer_visit->id;
                             $order->quantity = $request->qty[$key];
-                            $order->price = str_replace(',','',$request->price[$key]);
+                            $order->price = str_replace(',', '', $request->price[$key]);
                             $order->amount = $request->amount[$key];
                             $order->save();
                         }
@@ -437,7 +439,7 @@ class CustomerVisitController extends Controller
                                 $order->product_id = $request->product_id[$key];
                                 $order->visit_id = $customer_visit->id;
                                 $order->quantity = $request->qty[$key];
-                                $order->price = str_replace(',','',$request->price[$key]);
+                                $order->price = str_replace(',', '', $request->price[$key]);
                                 $order->amount = $request->amount[$key];
                                 $order->save();
                             }
@@ -473,7 +475,7 @@ class CustomerVisitController extends Controller
                                     $order->product_id = $request->product_id[$key];
                                     $order->visit_id = $customer_visit->id;
                                     $order->quantity = $request->qty[$key];
-                                    $order->price = str_replace(',','',$request->price[$key]);
+                                    $order->price = str_replace(',', '', $request->price[$key]);
                                     $order->amount = $request->amount[$key];
                                     $order->save();
 
@@ -517,8 +519,6 @@ class CustomerVisitController extends Controller
                     ->where('appointments.visit_id', '=', $customer_visit->id)
                     ->first();
 
-
-
                 /** if appointment exist, update, else create new appointment */
                 if ($appointment) {
 
@@ -547,7 +547,24 @@ class CustomerVisitController extends Controller
             }
         }
 
-        return redirect()->to('/user/customer_visits')->with('message', 'Visita Cliente actualizada correctamente.');
+        /** Check if button pending to process is checked, change status to processs in customer visits and appointments */
+        if ($request->pendingToProcess == true) {
+            DB::table('customer_visits')
+                ->where('id', '=', $id)
+                ->update([
+                    'status' => 'Procesado',
+                ]);
+
+            DB::table('appointments')
+                ->where('appointments.visit_id', '=', $id)
+                ->where('appointments.idReference', '=', $idRefCurrentUser)
+                ->update([
+                    'status' => 'Procesado'
+                ]);
+        }
+
+        return back()->with('message', 'Visita Cliente actualizada correctamente.');
+        //return redirect()->to('/user/customer_visits')->with('message', 'Visita Cliente actualizada correctamente.');
     }
 
     public function search(Request $request)
