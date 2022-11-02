@@ -36,6 +36,9 @@
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+
+  <!-- highcharts -->
+  <script src="https://code.highcharts.com/highcharts.js"></script>
 </head>
 
 <body>

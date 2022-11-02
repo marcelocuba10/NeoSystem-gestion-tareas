@@ -745,7 +745,7 @@ span.selection {
 
 .status-btn.info-btn {
     color: #fff;
-    background: #4caf50e3;
+    background: #25a55a;
 }
 
 .status-btn.orange-btn {
@@ -754,6 +754,13 @@ span.selection {
 }
 
 /** end */
+
+span.s2mY5ma {
+    color: #3080ff;
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 15px;
+}
 
 .btn-group-status {
     background-color: transparent;

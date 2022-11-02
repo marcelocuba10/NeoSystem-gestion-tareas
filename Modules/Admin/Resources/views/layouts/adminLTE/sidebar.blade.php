@@ -77,16 +77,19 @@
           </a>
           <ul id="ddmenu_1" class="dropdown-nav" style="{{ (request()->is('admin/reports/*')) ? '' : 'display:none' }}">
             <li>
-              <a href="{{ url('/admin/reports/sellers') }}" class="{{ (request()->is('admin/reports/sellers')) ? 'active' : '' }}">Agentes</a>
+              <a href="{{ url('/admin/reports/sellers') }}" class="{{ (request()->is('admin/reports/sellers')) ? 'active' : '' }}">Resumen Agentes</a>
             </li>
             <li>
-              <a href="{{ url('/admin/whatdo') }}" class="{{ (request()->is('/admin/whatdo')) ? 'active' : '' }}">Visitas Clientes</a>
+              <a href="{{ url('/admin/reports/customer_visits') }}" class="{{ (request()->is('admin/reports/customer_visits')) ? 'active' : '' }}">Resumen Visitas</a>
             </li>
             <li>
-              <a href="{{ url('/admin/whatdo/visit_on_map') }}" class="{{ (request()->is('/admin/whatdo/visit_on_map')) ? 'active' : '' }}">Zona Geográfica</a>
+              <a href="{{ url('/admin/reports/sales') }}" class="{{ (request()->is('admin/reports/sales')) ? 'active' : '' }}">Resumen Ventas</a>
             </li>
             <li>
-              <a href="{{ url('/admin/reports/graphs') }}" class="{{ (request()->is('/admin/reports/graphs')) ? 'active' : '' }}">Gráficos</a>
+              <a href="{{ url('/admin/reports/visit_on_map') }}" class="{{ (request()->is('admin/reports/visit_on_map')) ? 'active' : '' }}">Zona Geográfica</a>
+            </li>
+            <li>
+              <a href="{{ url('/admin/reports/graphs') }}" class="{{ (request()->is('admin/reports/graphs')) ? 'active' : '' }}">Gráficos</a>
             </li>
             <li >
               <a href="{{ url('/admin/reports/products') }}" class="{{ (request()->is('admin/reports/products')) ? 'active' : '' }}">Productos</a>

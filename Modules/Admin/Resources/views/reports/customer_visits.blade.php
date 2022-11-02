@@ -9,7 +9,7 @@
           <div class="col-md-8">
             <div class="title d-flex align-items-center flex-wrap mb-30">
               <h2 class="mr-40">Resumen Visitas Clientes</h2>
-              <a href="{{ url('/admin/whatdo/visit_on_map') }}" class="main-btn success-btn btn-hover btn-sm"><i class="lni lni-map-marker mr-5"></i>Visualizar Mapa</a>
+              <a href="{{ url('/admin/reports/visit_on_map') }}" class="main-btn success-btn btn-hover btn-sm"><i class="lni lni-map-marker mr-5"></i>Visualizar Mapa</a>
             </div>
           </div>
           <div class="col-md-4">
@@ -80,12 +80,6 @@
                           </div>
                         </div>
                       </li>
-                      {{-- <li>
-                        <div class="input-style-1">
-                          <label>Fecha Última Visita</label>
-                          <input class="input-sm" type="date" name="visit_date" id="visit_date" placeholder="DD/MM/YYYY"  class="bg-transparent">
-                        </div>
-                      </li> --}}
                       <div class="select-style-1">
                         <label>Fecha Última Visita</label>
                         <div class="select-position select-sm">
@@ -96,12 +90,6 @@
                           </select>
                         </div>
                       </div>
-                      {{-- <li>
-                        <div class="input-style-1">
-                          <label>Fecha Próxima Visita</label>
-                          <input class="input-sm" type="date" name="next_visit_date" id="selectValue5" placeholder="DD/MM/YYYY"  class="bg-transparent">
-                        </div>
-                      </li> --}}
                     </ul>
                   </div>
                 </div>
@@ -194,7 +182,7 @@
 
       $.ajax({
         type: "GET",
-        url: "{{ URL::to('/admin/whatdo/filter') }}",
+        url: "{{ URL::to('/admin/reports/filter_visits') }}",
         data: { 
           filter : '',
           "_token": "{{ csrf_token() }}",
@@ -212,7 +200,7 @@
 
       $.ajax({
         type: "GET",
-        url: "{{ URL::to('/admin/whatdo/filter') }}",
+        url: "{{ URL::to('/admin/reports/filter_visits') }}",
         data: { 
           filter : '',
           "_token": "{{ csrf_token() }}",
@@ -235,7 +223,7 @@
 
         $.ajax({
             type: "GET",
-            url: "{{ URL::to('/admin/whatdo/search') }}",
+            url: "{{ URL::to('/admin/reports/search_visits') }}",
             data: { 
               search : search,
               "_token": "{{ csrf_token() }}",
@@ -258,7 +246,7 @@
 
           $.ajax({
             type: "GET",
-            url: "{{ URL::to('/admin/whatdo/filter') }}",
+            url: "{{ URL::to('/admin/reports/filter_visits') }}",
             data: { 
               filter : optionSelected,
               type: type,
@@ -281,7 +269,7 @@
 
           $.ajax({
             type: "GET",
-            url: "{{ URL::to('/admin/whatdo/filter') }}",
+            url: "{{ URL::to('/admin/reports/filter_visits') }}",
             data: { 
               filter : optionSelected,
               type: type,
@@ -304,7 +292,7 @@
 
           $.ajax({
             type: "GET",
-            url: "{{ URL::to('/admin/whatdo/filter') }}",
+            url: "{{ URL::to('/admin/reports/filter_visits') }}",
             data: { 
               filter : optionSelected,
               type: type,
@@ -327,7 +315,7 @@
 
           $.ajax({
             type: "GET",
-            url: "{{ URL::to('/admin/whatdo/filter') }}",
+            url: "{{ URL::to('/admin/reports/filter_visits') }}",
             data: { 
               filter : optionSelected,
               type: type,
@@ -350,7 +338,7 @@
 
           $.ajax({
             type: "GET",
-            url: "{{ URL::to('/admin/whatdo/filter') }}",
+            url: "{{ URL::to('/admin/reports/filter_visits') }}",
             data: { 
               filter : optionSelected,
               type: type,
@@ -373,7 +361,7 @@
 
           $.ajax({
             type: "GET",
-            url: "{{ URL::to('/admin/whatdo/filter') }}",
+            url: "{{ URL::to('/admin/reports/filter_visits') }}",
             data: { 
               filter : optionSelected,
               type: type,

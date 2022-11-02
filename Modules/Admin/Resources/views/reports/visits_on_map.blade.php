@@ -9,7 +9,7 @@
           <div class="col-md-8">
             <div class="title d-flex align-items-center flex-wrap mb-30">
               <h2 class="mr-40">Visitas Clientes Por Zona Geográfica</h2>
-              <a href="{{ url('/admin/whatdo') }}" class="main-btn success-btn btn-hover btn-sm"><i class="lni lni-map-marker mr-5"></i>Visualizar Lista</a>
+              <a href="{{ url('/admin/reports/customer_visits') }}" class="main-btn success-btn btn-hover btn-sm"><i class="lni lni-map-marker mr-5"></i>Visualizar Lista</a>
             </div>
           </div>
         </div>
@@ -25,7 +25,7 @@
                 <div id="map"></div>
                 <div class="col-12">
                   <div class="button-group d-flex justify-content-center flex-wrap">
-                    <a class="main-btn primary-btn-outline m-2" href="{{ url('/admin/whatdo') }}">Atrás</a>
+                    <a class="main-btn primary-btn-outline m-2" href="{{ url('/admin/reports/customer_visits') }}">Atrás</a>
                   </div>
                 </div>
               </div>

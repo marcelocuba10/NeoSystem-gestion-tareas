@@ -106,6 +106,7 @@
                   @endforeach
                 </tbody>
               </table>
+              <p><a href="{{ url('/user/sales') }}"><span class="s2mY5ma">Ver listado completo</span></a></p>
             </div>
           </div>
         </div>
@@ -158,6 +159,7 @@
                   </tr>
                 @endif
               </ul>
+              <p><a href="{{ url('/user/customer_visits') }}"><span class="s2mY5ma">Ver listado completo</span></a></p>
             </div>
           </div>
         </div>

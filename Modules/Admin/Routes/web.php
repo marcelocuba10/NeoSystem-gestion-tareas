@@ -47,20 +47,6 @@ Route::prefix('admin')->group(function () {
             Route::delete('delete-file/{id}', 'MultimediaController@destroyFile');
         });
 
-        /*** WhatCanDo Routes ***/
-        Route::group(['prefix' => 'whatdo'], function () {
-            Route::get('/', 'WhatDoController@index');
-            Route::get('/create', 'WhatDoController@create');
-            Route::post('/create', 'WhatDoController@store');
-            Route::get('/show/{id}', 'WhatDoController@show');
-            Route::get('/edit/{id}', 'WhatDoController@edit');
-            Route::put('/update/{id}', 'WhatDoController@update');
-            Route::delete('/delete/{id}', 'WhatDoController@destroy');
-            Route::get('/search', 'WhatDoController@search');
-            Route::get('/filter', 'WhatDoController@filter');
-            Route::get('/visit_on_map', 'WhatDoController@visit_on_map');
-        });
-
         /*** Customers Routes ***/
         Route::group(['prefix' => 'customers'], function () {
             Route::get('/', 'CustomersController@index');
@@ -136,18 +122,6 @@ Route::prefix('admin')->group(function () {
             Route::get('/search', 'SellersController@search');
         });
 
-        /*** Financial Routes ***/
-        Route::group(['prefix' => 'financial'], function () {
-            Route::get('/', 'FinancialController@index');
-            Route::get('/create', 'FinancialController@create');
-            Route::post('/create', 'FinancialController@store');
-            Route::get('/show/{id}', 'FinancialController@show');
-            Route::get('/edit/{id}', 'FinancialController@edit');
-            Route::put('/update/{id}', 'FinancialController@update');
-            Route::delete('/delete/{id}', 'FinancialController@destroy');
-            Route::get('/search', 'FinancialController@search');
-        });
-
         /** Parameters Routes */
         Route::group(['prefix' => 'parameters'], function () {
             Route::get('/', 'ParametersController@index');
@@ -189,8 +163,13 @@ Route::prefix('admin')->group(function () {
         /*** Reports Routes ***/
         Route::group(['prefix' => 'reports'], function () {
             Route::get('/sellers', 'ReportsController@sellers');
+            Route::get('/findSeller', 'ReportsController@findSeller');
             Route::get('/products', 'ReportsController@products');
             Route::get('/graphs', 'ReportsController@graphs');
+            Route::get('/visit_on_map', 'ReportsController@visit_on_map');
+            Route::get('/customer_visits', 'ReportsController@customer_visits');
+            Route::get('/search_visits', 'ReportsController@search_visits');
+            Route::get('/filter_visits', 'ReportsController@filter_visits');
         });
     });
 });
