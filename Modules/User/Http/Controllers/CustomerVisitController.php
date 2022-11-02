@@ -597,9 +597,9 @@ class CustomerVisitController extends Controller
         } else {
             $customer_visits = DB::table('customer_visits')
                 ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-                ->where('customers.idReference', '=', $idRefCurrentUser)
-                ->orWhere('customer_visits.visit_number', 'LIKE', "%{$search}%")
                 ->where('customers.name', 'LIKE', "%{$search}%")
+                ->orWhere('customer_visits.visit_number', 'LIKE', "%{$search}%")
+                ->where('customers.idReference', '=', $idRefCurrentUser)
                 ->select(
                     'customer_visits.id',
                     'customer_visits.visit_number',

@@ -278,8 +278,9 @@ class AppointmentController extends Controller
         } else {
             $appointments = DB::table('appointments')
                 ->leftjoin('customers', 'customers.id', '=', 'appointments.customer_id')
-                ->where('appointments.idReference', '=', $idRefCurrentUser)
                 ->where('customers.name', 'LIKE', "%{$search}%")
+                ->orWhere('appointments.visit_number', 'LIKE', "%{$search}%")
+                ->where('appointments.idReference', '=', $idRefCurrentUser)
                 ->select(
                     'appointments.id',
                     'appointments.visit_number',

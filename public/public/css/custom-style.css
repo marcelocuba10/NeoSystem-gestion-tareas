@@ -3,6 +3,19 @@
     height: 46px;
 }
 
+textarea {
+    resize: auto;
+}
+.input-style-1 input, .input-style-1 textarea {
+    width: 100%;
+    background: rgba(239, 239, 239, 0.5);
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    padding: 16px;
+    color: #5d657b;
+    resize: revert;
+    transition: all 0.3s;
+}
 .span-form {
     color: #32536a;
     background: #c1e4fe;
