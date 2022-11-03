@@ -116,7 +116,10 @@
               <a href="{{ url('/user/reports/customers') }}" class="{{ (request()->is('user/reports/customers')) ? 'active' : '' }}">Clientes</a>
             </li>
             <li>
-              <a href="{{ url('/user/whatdo') }}" class="{{ (request()->is('/user/whatdo')) ? 'active' : '' }}">Visitas Clientes</a>
+              <a href="{{ url('/user/whatdo') }}" class="{{ (request()->is('/user/whatdo')) ? 'active' : '' }}">Resumen Visitas</a>
+            </li>
+            <li>
+              <a href="{{ url('/user/whatdo') }}" class="{{ (request()->is('/user/whatdo')) ? 'active' : '' }}">Resumen Ventas</a>
             </li>
             <li>
               <a href="{{ url('/user/whatdo/visit_on_map') }}" class="{{ (request()->is('/user/whatdo/visit_on_map')) ? 'active' : '' }}">Zona Geográfica</a>

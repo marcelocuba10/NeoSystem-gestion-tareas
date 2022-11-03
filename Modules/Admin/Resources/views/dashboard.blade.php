@@ -64,7 +64,7 @@
       </div>
 
       <div class="row">
-        <!-- Customer visits -->
+        <!-- Sales - Orders -->
         <div class="col-lg-6 col-xl-6 col-xxl-6">
           <div class="card-style activity-card clients-table-card mb-30">
             <div class="title d-flex justify-content-between align-items-center">

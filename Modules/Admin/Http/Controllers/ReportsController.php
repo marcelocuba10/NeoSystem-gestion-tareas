@@ -67,7 +67,9 @@ class ReportsController extends Controller
             // return $pdf->download('pdfview.pdf');
         }
 
-        return view('admin::reports.sellers', compact('sellers'))->with('i', (request()->input('page', 1) - 1) * 30);
+        $sales =null;
+
+        return view('admin::reports.sellers', compact('sellers','sales'))->with('i', (request()->input('page', 1) - 1) * 30);
     }
 
     public function findSeller(Request $request)
@@ -755,5 +757,28 @@ class ReportsController extends Controller
             ->get();
 
         return View::make('admin::reports._partials.datatable', compact('customer_visits', 'search', 'categories'));
+    }
+
+    public function sales()
+    {
+        $sales = DB::table('sales')
+            ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+            ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+            ->select(
+                'sales.id',
+                'sales.customer_id',
+                'sales.invoice_number',
+                'sales.sale_date',
+                'sales.type',
+                'sales.status',
+                'sales.total',
+                'customers.name AS customer_name',
+                'customers.estate',
+                'customer_visits.visit_date',
+            )
+            ->orderBy('sales.created_at', 'DESC')
+            ->paginate(20);
+
+        return view('admin::reports.sales', compact('sales'))->with('i', (request()->input('page', 1) - 1) * 20);
     }
 }

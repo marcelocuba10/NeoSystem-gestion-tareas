@@ -47,6 +47,13 @@ Route::prefix('admin')->group(function () {
             Route::delete('delete-file/{id}', 'MultimediaController@destroyFile');
         });
 
+        /*** Sales Routes ***/
+        Route::group(['prefix' => 'sales'], function () {
+            Route::get('/show/{id}', 'SalesController@show');
+            Route::get('/search', 'SalesController@search');
+            Route::get('/generateInvoicePDF', 'SalesController@generateInvoicePDF');
+        });
+
         /*** Customers Routes ***/
         Route::group(['prefix' => 'customers'], function () {
             Route::get('/', 'CustomersController@index');
@@ -62,14 +69,7 @@ Route::prefix('admin')->group(function () {
 
         /*** Customer Visits Routes ***/
         Route::group(['prefix' => 'customer_visits'], function () {
-            Route::get('/', 'CustomerVisitController@index');
-            Route::get('/create', 'CustomerVisitController@create');
-            Route::post('/create', 'CustomerVisitController@store');
             Route::get('/show/{id}', 'CustomerVisitController@show');
-            Route::get('/edit/{id}', 'CustomerVisitController@edit');
-            Route::put('/update/{id}', 'CustomerVisitController@update');
-            Route::delete('/delete/{id}', 'CustomerVisitController@destroy');
-            Route::delete('/deleteItemOrder', 'CustomerVisitController@destroyItemOrder');
             Route::get('/search', 'CustomerVisitController@search');
             Route::get('/generateInvoicePDF', 'CustomerVisitController@generateInvoicePDF');
         });
@@ -170,6 +170,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/customer_visits', 'ReportsController@customer_visits');
             Route::get('/search_visits', 'ReportsController@search_visits');
             Route::get('/filter_visits', 'ReportsController@filter_visits');
+            Route::get('/sales', 'ReportsController@sales');
         });
     });
 });

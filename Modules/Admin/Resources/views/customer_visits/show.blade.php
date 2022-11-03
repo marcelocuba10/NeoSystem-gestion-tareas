@@ -16,7 +16,7 @@
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ url('/admin/dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item" aria-current="page"><a href="{{ url('/admin/sellers') }}">Agentes</a></li>
+                <li class="breadcrumb-item" aria-current="page"><a href="{{ url('/admin/reports/customer_visits') }}">Visitas</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Detalle Visita Cliente</li>
               </ol>
             </nav>

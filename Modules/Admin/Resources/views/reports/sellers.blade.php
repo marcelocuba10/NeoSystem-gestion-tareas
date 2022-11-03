@@ -140,12 +140,13 @@
           </div>
         </div>
       </div>
+      @if ($sales)
       <div class="row">
         <!-- Customer visits -->
         <div class="col-lg-6 col-xl-6 col-xxl-6">
           <div class="card-style activity-card clients-table-card mb-30">
             <div class="title d-flex justify-content-between align-items-center">
-              <h6 class="mb-10">Últimas Ventas / {{ value}}</h6>
+              <h6 class="mb-10">Últimas Ventas / Presupuestos</h6>
             </div>
             <div class="table-wrapper table-responsive">
               <table class="table">
@@ -243,10 +244,12 @@
           </div>
         </div>
       </div>
+      @endif
     </div>
   </section>
 
   <script>
+     var sales;
     $(document).ready(function(){
 
       $('.seller').change(function() {
@@ -280,6 +283,9 @@
               }else{
                 document.getElementById('status').innerHTML = 'Deshabilitado';
               }
+
+              $sales = data.sales;
+              console.log($sales);
 
               //info date
               var currentMonthName = data.currentMonthName;

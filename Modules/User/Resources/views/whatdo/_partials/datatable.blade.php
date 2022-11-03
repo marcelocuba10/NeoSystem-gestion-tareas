@@ -38,7 +38,14 @@
             <td class="text-right">
               <div class="btn-group">
                 <div class="action">
-                  <a href="{{ url('/user/customer_visits/show/'.$customer_visit->id ) }}">
+                  @if ($customer_visit->type == 'Presupuesto')
+                    <a href="{{ url('/user/customer_visits/generateInvoicePDF/?download=pdf&customer_visit='.$customer_visit->id) }}" data-toggle="tooltip" data-placement="bottom" title="Imprimir" target="_blank">
+                      <button class="text-secondary"><i class="lni lni-printer"></i></button>
+                    </a>
+                  @endif
+                </div>
+                <div class="action">
+                  <a href="{{ url('/user/customer_visits/show/'.$customer_visit->id) }}" data-toggle="tooltip" data-placement="bottom" title="Ver">
                     <button class="text-active"><i class="lni lni-eye"></i></button>
                   </a>
                 </div>

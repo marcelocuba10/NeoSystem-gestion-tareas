@@ -23,7 +23,7 @@ class HomeController extends Controller
 
         Carbon::setlocale('ES');
         $currentMonthName = Carbon::parse(Carbon::now()->format('Y/m/d'))->translatedFormat('F');
-   
+
         $customer_visits = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
@@ -32,34 +32,42 @@ class HomeController extends Controller
                 'customer_visits.visit_number',
                 'customer_visits.visit_date',
                 'customer_visits.next_visit_date',
+                'customer_visits.next_visit_hour',
                 'customer_visits.status',
+                'customer_visits.action',
                 'customer_visits.type',
                 'customers.name AS customer_name',
                 'customers.estate',
                 'customers.phone',
             )
             ->orderBy('customer_visits.created_at', 'DESC')
-            ->paginate(7);
+            ->limit(4)
+            ->get();
+
+        $sales = DB::table('sales')
+            ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+            ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+            ->where('sales.seller_id', '=', $idRefCurrentUser)
+            ->orWhere('customer_visits.seller_id', '=', $idRefCurrentUser)
+            ->select(
+                'sales.id',
+                'sales.customer_id',
+                'sales.invoice_number',
+                'sales.sale_date',
+                'sales.type',
+                'sales.status',
+                'sales.total',
+                'customers.name AS customer_name',
+                'customers.estate',
+                'customer_visits.visit_date',
+            )
+            ->orderBy('sales.created_at', 'DESC')
+            ->limit(5)
+            ->get();
 
         $cant_customers = DB::table('customers')
             ->where('customers.idReference', '=', $idRefCurrentUser)
             ->count();
-
-        $appointments = DB::table('appointments')
-            ->leftjoin('customers', 'customers.id', '=', 'appointments.customer_id')
-            ->where('appointments.idReference', '=', $idRefCurrentUser)
-            ->select(
-                'appointments.id',
-                'customers.name AS customer_name',
-                'customers.phone AS customer_phone',
-                'customers.estate AS customer_estate',
-                'date',
-                'hour',
-                'action',
-                'observation',
-            )
-            ->orderBy('appointments.created_at', 'DESC')
-            ->paginate(5);
 
         $visited_less_30_days = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
@@ -181,7 +189,7 @@ class HomeController extends Controller
             'currentMonthName',
             'customer_visits',
             'cant_customers',
-            'appointments',
+            'sales',
             'currentDate',
             'currentOnlyYear',
             'visited_less_30_days',

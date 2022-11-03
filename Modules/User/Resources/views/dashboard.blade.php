@@ -66,15 +66,16 @@
       </div>
 
       <div class="row">
+        <!-- Sales - Orders -->
         <div class="col-lg-6 col-xl-6 col-xxl-6">
           <div class="card-style activity-card clients-table-card mb-30">
             <div class="title d-flex justify-content-between align-items-center">
-              <h6 class="mb-10">Últimas Visitas Clientes</h6>
+              <h6 class="mb-10">Últimas Ventas / Presupuestos</h6>
             </div>
             <div class="table-wrapper table-responsive">
               <table class="table">
                 <tbody>
-                  @foreach ($customer_visits as $customer_visit)
+                  @foreach ($sales as $sale)
                     <tr>
                       <td>
                         <div class="employee-image">
@@ -82,25 +83,28 @@
                         </div>
                       </td>
                       <td class="employee-info">
-                        <h5 class="text-medium">{{ $customer_visit->customer_name }}</h5>
-                        <p><i class="lni lni-map-marker"></i>&nbsp;{{ $customer_visit->estate }} - &nbsp;{{ date('d/m/Y - H:i', strtotime($customer_visit->visit_date)) }}</p>
+                        <h5 class="text-bold {{ ($sale->status == 'Procesado' || $sale->status == 'Pendiente') ? 'text-dark' : 'text-disabled' }}"><a href="{{ url('/admin/sales/show/'.$sale->id) }}">{{ $sale->customer_name }}</a></h5>
+                        <p class="text-sm">
+                          Creado el: {{ date('d/m/Y', strtotime($sale->sale_date)) }}
+                        </p>
                       </td>
                       <td class="min-width">
                         <span style="float: right;" class="status-btn 
-                        @if($customer_visit->status == 'Procesado') primary-btn
-                        @elseIf($customer_visit->status == 'No Procesado') danger-btn
-                        @elseIf($customer_visit->status == 'Pendiente') primary-btn
-                        @elseIf($customer_visit->status == 'Cancelado') light-btn
-                        @endif">
-                          {{ $customer_visit->status }}
+                          @if($sale->status == 'Procesado') primary-btn
+                          @elseIf($sale->status == 'No Procesado') danger-btn
+                          @elseIf($sale->status == 'Pendiente') primary-btn
+                          @elseIf($sale->status == 'Cancelado') light-btn
+                          @endif">
+                          {{ $sale->status }}
                         </span>
                       </td>
-                      <td>
-                        <div class="d-flex justify-content-end">
-                          <a href="{{ url('/user/customer_visits/show/'.$customer_visit->id) }}" data-toggle="tooltip" data-placement="bottom" title="Ver">
-                            <button class="status-btn primary-btn border-0 m-1">Ver</button>
-                          </a>
-                        </div>
+                      <td class="min-width">
+                        <span class="status-btn 
+                          @if($sale->type == 'Venta') info-btn
+                          @elseIf($sale->type == 'Presupuesto') active-btn
+                          @endif">
+                          {{ $sale->type }}
+                        </span>
                       </td>
                     </tr>
                   @endforeach
@@ -111,38 +115,38 @@
           </div>
         </div>
 
+        <!-- customer_visits -->
         <div class="col-lg-6 col-xl-6 col-xxl-6">
           <div class="card-style mb-30">
-            <div class="title mb-10 d-flex justify-content-between align-items-center"><h6 class="mb-10">Agenda de Visitas y Llamadas</h6></div>
+            <div class="title mb-10 d-flex justify-content-between align-items-center">
+              <h6 class="mb-10">Últimas Visitas Clientes</h6>
+            </div>
             <div class="todo-list-wrapper">
               <ul>
-                @if (count($appointments) > 0 )
-                  @foreach ($appointments as $appointment)
+                @if (count($customer_visits) > 0 )
+                  @foreach ($customer_visits as $customer_visit)
                     <li class="todo-list-item primary">
                       <div class="todo-content">
                         <p class="text-sm mb-2">
-                          <i class="lni lni-calendar"></i>
-                          Fecha: {{ date('d/m/Y', strtotime($appointment->date)) }}
+                          <i class="lni lni-calendar"></i> Fecha Prox: {{ $customer_visit->next_visit_date }} | <i class="lni lni-alarm-clock"></i> Hora Prox: {{ $customer_visit->next_visit_hour }}
                         </p>
-                        <a href="{{ url('/user/appointments/show/'.$appointment->id ) }}"><h5 class="text-bold mb-10">{{ $appointment->customer_name }}</h5></a>
+                        <a href="{{ url('/admin/customer_visits/show/'.$customer_visit->id ) }}"><h6 class="{{ ($customer_visit->status == 'Procesado' || $customer_visit->status == 'Pendiente') ? 'text-dark' : 'text-disabled' }}">{{ $customer_visit->customer_name }}</h6></a>
                         <p class="text-sm">
-                          <i class="lni lni-alarm-clock"></i>
-                          Hora: {{ $appointment->hour }}
+                          Creado el: {{ date('d/m/Y', strtotime($customer_visit->visit_date)) }} 
                         </p>
                       </div>
                       <div class="todo-status">
                         <span class="status-btn primary-btn text-bold">
-                          {{ $appointment->action }}
+                          {{ $customer_visit->action }}
                         </span>
-                        @if(date('d/m/Y', strtotime($appointment->date)) < $currentDate )
-                          <span class="status-btn danger-btn">
-                            No Procesado
-                          </span>
-                        @else
-                          <span class="status-btn orange-btn">
-                            Pendiente
-                          </span>
-                        @endif
+                        <span class="status-btn 
+                          @if($customer_visit->status == 'Procesado') info-btn
+                          @elseIf($customer_visit->status == 'No Procesado') danger-btn
+                          @elseIf($customer_visit->status == 'Pendiente') primary-btn
+                          @elseIf($customer_visit->status == 'Cancelado') light-btn
+                          @endif">
+                          {{ $customer_visit->status }}
+                        </span>
                       </div>
                     </li>
                   @endforeach
@@ -163,6 +167,7 @@
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </section>
