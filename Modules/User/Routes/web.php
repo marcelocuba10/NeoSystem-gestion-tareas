@@ -25,6 +25,9 @@ Route::prefix('user')->group(function () {
 
     Route::group(['middleware' => ['auth:web']], function () {
 
+        /** Send Email */
+        Route::get('/send-email', 'SendEmailController@notifyEmail');
+
         /** Dashboard */
         Route::get('/dashboard', 'HomeController@index');
         Route::get('/logout', 'Auth\LogoutController@perform');

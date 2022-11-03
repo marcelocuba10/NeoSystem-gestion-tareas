@@ -17,6 +17,7 @@ class CreateParametersTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('type');
+            $table->string('email')->nullable();
             $table->string('description')->nullable();
             $table->timestamps();
         });

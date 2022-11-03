@@ -40,19 +40,19 @@
               </div>
               <div class="col-3">
                 <div class="input-style-1">
-                  <label>Fecha/Hora de Visita</label>
+                  <label>Fecha/Hora</label>
                   <input type="text" value="{{ date('d/m/Y - H:i', strtotime($customer_visit->visit_date)) }}" readonly>
                 </div>
               </div>
               <div class="col-3">
                 <div class="input-style-1">
-                  <label>Fecha Próxima Visita</label>
+                  <label>Fecha Próximo Paso</label>
                   <input type="text" value="@if($customer_visit->next_visit_date == 'No marcado') {{ $customer_visit->next_visit_date }} @else {{ date('d/m/Y', strtotime($customer_visit->next_visit_date)) }} @endif" readonly>
                 </div>
               </div>
               <div class="col-2">
                 <div class="input-style-1">
-                  <label>Hora Próxima Visita</label>
+                  <label>Hora Próximo Paso</label>
                     <input type="text" value="{{ $customer_visit->next_visit_hour }}" readonly>
                 </div>
               </div>
@@ -64,7 +64,7 @@
               </div>
               <div class="col-4">
                 <div class="input-style-1">
-                  <label>Resultado de la Visita</label>
+                  <label>Resultados de la Visita/Llamada</label>
                   <textarea type="text" value="{{ $customer_visit->result_of_the_visit }}" readonly>{{ $customer_visit->result_of_the_visit }}</textarea>
                 </div>
               </div>

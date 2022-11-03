@@ -20,14 +20,14 @@
     </div>
     <div class="col-3">
       <div class="input-style-1">
-        <label>Fecha Próxima Paso</label>
+        <label>Fecha Próximo Paso</label>
         <input onchange="showFieldObjectives(this);" type="date" name="next_visit_date" id="date" placeholder="DD/MM/YYYY" value="{{ $customer_visit->next_visit_date ?? old('next_visit_date') }}" class="bg-transparent">
         <span id="msg1" style="display: none" class="form-text m-b-none">Es necesario agregar la <b>Hora</b> y <b>Objetivos</b></span>
       </div>
     </div>
     <div class="col-2">
       <div class="input-style-1">
-        <label>Hora Próxima Paso</label>
+        <label>Hora Próximo Paso</label>
           <input type="time" name="next_visit_hour" value="{{ $customer_visit->next_visit_hour ?? old('next_visit_hour') }}" class="bg-transparent">
       </div>
     </div>

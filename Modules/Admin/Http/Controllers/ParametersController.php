@@ -34,7 +34,9 @@ class ParametersController extends Controller
             ->orderBy('created_at', 'DESC')
             ->paginate(10);
 
-        return view('admin::parameters.index', compact('parameters'))->with('i', (request()->input('page', 1) - 1) * 10);
+        $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+
+        return view('admin::parameters.index', compact('parameters', 'emailDefault'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
     public function create()
@@ -121,6 +123,7 @@ class ParametersController extends Controller
     public function search(Request $request)
     {
         $search = $request->input('search');
+        $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
 
         if ($search == '') {
             $parameters = DB::table('parameters')
@@ -134,18 +137,18 @@ class ParametersController extends Controller
                 ->paginate(10);
         } else {
             $parameters = DB::table('parameters')
-            ->where('name', 'LIKE', "%{$search}%")
-            ->select(
-                'id',
-                'name',
-                'type',
-                'description',
-            )
-            ->orderBy('created_at', 'DESC')
-            ->paginate();
+                ->where('name', 'LIKE', "%{$search}%")
+                ->select(
+                    'id',
+                    'name',
+                    'type',
+                    'description',
+                )
+                ->orderBy('created_at', 'DESC')
+                ->paginate();
         }
 
-        return view('admin::parameters.index', compact('parameters', 'search'))->with('i', (request()->input('page', 1) - 1) * 10);
+        return view('admin::parameters.index', compact('parameters', 'search','emailDefault'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
     public function destroy($id)

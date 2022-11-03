@@ -1,15 +1,14 @@
-@csrf
-<div class="row">
+  @csrf
+  <div class="row">
     <div class="col-4">
       <div class="input-style-1">
-        <label>(*) Nombre</label>
+        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Nombre</label>
         <input type="text" placeholder="Ingrese Nombre" class="bg-transparent" value="{{ $parameter->name ?? old('name') }}" name="name">
       </div>
     </div>
-    <!-- end col -->
     <div class="col-3">
       <div class="select-style-1">
-        <label>(*) Tipo de Parámetro</label>
+        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Tipo de Parámetro</label>
         <div class="select-position">
           <select name="type">
             @foreach ($keys as $key)
@@ -19,14 +18,12 @@
         </div>
       </div>
     </div>
-    <!-- end col -->
     <div class="col-5">
       <div class="input-style-1">
         <label>Descripción</label>
         <textarea type="text" name="description" value="{{ $parameter->description ?? old('description') }}" class="bg-transparent">{{ $parameter->description ?? old('description') }}</textarea>
       </div>
     </div>
-    <!-- end col -->
 
     <div class="col-12">
       <div class="button-group d-flex justify-content-center flex-wrap">
@@ -34,4 +31,4 @@
         <a class="main-btn primary-btn-outline m-2" href="{{ url('/admin/parameters') }}">Atrás</a>
       </div>
     </div>
-</div>
+  </div>
