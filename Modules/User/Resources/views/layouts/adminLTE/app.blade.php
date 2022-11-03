@@ -11,7 +11,6 @@
   <!-- ========== All CSS files linkup ========= -->
   <link rel="stylesheet" href="{{ asset('public/adminLTE/css/bootstrap.min.css') }}" />
   <link rel="stylesheet" href="{{ asset('public/adminLTE/css/lineicons.css') }}" />
-  <link rel="stylesheet" href="{{ asset('public/adminLTE/css/LineIcons.css') }}" />
   <link rel="stylesheet" href="{{ asset('public/adminLTE/css/quill/bubble.css') }}" />
   <link rel="stylesheet" href="{{ asset('public/adminLTE/css/quill/snow.css') }}" />
   <link rel="stylesheet" href="{{ asset('public/adminLTE/css/materialdesignicons.min.css') }}" />

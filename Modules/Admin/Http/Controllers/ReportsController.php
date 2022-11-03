@@ -256,6 +256,24 @@ class ReportsController extends Controller
         $ordersCountByMonth = $getOrdersCountByMonth->pluck('total')->toArray();
         $ordersCancelCountByMonth = $getOrdersCancelCountByMonth->pluck('total')->toArray();
 
+        //remove comillas ["1","3"]
+        $salesCountByMonth = json_encode($salesCountByMonth);
+        $salesCountByMonth = str_replace('"','',$salesCountByMonth);
+        //decode json again [1,3]
+        $salesCountByMonth = json_decode($salesCountByMonth);
+
+        $salesCancelCountByMonth = json_encode($salesCancelCountByMonth);
+        $salesCancelCountByMonth = str_replace('"','',$salesCancelCountByMonth);
+        $salesCancelCountByMonth = json_decode($salesCancelCountByMonth);
+
+        $ordersCountByMonth = json_encode($ordersCountByMonth);
+        $ordersCountByMonth = str_replace('"','',$ordersCountByMonth);
+        $ordersCountByMonth = json_decode($ordersCountByMonth);
+
+        $ordersCancelCountByMonth = json_encode($ordersCancelCountByMonth);
+        $ordersCancelCountByMonth = str_replace('"','',$ordersCancelCountByMonth);
+        $ordersCancelCountByMonth = json_decode($ordersCancelCountByMonth);
+
         $salesPeriods = $getSalesCountByMonth->pluck('period')->toArray();
 
         //custom format date info

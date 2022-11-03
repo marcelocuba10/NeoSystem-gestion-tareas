@@ -314,6 +314,9 @@
               var ordersCountByMonth = data.ordersCountByMonth;
               var ordersCancelCountByMonth = data.ordersCancelCountByMonth;
 
+              //var ordersCancelCountByMonth = Number(ordersCancelCountByMonth.replace(/[^0-9.-]+/g,""));
+              console.log(salesCountByMonth);
+
               //calls functions
               highcharts_chart(sales_count, orders_count, currentMonthName);
               highcharts_chart2(visits_cancel_count, visits_process_count, visits_no_process_count, visits_pending_count, currentMonthName);
