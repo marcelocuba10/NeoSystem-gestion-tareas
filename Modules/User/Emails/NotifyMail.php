@@ -11,20 +11,19 @@ class NotifyMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $emailInfo;
+    public $bodyEmail;
+    public $head;
+    public $linkOrderPDF;
     public $type;
 
-    public function __construct($emailInfo, $type)
+    public function __construct($bodyEmail, $head, $linkOrderPDF,$type)
     {
-        $this->emailInfo = $emailInfo;
+        $this->bodyEmail = $bodyEmail;
+        $this->head = $head;
+        $this->linkOrderPDF = $linkOrderPDF;
         $this->type = $type;
     }
 
-    /**
-     * Build the message.
-     *
-     * @return $this
-     */
     public function build()
     {
         return $this->subject('¡Tienes una nuevo registro!')->view('user::layouts.email.notify_email');

@@ -153,6 +153,7 @@ class CustomerVisitController extends Controller
                     }
                 }
 
+                /** If everything is ok, proceed with the operation */
                 if ($CustomerVisitIsDeleted == false) {
                     /** Get total amount from items of visit order */
                     $total_order = DB::table('order_details')
@@ -182,6 +183,36 @@ class CustomerVisitController extends Controller
                         $field['status'] = 'Pendiente';
                         Appointment::create($field);
                     }
+
+                    /** Send email notification */
+                    $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+                    $head = 'crear una Visita Cliente - #' . $customer_visit->visit_number;
+                    $type = 'Visita Cliente';
+                    $linkOrderPDF = url('/user/customer_visits/generateInvoicePDF/?download=pdf&customer_visit=' . $customer_visit->id);
+
+                    $customer_visit = DB::table('customer_visits')
+                        ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+                        ->leftjoin('users', 'users.idReference', '=', 'customer_visits.seller_id')
+                        ->where('customer_visits.id', $customer_visit->id)
+                        ->select(
+                            'customer_visits.id',
+                            'customer_visits.visit_number',
+                            'customer_visits.visit_date',
+                            'customer_visits.next_visit_date',
+                            'customer_visits.next_visit_hour',
+                            'customer_visits.status',
+                            'customer_visits.action',
+                            'customer_visits.type',
+                            'customer_visits.result_of_the_visit',
+                            'customer_visits.objective',
+                            'customers.name AS customer_name',
+                            'customers.estate',
+                            'customers.phone',
+                            'users.name AS seller_name'
+                        )
+                        ->first();
+
+                    Mail::to($emailDefault)->send(new NotifyMail($customer_visit, $head, $linkOrderPDF, $type));
                 }
             }
         } elseif ($request->isSetOrder == 'false') {
@@ -205,36 +236,37 @@ class CustomerVisitController extends Controller
                 $field['status'] = 'Pendiente';
                 Appointment::create($field);
             }
+
+            /** Send email notification */
+            $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+            $head = 'crear una Visita Cliente - #' . $customer_visit->visit_number;
+            $type = 'Visita Cliente';
+            $linkOrderPDF = null;
+
+            $customer_visit = DB::table('customer_visits')
+                ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+                ->leftjoin('users', 'users.idReference', '=', 'customer_visits.seller_id')
+                ->where('customer_visits.id', $customer_visit->id)
+                ->select(
+                    'customer_visits.id',
+                    'customer_visits.visit_number',
+                    'customer_visits.visit_date',
+                    'customer_visits.next_visit_date',
+                    'customer_visits.next_visit_hour',
+                    'customer_visits.status',
+                    'customer_visits.action',
+                    'customer_visits.type',
+                    'customer_visits.result_of_the_visit',
+                    'customer_visits.objective',
+                    'customers.name AS customer_name',
+                    'customers.estate',
+                    'customers.phone',
+                    'users.name AS seller_name'
+                )
+                ->first();
+
+            Mail::to($emailDefault)->send(new NotifyMail($customer_visit, $head, $linkOrderPDF, $type));
         }
-
-        /** Send email notification */
-
-        $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
-        $type = 'Visita Cliente';
-
-        $customer_visit = DB::table('customer_visits')
-            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-            ->leftjoin('users', 'users.idReference', '=', 'customer_visits.seller_id')
-            ->where('customer_visits.id', $customer_visit->id)
-            ->select(
-                'customer_visits.id',
-                'customer_visits.visit_number',
-                'customer_visits.visit_date',
-                'customer_visits.next_visit_date',
-                'customer_visits.next_visit_hour',
-                'customer_visits.status',
-                'customer_visits.action',
-                'customer_visits.type',
-                'customer_visits.result_of_the_visit',
-                'customer_visits.objective',
-                'customers.name AS customer_name',
-                'customers.estate',
-                'customers.phone',
-                'users.name AS seller_name'
-            )
-            ->first();
-
-        Mail::to($emailDefault)->send(new NotifyMail($customer_visit, $type));
 
         return redirect()->to('/user/customer_visits')->with('message', 'Visita Cliente Creada Correctamente');
     }
@@ -594,6 +626,41 @@ class CustomerVisitController extends Controller
                     'status' => 'Procesado'
                 ]);
 
+            /** Send email notification - updated status visit to proceseed*/
+            $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+            $head = 'procesar una Visita Cliente - #' . $customer_visit->visit_number;
+            $type = 'Visita Cliente';
+
+            if ($customer_visit->type == 'Presupuesto') {
+                $linkOrderPDF = url('/user/customer_visits/generateInvoicePDF/?download=pdf&customer_visit=' . $customer_visit->id);
+            } else {
+                $linkOrderPDF = null;
+            }
+
+            $customer_visit = DB::table('customer_visits')
+                ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+                ->leftjoin('users', 'users.idReference', '=', 'customer_visits.seller_id')
+                ->where('customer_visits.id', $customer_visit->id)
+                ->select(
+                    'customer_visits.id',
+                    'customer_visits.visit_number',
+                    'customer_visits.visit_date',
+                    'customer_visits.next_visit_date',
+                    'customer_visits.next_visit_hour',
+                    'customer_visits.status',
+                    'customer_visits.action',
+                    'customer_visits.type',
+                    'customer_visits.result_of_the_visit',
+                    'customer_visits.objective',
+                    'customers.name AS customer_name',
+                    'customers.estate',
+                    'customers.phone',
+                    'users.name AS seller_name'
+                )
+                ->first();
+
+            Mail::to($emailDefault)->send(new NotifyMail($customer_visit, $head, $linkOrderPDF, $type));
+
             return redirect()->to('/user/customer_visits')->with('message', 'Visita Cliente actualizada correctamente.');
         } else {
             return back()->with('message', 'Visita Cliente actualizada correctamente.');
@@ -740,10 +807,36 @@ class CustomerVisitController extends Controller
     {
         $idRefCurrentUser = Auth::user()->idReference;
 
-        $customer_visit = DB::table('customer_visits')
+        /** Proceed to cancel the visit */
+        DB::table('customer_visits')
             ->where('customer_visits.id', '=', $id)
             ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
-            ->select('id', 'status', 'next_visit_date', 'action')
+            ->update([
+                'status' => 'Cancelado',
+            ]);
+
+        /** Get the visit data for notify email */
+        $customer_visit = DB::table('customer_visits')
+            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+            ->leftjoin('users', 'users.idReference', '=', 'customer_visits.seller_id')
+            ->where('customer_visits.id', $id)
+            ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+            ->select(
+                'customer_visits.id',
+                'customer_visits.visit_number',
+                'customer_visits.visit_date',
+                'customer_visits.next_visit_date',
+                'customer_visits.next_visit_hour',
+                'customer_visits.status',
+                'customer_visits.action',
+                'customer_visits.type',
+                'customer_visits.result_of_the_visit',
+                'customer_visits.objective',
+                'customers.name AS customer_name',
+                'customers.estate',
+                'customers.phone',
+                'users.name AS seller_name'
+            )
             ->first();
 
         /** is have next_visit_date, need update status in the appointment*/
@@ -766,14 +859,18 @@ class CustomerVisitController extends Controller
                 ]);
         }
 
-        DB::table('customer_visits')
-            ->where('customer_visits.id', '=', $id)
-            ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
-            ->update([
-                'status' => 'Cancelado', //customer visit status canceled
-            ]);
+        /** Send email notification - updated status visit to cancel*/
+        $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+        $head = 'Cancelar una Visita Cliente - #' . $customer_visit->visit_number;
+        $type = 'Visita Cliente';
 
-        //CustomerVisit::find($id)->delete();
+        if ($customer_visit->type == 'Presupuesto') {
+            $linkOrderPDF = url('/user/customer_visits/generateInvoicePDF/?download=pdf&customer_visit=' . $customer_visit->id);
+        } else {
+            $linkOrderPDF = null;
+        }
+
+        Mail::to($emailDefault)->send(new NotifyMail($customer_visit, $head, $linkOrderPDF, $type));
 
         return redirect()->to('/user/customer_visits')->with('message', 'Visita cliente cancelado correctamente');
     }

@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\DB;
 use Modules\User\Entities\Appointment;
 use Modules\User\Entities\CustomerVisit;
 
+use Mail;
+use Modules\User\Emails\NotifyMail;
+
 class AppointmentController extends Controller
 {
     public function __construct()
@@ -106,6 +109,34 @@ class AppointmentController extends Controller
         $input['status'] = 'Pendiente';
         $appointment = Appointment::create($input);
 
+        /** Send email notification */
+        $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+        $head = 'crear una agenda - #' . $appointment->visit_number;
+        $type = 'Agenda';
+        $linkOrderPDF = null;
+
+        $appointment = DB::table('appointments')
+            ->leftjoin('customers', 'customers.id', '=', 'appointments.customer_id')
+            ->leftjoin('users', 'users.idReference', '=', 'appointments.idReference')
+            ->where('appointments.id', $appointment->id)
+            ->select(
+                'appointments.id',
+                'appointments.visit_number',
+                'appointments.date',
+                'appointments.hour',
+                'appointments.status',
+                'appointments.action',
+                'appointments.observation',
+                'appointments.created_at',
+                'customers.name AS customer_name',
+                'customers.estate',
+                'customers.phone',
+                'users.name AS seller_name'
+            )
+            ->first();
+
+        Mail::to($emailDefault)->send(new NotifyMail($appointment, $head, $linkOrderPDF, $type));
+
         return redirect()->to('/user/appointments')->with('message', 'Agendado Correctamente');
     }
 
@@ -122,56 +153,17 @@ class AppointmentController extends Controller
 
     public function edit($id)
     {
-        $appointment = Appointment::find($id);
-        $idRefCurrentUser = Auth::user()->idReference;
-
-        $customers = DB::table('customers')
-            ->where('customers.idReference', '=', $idRefCurrentUser)
-            ->where('customers.status', '=', 1)
-            ->select('customers.id', 'customers.name')
-            ->get();
-
-        $actions = [
-            'Realizar Llamada',
-            'Visitar Personalmente',
-        ];
-
-        return view('user::appointments.edit', compact('customers', 'actions', 'appointment'));
+        //
     }
 
     public function update(Request $request, $id)
     {
-        $idRefCurrentUser = Auth::user()->idReference;
-        /** date validation, not less than 1980 and not greater than the current year **/
-        $initialDate = '1980-01-01';
-        $currentDate = (date('Y') + 2) . '-01-01'; //current date + 2 year
+        //
+    }
 
-        $request->validate([
-            'customer_id' => 'required',
-            'date' => 'required|date|after_or_equal:today|before:' . $currentDate,
-            'hour' => 'required|max:5|min:5',
-            'action' => 'required|max:30|min:5',
-            'observation' => 'nullable|max:1000|min:3',
-        ]);
-
-        $input = $request->all();
-
-        $Appointment = Appointment::find($id);
-        $Appointment->update($input);
-
-        /** Check if button pending to process is checked, change status to processs in customer visits and appointments */
-        if ($request->pendingToProcess == true) {
-
-            DB::table('appointments')
-                ->where('appointments.id', '=', $id)
-                ->where('appointments.idReference', '=', $idRefCurrentUser)
-                ->update([
-                    'status' => 'Procesado'
-                ]);
-            return redirect()->to('/user/appointments')->with('message', 'Agenda actualizada correctamente.');
-        } else {
-            return back()->with('message', 'Agenda actualizada correctamente.');
-        }
+    public function show($id)
+    {
+        //
     }
 
     public function filter(Request $request)
@@ -219,37 +211,6 @@ class AppointmentController extends Controller
         }
 
         return view('user::appointments.index', compact('appointments', 'filter'))->with('i', (request()->input('page', 1) - 1) * 10);
-    }
-
-    public function show($id)
-    {
-        $idRefCurrentUser = Auth::user()->idReference;
-
-        $appointment = DB::table('appointments')
-            ->leftjoin('customers', 'customers.id', '=', 'appointments.customer_id')
-            ->where('appointments.id', '=', $id)
-            ->select(
-                'appointments.id',
-                'appointments.visit_number',
-                'appointments.visit_id',
-                'appointments.date',
-                'appointments.hour',
-                'appointments.action',
-                'appointments.status',
-                'appointments.observation',
-                'customers.name AS customer_name',
-                'customers.phone AS customer_phone',
-                'customers.estate AS customer_estate',
-            )
-            ->orderBy('appointments.created_at', 'DESC')
-            ->first();
-
-        $actions = [
-            'Realizar Llamada',
-            'Visitar Personalmente',
-        ];
-
-        return view('user::appointments.show', compact('appointment', 'actions'));
     }
 
     public function search(Request $request)
@@ -302,7 +263,6 @@ class AppointmentController extends Controller
 
     public function destroy($id)
     {
-        Appointment::find($id)->delete();
-        return redirect()->to('/user/appointments')->with('message', 'Agenda eliminada correctamente');
+        //
     }
 }

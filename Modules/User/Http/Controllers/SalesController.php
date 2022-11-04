@@ -14,6 +14,8 @@ use Modules\User\Entities\Products;
 use Modules\User\Entities\Sales;
 
 use PDF;
+use Mail;
+use Modules\User\Emails\NotifyMail;
 
 class SalesController extends Controller
 {
@@ -139,7 +141,7 @@ class SalesController extends Controller
                     $order->sale_id = $sale->id;
                     $order->product_id = $request->product_id[$key];
                     $order->quantity = $request->qty[$key];
-                    $order->price = str_replace(',','',$request->price[$key]);
+                    $order->price = str_replace(',', '', $request->price[$key]);
                     $order->amount = $request->amount[$key];
                     $order->save();
 
@@ -181,6 +183,7 @@ class SalesController extends Controller
                 // }
             }
 
+            /** If everything is ok, proceed with the operation */
             if ($saleIsDeleted == false) {
                 /** Get total amount from items of Sale */
                 $total_order = DB::table('order_details')
@@ -191,6 +194,38 @@ class SalesController extends Controller
                 $input['total'] = $total_order;
                 $sale = Sales::find($sale->id);
                 $sale->update($input);
+
+                /** Send email notification - updated status sale to process*/
+                $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+                $head = 'crear un(a) ' . $sale->type . ' - #' . $sale->invoice_number;
+                $type = 'Venta';
+                $linkOrderPDF = url('/user/sales/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
+
+                $sale = DB::table('sales')
+                    ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+                    ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+                    ->leftjoin('users', 'users.idReference', '=', 'sales.seller_id')
+                    ->where('sales.id', $sale->id)
+                    ->select(
+                        'sales.sale_date',
+                        'sales.type',
+                        'sales.status',
+                        'sales.total',
+                        'sales.visit_id',
+                        'customer_visits.action',
+                        'customer_visits.visit_date',
+                        'customer_visits.next_visit_date',
+                        'customer_visits.next_visit_hour',
+                        'customer_visits.result_of_the_visit',
+                        'customer_visits.objective',
+                        'customers.name AS customer_name',
+                        'customers.estate',
+                        'customers.phone',
+                        'users.name AS seller_name'
+                    )
+                    ->first();
+
+                Mail::to($emailDefault)->send(new NotifyMail($sale, $head, $linkOrderPDF, $type));
             }
         }
 
@@ -382,23 +417,113 @@ class SalesController extends Controller
         /** Get sale by id */
         $sale = Sales::find($id);
 
-        if ($request->cancelSale == true) {
-            /** update status in sales and customer_visit */
-            DB::table('sales')
-                ->where('sales.id', '=', $sale->id)
-                ->where('sales.invoice_number', '=', $request->invoice_number)
-                ->update([
-                    'status' => 'Cancelado'
-                ]);
+        /** Cancel sale direct, without customer visit, update status */
+        if ($sale->type == 'Venta' && !$sale->visit_id) {
+            if ($request->cancelSale == true) {
+                DB::table('sales')
+                    ->where('sales.id', '=', $request->id)
+                    ->where('sales.invoice_number', '=', $request->invoice_number)
+                    ->where('sales.seller_id', '=', $idRefCurrentUser)
+                    ->update([
+                        'status' => 'Cancelado'
+                    ]);
 
-            DB::table('customer_visits')
-                ->where('customer_visits.id', '=', $sale->visit_id)
-                ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
-                ->update([
-                    'status' => 'Cancelado'
-                ]);
+                /** Get sale to notify email*/
+                $sale = DB::table('sales')
+                    ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+                    ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+                    ->leftjoin('users', 'users.idReference', '=', 'sales.seller_id')
+                    ->where('sales.id', $id)
+                    ->select(
+                        'sales.id',
+                        'sales.invoice_number',
+                        'sales.sale_date',
+                        'sales.type',
+                        'sales.status',
+                        'sales.total',
+                        'sales.visit_id',
+                        'sales.previous_type',
+                        'customer_visits.action',
+                        'customer_visits.visit_date',
+                        'customer_visits.next_visit_date',
+                        'customer_visits.next_visit_hour',
+                        'customer_visits.result_of_the_visit',
+                        'customer_visits.objective',
+                        'customers.name AS customer_name',
+                        'customers.estate',
+                        'customers.phone',
+                        'users.name AS seller_name'
+                    )
+                    ->first();
 
-            return redirect()->to('/user/sales')->with('message', 'Cambios realizados correctamente.');
+                /** Send email notification - updated status sale to cancel*/
+                $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+                $head = 'Cancelar un(a) ' . $sale->type . ' - #' . $sale->invoice_number;
+                $type = 'Venta';
+                $linkOrderPDF = url('/user/sales/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
+
+                Mail::to($emailDefault)->send(new NotifyMail($sale, $head, $linkOrderPDF, $type));
+
+                return redirect()->to('/user/sales')->with('message', 'Registro cancelado correctamente.');
+            }
+        }
+
+        if ($sale->type == 'Venta' && $sale->visit_id) {
+            if ($request->cancelSale == true) {
+                /** update status in sales and customer_visit */
+                DB::table('sales')
+                    ->where('sales.id', '=', $request->id)
+                    ->where('sales.invoice_number', '=', $request->invoice_number)
+                    ->where('sales.seller_id', '=', $idRefCurrentUser)
+                    ->update([
+                        'status' => 'Cancelado'
+                    ]);
+
+                DB::table('customer_visits')
+                    ->where('customer_visits.id', '=', $sale->visit_id)
+                    ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+                    ->update([
+                        'status' => 'Cancelado'
+                    ]);
+
+                /** Get sale to notify email*/
+                $sale = DB::table('sales')
+                    ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+                    ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+                    ->leftjoin('users', 'users.idReference', '=', 'sales.seller_id')
+                    ->where('sales.id', $id)
+                    ->select(
+                        'sales.id',
+                        'sales.invoice_number',
+                        'sales.sale_date',
+                        'sales.type',
+                        'sales.status',
+                        'sales.total',
+                        'sales.visit_id',
+                        'sales.previous_type',
+                        'customer_visits.action',
+                        'customer_visits.visit_date',
+                        'customer_visits.next_visit_date',
+                        'customer_visits.next_visit_hour',
+                        'customer_visits.result_of_the_visit',
+                        'customer_visits.objective',
+                        'customers.name AS customer_name',
+                        'customers.estate',
+                        'customers.phone',
+                        'users.name AS seller_name'
+                    )
+                    ->first();
+
+                /** Send email notification - updated status sale to cancel*/
+                $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+                $head = 'Cancelar un(a) ' . $sale->type . ' - #' . $sale->invoice_number;
+                $type = 'Venta';
+                $linkOrderPDF = url('/user/sales/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
+
+                Mail::to($emailDefault)->send(new NotifyMail($sale, $head, $linkOrderPDF, $type));
+
+                return redirect()->to('/user/sales')->with('message', 'Registro cancelado correctamente.');
+            }
         }
 
         /** if it is a order created from sales, check validations and process, else, if is created by customer_visit, ignore validations and update the status*/
@@ -437,7 +562,7 @@ class SalesController extends Controller
                             $order->product_id = $request->product_id[$key];
                             $order->sale_id = $sale->id;
                             $order->quantity = $request->qty[$key];
-                            $order->price = str_replace(',','',$request->price[$key]);
+                            $order->price = str_replace(',', '', $request->price[$key]);
                             $order->amount = $request->amount[$key];
                             $order->save();
                         }
@@ -473,7 +598,7 @@ class SalesController extends Controller
                                 $order->product_id = $request->product_id[$key];
                                 $order->sale_id = $sale->id;
                                 $order->quantity = $request->qty[$key];
-                                $order->price = str_replace(',','',$request->price[$key]);
+                                $order->price = str_replace(',', '', $request->price[$key]);
                                 $order->amount = $request->amount[$key];
                                 $order->save();
                             }
@@ -528,6 +653,38 @@ class SalesController extends Controller
                             'type' => 'Venta',
                             'total' => $total_order
                         ]);
+
+                    /** Send email notification - updated status sale to process*/
+                    $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+                    $head = 'procesar un ' . $sale->previous_type . ' para Venta - #' . $sale->invoice_number;
+                    $type = 'Venta';
+                    $linkOrderPDF = url('/user/sales/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
+
+                    $sale = DB::table('sales')
+                        ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+                        ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+                        ->leftjoin('users', 'users.idReference', '=', 'sales.seller_id')
+                        ->where('sales.id', $sale->id)
+                        ->select(
+                            'sales.sale_date',
+                            'sales.type',
+                            'sales.status',
+                            'sales.total',
+                            'sales.visit_id',
+                            'customer_visits.action',
+                            'customer_visits.visit_date',
+                            'customer_visits.next_visit_date',
+                            'customer_visits.next_visit_hour',
+                            'customer_visits.result_of_the_visit',
+                            'customer_visits.objective',
+                            'customers.name AS customer_name',
+                            'customers.estate',
+                            'customers.phone',
+                            'users.name AS seller_name'
+                        )
+                        ->first();
+
+                    Mail::to($emailDefault)->send(new NotifyMail($sale, $head, $linkOrderPDF, $type));
                 } elseif ($request->cancelSale == true) {
                     Sales::where('sales.id', '=', $sale->id)
                         ->update([
@@ -542,6 +699,8 @@ class SalesController extends Controller
                 }
             }
         } else {
+
+            /** Here update status to process this is created by customer_visit, ignore validations */
 
             /** check if have changes in order details, get total order */
             $total_order = DB::table('order_details')
@@ -562,6 +721,38 @@ class SalesController extends Controller
                 ->update([
                     'status' => 'Procesado',
                 ]);
+
+            /** Send email notification - updated status sale to process*/
+            $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+            $head = 'procesar un ' . $sale->previous_type . ' para Venta - #' . $sale->invoice_number;
+            $type = 'Venta';
+            $linkOrderPDF = url('/user/sales/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
+
+            $sale = DB::table('sales')
+                ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+                ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+                ->leftjoin('users', 'users.idReference', '=', 'sales.seller_id')
+                ->where('sales.id', $sale->id)
+                ->select(
+                    'sales.sale_date',
+                    'sales.type',
+                    'sales.status',
+                    'sales.total',
+                    'sales.visit_id',
+                    'customer_visits.action',
+                    'customer_visits.visit_date',
+                    'customer_visits.next_visit_date',
+                    'customer_visits.next_visit_hour',
+                    'customer_visits.result_of_the_visit',
+                    'customer_visits.objective',
+                    'customers.name AS customer_name',
+                    'customers.estate',
+                    'customers.phone',
+                    'users.name AS seller_name'
+                )
+                ->first();
+
+            Mail::to($emailDefault)->send(new NotifyMail($sale, $head, $linkOrderPDF, $type));
         }
 
         return back()->with('message', 'Cambios realizados correctamente.');
@@ -728,31 +919,69 @@ class SalesController extends Controller
     {
         $idRefCurrentUser = Auth::user()->idReference;
 
-        $sale = DB::table('sales')
-            ->where('sales.id', '=', $id)
-            ->where('sales.seller_id', '=', $idRefCurrentUser)
-            ->select('id', 'visit_id')
-            ->first();
+        /** Get sale by id */
+        $sale = Sales::find($id);
 
-        /** update status in sales by id*/
-        DB::table('sales')
-            ->where('sales.id', '=', $id)
-            ->where('sales.seller_id', '=', $idRefCurrentUser)
-            ->update([
-                'status' => 'Cancelado'
-            ]);
+        /** check if sale/order relation with visit_customer, update status to cancel */
+        if (!$sale->visit_id) {
+            DB::table('sales')
+                ->where('sales.id', '=', $id)
+                ->where('sales.seller_id', '=', $idRefCurrentUser)
+                ->update([
+                    'status' => 'Cancelado'
+                ]);
+        } else {
+            DB::table('sales')
+                ->where('sales.id', '=', $id)
+                ->where('sales.seller_id', '=', $idRefCurrentUser)
+                ->update([
+                    'status' => 'Cancelado'
+                ]);
 
-        /** check if visit_customer order, update status */
-        if ($sale->visit_id) {
             DB::table('customer_visits')
                 ->where('customer_visits.id', '=', $sale->visit_id)
                 ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
                 ->update([
-                    'status' => 'Cancelado', //customer visit status canceled
+                    'status' => 'Cancelado'
                 ]);
         }
 
-        //Sales::find($id)->delete();
-        return redirect()->to('/user/sales')->with('message', 'Venta cancelada correctamente');
+        /** Get the sale data for notify email */
+        $sale = DB::table('sales')
+            ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+            ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+            ->leftjoin('users', 'users.idReference', '=', 'sales.seller_id')
+            ->where('sales.id', $id)
+            ->where('sales.seller_id', '=', $idRefCurrentUser)
+            ->select(
+                'sales.id',
+                'sales.invoice_number',
+                'sales.sale_date',
+                'sales.type',
+                'sales.status',
+                'sales.total',
+                'sales.visit_id',
+                'customer_visits.action',
+                'customer_visits.visit_date',
+                'customer_visits.next_visit_date',
+                'customer_visits.next_visit_hour',
+                'customer_visits.result_of_the_visit',
+                'customer_visits.objective',
+                'customers.name AS customer_name',
+                'customers.estate',
+                'customers.phone',
+                'users.name AS seller_name'
+            )
+            ->first();
+
+        /** Send email notification - updated status sale to cancel*/
+        $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+        $head = 'Cancelar un(a) ' . $sale->type . ' - #' . $sale->invoice_number;
+        $type = 'Venta';
+        $linkOrderPDF = url('/user/sales/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
+
+        Mail::to($emailDefault)->send(new NotifyMail($sale, $head, $linkOrderPDF, $type));
+
+        return redirect()->to('/user/sales')->with('message', 'Registro cancelado correctamente');
     }
 }
