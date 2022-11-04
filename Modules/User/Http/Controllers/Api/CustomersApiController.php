@@ -7,20 +7,32 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Modules\User\Entities\CustomerParameters;
 use Modules\User\Entities\Customers;
 
 class CustomersApiController extends Controller
 {
 
-    public function index()
+    public function index($idRefCurrentUser)
     {
-        // $idRefCurrentUser = Auth::user()->idReference;
         $customers = DB::table('customers')
-            // ->where('idReference', '=', $idRefCurrentUser)
+            ->where('idReference', '=', $idRefCurrentUser)
             ->orderBy('created_at', 'DESC')
             ->get();
 
-        return response()->json($customers);
+        $categories = DB::table('parameters')
+            ->where('type', '=', 'Rubro')
+            ->get();
+
+        $potential_products = DB::table('parameters')
+            ->where('type', '=', 'Equipos Potenciales')
+            ->get();
+
+        return response()->json(array(
+            'customers' => $customers,
+            'categories' => $categories,
+            'potential_products' => $potential_products,
+        ));
     }
 
     public function store(Request $request)
@@ -44,15 +56,39 @@ class CustomersApiController extends Controller
             'result_of_the_visit' => 'nullable|max:1000|min:3',
             'objective' => 'nullable|max:1000|min:3',
             'next_visit_date' => 'nullable|date_format:Y-m-d|after_or_equal:' . $initialDate . '|before:' . $currentDate,
-            'next_visit_hour' => 'nullable|max:5|min:5',
+            'next_visit_hour' => 'nullable|max:10|min:5',
         ]);
 
         $input = $request->all();
 
-        /** link the customer with the admin user */
-        $input['idReference'] = Auth::user()->idReference;
-
+        /** create temporal Customer */
         $customer = Customers::create($input);
+
+        /** potential products array */
+        foreach ($request->potential_products as $key => $value) {
+
+            if (intval($request->qty[$key]) <= 0) {
+                Customers::find($customer->id)->delete();
+                return back()->with('error', 'Por favor, ingrese una cantidad válida en Producto Potencial.');
+            } else {
+                /** Save potential product in table customer_parameters */
+                $item = new CustomerParameters();
+                $item->customer_id = $customer->id;
+                $item->potential_product_id = $request->potential_products[$key];
+                $item->quantity = $request->qty[$key];
+                $item->save();
+            }
+        }
+
+        /** categories array */
+        foreach ($request->category as $key => $value) {
+            /** Save items in table customer_parameters */
+            $item = new CustomerParameters();
+            $item->customer_id = $customer->id;
+            $item->category_id = $request->category[$key];
+            $item->save();
+        }
+
 
         //return response
         return response()->json(array(
@@ -76,7 +112,7 @@ class CustomersApiController extends Controller
             'result_of_the_visit' => 'nullable|max:1000|min:3',
             'objective' => 'nullable|max:1000|min:3',
             'next_visit_date' => 'nullable|date_format:Y-m-d|after_or_equal:today',
-            'next_visit_hour' => 'nullable|max:5|min:5',
+            'next_visit_hour' => 'nullable|max:10|min:5',
         ]);
 
         $input = $request->all();

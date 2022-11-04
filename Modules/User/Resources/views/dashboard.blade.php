@@ -83,7 +83,7 @@
                         </div>
                       </td>
                       <td class="employee-info">
-                        <h5 class="text-bold {{ ($sale->status == 'Procesado' || $sale->status == 'Pendiente') ? 'text-dark' : 'text-disabled' }}"><a href="{{ url('/admin/sales/show/'.$sale->id) }}">{{ $sale->customer_name }}</a></h5>
+                        <h5 class="text-bold {{ ($sale->status == 'Procesado' || $sale->status == 'Pendiente') ? 'text-dark' : 'text-disabled' }}"><a href="{{ url('/user/sales/show/'.$sale->id) }}">{{ $sale->customer_name }}</a></h5>
                         <p class="text-sm">
                           Creado el: {{ date('d/m/Y', strtotime($sale->sale_date)) }}
                         </p>
@@ -130,7 +130,7 @@
                         <p class="text-sm mb-2">
                           <i class="lni lni-calendar"></i> Fecha Prox: {{ $customer_visit->next_visit_date }} | <i class="lni lni-alarm-clock"></i> Hora Prox: {{ $customer_visit->next_visit_hour }}
                         </p>
-                        <a href="{{ url('/admin/customer_visits/show/'.$customer_visit->id ) }}"><h6 class="{{ ($customer_visit->status == 'Procesado' || $customer_visit->status == 'Pendiente') ? 'text-dark' : 'text-disabled' }}">{{ $customer_visit->customer_name }}</h6></a>
+                        <a href="{{ url('/user/customer_visits/show/'.$customer_visit->id ) }}"><h6 class="{{ ($customer_visit->status == 'Procesado' || $customer_visit->status == 'Pendiente') ? 'text-dark' : 'text-disabled' }}">{{ $customer_visit->customer_name }}</h6></a>
                         <p class="text-sm">
                           Creado el: {{ date('d/m/Y', strtotime($customer_visit->visit_date)) }} 
                         </p>
