@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Modules\User\Entities\CustomerParameters;
 use Modules\User\Entities\Customers;
 
-class CustomersApiController extends Controller
+class AppointmentsApiController extends Controller
 {
 
     public function index($idRefCurrentUser)

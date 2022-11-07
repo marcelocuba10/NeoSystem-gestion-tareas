@@ -2,10 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Modules\User\Http\Controllers\Api\MachineApiController;
-use Modules\User\Http\Controllers\Api\NotificationApiController;
-use Modules\User\Http\Controllers\Api\SchedulesApiController;
 use Modules\User\Http\Controllers\Api\CustomersApiController;
+use Modules\User\Http\Controllers\Api\AppointmentsApiController;
 
 Route::group(['prefix' => 'auth'], function () {
 
@@ -21,6 +19,16 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 Route::middleware(['cors'])->group(function () {
+
+    /*** Appointments Routes ***/
+    Route::group(['prefix' => 'appointments'], function () {
+        Route::get('/{idReference}', [AppointmentsApiController::class, 'index']);
+        Route::post('/create', [AppointmentsApiController::class, 'store']);
+        Route::get('/show/{id}', [AppointmentsApiController::class, 'show']);
+        Route::put('/update/{id}', [AppointmentsApiController::class, 'update']);
+        Route::delete('/delete/{id}', [AppointmentsApiController::class, 'destroy']);
+        Route::get('/search', [AppointmentsApiController::class, 'search']);
+    });
 
     /*** Customers Routes ***/
     Route::group(['prefix' => 'customers'], function () {
