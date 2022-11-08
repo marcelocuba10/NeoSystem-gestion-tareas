@@ -5,15 +5,19 @@ namespace Modules\User\Http\Controllers\Api;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Modules\User\Entities\Appointment;
 use Modules\User\Entities\CustomerParameters;
 use Modules\User\Entities\Customers;
+use Modules\User\Entities\CustomerVisit;
+
+use Mail;
+use Modules\User\Emails\NotifyMail;
 
 class AppointmentsApiController extends Controller
 {
-
     public function index($idRefCurrentUser)
     {
         $appointments = DB::table('appointments')
@@ -55,156 +59,135 @@ class AppointmentsApiController extends Controller
     {
         /** date validation, not less than 1980 and not greater than the current year **/
         $initialDate = '1980-01-01';
-        $currentDate = (date('Y') + 1) . '-01-01'; //2023-01-01
+        $currentDate = (date('Y') + 2) . '-01-01'; //current date + 2 year
 
         $request->validate([
-            'name' => 'required|max:50|min:5',
-            'phone' => 'nullable|max:25|min:5',
-            'doc_id' => 'nullable|max:25|min:5|unique:customers,doc_id',
-            'email' => 'nullable|max:50|min:5|email:rfc,dns|unique:customers,email',
-            'address' => 'nullable|max:255|min:5',
-            'city' => 'nullable|max:50|min:5',
-            'estate' => 'required|max:50|min:5',
-            'is_vigia' => 'nullable',
-            'category' => 'required|max:150|min:1',
-            'potential_products' => 'required|max:150|min:1',
-            'unit_quantity' => 'nullable|integer|between:0,9999|min:0',
-            'result_of_the_visit' => 'nullable|max:1000|min:3',
-            'objective' => 'nullable|max:1000|min:3',
-            'next_visit_date' => 'nullable|date_format:Y-m-d|after_or_equal:' . $initialDate . '|before:' . $currentDate,
-            'next_visit_hour' => 'nullable|max:10|min:5',
+            'customer_id' => 'required',
+            'date' => 'required|date|after_or_equal:today|before:' . $currentDate,
+            'hour' => 'required|max:5|min:5',
+            'action' => 'required|max:30|min:5',
+            'observation' => 'nullable|max:1000|min:3',
+            'idReference' => 'required'
         ]);
 
         $input = $request->all();
 
-        /** create temporal Customer */
-        $customer = Appointment::create($input);
+        /** Create new visit customer */
+        $field['visit_number'] = $this->generateUniqueCodeVisit();
+        $field['customer_id'] = $input['customer_id'];
+        $field['seller_id'] = $input['idReference'];
+        $field['visit_date'] = Carbon::now();
+        $field['next_visit_date'] = $input['date'];
+        $field['next_visit_hour'] = $input['hour'];
+        $field['objective'] = null;
+        $field['result_of_the_visit'] = null;
+        $field['action'] = $input['action'];
+        $field['type'] = 'Sin Presupuesto';
+        $field['status'] = 'Pendiente';
+        $customer_visit = CustomerVisit::create($field);
 
-        /** potential products array */
-        foreach ($request->potential_products as $key => $value) {
+        /** Add input extra values and CREATE new appointment */
+        $input['idReference'] = $input['idReference'];
+        $input['visit_number'] = $customer_visit->visit_number;
+        $input['visit_id'] = $customer_visit->id;
+        $input['status'] = 'Pendiente';
+        $appointment = Appointment::create($input);
 
-            /** Save potential product in table customer_parameters */
-            $item = new CustomerParameters();
-            $item->customer_id = $customer->id;
-            $item->potential_product_id = $request->potential_products[$key];
-            $item->quantity = 1;
-            $item->save();
-        }
+        /** Send email notification */
+        $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+        $head = 'crear una agenda - #' . $appointment->visit_number;
+        $type = 'Agenda';
+        $linkOrderPDF = null;
 
-        /** categories array */
-        foreach ($request->category as $key => $value) {
-            /** Save items in table customer_parameters */
-            $item = new CustomerParameters();
-            $item->customer_id = $customer->id;
-            $item->category_id = $request->category[$key];
-            $item->save();
-        }
+        $appointment = DB::table('appointments')
+            ->leftjoin('customers', 'customers.id', '=', 'appointments.customer_id')
+            ->leftjoin('users', 'users.idReference', '=', 'appointments.idReference')
+            ->where('appointments.id', $appointment->id)
+            ->select(
+                'appointments.id',
+                'appointments.visit_number',
+                'appointments.date',
+                'appointments.hour',
+                'appointments.status',
+                'appointments.action',
+                'appointments.observation',
+                'appointments.created_at',
+                'customers.name AS customer_name',
+                'customers.estate',
+                'customers.phone',
+                'users.name AS seller_name'
+            )
+            ->first();
+
+        Mail::to($emailDefault)->send(new NotifyMail($appointment, $head, $linkOrderPDF, $type));
 
         //return response
         return response()->json(array(
-            'success' => 'Customer created successfully.',
-            'data'   => $customer
+            'success' => 'Appointment created successfully.',
+            'data'   => $appointment
         ));
     }
 
-    public function update(Request $request, $id)
+    public function generateUniqueCodeVisit()
     {
-        $request->validate([
-            'name' => 'required|max:50|min:5',
-            'phone' => 'required|max:25|min:5',
-            'doc_id' => 'nullable|max:25|min:5|unique:customers,doc_id,' . $id,
-            'email' => 'nullable|max:50|min:5|email:rfc,dns|unique:customers,email,' . $id,
-            'address' => 'nullable|max:255|min:5',
-            'city' => 'nullable|max:50|min:5',
-            'estate' => 'required|max:50|min:5',
-            'is_vigia' => 'nullable',
-            'unit_quantity' => 'nullable|integer|between:0,9999|min:0',
-            'result_of_the_visit' => 'nullable|max:1000|min:3',
-            'objective' => 'nullable|max:1000|min:3',
-            'next_visit_date' => 'nullable|date_format:Y-m-d|after_or_equal:today',
-            'next_visit_hour' => 'nullable|max:10|min:5',
-        ]);
+        do {
+            $visit_number = random_int(100000, 999999);
+        } while (
+            DB::table('customer_visits')->where("visit_number", "=", $visit_number)->first()
+        );
 
-        $input = $request->all();
-
-        /** if checkbox not checked */
-        if ($request->is_vigia == null) {
-            $input['is_vigia'] = null;
-        }
-
-        //update in DB
-        $customer = Customers::find($id);
-        $input['category'] = str_replace('/\/', '', $customer->category);
-        $input['potential_products'] = str_replace('/\/', '', $customer->potential_products);
-        $customer->update($input);
-
-        //return response
-        return response()->json(array(
-            'success' => 'Customer updated successfully.',
-            'data'   => $customer
-        ));
+        return $visit_number;
     }
 
-    public function search(Request $request)
+    public function search(Request $request, $idRefCurrentUser)
     {
         $search = $request->input('search');
-        $idRefCurrentUser = Auth::user()->idReference;
 
         if ($search == '') {
-            $customers = DB::table('customers')
-                ->where('idReference', '=', $idRefCurrentUser)
+            $appointments = DB::table('appointments')
+                ->leftjoin('customers', 'customers.id', '=', 'appointments.customer_id')
+                ->where('appointments.idReference', '=', $idRefCurrentUser)
                 ->select(
-                    'id',
-                    'name',
-                    'last_name',
-                    'category',
-                    'potential_products',
-                    'is_vigia',
-                    'email',
-                    'address',
-                    'estate',
-                    'phone',
-                    'objective',
-                    'doc_id',
-                    'unit_quantity',
-                    'result_of_the_visit',
-                    'next_visit_date',
-                    'next_visit_hour'
+                    'appointments.id',
+                    'appointments.visit_number',
+                    'appointments.visit_id',
+                    'appointments.date',
+                    'appointments.hour',
+                    'appointments.action',
+                    'appointments.status',
+                    'appointments.observation',
+                    'customers.name AS customer_name',
+                    'customers.phone AS customer_phone',
                 )
-                ->orderBy('created_at', 'DESC')
-                ->paginate(10);
+                ->orderBy('appointments.created_at', 'DESC')
+                ->paginate(20);
         } else {
-            $customers = DB::table('customers')
-                ->where('idReference', '=', $idRefCurrentUser)
-                ->where('name', 'LIKE', "%{$search}%")
+            $appointments = DB::table('appointments')
+                ->leftjoin('customers', 'customers.id', '=', 'appointments.customer_id')
+                ->where('customers.name', 'LIKE', "%{$search}%")
+                ->orWhere('appointments.visit_number', 'LIKE', "%{$search}%")
+                ->where('appointments.idReference', '=', $idRefCurrentUser)
                 ->select(
-                    'id',
-                    'name',
-                    'last_name',
-                    'category',
-                    'potential_products',
-                    'is_vigia',
-                    'email',
-                    'address',
-                    'estate',
-                    'phone',
-                    'objective',
-                    'doc_id',
-                    'unit_quantity',
-                    'result_of_the_visit',
-                    'next_visit_date',
-                    'next_visit_hour'
+                    'appointments.id',
+                    'appointments.visit_number',
+                    'appointments.visit_id',
+                    'appointments.date',
+                    'appointments.hour',
+                    'appointments.action',
+                    'appointments.status',
+                    'appointments.observation',
+                    'customers.name AS customer_name',
+                    'customers.phone AS customer_phone',
                 )
-                ->orderBy('created_at', 'DESC')
+                ->orderBy('appointments.created_at', 'DESC')
                 ->paginate();
         }
 
-        return view('user::customers.index', compact('customers', 'search'))->with('i', (request()->input('page', 1) - 1) * 10);
+        return view('user::appointments.index', compact('appointments', 'search'))->with('i', (request()->input('page', 1) - 1) * 20);
     }
 
     public function destroy($id)
     {
-        Customers::find($id)->delete();
-        return redirect()->to('/user/customers')->with('message', 'Customer deleted successfully');
+        //
     }
 }

@@ -14,9 +14,12 @@ class Products extends Model
         'description',
         'sale_price',
         'img_product',
-        'quantity',
+        'inventory',
         'supplier',
-        'phone_supplier'
+        'phone_supplier',
+        'brand',
+        'model',
+        'type'
     ];
     
     protected static function newFactory()

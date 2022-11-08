@@ -50,11 +50,6 @@ class ProductsController extends Controller
         return view('user::products.index', compact('products'));
     }
 
-    public function getItemProduct()
-    {
-        dd('fdfdfdf');
-    }
-
     public function show($id)
     {
         $product = DB::table('products')

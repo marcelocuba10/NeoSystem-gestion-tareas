@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Modules\User\Http\Controllers\Api\CustomersApiController;
 use Modules\User\Http\Controllers\Api\AppointmentsApiController;
+use Modules\User\Http\Controllers\Api\ProductsApiController;
 
 Route::group(['prefix' => 'auth'], function () {
 
@@ -20,13 +21,16 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::middleware(['cors'])->group(function () {
 
+    /*** Products Routes ***/
+    Route::group(['prefix' => 'products'], function () {
+        Route::get('/', [ProductsApiController::class, 'index']);
+        Route::get('/search/{textSearch}', [ProductsApiController::class, 'search']);
+    });
+
     /*** Appointments Routes ***/
     Route::group(['prefix' => 'appointments'], function () {
-        Route::get('/{idReference}', [AppointmentsApiController::class, 'index']);
+        Route::get('/', [AppointmentsApiController::class, 'index']);
         Route::post('/create', [AppointmentsApiController::class, 'store']);
-        Route::get('/show/{id}', [AppointmentsApiController::class, 'show']);
-        Route::put('/update/{id}', [AppointmentsApiController::class, 'update']);
-        Route::delete('/delete/{id}', [AppointmentsApiController::class, 'destroy']);
         Route::get('/search', [AppointmentsApiController::class, 'search']);
     });
 
@@ -39,22 +43,4 @@ Route::middleware(['cors'])->group(function () {
         Route::delete('/delete/{id}', [CustomersApiController::class, 'destroy']);
         Route::get('/search', [CustomersApiController::class, 'search']);
     });
-
-    /** Routes Schedules */
-    Route::get('schedules', [CustomersApiController::class, 'index']);
-    Route::put('schedule/{id}', [SchedulesApiController::class, 'update']);
-    Route::get('schedule/{id}', [SchedulesApiController::class, 'edit']);
-    Route::get('schedule/user/{id}', [SchedulesApiController::class, 'getSchedulesByUser']);
-    Route::post('schedule', [SchedulesApiController::class, 'store']);
-    Route::get('schedule/user/check/{id}', [SchedulesApiController::class, 'checkSchedule']);
-    Route::delete('schedule/{id}', [SchedulesApiController::class, 'destroy']);
-
-    /** Routes Notifications */
-    Route::get('notifications', [NotificationApiController::class, 'index']);
-
-    /** Routes Machines */
-    Route::get('machines', [MachineApiController::class, 'index']);
-    Route::get('machine/{qrcode}', [MachineApiController::class, 'getMachineByQRcode']);
-    Route::put('machine/{qrcode}', [MachineApiController::class, 'update']);
-    Route::post('machine', [MachineApiController::class, 'store']);
 });
