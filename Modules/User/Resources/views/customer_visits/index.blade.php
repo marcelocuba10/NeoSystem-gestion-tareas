@@ -63,7 +63,7 @@
                         <td class="min-width">
                           <span class="status-btn 
                           @if($customer_visit->action == 'Realizar Llamada') info-btn
-                          @elseIf($customer_visit->action == 'Visitar Personalmente') orange-btn
+                          @elseIf($customer_visit->action == 'Realizar Visita') orange-btn
                           @elseIf($customer_visit->action == 'Enviar Presupuesto') active-btn
                           @endif">
                             {{ $customer_visit->action }}

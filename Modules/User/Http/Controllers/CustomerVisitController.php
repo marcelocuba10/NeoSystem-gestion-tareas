@@ -66,7 +66,7 @@ class CustomerVisitController extends Controller
 
         $actions = [
             'Realizar Llamada',
-            'Visitar Personalmente',
+            'Realizar Visita',
             'Enviar Presupuesto'
         ];
 
@@ -382,7 +382,7 @@ class CustomerVisitController extends Controller
 
         $actions = [
             'Realizar Llamada',
-            'Visitar Personalmente',
+            'Realizar Visita',
             'Enviar Presupuesto'
         ];
 

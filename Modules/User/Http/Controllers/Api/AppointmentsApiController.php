@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Modules\User\Entities\Appointment;
 use Modules\User\Entities\CustomerParameters;
 use Modules\User\Entities\Customers;
 
@@ -15,23 +16,38 @@ class AppointmentsApiController extends Controller
 
     public function index($idRefCurrentUser)
     {
+        $appointments = DB::table('appointments')
+            ->leftjoin('customers', 'customers.id', '=', 'appointments.customer_id')
+            ->where('appointments.idReference', '=', $idRefCurrentUser)
+            ->select(
+                'appointments.id',
+                'appointments.visit_number',
+                'appointments.visit_id',
+                'appointments.date',
+                'appointments.hour',
+                'appointments.action',
+                'appointments.status',
+                'appointments.observation',
+                'customers.name AS customer_name',
+                'customers.phone AS customer_phone',
+            )
+            ->orderBy('appointments.created_at', 'DESC')
+            ->get();
+
         $customers = DB::table('customers')
             ->where('idReference', '=', $idRefCurrentUser)
             ->orderBy('created_at', 'DESC')
             ->get();
 
-        $categories = DB::table('parameters')
-            ->where('type', '=', 'Rubro')
-            ->get();
-
-        $potential_products = DB::table('parameters')
-            ->where('type', '=', 'Equipos Potenciales')
-            ->get();
+        $actions = [
+            'Realizar Llamada',
+            'Realizar Visita',
+        ];
 
         return response()->json(array(
+            'appointments' => $appointments,
             'customers' => $customers,
-            'categories' => $categories,
-            'potential_products' => $potential_products,
+            'actions' => $actions,
         ));
     }
 
@@ -62,7 +78,7 @@ class AppointmentsApiController extends Controller
         $input = $request->all();
 
         /** create temporal Customer */
-        $customer = Customers::create($input);
+        $customer = Appointment::create($input);
 
         /** potential products array */
         foreach ($request->potential_products as $key => $value) {

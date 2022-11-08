@@ -64,7 +64,7 @@ class AppointmentController extends Controller
 
         $actions = [
             'Realizar Llamada',
-            'Visitar Personalmente',
+            'Realizar Visita',
         ];
 
         return view('user::appointments.create', compact('customers', 'actions', 'appointment'));

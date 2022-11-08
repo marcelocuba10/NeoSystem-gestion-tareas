@@ -52,7 +52,7 @@
                           <span class="bg-color bg-card-orange"> </span>
                           <div class="text">
                             <form action="{{ url('/user/appointments/filter') }}">
-                              <button class="btn-group-status" name="filter" value="Visitar Personalmente" type="submit"><p class="text-sm text-dark">Visitar Personalmente</p></button>
+                              <button class="btn-group-status" name="filter" value="Realizar Visita" type="submit"><p class="text-sm text-dark">Realizar Visita</p></button>
                             </form> 
                           </div>
                         </div>
@@ -105,7 +105,7 @@
                           <td class="min-width">
                             <span class="status-btn 
                               @if($appointment->action == 'Realizar Llamada') info-btn
-                              @elseIf($appointment->action == 'Visitar Personalmente') orange-btn
+                              @elseIf($appointment->action == 'Realizar Visita') orange-btn
                               @elseIf($appointment->action == 'Enviar Presupuesto') active-btn
                               @endif">
                               {{ $appointment->action }}
