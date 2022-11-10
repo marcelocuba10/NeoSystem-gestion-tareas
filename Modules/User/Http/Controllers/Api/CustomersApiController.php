@@ -52,7 +52,6 @@ class CustomersApiController extends Controller
             'is_vigia' => 'nullable',
             'category' => 'required|max:150|min:1',
             'potential_products' => 'required|max:150|min:1',
-            'unit_quantity' => 'nullable|integer|between:0,9999|min:0',
             'result_of_the_visit' => 'nullable|max:1000|min:3',
             'objective' => 'nullable|max:1000|min:3',
             'next_visit_date' => 'nullable|date_format:Y-m-d|after_or_equal:' . $initialDate . '|before:' . $currentDate,
@@ -102,7 +101,6 @@ class CustomersApiController extends Controller
             'city' => 'nullable|max:50|min:5',
             'estate' => 'required|max:50|min:5',
             'is_vigia' => 'nullable',
-            'unit_quantity' => 'nullable|integer|between:0,9999|min:0',
             'result_of_the_visit' => 'nullable|max:1000|min:3',
             'objective' => 'nullable|max:1000|min:3',
             'next_visit_date' => 'nullable|date_format:Y-m-d|after_or_equal:today',
@@ -147,7 +145,6 @@ class CustomersApiController extends Controller
                     'phone',
                     'objective',
                     'doc_id',
-                    'unit_quantity',
                     'result_of_the_visit',
                     'next_visit_date',
                     'next_visit_hour'
@@ -171,7 +168,6 @@ class CustomersApiController extends Controller
                     'phone',
                     'objective',
                     'doc_id',
-                    'unit_quantity',
                     'result_of_the_visit',
                     'next_visit_date',
                     'next_visit_hour'
