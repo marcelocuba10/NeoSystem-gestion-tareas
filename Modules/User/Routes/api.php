@@ -29,7 +29,7 @@ Route::middleware(['cors'])->group(function () {
 
     /*** Appointments Routes ***/
     Route::group(['prefix' => 'appointments'], function () {
-        Route::get('/', [AppointmentsApiController::class, 'index']);
+        Route::get('/{idReference}', [AppointmentsApiController::class, 'index']);
         Route::post('/create', [AppointmentsApiController::class, 'store']);
         Route::get('/search', [AppointmentsApiController::class, 'search']);
     });
@@ -41,6 +41,6 @@ Route::middleware(['cors'])->group(function () {
         Route::get('/show/{id}', [CustomersApiController::class, 'show']);
         Route::put('/update/{id}', [CustomersApiController::class, 'update']);
         Route::delete('/delete/{id}', [CustomersApiController::class, 'destroy']);
-        Route::get('/search', [CustomersApiController::class, 'search']);
+        Route::get('/search/{textSearch}/{idReference}', [CustomersApiController::class, 'search']);
     });
 });

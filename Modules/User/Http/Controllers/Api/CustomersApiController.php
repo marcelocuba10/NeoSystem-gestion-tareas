@@ -129,12 +129,9 @@ class CustomersApiController extends Controller
         ));
     }
 
-    public function search(Request $request)
+    public function search($textSearch, $idRefCurrentUser)
     {
-        $search = $request->input('search');
-        $idRefCurrentUser = Auth::user()->idReference;
-
-        if ($search == '') {
+        if ($textSearch == '') {
             $customers = DB::table('customers')
                 ->where('idReference', '=', $idRefCurrentUser)
                 ->select(
@@ -156,11 +153,11 @@ class CustomersApiController extends Controller
                     'next_visit_hour'
                 )
                 ->orderBy('created_at', 'DESC')
-                ->paginate(10);
+                ->get();
         } else {
             $customers = DB::table('customers')
                 ->where('idReference', '=', $idRefCurrentUser)
-                ->where('name', 'LIKE', "%{$search}%")
+                ->where('name', 'LIKE', "%{$textSearch}%")
                 ->select(
                     'id',
                     'name',
@@ -180,10 +177,12 @@ class CustomersApiController extends Controller
                     'next_visit_hour'
                 )
                 ->orderBy('created_at', 'DESC')
-                ->paginate();
+                ->get();
         }
 
-        return view('user::customers.index', compact('customers', 'search'))->with('i', (request()->input('page', 1) - 1) * 10);
+        return response()->json(array(
+            'customers' => $customers
+        ));
     }
 
     public function destroy($id)
