@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\User\Http\Controllers\Api\CustomersApiController;
 use Modules\User\Http\Controllers\Api\AppointmentsApiController;
 use Modules\User\Http\Controllers\Api\ProductsApiController;
+use Modules\User\Http\Controllers\Api\HomeApiController;
 
 Route::group(['prefix' => 'auth'], function () {
 
@@ -20,6 +21,9 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 Route::middleware(['cors'])->group(function () {
+
+    /** Dashboard */
+    Route::get('/dashboard/{idReference}', [HomeApiController::class, 'index']);
 
     /*** Products Routes ***/
     Route::group(['prefix' => 'products'], function () {
