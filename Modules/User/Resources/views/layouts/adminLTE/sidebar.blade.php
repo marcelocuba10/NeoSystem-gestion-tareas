@@ -118,9 +118,9 @@
             <li>
               <a href="{{ url('/user/whatdo') }}" class="{{ (request()->is('/user/whatdo')) ? 'active' : '' }}">Resumen Visitas</a>
             </li>
-            {{-- <li>
-              <a href="{{ url('/user/whatdo') }}" class="{{ (request()->is('/user/whatdo')) ? 'active' : '' }}">Resumen Ventas</a>
-            </li> --}}
+            <li>
+              <a href="{{ url('/user/reports/sales') }}" class="{{ (request()->is('/user/reports/sales')) ? 'active' : '' }}">Resumen Ventas</a>
+            </li>
             <li>
               <a href="{{ url('/user/whatdo/visit_on_map') }}" class="{{ (request()->is('/user/whatdo/visit_on_map')) ? 'active' : '' }}">Zona Geográfica</a>
             </li>

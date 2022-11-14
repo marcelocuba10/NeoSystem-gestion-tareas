@@ -37,29 +37,29 @@
                 <div class="address-item">
                   <p class="text-sm">
                     <span class="text-sm text-bold">Agente:</span>
-                    <span class="text-sm" id="name">dfsdfd</span>
+                    <span class="text-sm" id="name">--</span>
                   </p>
                   <p class="text-sm">
                     <span class="text-sm text-bold">Código ID:</span>
-                    <span class="text-sm" id="idReference">sfdfsd</span>
+                    <span class="text-sm" id="idReference">--</span>
                   </p>
                   <p class="text-sm">
                     <span class="text-sm text-bold">Teléfono:</span>
-                    <span class="text-sm" id="phone_1">sfdsfsd</span>
+                    <span class="text-sm" id="phone_1">--</span>
                   </p>
                 </div>
                 <div class="address-item">
                   <p class="text-sm">
                     <span class="text-sm text-bold">Doc Identidad:</span>
-                    <span class="text-sm" id="doc_id">fdsfdsf</span>
+                    <span class="text-sm" id="doc_id">--</span>
                   </p>
                   <p class="text-sm">
                     <span class="text-sm text-bold">Localidad:</span>
-                    <span class="text-sm" id="estate">sfdsf</span>
+                    <span class="text-sm" id="estate">--</span>
                   </p>
                   <p class="text-sm">
                     <span class="text-sm text-bold">Estado:</span>
-                    <span class="text-sm" id="status">sfdsf</span>
+                    <span class="text-sm" id="status">--</span>
                   </p>
                 </div>
               </div>

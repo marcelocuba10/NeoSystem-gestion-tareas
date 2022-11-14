@@ -176,7 +176,7 @@
 
     <div class="col-12">
       <div class="button-group d-flex justify-content-center flex-wrap">
-        <button type="submit" class="main-btn primary-btn btn-hover m-2">{{ ($customer)  ? ' Actualizar' : 'Guardar' }}</button>
+        <button type="submit" id="btn_submit" class="main-btn primary-btn btn-hover m-2">{{ ($customer)  ? ' Actualizar' : 'Guardar' }}</button>
         <a class="main-btn primary-btn-outline m-2" href="{{ url('/user/customers') }}">Atrás</a>
       </div>
     </div>
@@ -184,8 +184,6 @@
 </div>
 
 <script type="text/javascript">
-
-  $(document).ready(function(){
 
     //When get data from Edit, calculate Total;
     var tr = $(this).parent().parent();

@@ -267,10 +267,10 @@
       <div class="col-12">
         <div class="button-group d-flex justify-content-center flex-wrap">
           <input type="hidden" name="orderToSale" id="orderToSale">
-          <button type="submit" class="main-btn primary-btn btn-hover m-2 btn-orderToSale">Procesar a Venta</button>
+          <button type="submit" id="btn_submit" class="main-btn primary-btn btn-hover m-2 btn-orderToSale">Procesar a Venta</button>
           @if (!$sale->visit_id)
             @can('sales-edit')
-              <button type="submit" class="main-btn primary-btn-outline btn-hover m-2">Actualizar</button>
+              <button type="submit" id="btn_submit" class="main-btn primary-btn-outline btn-hover m-2">Actualizar</button>
             @endcan  
           @endif
           @if ($sale->visit_id)
@@ -291,7 +291,7 @@
           <input type="hidden" name="cancelSale" id="cancelSale">
           @can('sales-delete')
             @if ($sale->status != 'Cancelado')
-              <button type="submit" data-id="{{$sale->id}}" data-invoice_number="{{$sale->invoice_number}}" class="main-btn danger-btn btn-hover m-2 btn-cancelSale show_confirm">Cancelar Venta</button>
+              <button type="submit" id="btn_submit" data-id="{{$sale->id}}" data-invoice_number="{{$sale->invoice_number}}" class="main-btn danger-btn btn-hover m-2 btn-cancelSale show_confirm">Cancelar Venta</button>
             @endif
           @endcan
           <div class="button-group d-flex justify-content-center flex-wrap">

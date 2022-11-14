@@ -133,10 +133,12 @@ Route::prefix('user')->group(function () {
         /*** Reports Routes ***/
         Route::group(['prefix' => 'reports'], function () {
             Route::get('/customers', 'ReportsController@customers');
-            Route::get('/customers/search', 'ReportsController@customers');
             Route::get('/products', 'ReportsController@products');
             Route::get('/schedules', 'ReportsController@schedules');
             Route::get('/graphs', 'ReportsController@graphs');
+            Route::get('/sales', 'ReportsController@sales');
+            Route::get('/search_sales', 'ReportsController@search_sales');
+            Route::get('/filter_sales', 'ReportsController@filter_sales');
         });
 
         /*** ACL Routes ***/

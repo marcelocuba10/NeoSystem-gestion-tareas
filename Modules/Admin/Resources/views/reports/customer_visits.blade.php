@@ -31,7 +31,7 @@
               <div class="d-flex flex-wrap justify-content-between align-items-center py-3">
                 <div class="left">
                   <div id="legend3">
-                    <ul class="legend3 d-flex flex-wrap align-items-center mb-30">
+                    <ul class="legend3 d-flex flex-wrap align-items-center">
                       <li>
                         <div class="select-style-1">
                           <label>Estado</label>

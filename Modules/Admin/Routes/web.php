@@ -171,6 +171,8 @@ Route::prefix('admin')->group(function () {
             Route::get('/search_visits', 'ReportsController@search_visits');
             Route::get('/filter_visits', 'ReportsController@filter_visits');
             Route::get('/sales', 'ReportsController@sales');
+            Route::get('/search_sales', 'ReportsController@search_sales');
+            Route::get('/filter_sales', 'ReportsController@filter_sales');
         });
     });
 });

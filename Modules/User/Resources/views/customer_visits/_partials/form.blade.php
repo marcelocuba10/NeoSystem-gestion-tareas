@@ -143,7 +143,7 @@
         <div class="col-12">
           <div class="button-group d-flex justify-content-center flex-wrap">
             <input type="hidden" name="isSetOrder" id="isSetOrder">
-            <button type="submit" class="main-btn primary-btn btn-hover m-2">Actualizar</button>
+            <button type="submit" id="btn_submit" class="main-btn primary-btn btn-hover m-2">Actualizar</button>
             <a class="main-btn primary-btn-outline m-2" href="{{ url('/user/customer_visits') }}">Atrás</a>
           </div>
         </div>
@@ -196,8 +196,8 @@
             <input type="hidden" name="isSetOrder" id="isSetOrder">
             @if ($customer_visit->status == 'Pendiente')
               <input type="hidden" name="pendingToProcess" id="pendingToProcess">
-              <button type="submit" class="main-btn primary-btn btn-hover m-2 btn-pendingToProcess">Marcar como Procesado</button>
-              <button type="submit" class="main-btn primary-btn-outline btn-hover m-2">Actualizar</button>
+              <button type="submit" id="btn_submit" class="main-btn primary-btn btn-hover m-2 btn-pendingToProcess">Marcar como Procesado</button>
+              <button type="submit" id="btn_submit" class="main-btn primary-btn-outline btn-hover m-2">Actualizar</button>
             @endif
             <a class="main-btn primary-btn-outline m-2" href="{{ url('/user/customer_visits') }}">Atrás</a>
           </div>
@@ -251,7 +251,7 @@
       <div class="col-12">
         <div class="button-group d-flex justify-content-center flex-wrap">
           <input type="hidden" name="isSetOrder" id="isSetOrder">
-          <button type="submit" class="main-btn primary-btn btn-hover m-2">Guardar</button>
+          <button type="submit" id="btn_submit" class="main-btn primary-btn btn-hover m-2">Guardar</button>
           <a class="main-btn primary-btn-outline m-2" href="{{ url('/user/customer_visits') }}">Atrás</a>
         </div>
       </div>

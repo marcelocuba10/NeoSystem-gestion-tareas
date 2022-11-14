@@ -56,22 +56,13 @@
       @if ($appointment)
         @if ($appointment->status == 'Pendiente')
           <input type="hidden" name="pendingToProcess" id="pendingToProcess">
-          <button type="submit" class="main-btn primary-btn btn-hover m-2 btn-pendingToProcess">Marcar como Procesado</button>
-          <button type="submit" class="main-btn primary-btn-outline btn-hover m-2">Actualizar</button>
+          <button type="submit" id="btn_submit" class="main-btn primary-btn btn-hover m-2 btn-pendingToProcess">Marcar como Procesado</button>
+          <button type="submit" id="btn_submit" class="main-btn primary-btn-outline btn-hover m-2">Actualizar</button>
         @endif
       @else
-        <button type="submit" class="main-btn primary-btn btn-hover m-2">Guardar</button>  
+        <button type="submit" id="btn_submit" class="main-btn primary-btn btn-hover m-2">Guardar</button>  
       @endif
       <a class="main-btn primary-btn-outline m-2" href="{{ url('/user/appointments') }}">Atrás</a>
     </div>
   </div>
 </div>
-
-<script>
-  $(document).ready(function(){
-    // Pass parameter to controller change status visit customer pending to processed 
-    $(".btn-pendingToProcess").click(function() {
-      $("#pendingToProcess").val(true);
-    });
-  })
-</script>

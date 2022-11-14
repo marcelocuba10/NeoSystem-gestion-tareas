@@ -768,7 +768,7 @@ class SalesController extends Controller
             $sales = DB::table('sales')
                 ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
                 ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
-                ->Where('customers.idReference', '=', $idRefCurrentUser)
+                ->where('customers.idReference', '=', $idRefCurrentUser)
                 ->select(
                     'sales.id',
                     'sales.invoice_number',

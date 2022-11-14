@@ -779,9 +779,12 @@ class ReportsController extends Controller
 
     public function sales()
     {
+        $idRefCurrentUser = Auth::user()->idReference;
+
         $sales = DB::table('sales')
             ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
             ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+            ->where('customers.idReference', '=', $idRefCurrentUser)
             ->select(
                 'sales.id',
                 'sales.customer_id',
@@ -795,8 +798,198 @@ class ReportsController extends Controller
                 'customer_visits.visit_date',
             )
             ->orderBy('sales.created_at', 'DESC')
-            ->paginate(20);
+            ->get();
 
-        return view('admin::reports.sales', compact('sales'))->with('i', (request()->input('page', 1) - 1) * 20);
+        $status = [
+            'Pendiente',
+            'Procesado',
+            'Cancelado'
+        ];
+
+        $visits_labels = [
+            'Menos de 30 días',
+            'Más de 30 días',
+            'Más de 90 días'
+        ];
+
+        $types = [
+            'Presupuesto',
+            'Venta',
+        ];
+
+        return view('admin::reports.sales', compact('sales', 'status', 'visits_labels', 'types'))->with('i', (request()->input('page', 1) - 1) * 20);
+    }
+
+    public function filter_sales(Request $request)
+    {
+        $filter = $request->input('filter');
+        $type = $request->input('type');
+
+        if ($filter == '') {
+            $sales = DB::table('sales')
+                ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+                ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+                ->select(
+                    'sales.id',
+                    'sales.customer_id',
+                    'sales.invoice_number',
+                    'sales.sale_date',
+                    'sales.type',
+                    'sales.status',
+                    'sales.total',
+                    'customers.name AS customer_name',
+                    'customers.estate',
+                    'customer_visits.visit_date',
+                )
+                ->orderBy('sales.created_at', 'DESC')
+                ->get();
+        } else {
+            if ($type == 'status') {
+                $sales = DB::table('sales')
+                    ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+                    ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+                    ->where('sales.status', 'LIKE', "{$filter}%")
+                    ->select(
+                        'sales.id',
+                        'sales.invoice_number',
+                        'sales.sale_date',
+                        'sales.type',
+                        'sales.status',
+                        'sales.total',
+                        'customers.name AS customer_name',
+                        'customers.estate',
+                        'customer_visits.visit_date',
+                    )
+                    ->orderBy('sales.created_at', 'DESC')
+                    ->get();
+            } elseif ($type == 'types') {
+                $sales = DB::table('sales')
+                    ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+                    ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+                    ->where('sales.type', 'LIKE', "{$filter}%")
+                    ->select(
+                        'sales.id',
+                        'sales.invoice_number',
+                        'sales.sale_date',
+                        'sales.type',
+                        'sales.status',
+                        'sales.total',
+                        'customers.name AS customer_name',
+                        'customers.estate',
+                        'customer_visits.visit_date',
+                    )
+                    ->orderBy('sales.created_at', 'DESC')
+                    ->get();
+            } elseif ($type == 'visit_date') {
+                if ($filter == 'Menos de 30 días') {
+
+                    $sales = DB::table('sales')
+                        ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+                        ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+                        ->where('sales.updated_at', '>', Carbon::now()->subDays(30))
+                        ->select(
+                            'sales.id',
+                            'sales.invoice_number',
+                            'sales.sale_date',
+                            'sales.type',
+                            'sales.status',
+                            'sales.total',
+                            'customers.name AS customer_name',
+                            'customers.estate',
+                            'customer_visits.visit_date',
+                        )
+                        ->orderBy('sales.created_at', 'DESC')
+                        ->get();
+                }
+
+                if ($filter == 'Más de 30 días') {
+                    $sales = DB::table('sales')
+                        ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+                        ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+                        ->where('sales.updated_at', '<', Carbon::now()->subDays(30))
+                        ->select(
+                            'sales.id',
+                            'sales.invoice_number',
+                            'sales.sale_date',
+                            'sales.type',
+                            'sales.status',
+                            'sales.total',
+                            'customers.name AS customer_name',
+                            'customers.estate',
+                            'customer_visits.visit_date',
+                        )
+                        ->orderBy('sales.created_at', 'DESC')
+                        ->get();
+                }
+
+                if ($filter == 'Más de 90 días') {
+                    $sales = DB::table('sales')
+                        ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+                        ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+                        ->where('sales.updated_at', '<', Carbon::now()->subDays(90))
+                        ->select(
+                            'sales.id',
+                            'sales.invoice_number',
+                            'sales.sale_date',
+                            'sales.type',
+                            'sales.status',
+                            'sales.total',
+                            'customers.name AS customer_name',
+                            'customers.estate',
+                            'customer_visits.visit_date',
+                        )
+                        ->orderBy('sales.created_at', 'DESC')
+                        ->get();
+                }
+            }
+        }
+
+        return View::make('admin::reports._partials.datatable-sales', compact('sales', 'filter'));
+    }
+
+    public function search_sales(Request $request)
+    {
+        $search = $request->input('search');
+
+        if ($search == '') {
+            $sales = DB::table('sales')
+                ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+                ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+                ->select(
+                    'sales.id',
+                    'sales.customer_id',
+                    'sales.invoice_number',
+                    'sales.sale_date',
+                    'sales.type',
+                    'sales.status',
+                    'sales.total',
+                    'customers.name AS customer_name',
+                    'customers.estate',
+                    'customer_visits.visit_date',
+                )
+                ->orderBy('sales.created_at', 'DESC')
+                ->get();
+        } else {
+            $sales = DB::table('sales')
+                ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+                ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+                ->where('customers.name', 'LIKE', "%{$search}%")
+                ->select(
+                    'sales.id',
+                    'sales.customer_id',
+                    'sales.invoice_number',
+                    'sales.sale_date',
+                    'sales.type',
+                    'sales.status',
+                    'sales.total',
+                    'customers.name AS customer_name',
+                    'customers.estate',
+                    'customer_visits.visit_date',
+                )
+                ->orderBy('sales.created_at', 'DESC')
+                ->get();
+        }
+
+        return View::make('admin::reports._partials.datatable-sales', compact('sales', 'search'));
     }
 }
