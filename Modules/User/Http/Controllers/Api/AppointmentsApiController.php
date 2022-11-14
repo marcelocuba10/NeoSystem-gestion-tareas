@@ -40,6 +40,7 @@ class AppointmentsApiController extends Controller
 
         $customers = DB::table('customers')
             ->where('idReference', '=', $idRefCurrentUser)
+            ->where('customers.status', '=', 1)
             ->orderBy('created_at', 'DESC')
             ->get();
 

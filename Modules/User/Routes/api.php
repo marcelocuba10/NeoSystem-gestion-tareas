@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Modules\User\Http\Controllers\Api\CustomersApiController;
 use Modules\User\Http\Controllers\Api\AppointmentsApiController;
+use Modules\User\Http\Controllers\Api\CustomerVisitApiController;
 use Modules\User\Http\Controllers\Api\ProductsApiController;
 use Modules\User\Http\Controllers\Api\HomeApiController;
 
@@ -38,11 +39,19 @@ Route::middleware(['cors'])->group(function () {
         Route::get('/search', [AppointmentsApiController::class, 'search']);
     });
 
+    /*** Customer Visits Routes ***/
+    Route::group(['prefix' => 'customer_visits'], function () {
+        Route::get('/{idReference}', [CustomerVisitApiController::class, 'index']);
+        Route::post('/create', [CustomerVisitApiController::class, 'store']);
+        Route::put('/update/{id}', [CustomerVisitApiController::class, 'update']);
+        Route::delete('/delete/{id}', [CustomerVisitApiController::class, 'destroy']);
+        Route::get('/search/{textSearch}/{idReference}', [CustomerVisitApiController::class, 'search']);
+    });
+
     /*** Customers Routes ***/
     Route::group(['prefix' => 'customers'], function () {
         Route::get('/{idReference}', [CustomersApiController::class, 'index']);
         Route::post('/create', [CustomersApiController::class, 'store']);
-        Route::get('/show/{id}', [CustomersApiController::class, 'show']);
         Route::put('/update/{id}', [CustomersApiController::class, 'update']);
         Route::delete('/delete/{id}', [CustomersApiController::class, 'destroy']);
         Route::get('/search/{textSearch}/{idReference}', [CustomersApiController::class, 'search']);
