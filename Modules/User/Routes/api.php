@@ -7,6 +7,7 @@ use Modules\User\Http\Controllers\Api\AppointmentsApiController;
 use Modules\User\Http\Controllers\Api\CustomerVisitApiController;
 use Modules\User\Http\Controllers\Api\ProductsApiController;
 use Modules\User\Http\Controllers\Api\HomeApiController;
+use Modules\User\Http\Controllers\Api\OrderDetailApiController;
 
 Route::group(['prefix' => 'auth'], function () {
 
@@ -37,6 +38,12 @@ Route::middleware(['cors'])->group(function () {
         Route::get('/{idReference}', [AppointmentsApiController::class, 'index']);
         Route::post('/create', [AppointmentsApiController::class, 'store']);
         Route::get('/search', [AppointmentsApiController::class, 'search']);
+    });
+
+    /*** Order Detail Routes ***/
+    Route::group(['prefix' => 'order_detail'], function () {
+        Route::get('/{visit_id}', [OrderDetailApiController::class, 'index']);
+        Route::post('/create', [OrderDetailApiController::class, 'store']);
     });
 
     /*** Customer Visits Routes ***/
