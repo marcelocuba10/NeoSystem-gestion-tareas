@@ -2,14 +2,18 @@
 
 namespace Modules\User\Http\Controllers\Api;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Modules\User\Entities\Appointment;
 use Modules\User\Entities\CustomerParameters;
 use Modules\User\Entities\Customers;
 use Modules\User\Entities\CustomerVisit;
+use Modules\User\Entities\OrderDetail;
+use Modules\User\Entities\Sales;
 
 class CustomerVisitApiController extends Controller
 {
@@ -111,6 +115,40 @@ class CustomerVisitApiController extends Controller
         ));
     }
 
+    public function edit($id){
+        $customer_visit = DB::table('customer_visits')
+            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+            ->where('customer_visits.visit_number', '=', $id)
+            ->select(
+                'customer_visits.id',
+                'customer_visits.visit_number',
+                'customer_visits.customer_id',
+                'customer_visits.visit_date',
+                'customer_visits.next_visit_date',
+                'customer_visits.next_visit_hour',
+                'customer_visits.result_of_the_visit',
+                'customer_visits.objective',
+                'customer_visits.action',
+                'customer_visits.type',
+                'customer_visits.status',
+                'customers.name AS customer_name',
+                'customers.estate',
+            )
+            ->orderBy('customer_visits.created_at', 'DESC')
+            ->get();
+
+        $actions = [
+            'Realizar Llamada',
+            'Realizar Visita',
+            'Enviar Presupuesto'
+        ];
+
+        return response()->json(array(
+            'customer_visit' => $customer_visit,
+            'actions' => $actions,
+        ));
+    }
+
     public function update(Request $request, $id)
     {
         /** date validation, not less than 1980 and not greater than the current year **/
@@ -148,7 +186,7 @@ class CustomerVisitApiController extends Controller
         }
 
         /** check if select 'order' is selected */
-        if ($request->isSetOrder == 'true') {
+        if ($request->type == 'Enviar Presupuesto') {
             /** If not select any product */
             if (strlen($request->product_id[0]) > 10) {
                 return back()->with('error', 'Por favor, adicione un producto.');
@@ -280,7 +318,7 @@ class CustomerVisitApiController extends Controller
                 $input['seller_id'] = $input['idReference'];
                 $customer_visit->update($input);
             }
-        } elseif ($request->isSetOrder == 'false') {
+        } elseif ($request->type != 'Enviar Presupuesto') {
             $input['visit_date'] = Carbon::now();
             $customer_visit = CustomerVisit::find($id);
             $customer_visit->update($input);
