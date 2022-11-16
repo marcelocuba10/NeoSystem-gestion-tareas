@@ -44,6 +44,7 @@ Route::middleware(['cors'])->group(function () {
     Route::group(['prefix' => 'order_detail'], function () {
         Route::get('/{visit_id}', [OrderDetailApiController::class, 'index']);
         Route::post('/create', [OrderDetailApiController::class, 'store']);
+        Route::delete('/deleteItemOrder/{visit_id}/{product_id}',[OrderDetailApiController::class, 'destroyItemOrder']);
     });
 
     /*** Customer Visits Routes ***/

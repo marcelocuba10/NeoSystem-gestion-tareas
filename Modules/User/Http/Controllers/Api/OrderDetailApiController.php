@@ -16,6 +16,7 @@ use Modules\User\Entities\CustomerVisit;
 use Mail;
 use Modules\User\Emails\NotifyMail;
 use Modules\User\Entities\OrderDetail;
+use Modules\User\Entities\Sales;
 
 class OrderDetailApiController extends Controller
 {
@@ -27,6 +28,7 @@ class OrderDetailApiController extends Controller
             ->select(
                 'products.name',
                 'products.custom_code',
+                'order_details.product_id',
                 'order_details.price',
                 'order_details.quantity',
                 'order_details.inventory',
@@ -35,8 +37,13 @@ class OrderDetailApiController extends Controller
             ->orderBy('order_details.created_at', 'DESC')
             ->get();
 
+        $total_order = DB::table('order_details')
+            ->where('order_details.visit_id', '=', $visit_id)
+            ->sum('amount');
+
         return response()->json(array(
             'order_details' => $order_details,
+            'total_order' => $total_order,
         ));
     }
 
@@ -68,66 +75,28 @@ class OrderDetailApiController extends Controller
         ));
     }
 
-    public function generateUniqueCodeVisit()
+    public function destroyItemOrder($visit_id, $product_id)
     {
-        do {
-            $visit_number = random_int(100000, 999999);
-        } while (
-            DB::table('customer_visits')->where("visit_number", "=", $visit_number)->first()
-        );
+        /** remove item order */
+        $order_detail = DB::table('order_details')
+            ->where('product_id', $product_id)
+            ->where('visit_id', $visit_id)
+            ->delete();
 
-        return $visit_number;
-    }
+        /** update total in sales */
+        $total_order = DB::table('order_details')
+            ->where('order_details.visit_id', '=', $visit_id)
+            ->sum('amount');
 
-    public function search(Request $request, $idRefCurrentUser)
-    {
-        $search = $request->input('search');
+        Sales::where('sales.visit_id', '=', $visit_id)
+            ->update([
+                'total' => $total_order
+            ]);
 
-        if ($search == '') {
-            $appointments = DB::table('appointments')
-                ->leftjoin('customers', 'customers.id', '=', 'appointments.customer_id')
-                ->where('appointments.idReference', '=', $idRefCurrentUser)
-                ->select(
-                    'appointments.id',
-                    'appointments.visit_number',
-                    'appointments.visit_id',
-                    'appointments.date',
-                    'appointments.hour',
-                    'appointments.action',
-                    'appointments.status',
-                    'appointments.observation',
-                    'customers.name AS customer_name',
-                    'customers.phone AS customer_phone',
-                )
-                ->orderBy('appointments.created_at', 'DESC')
-                ->paginate(20);
-        } else {
-            $appointments = DB::table('appointments')
-                ->leftjoin('customers', 'customers.id', '=', 'appointments.customer_id')
-                ->where('customers.name', 'LIKE', "%{$search}%")
-                ->orWhere('appointments.visit_number', 'LIKE', "%{$search}%")
-                ->where('appointments.idReference', '=', $idRefCurrentUser)
-                ->select(
-                    'appointments.id',
-                    'appointments.visit_number',
-                    'appointments.visit_id',
-                    'appointments.date',
-                    'appointments.hour',
-                    'appointments.action',
-                    'appointments.status',
-                    'appointments.observation',
-                    'customers.name AS customer_name',
-                    'customers.phone AS customer_phone',
-                )
-                ->orderBy('appointments.created_at', 'DESC')
-                ->paginate();
-        }
-
-        return view('user::appointments.index', compact('appointments', 'search'))->with('i', (request()->input('page', 1) - 1) * 20);
-    }
-
-    public function destroy($id)
-    {
-        //
+        //return response
+        return response()->json(array(
+            'success' => 'Item Order deleted successfully.',
+            'data'   => $order_detail
+        ));
     }
 }
