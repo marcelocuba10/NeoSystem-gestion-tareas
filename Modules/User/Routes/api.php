@@ -24,8 +24,16 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::middleware(['cors'])->group(function () {
 
-    /** Dashboard */
-    Route::get('/dashboard/{idReference}', [HomeApiController::class, 'index']);
+    /*** Customer Visits Routes ***/
+    Route::group(['prefix' => 'customer_visits'], function () {
+        Route::get('/{idReference}', [CustomerVisitApiController::class, 'index']);
+        Route::get('/getLastID/{idReference}', [CustomerVisitApiController::class, 'getLastID']);
+        Route::post('/create', [CustomerVisitApiController::class, 'store']);
+        Route::get('/edit/{id}', [CustomerVisitApiController::class, 'edit']);
+        Route::put('/update/{id}', [CustomerVisitApiController::class, 'update']);
+        Route::delete('/delete/{id}', [CustomerVisitApiController::class, 'destroy']);
+        Route::get('/search/{textSearch}/{idReference}', [CustomerVisitApiController::class, 'search']);
+    });
 
     /*** Products Routes ***/
     Route::group(['prefix' => 'products'], function () {
@@ -44,17 +52,7 @@ Route::middleware(['cors'])->group(function () {
     Route::group(['prefix' => 'order_detail'], function () {
         Route::get('/{visit_id}', [OrderDetailApiController::class, 'index']);
         Route::post('/create', [OrderDetailApiController::class, 'store']);
-        Route::delete('/deleteItemOrder/{visit_id}/{product_id}',[OrderDetailApiController::class, 'destroyItemOrder']);
-    });
-
-    /*** Customer Visits Routes ***/
-    Route::group(['prefix' => 'customer_visits'], function () {
-        Route::get('/{idReference}', [CustomerVisitApiController::class, 'index']);
-        Route::post('/create', [CustomerVisitApiController::class, 'store']);
-        Route::get('/edit/{id}', [CustomerVisitApiController::class, 'edit']);
-        Route::put('/update/{id}', [CustomerVisitApiController::class, 'update']);
-        Route::delete('/delete/{id}', [CustomerVisitApiController::class, 'destroy']);
-        Route::get('/search/{textSearch}/{idReference}', [CustomerVisitApiController::class, 'search']);
+        Route::delete('/deleteItemOrder/{visit_id}/{product_id}', [OrderDetailApiController::class, 'destroyItemOrder']);
     });
 
     /*** Customers Routes ***/
@@ -65,4 +63,7 @@ Route::middleware(['cors'])->group(function () {
         Route::delete('/delete/{id}', [CustomersApiController::class, 'destroy']);
         Route::get('/search/{textSearch}/{idReference}', [CustomersApiController::class, 'search']);
     });
+
+    /** Dashboard */
+    Route::get('/dashboard/{idReference}', [HomeApiController::class, 'index']);
 });

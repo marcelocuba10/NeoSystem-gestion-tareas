@@ -15,6 +15,10 @@ use Modules\User\Entities\CustomerVisit;
 use Modules\User\Entities\OrderDetail;
 use Modules\User\Entities\Sales;
 
+use PDF;
+use Mail;
+use Modules\User\Emails\NotifyMail;
+
 class CustomerVisitApiController extends Controller
 {
 
@@ -62,60 +66,189 @@ class CustomerVisitApiController extends Controller
 
     public function store(Request $request)
     {
-        /** date validation, not less than 1980 and not greater than the current year **/
-        $initialDate = '1980-01-01';
-        $currentDate = (date('Y') + 1) . '-01-01'; //2023-01-01
-
         $request->validate([
-            'name' => 'required|max:50|min:5',
-            'phone' => 'nullable|max:25|min:5',
-            'doc_id' => 'nullable|max:25|min:5|unique:customers,doc_id',
-            'email' => 'nullable|max:50|min:5|email:rfc,dns|unique:customers,email',
-            'address' => 'nullable|max:255|min:5',
-            'city' => 'nullable|max:50|min:5',
-            'estate' => 'required|max:50|min:5',
-            'is_vigia' => 'nullable',
-            'category' => 'required|max:150|min:1',
-            'potential_products' => 'required|max:150|min:1',
+            'customer_id' => 'required',
+            'visit_date' => 'nullable',
+            'next_visit_date' => 'nullable|max:15|min:5',
+            'next_visit_hour' => 'nullable|max:15|min:5',
+            'action' => 'required|max:30|min:5',
             'result_of_the_visit' => 'nullable|max:1000|min:3',
             'objective' => 'nullable|max:1000|min:3',
-            'next_visit_date' => 'nullable|date_format:Y-m-d|after_or_equal:' . $initialDate . '|before:' . $currentDate,
-            'next_visit_hour' => 'nullable|max:10|min:5',
         ]);
 
         $input = $request->all();
 
-        /** create temporal Customer */
-        $customer = Customers::create($input);
+        // if ($input['next_visit_date'] != null && $input['objective'] == null) {
+        //     return response()->json(array(
+        //         'errors' => 'Por favor, agregue los Objetivos para la próxima visita marcada'
+        //     ), 500);
+        // }
 
-        /** potential products array */
-        foreach ($request->potential_products as $key => $value) {
+        // if ($input['next_visit_date'] != null && $input['next_visit_hour'] == null) {
+        //     return response()->json(array(
+        //         'errors' => 'Por favor, agregue la Hora de la próxima visita'
+        //     ), 500);
+        // }
 
-            /** Save potential product in table customer_parameters */
-            $item = new CustomerParameters();
-            $item->customer_id = $customer->id;
-            $item->potential_product_id = $request->potential_products[$key];
-            $item->quantity = 1;
-            $item->save();
-        }
+        // if ($input['next_visit_date'] == null || $input['next_visit_hour'] == null) {
+        //     $input['next_visit_date'] = 'No marcado';
+        //     $input['next_visit_hour'] = 'No marcado';
+        //     $input['objective'] = null;
+        // }
 
-        /** categories array */
-        foreach ($request->category as $key => $value) {
-            /** Save items in table customer_parameters */
-            $item = new CustomerParameters();
-            $item->customer_id = $customer->id;
-            $item->category_id = $request->category[$key];
-            $item->save();
+        /** check if select 'order' is selected */
+        if ($input['action'] == 'Enviar Presupuesto') {
+            /** If not select any product */
+            $count_order = DB::table('order_details')
+                ->where('order_details.visit_id', '=', $input['id'])
+                ->count();
+
+            if ($count_order == 0) {
+                return response()->json(array(
+                    'errors' => 'Por favor, adicione un producto en el Presupuesto'
+                ), 500);
+            } else {
+
+                $input['type'] = 'Presupuesto';
+                $input['status'] = 'Pendiente';
+                $input['visit_date'] = Carbon::now();
+                $input['visit_number'] = $this->generateUniqueCodeVisit();
+                $input['seller_id'] = $input['idReference'];
+                $customer_visit = CustomerVisit::create($input);
+
+                /** Get total amount from items of visit order to Sale */
+                $total_order = DB::table('order_details')
+                    ->where('order_details.visit_id', '=', $customer_visit->id)
+                    ->sum('amount');
+
+                /** Create Sale-order because order is checked */
+                $sale['invoice_number'] = $customer_visit->visit_number;
+                $sale['visit_id'] = $customer_visit->id;
+                $sale['seller_id'] = $input['idReference'];
+                $sale['customer_id'] = $customer_visit->customer_id;
+                $sale['order_date'] = $customer_visit->visit_date;
+                $sale['type'] = 'Presupuesto';
+                $sale['previous_type'] = 'Presupuesto';
+                $sale['status'] = 'Pendiente';
+                $sale['total'] = $total_order;
+                Sales::create($sale);
+
+                /** check if next_visit_date is marked, do appointment */
+                if ($input['next_visit_date'] != 'No marcado' || $input['next_visit_date'] != '' || $input['next_visit_date'] != null) {
+                    $field['idReference'] = $input['idReference'];
+                    $field['visit_id'] = $customer_visit->id;
+                    $field['customer_id'] = $input['customer_id'];
+                    $field['date'] = $input['next_visit_date'];
+                    $field['hour'] = $input['next_visit_hour'];
+                    $field['action'] =  $input['action'];
+                    $field['status'] = 'Pendiente';
+                    Appointment::create($field);
+                }
+
+                /** Send email notification */
+                $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+                $head = 'crear una Visita Cliente - #' . $customer_visit->visit_number;
+                $type = 'Visita Cliente';
+                $linkOrderPDF = url('/user/customer_visits/generateInvoicePDF/?download=pdf&customer_visit=' . $customer_visit->id);
+
+                $customer_visit = DB::table('customer_visits')
+                    ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+                    ->leftjoin('users', 'users.idReference', '=', 'customer_visits.seller_id')
+                    ->where('customer_visits.id', $customer_visit->id)
+                    ->select(
+                        'customer_visits.id',
+                        'customer_visits.visit_number',
+                        'customer_visits.visit_date',
+                        'customer_visits.next_visit_date',
+                        'customer_visits.next_visit_hour',
+                        'customer_visits.status',
+                        'customer_visits.action',
+                        'customer_visits.type',
+                        'customer_visits.result_of_the_visit',
+                        'customer_visits.objective',
+                        'customers.name AS customer_name',
+                        'customers.estate',
+                        'customers.phone',
+                        'users.name AS seller_name'
+                    )
+                    ->first();
+
+                Mail::to($emailDefault)->send(new NotifyMail($customer_visit, $head, $linkOrderPDF, $type));
+            }
+        } elseif ($input['action'] != 'Enviar Presupuesto') {
+
+            /** Check if have order details, but action is different to Order */
+            $count_order = DB::table('order_details')
+                ->where('order_details.visit_id', '=', $input['id'])
+                ->count();
+
+            if ($count_order != 0) {
+                /** remove item order */
+                DB::table('order_details')
+                    ->where('visit_id', $input['id'])
+                    ->delete();
+            }
+
+            $input['visit_number'] = $this->generateUniqueCodeVisit();
+            $input['type'] = 'Sin Presupuesto';
+            $input['status'] = 'Pendiente';
+            $input['visit_date'] = Carbon::now();
+            $input['seller_id'] = $input['idReference'];
+            $customer_visit = CustomerVisit::create($input);
+
+            /** check if next_visit_date is marked, do appointment */
+            if ($input['next_visit_date'] != 'No marcado' || $input['next_visit_date'] != '' || $input['next_visit_date'] != null) {
+                $field['idReference'] = $input['idReference'];
+                $field['visit_number'] = $customer_visit->visit_number;
+                $field['visit_id'] = $customer_visit->id;
+                $field['customer_id'] = $input['customer_id'];
+                $field['date'] = $input['next_visit_date'];
+                $field['hour'] = $input['next_visit_hour'];
+                $field['action'] =  $input['action'];
+                $field['status'] = 'Pendiente';
+                Appointment::create($field);
+            }
+
+            /** Send email notification */
+            $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+            $head = 'crear una Visita Cliente - #' . $customer_visit->visit_number;
+            $type = 'Visita Cliente';
+            $linkOrderPDF = null;
+
+            $customer_visit = DB::table('customer_visits')
+                ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+                ->leftjoin('users', 'users.idReference', '=', 'customer_visits.seller_id')
+                ->where('customer_visits.id', $customer_visit->id)
+                ->select(
+                    'customer_visits.id',
+                    'customer_visits.visit_number',
+                    'customer_visits.visit_date',
+                    'customer_visits.next_visit_date',
+                    'customer_visits.next_visit_hour',
+                    'customer_visits.status',
+                    'customer_visits.action',
+                    'customer_visits.type',
+                    'customer_visits.result_of_the_visit',
+                    'customer_visits.objective',
+                    'customers.name AS customer_name',
+                    'customers.estate',
+                    'customers.phone',
+                    'users.name AS seller_name'
+                )
+                ->first();
+
+            Mail::to($emailDefault)->send(new NotifyMail($customer_visit, $head, $linkOrderPDF, $type));
         }
 
         //return response
         return response()->json(array(
-            'success' => 'Customer created successfully.',
-            'data'   => $customer
-        ));
+            'success' => 'Customer visit Created successfully.',
+            'data'   => $customer_visit
+        ), 200);
     }
 
-    public function edit($id){
+    public function edit($id)
+    {
         $customer_visit = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customer_visits.visit_number', '=', $id)
@@ -161,22 +294,22 @@ class CustomerVisitApiController extends Controller
             'next_visit_date' => 'nullable|date|after_or_equal:today|before:' . $currentDate,
             'next_visit_hour' => 'nullable|max:5|min:5',
             'action' => 'required|max:30|min:5',
-            'result_of_the_visit' => 'required|max:1000|min:3',
+            'result_of_the_visit' => 'nullable|max:1000|min:3',
             'objective' => 'nullable|max:1000|min:3',
-            'product_id' => 'nullable',
-            'qty' => 'nullable|min:0',
-            'price' => 'nullable',
-            'amount' => 'nullable',
         ]);
 
         $input = $request->all();
 
         if ($input['next_visit_date'] != null && $input['objective'] == null) {
-            return back()->with('error', 'Por favor, agregue los Objetivos para la próxima visita marcada');
+            return response()->json(array(
+                'errors' => 'Por favor, agregue los Objetivos para la próxima visita marcada'
+            ), 500);
         }
 
         if ($input['next_visit_date'] != null && $input['next_visit_hour'] == null) {
-            return back()->with('error', 'Por favor, agregue la Hora de la próxima visita');
+            return response()->json(array(
+                'errors' => 'Por favor, agregue la Hora de la próxima visita'
+            ), 500);
         }
 
         if ($input['next_visit_date'] == null || $input['next_visit_hour'] == null) {
@@ -186,131 +319,35 @@ class CustomerVisitApiController extends Controller
         }
 
         /** check if select 'order' is selected */
-        if ($request->type == 'Enviar Presupuesto') {
+        if ($input['action'] == 'Enviar Presupuesto') {
             /** If not select any product */
-            if (strlen($request->product_id[0]) > 10) {
-                return back()->with('error', 'Por favor, adicione un producto.');
+            $count_order = DB::table('order_details')
+                ->where('order_details.visit_id', '=', $id)
+                ->count();
+
+            if ($count_order == 0) {
+                return response()->json(array(
+                    'errors' => 'Por favor, adicione un producto en el Presupuesto'
+                ), 500);
             } else {
 
                 $customer_visit = CustomerVisit::find($id);
 
-                if ($customer_visit->type == 'Sin Presupuesto') {
+                /** Get total amount from items of visit order to Sale */
+                $total_order = DB::table('order_details')
+                    ->where('order_details.visit_id', '=', $customer_visit->id)
+                    ->sum('amount');
 
-                    foreach ($request->product_id as $key => $value) {
-                        if (intval($request->qty[$key]) <= 0) {
-                            return back()->with('error', 'Por favor, ingrese una cantidad válida.');
-                        } else {
-
-                            /** Save order details of customer visit */
-                            $order = new OrderDetail();
-                            $order->product_id = $request->product_id[$key];
-                            $order->visit_id = $customer_visit->id;
-                            $order->quantity = $request->qty[$key];
-                            $order->price = str_replace(',', '', $request->price[$key]);
-                            $order->amount = $request->amount[$key];
-                            $order->save();
-                        }
-                    }
-
-                    $total_order = DB::table('order_details')
-                        ->where('order_details.visit_id', '=', $customer_visit->id)
-                        ->sum('amount');
-
-                    $sale['invoice_number'] = $customer_visit->visit_number;
-                    $sale['visit_id'] = $customer_visit->id;
-                    $sale['seller_id'] = $input['idReference'];
-                    $sale['customer_id'] = $customer_visit->customer_id;
-                    $sale['order_date'] = $customer_visit->visit_date;
-                    $sale['type'] = 'Presupuesto';
-                    $sale['previous_type'] = 'Presupuesto';
-                    $sale['status'] = 'Pendiente';
-                    $sale['total'] = $total_order;
-                    Sales::create($sale);
-                } else {
-
-                    /** Get old items saved in order details in array*/
-                    $order_details = DB::table('order_details')
-                        ->where('order_details.visit_id', '=', $id)
-                        ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
-                        ->pluck('product_id')
-                        ->toArray();
-
-                    /** Check if in my new array items contain new id_product */
-                    $differenceArray = array_diff($request->product_id, $order_details);
-
-                    if (count($differenceArray) > 0) {
-
-                        /** Array have news product_id, add news items order detail*/
-                        foreach ($differenceArray as $key => $value) {
-                            if (intval($request->qty[$key]) <= 0) {
-                                return back()->with('error', 'Por favor, ingrese una cantidad válida.');
-                            } else {
-                                /** Save order details of customer visit */
-                                $order = new OrderDetail();
-                                $order->product_id = $request->product_id[$key];
-                                $order->visit_id = $customer_visit->id;
-                                $order->quantity = $request->qty[$key];
-                                $order->price = str_replace(',', '', $request->price[$key]);
-                                $order->amount = $request->amount[$key];
-                                $order->save();
-                            }
-                        }
-                    } else {
-                        /** Array not have news product_id, update values */
-                        foreach ($request->product_id as $key => $value) {
-                            if (intval($request->qty[$key]) <= 0) {
-                                return back()->with('error', 'Por favor, ingrese una cantidad válida.');
-                            } else {
-
-                                /** if find product id, if exist product_id, update values else delete old product_id and create new item detail with the new product_id */
-                                $order_detail_id = DB::table('order_details')
-                                    ->where('order_details.product_id', '=', $request->product_id[$key])
-                                    ->where('order_details.visit_id', '=', $customer_visit->id)
-                                    ->select(
-                                        'order_details.product_id',
-                                    )
-                                    ->first();
-
-                                if ($order_detail_id) {
-                                    DB::table('order_details')
-                                        ->where('order_details.visit_id', '=', $customer_visit->id)
-                                        ->where('order_details.product_id', '=', $request->product_id[$key])
-                                        ->update([
-                                            'quantity' => $request->qty[$key],
-                                            'amount' => $request->amount[$key]
-                                        ]);
-                                } else {
-
-                                    /** Add new item detail, with the new product_id in order detail */
-                                    $order = new OrderDetail();
-                                    $order->product_id = $request->product_id[$key];
-                                    $order->visit_id = $customer_visit->id;
-                                    $order->quantity = $request->qty[$key];
-                                    $order->price = str_replace(',', '', $request->price[$key]);
-                                    $order->amount = $request->amount[$key];
-                                    $order->save();
-
-                                    // /** delete old item product_id in order detail*/
-                                    // foreach ($request->product_id as $key => $value) {
-                                    //     DB::table('order_details')
-                                    //         ->where('product_id', $request->id)
-                                    //         ->where('visit_id', $customer_visit->id)
-                                    //         ->delete();
-                                    // }
-                                }
-                            }
-                        }
-                    }
-
-                    $total_order = DB::table('order_details')
-                        ->where('order_details.visit_id', '=', $customer_visit->id)
-                        ->sum('amount');
-
-                    Sales::where('sales.visit_id', '=', $customer_visit->id)
-                        ->update([
-                            'total' => $total_order
-                        ]);
-                }
+                $sale['invoice_number'] = $customer_visit->visit_number;
+                $sale['visit_id'] = $customer_visit->id;
+                $sale['seller_id'] = $input['idReference'];
+                $sale['customer_id'] = $customer_visit->customer_id;
+                $sale['order_date'] = $customer_visit->visit_date;
+                $sale['type'] = 'Presupuesto';
+                $sale['previous_type'] = 'Presupuesto';
+                $sale['status'] = 'Pendiente';
+                $sale['total'] = $total_order;
+                Sales::create($sale);
 
                 /** add extra items in customer visit */
                 $input['type'] = 'Presupuesto';
@@ -318,7 +355,20 @@ class CustomerVisitApiController extends Controller
                 $input['seller_id'] = $input['idReference'];
                 $customer_visit->update($input);
             }
-        } elseif ($request->type != 'Enviar Presupuesto') {
+        } elseif ($input['action'] != 'Enviar Presupuesto') {
+
+            /** Check if have order details, but action is different to Order */
+            $count_order = DB::table('order_details')
+                ->where('order_details.visit_id', '=', $id)
+                ->count();
+
+            if ($count_order != 0) {
+                /** remove item order */
+                DB::table('order_details')
+                    ->where('visit_id', $id)
+                    ->delete();
+            }
+
             $input['visit_date'] = Carbon::now();
             $customer_visit = CustomerVisit::find($id);
             $customer_visit->update($input);
@@ -360,9 +410,9 @@ class CustomerVisitApiController extends Controller
 
         //return response
         return response()->json(array(
-            'success' => 'Customer updated successfully.',
+            'success' => 'Customer visit updated successfully.',
             'data'   => $customer_visit
-        ));
+        ), 200);
     }
 
     public function search($textSearch, $idRefCurrentUser)
@@ -416,6 +466,42 @@ class CustomerVisitApiController extends Controller
 
         return response()->json(array(
             'customers' => $customers
+        ));
+    }
+
+    public function generateUniqueCodeVisit()
+    {
+        do {
+            $visit_number = random_int(100000, 999999);
+        } while (
+            DB::table('customer_visits')->where("visit_number", "=", $visit_number)->first()
+        );
+
+        return $visit_number;
+    }
+
+    public function generateUniqueCodeSale()
+    {
+        do {
+            $invoice_number = random_int(100000, 999999);
+        } while (
+            DB::table('sales')->where("invoice_number", "=", $invoice_number)->first()
+        );
+
+        return $invoice_number;
+    }
+
+    public function getLastID($idRefCurrentUser)
+    {
+        $lastIdCustomer_visits = DB::table('customer_visits')
+            ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+            ->select('customer_visits.id')
+            ->orderBy('customer_visits.created_at', 'DESC')
+            ->limit(1)
+            ->get();
+
+        return response()->json(array(
+            'lastIdCustomer_visits' => $lastIdCustomer_visits
         ));
     }
 
