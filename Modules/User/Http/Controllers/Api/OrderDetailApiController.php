@@ -50,6 +50,8 @@ class OrderDetailApiController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'visit_id' => 'nullable',
+            'sale_id' => 'nullable',
             'product_id' => 'required',
             'quantity' => 'required',
             'price' => 'required',
@@ -59,8 +61,15 @@ class OrderDetailApiController extends Controller
         $input = $request->all();
 
         /** Create new order detail */
-        $field['visit_id'] = $input['visit_id'];
-        $field['sale_id'] = null;
+        /** Check if is Sale or Customer_visit */
+        if ($input['visit_id']) {
+            $field['visit_id'] = $input['visit_id'];
+        }
+        if ($input['sale_id']) {
+            $field['sale_id'] = $input['sale_id'];
+        }
+
+        /** Extra values */
         $field['product_id'] = $input['product_id'];
         $field['price'] = $input['price'];
         $field['quantity'] = $input['quantity'];

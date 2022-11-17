@@ -8,6 +8,7 @@ use Modules\User\Http\Controllers\Api\CustomerVisitApiController;
 use Modules\User\Http\Controllers\Api\ProductsApiController;
 use Modules\User\Http\Controllers\Api\HomeApiController;
 use Modules\User\Http\Controllers\Api\OrderDetailApiController;
+use Modules\User\Http\Controllers\Api\SalesApiController;
 
 Route::group(['prefix' => 'auth'], function () {
 
@@ -24,10 +25,21 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::middleware(['cors'])->group(function () {
 
+    /*** Sales Routes ***/
+    Route::group(['prefix' => 'sales'], function () {
+        Route::get('/{idReference}', [SalesApiController::class, 'index']);
+        Route::get('/getLastID/{idReference}', [SalesApiController::class, 'getLastID']); //Route use to create, get last id and autoincrement in app
+        Route::post('/create', [SalesApiController::class, 'store']);
+        Route::get('/edit/{id}', [SalesApiController::class, 'edit']);
+        Route::put('/update/{id}', [SalesApiController::class, 'update']);
+        Route::delete('/delete/{id}', [SalesApiController::class, 'destroy']);
+        Route::get('/search/{textSearch}/{idReference}', [SalesApiController::class, 'search']);
+    });
+
     /*** Customer Visits Routes ***/
     Route::group(['prefix' => 'customer_visits'], function () {
         Route::get('/{idReference}', [CustomerVisitApiController::class, 'index']);
-        Route::get('/getLastID/{idReference}', [CustomerVisitApiController::class, 'getLastID']);
+        Route::get('/getLastID/{idReference}', [CustomerVisitApiController::class, 'getLastID']); //Route use to create, get last id and autoincrement in app
         Route::post('/create', [CustomerVisitApiController::class, 'store']);
         Route::get('/edit/{id}', [CustomerVisitApiController::class, 'edit']);
         Route::put('/update/{id}', [CustomerVisitApiController::class, 'update']);

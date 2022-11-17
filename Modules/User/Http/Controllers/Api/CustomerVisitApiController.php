@@ -78,24 +78,6 @@ class CustomerVisitApiController extends Controller
 
         $input = $request->all();
 
-        // if ($input['next_visit_date'] != null && $input['objective'] == null) {
-        //     return response()->json(array(
-        //         'errors' => 'Por favor, agregue los Objetivos para la próxima visita marcada'
-        //     ), 500);
-        // }
-
-        // if ($input['next_visit_date'] != null && $input['next_visit_hour'] == null) {
-        //     return response()->json(array(
-        //         'errors' => 'Por favor, agregue la Hora de la próxima visita'
-        //     ), 500);
-        // }
-
-        // if ($input['next_visit_date'] == null || $input['next_visit_hour'] == null) {
-        //     $input['next_visit_date'] = 'No marcado';
-        //     $input['next_visit_hour'] = 'No marcado';
-        //     $input['objective'] = null;
-        // }
-
         /** check if select 'order' is selected */
         if ($input['action'] == 'Enviar Presupuesto') {
             /** If not select any product */
@@ -404,12 +386,18 @@ class CustomerVisitApiController extends Controller
                 DB::table('order_details')
                     ->where('visit_id', $id)
                     ->delete();
-            }
 
-            /** add extra items in customer visit and UPDATE */
-            $input['visit_date'] = Carbon::now();
-            $customer_visit = CustomerVisit::find($id);
-            $customer_visit->update($input);
+                /** add extra items in customer_visit and UPDATE */
+                $input['visit_date'] = Carbon::now();
+                $input['type'] = 'Sin Presupuesto';
+                $customer_visit = CustomerVisit::find($id);
+                $customer_visit->update($input);
+            } else {
+                /** add extra items in customer visit and UPDATE */
+                $input['visit_date'] = Carbon::now();
+                $customer_visit = CustomerVisit::find($id);
+                $customer_visit->update($input);
+            }
 
             /** check if next_visit_date is marked, create or update appointment */
             /** String comparison using strcmp(); Returns 0 if the strings are equal. */
