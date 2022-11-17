@@ -175,6 +175,7 @@ class CustomerVisitController extends Controller
                     /** check if next_visit_date is marked, do appointment */
                     if ($input['next_visit_date'] != 'No marcado') {
                         $field['idReference'] = $idRefCurrentUser;
+                        $field['visit_number'] = $customer_visit->visit_number;
                         $field['visit_id'] = $customer_visit->id;
                         $field['customer_id'] = $input['customer_id'];
                         $field['date'] = $input['next_visit_date'];
@@ -448,12 +449,10 @@ class CustomerVisitController extends Controller
                 $customer_visit = CustomerVisit::find($id);
 
                 if ($customer_visit->type == 'Sin Presupuesto') {
-
                     foreach ($request->product_id as $key => $value) {
                         if (intval($request->qty[$key]) <= 0) {
                             return back()->with('error', 'Por favor, ingrese una cantidad válida.');
                         } else {
-
                             /** Save order details of customer visit */
                             $order = new OrderDetail();
                             $order->product_id = $request->product_id[$key];
@@ -492,7 +491,6 @@ class CustomerVisitController extends Controller
                     $differenceArray = array_diff($request->product_id, $order_details);
 
                     if (count($differenceArray) > 0) {
-
                         /** Array have news product_id, add news items order detail*/
                         foreach ($differenceArray as $key => $value) {
                             if (intval($request->qty[$key]) <= 0) {
@@ -514,7 +512,6 @@ class CustomerVisitController extends Controller
                             if (intval($request->qty[$key]) <= 0) {
                                 return back()->with('error', 'Por favor, ingrese una cantidad válida.');
                             } else {
-
                                 /** if find product id, if exist product_id, update values else delete old product_id and create new item detail with the new product_id */
                                 $order_detail_id = DB::table('order_details')
                                     ->where('order_details.product_id', '=', $request->product_id[$key])
@@ -533,7 +530,6 @@ class CustomerVisitController extends Controller
                                             'amount' => $request->amount[$key]
                                         ]);
                                 } else {
-
                                     /** Add new item detail, with the new product_id in order detail */
                                     $order = new OrderDetail();
                                     $order->product_id = $request->product_id[$key];
@@ -565,27 +561,59 @@ class CustomerVisitController extends Controller
                         ]);
                 }
 
-                /** add extra items in customer visit */
+                /** add extra items in customer visit and UPDATE*/
                 $input['type'] = 'Presupuesto';
                 $input['visit_date'] = Carbon::now();
                 $input['seller_id'] = $idRefCurrentUser;
                 $customer_visit->update($input);
+
+                /** check if next_visit_date is marked, create or update appointment */
+                if ($input['next_visit_date'] != 'No marcado') {
+                    $appointment = DB::table('appointments')
+                        ->where('appointments.visit_id', '=', $customer_visit->id)
+                        ->first();
+
+                    /** if appointment exist, update, else create new appointment */
+                    if ($appointment) {
+                        DB::table('appointments')
+                            ->where('appointments.visit_id', '=', $customer_visit->id)
+                            ->where('appointments.idReference', '=', $idRefCurrentUser)
+                            ->update([
+                                'idReference' => $idRefCurrentUser,
+                                'visit_id' => $customer_visit->id,
+                                'customer_id' => $input['customer_id'],
+                                'date' => $input['next_visit_date'],
+                                'hour' => $input['next_visit_hour'],
+                                'action' => $input['action'],
+                                'status' => 'Pendiente'
+                            ]);
+                    } else {
+                        $field['idReference'] = $idRefCurrentUser;
+                        $field['visit_number'] = $customer_visit->visit_number;
+                        $field['visit_id'] = $customer_visit->id;
+                        $field['customer_id'] = $input['customer_id'];
+                        $field['date'] = $input['next_visit_date'];
+                        $field['hour'] = $input['next_visit_hour'];
+                        $field['action'] =  $input['action'];
+                        $field['status'] = 'Pendiente';
+                        Appointment::create($field);
+                    }
+                }
             }
         } elseif ($request->isSetOrder == 'false') {
+            /** add extra items in customer visit and UPDATE*/
             $input['visit_date'] = Carbon::now();
             $customer_visit = CustomerVisit::find($id);
             $customer_visit->update($input);
 
             /** check if next_visit_date is marked, create or update appointment */
             if ($input['next_visit_date'] != 'No marcado') {
-
                 $appointment = DB::table('appointments')
                     ->where('appointments.visit_id', '=', $customer_visit->id)
                     ->first();
 
                 /** if appointment exist, update, else create new appointment */
                 if ($appointment) {
-
                     DB::table('appointments')
                         ->where('appointments.visit_id', '=', $customer_visit->id)
                         ->where('appointments.idReference', '=', $idRefCurrentUser)
@@ -600,6 +628,7 @@ class CustomerVisitController extends Controller
                         ]);
                 } else {
                     $field['idReference'] = $idRefCurrentUser;
+                    $field['visit_number'] = $customer_visit->visit_number;
                     $field['visit_id'] = $customer_visit->id;
                     $field['customer_id'] = $input['customer_id'];
                     $field['date'] = $input['next_visit_date'];

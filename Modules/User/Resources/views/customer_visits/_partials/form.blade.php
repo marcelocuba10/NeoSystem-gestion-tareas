@@ -73,7 +73,7 @@
     <div class="col-5">
       <div class="input-style-1" id="objective" style="display: none">
         <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Objetivos Visita/Llamada</label>
-        <textarea type="text" name="objective" value="{{ $customer_visit->objective ?? old('objective') }}" class="bg-transparent" placeholder="Qué quiero lograr y en cuanto tiempo">{{ $customer_visit->objective ?? old('objective') }}</textarea>
+        <textarea type="text" name="objective" value="{{ $customer_visit->objective ?? old('objective') }}" class="bg-transparent" >{{ $customer_visit->objective ?? old('objective') }}</textarea>
       </div>
     </div>
     

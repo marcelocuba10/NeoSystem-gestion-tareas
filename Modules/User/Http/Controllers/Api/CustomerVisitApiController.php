@@ -134,8 +134,10 @@ class CustomerVisitApiController extends Controller
                 Sales::create($sale);
 
                 /** check if next_visit_date is marked, do appointment */
-                if ($input['next_visit_date'] != 'No marcado' || $input['next_visit_date'] != '' || $input['next_visit_date'] != null) {
+                /** String comparison using strcmp(); Returns 0 if the strings are equal. */
+                if (strcmp($input['next_visit_date'], 'No marcado') !== 0) {
                     $field['idReference'] = $input['idReference'];
+                    $field['visit_number'] = $customer_visit->visit_number;
                     $field['visit_id'] = $customer_visit->id;
                     $field['customer_id'] = $input['customer_id'];
                     $field['date'] = $input['next_visit_date'];
@@ -197,7 +199,8 @@ class CustomerVisitApiController extends Controller
             $customer_visit = CustomerVisit::create($input);
 
             /** check if next_visit_date is marked, do appointment */
-            if ($input['next_visit_date'] != 'No marcado' || $input['next_visit_date'] != '' || $input['next_visit_date'] != null) {
+            /** String comparison using strcmp(); Returns 0 if the strings are equal. */
+            if (strcmp($input['next_visit_date'], 'No marcado') !== 0) {
                 $field['idReference'] = $input['idReference'];
                 $field['visit_number'] = $customer_visit->visit_number;
                 $field['visit_id'] = $customer_visit->id;
@@ -291,8 +294,8 @@ class CustomerVisitApiController extends Controller
         $request->validate([
             'customer_id' => 'required',
             'visit_date' => 'nullable',
-            'next_visit_date' => 'nullable|date|after_or_equal:today|before:' . $currentDate,
-            'next_visit_hour' => 'nullable|max:5|min:5',
+            'next_visit_date' => 'nullable|max:15|min:5',
+            'next_visit_hour' => 'nullable|max:15|min:5',
             'action' => 'required|max:30|min:5',
             'result_of_the_visit' => 'nullable|max:1000|min:3',
             'objective' => 'nullable|max:1000|min:3',
@@ -300,23 +303,23 @@ class CustomerVisitApiController extends Controller
 
         $input = $request->all();
 
-        if ($input['next_visit_date'] != null && $input['objective'] == null) {
-            return response()->json(array(
-                'errors' => 'Por favor, agregue los Objetivos para la próxima visita marcada'
-            ), 500);
-        }
+        // if ($input['next_visit_date'] != null && $input['objective'] == null) {
+        //     return response()->json(array(
+        //         'errors' => 'Por favor, agregue los Objetivos para la próxima visita marcada'
+        //     ), 500);
+        // }
 
-        if ($input['next_visit_date'] != null && $input['next_visit_hour'] == null) {
-            return response()->json(array(
-                'errors' => 'Por favor, agregue la Hora de la próxima visita'
-            ), 500);
-        }
+        // if ($input['next_visit_date'] != null && $input['next_visit_hour'] == null) {
+        //     return response()->json(array(
+        //         'errors' => 'Por favor, agregue la Hora de la próxima visita'
+        //     ), 500);
+        // }
 
-        if ($input['next_visit_date'] == null || $input['next_visit_hour'] == null) {
-            $input['next_visit_date'] = 'No marcado';
-            $input['next_visit_hour'] = 'No marcado';
-            $input['objective'] = null;
-        }
+        // if ($input['next_visit_date'] == null || $input['next_visit_hour'] == null) {
+        //     $input['next_visit_date'] = 'No marcado';
+        //     $input['next_visit_hour'] = 'No marcado';
+        //     $input['objective'] = null;
+        // }
 
         /** check if select 'order' is selected */
         if ($input['action'] == 'Enviar Presupuesto') {
@@ -349,11 +352,45 @@ class CustomerVisitApiController extends Controller
                 $sale['total'] = $total_order;
                 Sales::create($sale);
 
-                /** add extra items in customer visit */
+                /** add extra items in customer visit and UPDATE */
                 $input['type'] = 'Presupuesto';
                 $input['visit_date'] = Carbon::now();
                 $input['seller_id'] = $input['idReference'];
                 $customer_visit->update($input);
+
+                /** check if next_visit_date is marked, create or update appointment */
+                /** String comparison using strcmp(); Returns 0 if the strings are equal. */
+                if (strcmp($input['next_visit_date'], 'No marcado') !== 0) {
+                    $appointment = DB::table('appointments')
+                        ->where('appointments.visit_id', '=', $customer_visit->id)
+                        ->first();
+
+                    /** if appointment exist, update, else create new appointment */
+                    if ($appointment) {
+                        DB::table('appointments')
+                            ->where('appointments.visit_id', '=', $customer_visit->id)
+                            ->where('appointments.idReference', '=', $input['idReference'])
+                            ->update([
+                                'idReference' => $input['idReference'],
+                                'visit_id' => $customer_visit->id,
+                                'customer_id' => $input['customer_id'],
+                                'date' => $input['next_visit_date'],
+                                'hour' => $input['next_visit_hour'],
+                                'action' => $input['action'],
+                                'status' => 'Pendiente'
+                            ]);
+                    } else {
+                        $field['idReference'] = $input['idReference'];
+                        $field['visit_number'] = $customer_visit->visit_number;
+                        $field['visit_id'] = $customer_visit->id;
+                        $field['customer_id'] = $input['customer_id'];
+                        $field['date'] = $input['next_visit_date'];
+                        $field['hour'] = $input['next_visit_hour'];
+                        $field['action'] =  $input['action'];
+                        $field['status'] = 'Pendiente';
+                        Appointment::create($field);
+                    }
+                }
             }
         } elseif ($input['action'] != 'Enviar Presupuesto') {
 
@@ -369,20 +406,20 @@ class CustomerVisitApiController extends Controller
                     ->delete();
             }
 
+            /** add extra items in customer visit and UPDATE */
             $input['visit_date'] = Carbon::now();
             $customer_visit = CustomerVisit::find($id);
             $customer_visit->update($input);
 
             /** check if next_visit_date is marked, create or update appointment */
-            if ($input['next_visit_date'] != 'No marcado') {
-
+            /** String comparison using strcmp(); Returns 0 if the strings are equal. */
+            if (strcmp($input['next_visit_date'], 'No marcado') !== 0) {
                 $appointment = DB::table('appointments')
                     ->where('appointments.visit_id', '=', $customer_visit->id)
                     ->first();
 
                 /** if appointment exist, update, else create new appointment */
                 if ($appointment) {
-
                     DB::table('appointments')
                         ->where('appointments.visit_id', '=', $customer_visit->id)
                         ->where('appointments.idReference', '=', $input['idReference'])
@@ -397,6 +434,7 @@ class CustomerVisitApiController extends Controller
                         ]);
                 } else {
                     $field['idReference'] = $input['idReference'];
+                    $field['visit_number'] = $customer_visit->visit_number;
                     $field['visit_id'] = $customer_visit->id;
                     $field['customer_id'] = $input['customer_id'];
                     $field['date'] = $input['next_visit_date'];
