@@ -66,3 +66,16 @@
     </div>
   </div>
 </div>
+
+
+<!-- ========= Scripts ======== -->
+<!-- ========= disable button after send form ======== -->
+<script>
+  $(document).ready(function(){
+    $('form').submit(function (event) {
+      var btn_submit = document.getElementById('btn_submit');
+      btn_submit.disabled = true;
+      btn_submit.innerText = 'Procesando...'
+    });
+  })
+</script>

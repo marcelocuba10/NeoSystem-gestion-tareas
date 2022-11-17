@@ -7,63 +7,54 @@
           <input name="custom_code" value="{{ $product->custom_code ?? old('custom_code') }}" type="text" class="bg-transparent">
       </div>
     </div>
-    <!-- end col -->
     <div class="col-9">
       <div class="input-style-1">
         <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Nombre</label>
         <input name="name" value="{{ $product->name ?? old('name') }}" type="text" class="bg-transparent">
       </div>
     </div>
-    <!-- end col -->
     <div class="col-4">
       <div class="input-style-1">
         <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Precio Agente</label>
         <input name="purchase_price" id="currency_1" value="{{ $product->purchase_price ?? old('purchase_price') }}" type="text" class="bg-transparent">
       </div>
     </div>
-    <!-- end col -->
     <div class="col-4">
       <div class="input-style-1">
         <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Precio Venta Público</label>
         <input name="sale_price" id="currency_2" value="{{ $product->sale_price ?? old('sale_price') }}" type="text" class="bg-transparent">
       </div>
     </div>
-    <!-- end col -->
     {{-- <div class="col-4">
       <div class="input-style-1">
         <label>(*) Inventario</label>
         <input name="inventory" value="{{ $product->inventory ?? old('inventory') }}" type="text" class="bg-transparent">
       </div>
     </div> --}}
-    <!-- end col -->
     <div class="col-4">
       <div class="input-style-1">
         <label>Marca</label>
         <input name="brand" value="{{ $product->brand ?? old('brand') }}" type="text" class="bg-transparent">
       </div>
     </div>
-    <!-- end col -->
     <div class="col-4">
       <div class="input-style-1">
         <label>Modelo</label>
         <input name="model" value="{{ $product->model ?? old('model') }}" type="text" class="bg-transparent">
       </div>
     </div>
-    <!-- end col -->
     <div class="col-4">
       <div class="input-style-1">
         <label>Nombre del Proveedor</label>
         <input name="supplier" value="{{ $product->supplier ?? old('supplier') }}" type="text" class="bg-transparent">
       </div>
     </div>
-    <!-- end col -->
     <div class="col-4">
       <div class="input-style-1">
         <label>Teléfono del Proveedor</label>
         <input name="phone_supplier" value="{{ $product->phone_supplier ?? old('phone_supplier') }}" type="text" class="bg-transparent">
       </div>
     </div>
-    <!-- end col -->
   
     <div class="col-12">
       <div class="button-group d-flex justify-content-center flex-wrap">
@@ -73,6 +64,18 @@
     </div>
   </div>
 </div>
+
+<!-- ========= Scripts ======== -->
+<!-- ========= disable button after send form ======== -->
+<script>
+  $(document).ready(function(){
+    $('form').submit(function (event) {
+      var btn_submit = document.getElementById('btn_submit');
+      btn_submit.disabled = true;
+      btn_submit.innerText = 'Procesando...'
+    });
+  })
+</script>
 
 {{-- <div class="row">
   <div class="title-wrapper pt-30">

@@ -2,20 +2,19 @@
 <div class="row">
   <div class="col-4" style="display: none">
     <div class="input-style-1">
-      <label>(*) ID</label>
+      <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>ID</label>
       <input type="text" name="id" id="id" value="{{ $role->id ?? old('id') }}" class="bg-transparent">
     </div>
   </div>
   <div class="col-4">
     <div class="input-style-1">
-      <label>(*) Nombre</label>
+      <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Nombre</label>
       <input type="text" name="name" value="{{ $role->name ?? old('name') }}" class="bg-transparent" placeholder="Ingrese Nombre">
     </div>
   </div>
-  <!-- end col -->
   <div class="col-4">
     <div class="select-style-1">
-      <label>(*) Rol de Sistema</label>
+      <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Rol de Sistema</label>
       <div class="select-position">
         <select name="system_role">
           @foreach ($keys as $key)
@@ -25,10 +24,9 @@
       </div>
     </div>
   </div>
-  <!-- end col -->
   <div class="col-4">
     <div class="select-style-1">
-      <label>(*) Guard</label>
+      <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Guard</label>
       <div class="select-position">
         <select name="guard_name" id="guard_name">
           @foreach ($guard_names as $guard_name)
@@ -37,17 +35,15 @@
         </select>
       </div>
     </div>
-  </div>
-  <!-- end col -->   
+  </div> 
   <div class="col-12" id="toshow">
     <div class="input-style-1">
-        <label>(*) Permisos</label>
+        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Permisos</label>
     </div>
     <!-- show content javascript -->
     <div id="permissions">
     </div>
   </div>
-  <!-- end col -->
   <div class="col-12">
     <div class="button-group d-flex justify-content-center flex-wrap">
       <button type="submit" id="btn_submit" class="main-btn primary-btn btn-hover m-2">Guardar</button>
@@ -55,6 +51,18 @@
     </div>
   </div>
 </div>
+
+<!-- ========= Scripts ======== -->
+<!-- ========= disable button after send form ======== -->
+<script>
+  $(document).ready(function(){
+    $('form').submit(function (event) {
+      var btn_submit = document.getElementById('btn_submit');
+      btn_submit.disabled = true;
+      btn_submit.innerText = 'Procesando...'
+    });
+  })
+</script>
 
 <script>
 $(document).ready(function(){

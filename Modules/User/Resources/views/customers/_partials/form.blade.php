@@ -1,26 +1,23 @@
-@csrf
-<div class="row">
+  @csrf
+  <div class="row">
     <div class="col-6">
       <div class="input-style-1">
         <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Razón Social</label>
         <input type="text" name="name" value="{{ $customer->name ?? old('name') }}" class="bg-transparent">
       </div>
     </div>
-    <!-- end col -->
     <div class="col-3">
       <div class="input-style-1">
         <label>Doc Identidad / RUC</label>
         <input type="text" name="doc_id" value="{{ $customer->doc_id ?? old('doc_id') }}" class="bg-transparent">
       </div>
     </div>
-    <!-- end col -->
     <div class="col-3">
       <div class="input-style-1">
         <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Teléfono</label>
         <input type="text" name="phone" value="{{ $customer->phone ?? old('phone') }}" class="bg-transparent">
       </div>
     </div>
-    <!-- end col -->
     <div class="col-6">
       <div class="input-style-1">
         <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Rubro</label>
@@ -75,6 +72,7 @@
       </div>
 
     @else
+
       <div class="col-6" style="margin-top: -12px;">
         <div class="table-wrapper table-responsive">
           <table class="table top-selling-table mb-30">
@@ -103,49 +101,42 @@
         </div>
       </div>
     @endif
-    <!-- end col -->
     <div class="col-6">
       <div class="input-style-1">
         <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Resultado de la Visita</label>
         <textarea type="text" name="result_of_the_visit" value="{{ $customer->result_of_the_visit ?? old('result_of_the_visit') }}" class="bg-transparent">{{ $customer->result_of_the_visit ?? old('result_of_the_visit') }}</textarea>
       </div>
     </div>
-    <!-- end col -->
     <div class="col-6">
       <div class="input-style-1">
         <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Objetivos</label>
         <textarea type="text" name="objective" value="{{ $customer->objective ?? old('objective') }}" class="bg-transparent">{{ $customer->objective ?? old('objective') }}</textarea>
       </div>
     </div>
-    <!-- end col -->
     <div class="col-6">
       <div class="input-style-1">
         <label>Email</label>
         <input type="text" name="email" value="{{ $customer->email ?? old('email') }}" class="bg-transparent">
       </div>
     </div>
-    <!-- end col -->
     <div class="col-3">
       <div class="input-style-1">
         <label>Fecha Próxima Visita</label>
         <input type="date" name="next_visit_date" id="date" placeholder="DD/MM/YYYY" value="{{ $customer->next_visit_date ?? old('next_visit_date') }}" class="bg-transparent">
       </div>
     </div>
-    <!-- end col -->
     <div class="col-3">
       <div class="input-style-1">
         <label>Hora Próxima Visita</label>
           <input type="time" name="next_visit_hour" value="{{ $customer->next_visit_hour ?? old('next_visit_hour') }}" class="bg-transparent">
       </div>
     </div>
-    <!-- end col -->
     <div class="col-5">
       <div class="input-style-1">
         <label>Ciudad</label>
         <input name="city" value="{{ $customer->city ?? old('city') }}" type="text" class="bg-transparent">
       </div>
     </div>
-    <!-- end col -->
     <div class="col-4">
       <div class="select-style-1">
         <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Departamento</label>
@@ -158,21 +149,18 @@
         </div>
       </div>
     </div>
-    <!-- end col -->
     <div class="col-3">
       <div class="form-check checkbox-style mb-30" style="margin-top: 40px;">
         <input name="is_vigia" @if(!empty($customer->is_vigia)) {{ $customer->is_vigia = 'on'  ? 'checked' : '' }} @endif class="form-check-input" type="checkbox" id="checkbox-not-robot">
         <label class="form-check-label" for="checkbox-not-robot" >¿Es Cliente Vigia?</label>
       </div>
     </div>
-    <!-- end col -->
     <div class="col-6">
       <div class="input-style-1">
         <label>Dirección</label>
         <input type="text" name="address" value="{{ $customer->address ?? old('address') }}" class="bg-transparent">
       </div>
     </div>
-    <!-- end col -->
 
     <div class="col-12">
       <div class="button-group d-flex justify-content-center flex-wrap">
@@ -180,27 +168,36 @@
         <a class="main-btn primary-btn-outline m-2" href="{{ url('/user/customers') }}">Atrás</a>
       </div>
     </div>
+  </div>
 
-</div>
+<!-- ========= Scripts ======== -->
+<!-- ========= disable button after send form ======== -->
+<script>
+  $(document).ready(function(){
+    $('form').submit(function (event) {
+      var btn_submit = document.getElementById('btn_submit');
+      btn_submit.disabled = true;
+      btn_submit.innerText = 'Procesando...'
+    });
+  })
+</script>
 
 <script type="text/javascript">
+  //When get data from Edit, calculate Total;
+  var tr = $(this).parent().parent();
+  var qty = tr.find('.qty').val();
 
-    //When get data from Edit, calculate Total;
-    var tr = $(this).parent().parent();
-    var qty = tr.find('.qty').val();
+  //When select product, focus on input quantity;
+  $('tbody').delegate('.product', 'change', function () {
+    var  tr = $(this).parent().parent();
+    tr.find('.qty').focus();
+  });
 
-    //When select product, focus on input quantity;
-    $('tbody').delegate('.product', 'change', function () {
-      var  tr = $(this).parent().parent();
-      tr.find('.qty').focus();
-    })
-
-    //Get product Data and calculate the amount, total;
-    $('tbody').delegate('.product', 'change', function () {
-      var tr =$(this).parent().parent();
-      var qty = 1;
-      tr.find('.qty').val(qty);
-    });
+  //Get product Data and calculate the amount, total;
+  $('tbody').delegate('.product', 'change', function () {
+    var tr =$(this).parent().parent();
+    var qty = 1;
+    tr.find('.qty').val(qty);
   });
 
   $('#add_btn').on('click',function(){
@@ -228,18 +225,18 @@
       var customer_id = <?php echo json_encode($customer->id); ?>;
       console.log('product id: ' + id + ' customer_id: ' + customer_id );
       $.ajax({
-          type: 'DELETE',
-          url     :"{{ URL::to('/user/customers/deleteItemOrder') }}",
-          dataType: 'json',
-          data: {
-            "_method" : "DELETE",
-            '_token': '{{ csrf_token() }}',
-            'id':id,
-            'customer_id':customer_id
-          },
-          success:function (response) {
-            console.log('response: '+ response.message);
-          }
+        type: 'DELETE',
+        url     :"{{ URL::to('/user/customers/deleteItemOrder') }}",
+        dataType: 'json',
+        data: {
+          "_method" : "DELETE",
+          '_token': '{{ csrf_token() }}',
+          'id':id,
+          'customer_id':customer_id
+        },
+        success:function (response) {
+          console.log('response: '+ response.message);
+        }
       });
 
       //remove file in the table

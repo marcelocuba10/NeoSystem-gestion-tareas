@@ -2,25 +2,25 @@
   <div class="row">
     <div class="col-6">
       <div class="input-style-1">
-        <label>(*) Razón Social</label>
+        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Razón Social</label>
         <input name="name" value="{{ $user->name ?? old('name') }}" type="text" class="bg-transparent">
       </div>
     </div>
     <div class="col-6">
       <div class="input-style-1">
-        <label>(*) Nombre del Encargado</label>
+        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Nombre del Encargado</label>
         <input name="seller_contact_1" value="{{ $user->seller_contact_1 ?? old('seller_contact_1') }}" type="text" class="bg-transparent">
       </div>
     </div>
     <div class="col-6">
       <div class="input-style-1">
-        <label>(*) Email</label>
+        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Email</label>
         <input name="email" value="{{ $user->email ?? old('email') }}" type="email" class="bg-transparent">
       </div>
     </div>
     <div class="col-6">
       <div class="input-style-1">
-        <label>(*) Contraseña</label>
+        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Contraseña</label>
         <input name="password" type="password" class="bg-transparent">
         @if ($user)
           <span class="form-text m-b-none">Déjelo en blanco si no desea cambiar la contraseña</span>
@@ -29,7 +29,7 @@
     </div>
     <div class="col-6">
       <div class="input-style-1">
-        <label>(*) Confirmar Contraseña</label>
+        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Confirmar Contraseña</label>
         <input name="confirm_password" type="password" class="bg-transparent">
         @if ($user)
           <span class="form-text m-b-none">Déjelo en blanco si no desea cambiar la contraseña</span>
@@ -51,7 +51,7 @@
     @if ($currentUserRole == 'SuperAdmin')
       <div class="col-2">
         <div class="select-style-1">
-          <label>(*) Status</label>
+          <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Status</label>
           <div class="select-position">
             <select name="status">
               @foreach ($status as $key)
@@ -64,7 +64,7 @@
     @else
       <div class="col-2">
         <div class="input-style-1">
-          <label>(*) Status</label>
+          <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Status</label>
           @foreach ($status as $key)
             @if ($key[0] == $userStatus)
               <input placeholder="{{ $key[1] }}" type="text" readonly>
@@ -76,7 +76,7 @@
     @endif
     <div class="col-3">
       <div class="input-style-1">
-        <label>(*) Doc Identidad / RUC</label>
+        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Doc Identidad / RUC</label>
         <input name="doc_id" value="{{ $user->doc_id ?? old('doc_id') }}" type="text" class="bg-transparent">
       </div>
     </div>
@@ -88,7 +88,7 @@
     </div>
     <div class="col-4">
       <div class="select-style-1">
-        <label>(*) Departamento</label>
+        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Departamento</label>
         <div class="select-position">
           <select name="estate">
             @foreach ($estates as $key)
@@ -112,3 +112,15 @@
       </div>
     </div>
   </div>
+
+<!-- ========= Scripts ======== -->
+<!-- ========= disable button after send form ======== -->
+<script>
+  $(document).ready(function(){
+    $('form').submit(function (event) {
+      var btn_submit = document.getElementById('btn_submit');
+      btn_submit.disabled = true;
+      btn_submit.innerText = 'Procesando...'
+    });
+  })
+</script>

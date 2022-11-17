@@ -12,14 +12,12 @@
       </div>
     </div>
   </div>
-  <!-- end col --> 
   <div class="col-3">
     <div class="input-style-1">
       <label>Fecha/Hora de Venta</label>
       <input type="text" name="visit_date" value="{{ date('d/m/Y - H:i', strtotime($currentDate)) }}" readonly>
     </div>
   </div>
-  <!-- end col -->
   <div class="col-sm-3">
     <div class="select-style-1">
       <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Tipo</label>
@@ -32,7 +30,6 @@
       </div>
     </div>
   </div>
-  <!-- end col -->
 
   @if ($sale)
     <div class="col-12" id="setOrder">
@@ -134,107 +131,115 @@
     </div>
     <div class="col-12">
       <div class="button-group d-flex justify-content-center flex-wrap">
-        <button type="submit" class="main-btn primary-btn btn-hover m-2" id="btn_submit">Guardar</button>
+        <button type="submit" id="btn_submit" class="main-btn primary-btn btn-hover m-2">Guardar</button>
         <a class="main-btn primary-btn-outline m-2" href="{{ url('/user/sales') }}">Atrás</a>
       </div>
     </div>
   @endif
+</div>
 
-</div>
-</div>
+<!-- ========= Scripts ======== -->
+<!-- ========= disable button after send form ======== -->
+<script>
+  $(document).ready(function(){
+    $('form').submit(function (event) {
+      var btn_submit = document.getElementById('btn_submit');
+      btn_submit.disabled = true;
+      btn_submit.innerText = 'Procesando...'
+    });
+  })
+</script>
 
 <script type="text/javascript">
+  function formatNumber(num) {
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+  }
 
-function formatNumber(num) {
-  return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
-}
-
-$(document).ready(function(){
-
-  //When get data from Edit, calculate Total;
-  var tr = $(this).parent().parent();
-  var qty = tr.find('.qty').val();
-  var price = tr.find('.price').val();
-  var amount = (qty * price);
-  tr.find('.amount').val(amount);
-  total();
-
-  //When select product, focus on input quantity;
-  $('tbody').delegate('.product', 'change', function () {
-    var  tr = $(this).parent().parent();
-    tr.find('.qty').focus();
-  })
-
-  //Get product Data and calculate the amount, total;
-  $('tbody').delegate('.product', 'change', function () {
-    var tr =$(this).parent().parent();
-    var id = tr.find('.product').val();
-    var dataId = {'id':id};
-    $.ajax({
-      type    : 'GET',
-      url     :"{{ URL::to('/user/products/findPrice') }}",
-      dataType: 'json',
-      data: {
-        "_token": $('meta[name="csrf-token"]').attr('content'),
-        'id': id
-      },
-      success:function (response) {
-        var data = response;
-        var string_data = JSON.stringify(data); 
-
-        //convert number to currency format to show
-        var price = data.sale_price;
-        price_currency = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        //price_currency = accounting.formatMoney(price, "", 0, ".", ".");
-        tr.find('.price').val(price_currency);
-
-        var qty = 1;
-        var amount = (qty * data.sale_price);
-        tr.find('.qty').val(qty);
-        tr.find('.amount').val(amount);
-        total();
-      }
-    });
-  });
-
-  //when write the quantity, calculate amount, total;
-  $('tbody').delegate('.qty', 'keyup', function () {
+  $(document).ready(function(){
+    //When get data from Edit, calculate Total;
     var tr = $(this).parent().parent();
     var qty = tr.find('.qty').val();
     var price = tr.find('.price').val();
-
-    //convert currency format to number
-    var price = Number(price.replace(/[^0-9.-]+/g,""));
-
     var amount = (qty * price);
     tr.find('.amount').val(amount);
     total();
+
+    //When select product, focus on input quantity;
+    $('tbody').delegate('.product', 'change', function () {
+      var  tr = $(this).parent().parent();
+      tr.find('.qty').focus();
+    })
+
+    //Get product Data and calculate the amount, total;
+    $('tbody').delegate('.product', 'change', function () {
+      var tr =$(this).parent().parent();
+      var id = tr.find('.product').val();
+      var dataId = {'id':id};
+      $.ajax({
+        type    : 'GET',
+        url     :"{{ URL::to('/user/products/findPrice') }}",
+        dataType: 'json',
+        data: {
+          "_token": $('meta[name="csrf-token"]').attr('content'),
+          'id': id
+        },
+        success:function (response) {
+          var data = response;
+          var string_data = JSON.stringify(data); 
+
+          //convert number to currency format to show
+          var price = data.sale_price;
+          price_currency = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+          //price_currency = accounting.formatMoney(price, "", 0, ".", ".");
+          tr.find('.price').val(price_currency);
+
+          var qty = 1;
+          var amount = (qty * data.sale_price);
+          tr.find('.qty').val(qty);
+          tr.find('.amount').val(amount);
+          total();
+        }
+      });
+    });
+
+    //when write the quantity, calculate amount, total;
+    $('tbody').delegate('.qty', 'keyup', function () {
+      var tr = $(this).parent().parent();
+      var qty = tr.find('.qty').val();
+      var price = tr.find('.price').val();
+
+      //convert currency format to number
+      var price = Number(price.replace(/[^0-9.-]+/g,""));
+
+      var amount = (qty * price);
+      tr.find('.amount').val(amount);
+      total();
+    });
   });
-});
 
-function total(){
-  var total = 0;
-  $('.amount').each(function (i,e) {
-    var amount =$(this).val()-0;
-    total += amount;
+  function total(){
+    var total = 0;
+    $('.amount').each(function (i,e) {
+      var amount =$(this).val()-0;
+      total += amount;
+    })
+    var total = formatNumber(total);
+    var total = total.replaceAll(",", ".");
+    $('.total').html(total);
+  }
+
+  $('#add_btn').on('click',function(){
+    console.log('add_btn');
+    var html = '';
+    html += '<tr>';
+    html += '<td> <select name="product_id[]" class="form-control product"> <option>Seleccione Producto</option> @foreach($products as $product) <option name="product_id[]" data-price="{{ $product->sale_price }}" value="{{ $product->id }}">{{ $product->name }}</option> @endforeach </select> </td>';
+    html += '<td><input type="text" name="price[]" class="form-control price" readonly></td>';
+    html += '<td><input type="number" min="1" name="qty[]" class="form-control qty"></td>';
+    html += '<td><input type="text" name="amount[]" class="form-control amount" readonly></td>';
+    html += '<td><button type="button" class="btn btn-danger" id="remove"><i class="lni lni-trash-can"></i></button></td>';
+    html += '</tr>';
+    $('tbody').append(html);
   })
-  var total = formatNumber(total);
-  var total = total.replaceAll(",", ".");
-  $('.total').html(total);
-}
-
-$('#add_btn').on('click',function(){
-  console.log('add_btn');
-  var html = '';
-  html += '<tr>';
-  html += '<td> <select name="product_id[]" class="form-control product"> <option>Seleccione Producto</option> @foreach($products as $product) <option name="product_id[]" data-price="{{ $product->sale_price }}" value="{{ $product->id }}">{{ $product->name }}</option> @endforeach </select> </td>';
-  html += '<td><input type="text" name="price[]" class="form-control price" readonly></td>';
-  html += '<td><input type="number" min="1" name="qty[]" class="form-control qty"></td>';
-  html += '<td><input type="text" name="amount[]" class="form-control amount" readonly></td>';
-  html += '<td><button type="button" class="btn btn-danger" id="remove"><i class="lni lni-trash-can"></i></button></td>';
-  html += '</tr>';
-  $('tbody').append(html);
-})
 </script>   
 
 @if ($sale != null)

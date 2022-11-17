@@ -303,26 +303,38 @@
 
   </div>
 
+<!-- ========= Scripts ======== -->
+<!-- ========= disable button after send form ======== -->
+<script>
+  $(document).ready(function(){
+    $('form').submit(function (event) {
+      var btn_submit = document.getElementById('btn_submit');
+      btn_submit.disabled = true;
+      btn_submit.innerText = 'Procesando...'
+    });
+  })
+</script>
+  
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
 <script type="text/javascript">
   $('.show_confirm').click(function(event) {
-        var form =  $(this).closest("form");
-        var name = $(this).data("name");
-        event.preventDefault();
-        swal({
-            title: '¿Está seguro que desea cancelar esta venta?',
-            // text: "Si eliminas esto, desaparecerá para siempre.",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-            buttons: ["No", "Sí"],
-        })
-        .then((willDelete) => {
-          if (willDelete) {
-            form.submit();
-          }
-        });
+    var form =  $(this).closest("form");
+    var name = $(this).data("name");
+    event.preventDefault();
+    swal({
+        title: '¿Está seguro que desea cancelar esta venta?',
+        // text: "Si eliminas esto, desaparecerá para siempre.",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+        buttons: ["No", "Sí"],
+    })
+    .then((willDelete) => {
+      if (willDelete) {
+        form.submit();
+      }
     });
+  });
 </script>
 
 <script type="text/javascript">
