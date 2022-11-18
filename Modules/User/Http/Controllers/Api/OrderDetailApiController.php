@@ -20,7 +20,7 @@ use Modules\User\Entities\Sales;
 
 class OrderDetailApiController extends Controller
 {
-    public function index($visit_id)
+    public function getOrderDetailsVisit($visit_id)
     {
         $order_details = DB::table('order_details')
             ->where('order_details.visit_id', '=', $visit_id)
@@ -47,6 +47,33 @@ class OrderDetailApiController extends Controller
         ));
     }
 
+    public function getOrderDetailsSale($sale_id)
+    {
+        $order_details = DB::table('order_details')
+            ->where('order_details.sale_id', '=', $sale_id)
+            ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
+            ->select(
+                'products.name',
+                'products.custom_code',
+                'order_details.product_id',
+                'order_details.price',
+                'order_details.quantity',
+                'order_details.inventory',
+                'order_details.amount'
+            )
+            ->orderBy('order_details.created_at', 'DESC')
+            ->get();
+
+        $total_order = DB::table('order_details')
+            ->where('order_details.sale_id', '=', $sale_id)
+            ->sum('amount');
+
+        return response()->json(array(
+            'order_details' => $order_details,
+            'total_order' => $total_order,
+        ));
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -65,6 +92,7 @@ class OrderDetailApiController extends Controller
         if ($input['visit_id']) {
             $field['visit_id'] = $input['visit_id'];
         }
+
         if ($input['sale_id']) {
             $field['sale_id'] = $input['sale_id'];
         }
@@ -77,6 +105,30 @@ class OrderDetailApiController extends Controller
         $field['created_at'] = Carbon::now();
         $order_detail = OrderDetail::create($field);
 
+        /** update total in sales */
+        if ($input['visit_id']) {
+            $total_order = DB::table('order_details')
+                ->where('order_details.visit_id', '=', $input['visit_id'])
+                ->sum('amount');
+
+            Sales::where('sales.visit_id', '=', $input['visit_id'])
+                ->update([
+                    'total' => $total_order
+                ]);
+        }
+
+        /** update total in sales */
+        if ($input['sale_id']) {
+            $total_order = DB::table('order_details')
+                ->where('order_details.sale_id', '=', $input['sale_id'])
+                ->sum('amount');
+
+            Sales::where('sales.id', '=', $input['sale_id'])
+                ->update([
+                    'total' => $total_order
+                ]);
+        }
+
         //return response
         return response()->json(array(
             'success' => 'Order detail created successfully.',
@@ -84,7 +136,7 @@ class OrderDetailApiController extends Controller
         ));
     }
 
-    public function destroyItemOrder($visit_id, $product_id)
+    public function deleteItemOrderDetailVisit($visit_id, $product_id)
     {
         /** remove item order */
         $order_detail = DB::table('order_details')
@@ -98,6 +150,31 @@ class OrderDetailApiController extends Controller
             ->sum('amount');
 
         Sales::where('sales.visit_id', '=', $visit_id)
+            ->update([
+                'total' => $total_order
+            ]);
+
+        //return response
+        return response()->json(array(
+            'success' => 'Item Order deleted successfully.',
+            'data'   => $order_detail
+        ));
+    }
+
+    public function deleteItemOrderDetailSale($sale_id, $product_id)
+    {
+        /** remove item order */
+        $order_detail = DB::table('order_details')
+            ->where('product_id', $product_id)
+            ->where('sale_id', $sale_id)
+            ->delete();
+
+        /** update total in sales */
+        $total_order = DB::table('order_details')
+            ->where('order_details.sale_id', '=', $sale_id)
+            ->sum('amount');
+
+        Sales::where('sales.id', '=', $sale_id)
             ->update([
                 'total' => $total_order
             ]);

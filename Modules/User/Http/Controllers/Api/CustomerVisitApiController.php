@@ -318,21 +318,33 @@ class CustomerVisitApiController extends Controller
 
                 $customer_visit = CustomerVisit::find($id);
 
-                /** Get total amount from items of visit order to Sale */
-                $total_order = DB::table('order_details')
-                    ->where('order_details.visit_id', '=', $customer_visit->id)
-                    ->sum('amount');
+                if ($customer_visit->type == 'Sin Presupuesto') {
+                    /** Get total amount from items of visit order to Sale */
+                    $total_order = DB::table('order_details')
+                        ->where('order_details.visit_id', '=', $customer_visit->id)
+                        ->sum('amount');
 
-                $sale['invoice_number'] = $customer_visit->visit_number;
-                $sale['visit_id'] = $customer_visit->id;
-                $sale['seller_id'] = $input['idReference'];
-                $sale['customer_id'] = $customer_visit->customer_id;
-                $sale['order_date'] = $customer_visit->visit_date;
-                $sale['type'] = 'Presupuesto';
-                $sale['previous_type'] = 'Presupuesto';
-                $sale['status'] = 'Pendiente';
-                $sale['total'] = $total_order;
-                Sales::create($sale);
+                    $sale['invoice_number'] = $customer_visit->visit_number;
+                    $sale['visit_id'] = $customer_visit->id;
+                    $sale['seller_id'] = $input['idReference'];
+                    $sale['customer_id'] = $customer_visit->customer_id;
+                    $sale['order_date'] = $customer_visit->visit_date;
+                    $sale['type'] = 'Presupuesto';
+                    $sale['previous_type'] = 'Presupuesto';
+                    $sale['status'] = 'Pendiente';
+                    $sale['total'] = $total_order;
+                    Sales::create($sale);
+                } else {
+                    /** update total in sales */
+                    $total_order = DB::table('order_details')
+                        ->where('order_details.visit_id', '=', $customer_visit->id)
+                        ->sum('amount');
+
+                    Sales::where('sales.visit_id', '=', $customer_visit->id)
+                        ->update([
+                            'total' => $total_order
+                        ]);
+                }
 
                 /** add extra items in customer visit and UPDATE */
                 $input['type'] = 'Presupuesto';
@@ -384,6 +396,11 @@ class CustomerVisitApiController extends Controller
             if ($count_order != 0) {
                 /** remove item order */
                 DB::table('order_details')
+                    ->where('visit_id', $id)
+                    ->delete();
+
+                /** remove sale with visit_id */
+                DB::table('sales')
                     ->where('visit_id', $id)
                     ->delete();
 

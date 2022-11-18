@@ -62,9 +62,11 @@ Route::middleware(['cors'])->group(function () {
 
     /*** Order Detail Routes ***/
     Route::group(['prefix' => 'order_detail'], function () {
-        Route::get('/{visit_id}', [OrderDetailApiController::class, 'index']);
+        Route::get('/customer_visit/{visit_id}', [OrderDetailApiController::class, 'getOrderDetailsVisit']);
+        Route::get('/sale/{sale_id}', [OrderDetailApiController::class, 'getOrderDetailsSale']);
         Route::post('/create', [OrderDetailApiController::class, 'store']);
-        Route::delete('/deleteItemOrder/{visit_id}/{product_id}', [OrderDetailApiController::class, 'destroyItemOrder']);
+        Route::delete('/customer_visit/deleteItemOrder/{visit_id}/{product_id}', [OrderDetailApiController::class, 'deleteItemOrderDetailVisit']);
+        Route::delete('/sale/deleteItemOrder/{sale_id}/{product_id}', [OrderDetailApiController::class, 'deleteItemOrderDetailSale']);
     });
 
     /*** Customers Routes ***/
