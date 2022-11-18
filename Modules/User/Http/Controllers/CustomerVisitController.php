@@ -189,7 +189,7 @@ class CustomerVisitController extends Controller
                     $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
                     $head = 'crear una Visita Cliente - #' . $customer_visit->visit_number;
                     $type = 'Visita Cliente';
-                    $linkOrderPDF = url('/user/customer_visits/generateInvoicePDF/?download=pdf&customer_visit=' . $customer_visit->id);
+                    $linkOrderPDF = url('/user/customer_visits/generateInvoicePDF/?download=pdf&visit_id=' . $customer_visit->id);
 
                     $customer_visit = DB::table('customer_visits')
                         ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
@@ -661,7 +661,7 @@ class CustomerVisitController extends Controller
             $type = 'Visita Cliente';
 
             if ($customer_visit->type == 'Presupuesto') {
-                $linkOrderPDF = url('/user/customer_visits/generateInvoicePDF/?download=pdf&customer_visit=' . $customer_visit->id);
+                $linkOrderPDF = url('/user/customer_visits/generateInvoicePDF/?download=pdf&visit_id=' . $customer_visit->id);
             } else {
                 $linkOrderPDF = null;
             }
@@ -754,7 +754,7 @@ class CustomerVisitController extends Controller
 
         $customer_visit = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-            ->where('customer_visits.id', '=', $request->customer_visit)
+            ->where('customer_visits.id', '=', $request->visit_id)
             ->select(
                 'customer_visits.id',
                 'customer_visits.visit_number',
@@ -782,7 +782,7 @@ class CustomerVisitController extends Controller
             ->first();
 
         $order_details = DB::table('order_details')
-            ->where('order_details.visit_id', '=', $request->customer_visit)
+            ->where('order_details.visit_id', '=', $request->visit_id)
             ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
             ->select(
                 'products.name',
@@ -796,7 +796,7 @@ class CustomerVisitController extends Controller
             ->get();
 
         $total_order = DB::table('order_details')
-            ->where('order_details.visit_id', '=', $request->customer_visit)
+            ->where('order_details.visit_id', '=', $request->visit_id)
             ->sum('amount');
 
         if ($request->has('download')) {
@@ -894,7 +894,7 @@ class CustomerVisitController extends Controller
         $type = 'Visita Cliente';
 
         if ($customer_visit->type == 'Presupuesto') {
-            $linkOrderPDF = url('/user/customer_visits/generateInvoicePDF/?download=pdf&customer_visit=' . $customer_visit->id);
+            $linkOrderPDF = url('/user/customer_visits/generateInvoicePDF/?download=pdf&visit_id=' . $customer_visit->id);
         } else {
             $linkOrderPDF = null;
         }
