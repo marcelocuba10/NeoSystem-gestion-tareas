@@ -67,7 +67,7 @@ class CustomerVisitApiController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'customer_id' => 'required',
+            'customer_id' => 'nullable',
             'visit_date' => 'nullable',
             'next_visit_date' => 'nullable|max:15|min:5',
             'next_visit_hour' => 'nullable|max:15|min:5',
@@ -133,7 +133,8 @@ class CustomerVisitApiController extends Controller
                 $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
                 $head = 'crear una Visita Cliente - #' . $customer_visit->visit_number;
                 $type = 'Visita Cliente';
-                $linkOrderPDF = url('/user/customer_visits/generateInvoicePDF/?download=pdf&customer_visit=' . $customer_visit->id);
+                //** create link to download pdf invoice in email */
+                $linkOrderPDF = url('/customer_visits/' . $input['idReference'] . '/generateInvoicePDF/?download=pdf&visit_id=' . $customer_visit->id);
 
                 $customer_visit = DB::table('customer_visits')
                     ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')

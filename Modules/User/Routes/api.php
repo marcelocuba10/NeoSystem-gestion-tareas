@@ -32,7 +32,7 @@ Route::middleware(['cors'])->group(function () {
         Route::post('/create', [SalesApiController::class, 'store']);
         Route::get('/edit/{id}', [SalesApiController::class, 'edit']);
         Route::put('/update/{id}', [SalesApiController::class, 'update']);
-        Route::delete('/delete/{id}', [SalesApiController::class, 'destroy']);
+        Route::delete('/cancelSale/{id}/{idReference}', [SalesApiController::class, 'cancelSale']);
         Route::get('/search/{textSearch}/{idReference}', [SalesApiController::class, 'search']);
     });
 

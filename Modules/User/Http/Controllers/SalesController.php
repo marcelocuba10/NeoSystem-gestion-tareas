@@ -199,7 +199,8 @@ class SalesController extends Controller
                 $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
                 $head = 'crear un(a) ' . $sale->type . ' - #' . $sale->invoice_number;
                 $type = 'Venta';
-                $linkOrderPDF = url('/user/sales/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
+                //** create link to download pdf invoice in email */
+                $linkOrderPDF = url('/sales/' . $idRefCurrentUser . '/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
 
                 $sale = DB::table('sales')
                     ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
@@ -428,7 +429,7 @@ class SalesController extends Controller
                         'status' => 'Cancelado'
                     ]);
 
-                /** Get sale to notify email*/
+                /** Get sale info to notify email*/
                 $sale = DB::table('sales')
                     ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
                     ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
@@ -460,7 +461,8 @@ class SalesController extends Controller
                 $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
                 $head = 'Cancelar un(a) ' . $sale->type . ' - #' . $sale->invoice_number;
                 $type = 'Venta';
-                $linkOrderPDF = url('/user/sales/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
+                //** create link to download pdf invoice in email */
+                $linkOrderPDF = url('/sales/' . $idRefCurrentUser . '/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
 
                 Mail::to($emailDefault)->send(new NotifyMail($sale, $head, $linkOrderPDF, $type));
 
@@ -468,6 +470,7 @@ class SalesController extends Controller
             }
         }
 
+        /** Cancel sale, relationship with customer visit, update two status in every table */
         if ($sale->type == 'Venta' && $sale->visit_id) {
             if ($request->cancelSale == true) {
                 /** update status in sales and customer_visit */
@@ -486,7 +489,7 @@ class SalesController extends Controller
                         'status' => 'Cancelado'
                     ]);
 
-                /** Get sale to notify email*/
+                /** Get sale info to notify email*/
                 $sale = DB::table('sales')
                     ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
                     ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
@@ -518,7 +521,9 @@ class SalesController extends Controller
                 $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
                 $head = 'Cancelar un(a) ' . $sale->type . ' - #' . $sale->invoice_number;
                 $type = 'Venta';
-                $linkOrderPDF = url('/user/sales/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
+
+                //** create link to download pdf invoice in email */
+                $linkOrderPDF = url('/sales/' . $idRefCurrentUser . '/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
 
                 Mail::to($emailDefault)->send(new NotifyMail($sale, $head, $linkOrderPDF, $type));
 
@@ -658,7 +663,8 @@ class SalesController extends Controller
                     $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
                     $head = 'procesar un ' . $sale->previous_type . ' para Venta - #' . $sale->invoice_number;
                     $type = 'Venta';
-                    $linkOrderPDF = url('/user/sales/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
+                    //** create link to download pdf invoice in email */
+                    $linkOrderPDF = url('/sales/' . $idRefCurrentUser . '/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
 
                     $sale = DB::table('sales')
                         ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
@@ -726,7 +732,8 @@ class SalesController extends Controller
             $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
             $head = 'procesar un ' . $sale->previous_type . ' para Venta - #' . $sale->invoice_number;
             $type = 'Venta';
-            $linkOrderPDF = url('/user/sales/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
+            //** create link to download pdf invoice in email */
+            $linkOrderPDF = url('/sales/' . $idRefCurrentUser . '/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
 
             $sale = DB::table('sales')
                 ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
@@ -978,7 +985,8 @@ class SalesController extends Controller
         $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
         $head = 'Cancelar un(a) ' . $sale->type . ' - #' . $sale->invoice_number;
         $type = 'Venta';
-        $linkOrderPDF = url('/user/sales/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
+        //** create link to download pdf invoice in email */
+        $linkOrderPDF = url('/sales/' . $idRefCurrentUser . '/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
 
         Mail::to($emailDefault)->send(new NotifyMail($sale, $head, $linkOrderPDF, $type));
 

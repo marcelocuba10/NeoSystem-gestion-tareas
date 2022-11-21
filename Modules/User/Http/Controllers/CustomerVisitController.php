@@ -189,7 +189,8 @@ class CustomerVisitController extends Controller
                     $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
                     $head = 'crear una Visita Cliente - #' . $customer_visit->visit_number;
                     $type = 'Visita Cliente';
-                    $linkOrderPDF = url('/user/customer_visits/generateInvoicePDF/?download=pdf&visit_id=' . $customer_visit->id);
+                    //** create link to download pdf invoice in email */
+                    $linkOrderPDF = url('/customer_visits/' . $idRefCurrentUser . '/generateInvoicePDF/?download=pdf&visit_id=' . $customer_visit->id);
 
                     $customer_visit = DB::table('customer_visits')
                         ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
@@ -660,8 +661,9 @@ class CustomerVisitController extends Controller
             $head = 'procesar una Visita Cliente - #' . $customer_visit->visit_number;
             $type = 'Visita Cliente';
 
+            //** create link to download pdf invoice in email */
             if ($customer_visit->type == 'Presupuesto') {
-                $linkOrderPDF = url('/user/customer_visits/generateInvoicePDF/?download=pdf&visit_id=' . $customer_visit->id);
+                $linkOrderPDF = url('/customer_visits/' . $idRefCurrentUser . '/generateInvoicePDF/?download=pdf&visit_id=' . $customer_visit->id);
             } else {
                 $linkOrderPDF = null;
             }
@@ -893,8 +895,9 @@ class CustomerVisitController extends Controller
         $head = 'Cancelar una Visita Cliente - #' . $customer_visit->visit_number;
         $type = 'Visita Cliente';
 
+        //** create link to download pdf invoice in email */
         if ($customer_visit->type == 'Presupuesto') {
-            $linkOrderPDF = url('/user/customer_visits/generateInvoicePDF/?download=pdf&visit_id=' . $customer_visit->id);
+            $linkOrderPDF = url('/customer_visits/' . $idRefCurrentUser . '/generateInvoicePDF/?download=pdf&visit_id=' . $customer_visit->id);
         } else {
             $linkOrderPDF = null;
         }
