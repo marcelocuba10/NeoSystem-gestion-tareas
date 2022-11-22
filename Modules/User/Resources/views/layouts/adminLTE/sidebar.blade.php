@@ -30,7 +30,7 @@
         </li>
         @endcan
         @can('customer_visit-list')
-        <li class="nav-item {{ (request()->is('user/visit-customers')) ? 'active' : '' }}">
+        <li class="nav-item {{ (request()->is('user/customer_visits')) ? 'active' : '' }}">
           <a href="{{ url('/user/customer_visits') }}">
             <span class="icon">
               <svg style="width:24px;height:24px" viewBox="0 0 24 24">

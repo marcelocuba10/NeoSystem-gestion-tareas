@@ -43,7 +43,8 @@ Route::middleware(['cors'])->group(function () {
         Route::post('/create', [CustomerVisitApiController::class, 'store']);
         Route::get('/edit/{id}', [CustomerVisitApiController::class, 'edit']);
         Route::put('/update/{id}', [CustomerVisitApiController::class, 'update']);
-        Route::delete('/delete/{id}', [CustomerVisitApiController::class, 'destroy']);
+        Route::put('/update/pendingToProcess/{id}', [CustomerVisitApiController::class, 'pendingToProcess']);
+        Route::delete('/cancelCustomerVisit/{id}/{idReference}', [CustomerVisitApiController::class, 'cancelCustomerVisit']);
         Route::get('/search/{textSearch}/{idReference}', [CustomerVisitApiController::class, 'search']);
     });
 

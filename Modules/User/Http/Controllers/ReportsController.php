@@ -332,42 +332,49 @@ class ReportsController extends Controller
         $idRefCurrentUser = Auth::user()->idReference;
         $currentDate = Carbon::now()->format('d/m/Y');
         $currentOnlyYear = Carbon::now()->format('Y');
+        $currentMonth = Carbon::now()->format('m');
 
         /** For Pie Chart */
         $visits_cancel_count = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customers.idReference', '=', $idRefCurrentUser)
+            ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('customer_visits.status', '=', 'Cancelado')
             ->count();
 
         $visits_process_count = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customers.idReference', '=', $idRefCurrentUser)
+            ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('customer_visits.status', '=', 'Procesado')
             ->count();
 
         $visits_no_process_count = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customers.idReference', '=', $idRefCurrentUser)
+            ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('customer_visits.status', '=', 'No Procesado')
             ->count();
 
         $visits_pending_count = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customers.idReference', '=', $idRefCurrentUser)
+            ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('customer_visits.status', '=', 'Pendiente')
             ->count();
 
         $sales_count = DB::table('sales')
             ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
             ->where('customers.idReference', '=', $idRefCurrentUser)
-            ->where('sales.previous_type', '=', 'Venta')
+            ->whereMonth('sales.created_at', $currentMonth) //get data current month 11,12 etc
+            ->where('sales.type', '=', 'Venta')
             ->where('sales.status', '=', 'Procesado')
             ->count();
 
         $orders_count = DB::table('sales')
             ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
             ->where('customers.idReference', '=', $idRefCurrentUser)
+            ->whereMonth('sales.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('sales.previous_type', '=', 'Presupuesto')
             ->where('sales.status', '!=', 'Cancelado')
             ->count();

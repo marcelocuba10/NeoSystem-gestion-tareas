@@ -723,53 +723,57 @@ class SalesController extends Controller
                 ->where('order_details.visit_id', '=', $sale->visit_id)
                 ->sum('amount');
 
-            /** update status in sales and customer_visit */
-            Sales::where('sales.id', '=', $sale->id)
-                ->update([
-                    'status' => 'Procesado',
-                    'type' => 'Venta',
-                    'total' => $total_order
-                ]);
+            /** Update Sale with total items detail and check if process or cancel sale */
+            /** Order pass to Sale */
+            if ($input['orderToSale'] == true) {
+                /** update status in sales and customer_visit */
+                Sales::where('sales.id', '=', $sale->id)
+                    ->update([
+                        'status' => 'Procesado',
+                        'type' => 'Venta',
+                        'total' => $total_order
+                    ]);
 
-            DB::table('customer_visits')
-                ->where('customer_visits.id', '=', $sale->visit_id)
-                ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
-                ->update([
-                    'status' => 'Procesado',
-                ]);
+                DB::table('customer_visits')
+                    ->where('customer_visits.id', '=', $sale->visit_id)
+                    ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+                    ->update([
+                        'status' => 'Procesado',
+                    ]);
 
-            /** Send email notification - updated status sale to process*/
-            $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
-            $head = 'procesar un ' . $sale->previous_type . ' para Venta - #' . $sale->invoice_number;
-            $type = 'Venta';
-            //** create link to download pdf invoice in email */
-            $linkOrderPDF = url('/sales/' . $idRefCurrentUser . '/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
+                /** Send email notification - updated status sale to process*/
+                $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+                $head = 'procesar un ' . $sale->previous_type . ' para Venta - #' . $sale->invoice_number;
+                $type = 'Venta';
+                //** create link to download pdf invoice in email */
+                $linkOrderPDF = url('/sales/' . $idRefCurrentUser . '/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
 
-            $sale = DB::table('sales')
-                ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
-                ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
-                ->leftjoin('users', 'users.idReference', '=', 'sales.seller_id')
-                ->where('sales.id', $sale->id)
-                ->select(
-                    'sales.sale_date',
-                    'sales.type',
-                    'sales.status',
-                    'sales.total',
-                    'sales.visit_id',
-                    'customer_visits.action',
-                    'customer_visits.visit_date',
-                    'customer_visits.next_visit_date',
-                    'customer_visits.next_visit_hour',
-                    'customer_visits.result_of_the_visit',
-                    'customer_visits.objective',
-                    'customers.name AS customer_name',
-                    'customers.estate',
-                    'customers.phone',
-                    'users.name AS seller_name'
-                )
-                ->first();
+                $sale = DB::table('sales')
+                    ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+                    ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+                    ->leftjoin('users', 'users.idReference', '=', 'sales.seller_id')
+                    ->where('sales.id', $sale->id)
+                    ->select(
+                        'sales.sale_date',
+                        'sales.type',
+                        'sales.status',
+                        'sales.total',
+                        'sales.visit_id',
+                        'customer_visits.action',
+                        'customer_visits.visit_date',
+                        'customer_visits.next_visit_date',
+                        'customer_visits.next_visit_hour',
+                        'customer_visits.result_of_the_visit',
+                        'customer_visits.objective',
+                        'customers.name AS customer_name',
+                        'customers.estate',
+                        'customers.phone',
+                        'users.name AS seller_name'
+                    )
+                    ->first();
 
-            Mail::to($emailDefault)->send(new NotifyMail($sale, $head, $linkOrderPDF, $type));
+                Mail::to($emailDefault)->send(new NotifyMail($sale, $head, $linkOrderPDF, $type));
+            }
         }
 
         return back()->with('message', 'Cambios realizados correctamente.');

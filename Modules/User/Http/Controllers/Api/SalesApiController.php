@@ -43,6 +43,10 @@ class SalesApiController extends Controller
                 'customers.name AS customer_name',
                 'customers.estate',
                 'customer_visits.visit_date',
+                'customer_visits.next_visit_date',
+                'customer_visits.next_visit_hour',
+                'customer_visits.result_of_the_visit',
+                'customer_visits.objective',
             )
             ->orderBy('sales.created_at', 'DESC')
             ->get();
@@ -252,19 +256,14 @@ class SalesApiController extends Controller
                 Mail::to($emailDefault)->send(new NotifyMail($sale, $head, $linkOrderPDF, $type));
             }
 
-            if ($request->cancelSale == true) {
+            if ($input['orderToSale'] == false) {
+                /** Update Sale */
                 Sales::where('sales.id', '=', $sale->id)
                     ->update([
-                        'status' => 'Cancelado',
+                        'customer_id' => $input['customer_id'],
+                        'total' => $total_order
                     ]);
             }
-
-            /** Update Sale */
-            Sales::where('sales.id', '=', $sale->id)
-                ->update([
-                    'customer_id' => $input['customer_id'],
-                    'total' => $total_order
-                ]);
         }
 
         /** if is a Order created by customer_visit, ignore validations and update the status */
@@ -275,54 +274,58 @@ class SalesApiController extends Controller
                 ->where('order_details.visit_id', '=', $sale->visit_id)
                 ->sum('amount');
 
-            /** update status in sales and customer_visit */
-            Sales::where('sales.id', '=', $sale->id)
-                ->update([
-                    'status' => 'Procesado',
-                    'type' => 'Venta',
-                    'total' => $total_order
-                ]);
+            /** Update Sale with total items detail and check if process or cancel sale */
+            /** Order pass to Sale */
+            if ($input['orderToSale'] == true) {
+                /** update status in sales and customer_visit */
+                Sales::where('sales.id', '=', $sale->id)
+                    ->update([
+                        'status' => 'Procesado',
+                        'type' => 'Venta',
+                        'total' => $total_order
+                    ]);
 
-            DB::table('customer_visits')
-                ->where('customer_visits.id', '=', $sale->visit_id)
-                ->where('customer_visits.seller_id', '=', $input['idReference'])
-                ->update([
-                    'status' => 'Procesado',
-                ]);
+                DB::table('customer_visits')
+                    ->where('customer_visits.id', '=', $sale->visit_id)
+                    ->where('customer_visits.seller_id', '=', $input['idReference'])
+                    ->update([
+                        'status' => 'Procesado',
+                    ]);
 
-            /** Send email notification - updated status sale to process*/
-            $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
-            $head = 'procesar un ' . $sale->previous_type . ' para Venta - #' . $sale->invoice_number;
-            $type = 'Venta';
+                /** Send email notification - updated status sale to process*/
+                $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+                $head = 'procesar un ' . $sale->previous_type . ' para Venta - #' . $sale->invoice_number;
+                $type = 'Venta';
 
-            //** create link to download pdf invoice in email */
-            $linkOrderPDF = url('/sales/' . $input['idReference'] . '/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
+                //** create link to download pdf invoice in email */
+                $linkOrderPDF = url('/sales/' . $input['idReference'] . '/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
 
-            $sale = DB::table('sales')
-                ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
-                ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
-                ->leftjoin('users', 'users.idReference', '=', 'sales.seller_id')
-                ->where('sales.id', $sale->id)
-                ->select(
-                    'sales.sale_date',
-                    'sales.type',
-                    'sales.status',
-                    'sales.total',
-                    'sales.visit_id',
-                    'customer_visits.action',
-                    'customer_visits.visit_date',
-                    'customer_visits.next_visit_date',
-                    'customer_visits.next_visit_hour',
-                    'customer_visits.result_of_the_visit',
-                    'customer_visits.objective',
-                    'customers.name AS customer_name',
-                    'customers.estate',
-                    'customers.phone',
-                    'users.name AS seller_name'
-                )
-                ->first();
+                $sale = DB::table('sales')
+                    ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+                    ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+                    ->leftjoin('users', 'users.idReference', '=', 'sales.seller_id')
+                    ->where('sales.id', $sale->id)
+                    ->select(
+                        'sales.sale_date',
+                        'sales.type',
+                        'sales.status',
+                        'sales.total',
+                        'sales.visit_id',
+                        'customer_visits.action',
+                        'customer_visits.visit_date',
+                        'customer_visits.next_visit_date',
+                        'customer_visits.next_visit_hour',
+                        'customer_visits.result_of_the_visit',
+                        'customer_visits.objective',
+                        'customers.name AS customer_name',
+                        'customers.estate',
+                        'customers.phone',
+                        'users.name AS seller_name'
+                    )
+                    ->first();
 
-            Mail::to($emailDefault)->send(new NotifyMail($sale, $head, $linkOrderPDF, $type));
+                Mail::to($emailDefault)->send(new NotifyMail($sale, $head, $linkOrderPDF, $type));
+            }
         }
 
         //return response
@@ -419,14 +422,14 @@ class SalesApiController extends Controller
         /** check if sale/order relation with visit_customer, update status to cancel */
         if (!$sale->visit_id) {
             DB::table('sales')
-                ->where('sales.id', '=', $id)
+                ->where('sales.id', '=', $sale->id)
                 ->where('sales.seller_id', '=', $idRefCurrentUser)
                 ->update([
                     'status' => 'Cancelado'
                 ]);
         } else {
             DB::table('sales')
-                ->where('sales.id', '=', $id)
+                ->where('sales.id', '=', $sale->id)
                 ->where('sales.seller_id', '=', $idRefCurrentUser)
                 ->update([
                     'status' => 'Cancelado'
@@ -445,7 +448,7 @@ class SalesApiController extends Controller
             ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
             ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
             ->leftjoin('users', 'users.idReference', '=', 'sales.seller_id')
-            ->where('sales.id', $id)
+            ->where('sales.id', $sale->id)
             ->where('sales.seller_id', '=', $idRefCurrentUser)
             ->select(
                 'sales.id',
@@ -479,7 +482,7 @@ class SalesApiController extends Controller
         Mail::to($emailDefault)->send(new NotifyMail($sale, $head, $linkOrderPDF, $type));
 
         return response()->json(array(
-            'success' => 'Sale Order deleted successfully.'
+            'success' => 'Sale Canceled successfully.'
         ));
     }
 }

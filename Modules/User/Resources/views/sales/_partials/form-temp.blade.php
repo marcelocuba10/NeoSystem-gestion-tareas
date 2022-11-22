@@ -72,8 +72,8 @@
       </div>
       <div class="col-3">
         <div class="input-style-1">
-          <label>Fecha/Hora de Visita</label>
-          <input type="text" value="{{ $sale->visit_date ?? old('visit_date') }}" readonly>
+          <label>Fecha/Hora</label>
+          <input type="text" value="{{ date('d/m/Y - H:i', strtotime($sale->visit_date)) }}" readonly>
         </div>
       </div>
       <div class="col-3">

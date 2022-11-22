@@ -120,7 +120,7 @@ class HomeController extends Controller
             ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
             ->where('customers.idReference', '=', $idRefCurrentUser)
             ->whereMonth('sales.created_at', $currentMonth) //get data current month 11,12 etc
-            ->where('sales.previous_type', '=', 'Venta')
+            ->where('sales.type', '=', 'Venta')
             ->where('sales.status', '=', 'Procesado')
             ->count();
 

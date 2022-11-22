@@ -416,7 +416,7 @@ class CustomerVisitController extends Controller
             'next_visit_date' => 'nullable|date|after_or_equal:today|before:' . $currentDate,
             'next_visit_hour' => 'nullable|max:5|min:5',
             'action' => 'required|max:30|min:5',
-            'result_of_the_visit' => 'required|max:1000|min:3',
+            'result_of_the_visit' => 'nullable|max:1000|min:3',
             'objective' => 'nullable|max:1000|min:3',
             'product_id' => 'required',
             'qty' => 'required|min:0',
@@ -425,6 +425,10 @@ class CustomerVisitController extends Controller
         ]);
 
         $input = $request->all();
+
+        if (!$input['result_of_the_visit']) {
+            return back()->with('error', 'Por favor, agregue los resultados de la Visita/Llamada');
+        }
 
         if ($input['next_visit_date'] != null && $input['objective'] == null) {
             return back()->with('error', 'Por favor, agregue los Objetivos para la próxima visita marcada');
@@ -450,6 +454,8 @@ class CustomerVisitController extends Controller
                 $customer_visit = CustomerVisit::find($id);
 
                 if ($customer_visit->type == 'Sin Presupuesto') {
+
+                    /** Validate order detail and create Sale order */
                     foreach ($request->product_id as $key => $value) {
                         if (intval($request->qty[$key]) <= 0) {
                             return back()->with('error', 'Por favor, ingrese una cantidad válida.');
@@ -558,6 +564,7 @@ class CustomerVisitController extends Controller
 
                     Sales::where('sales.visit_id', '=', $customer_visit->id)
                         ->update([
+                            'customer_id' => $input['customer_id'],
                             'total' => $total_order
                         ]);
                 }
@@ -601,9 +608,13 @@ class CustomerVisitController extends Controller
                     }
                 }
             }
-        } elseif ($request->isSetOrder == 'false') {
+        }
+
+        if ($request->isSetOrder == 'false') {
             /** add extra items in customer visit and UPDATE*/
             $input['visit_date'] = Carbon::now();
+
+            /** update customer_visit */
             $customer_visit = CustomerVisit::find($id);
             $customer_visit->update($input);
 
@@ -649,12 +660,15 @@ class CustomerVisitController extends Controller
                     'status' => 'Procesado',
                 ]);
 
-            DB::table('appointments')
-                ->where('appointments.visit_id', '=', $id)
-                ->where('appointments.idReference', '=', $idRefCurrentUser)
-                ->update([
-                    'status' => 'Procesado'
-                ]);
+            /** check if next_visit_date is marked, change status in appointment */
+            if ($input['next_visit_date'] != 'No marcado') {
+                DB::table('appointments')
+                    ->where('appointments.visit_id', '=', $id)
+                    ->where('appointments.idReference', '=', $idRefCurrentUser)
+                    ->update([
+                        'status' => 'Procesado'
+                    ]);
+            }
 
             /** Send email notification - updated status visit to proceseed*/
             $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();

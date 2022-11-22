@@ -286,38 +286,29 @@ class CustomerVisitApiController extends Controller
 
         $input = $request->all();
 
+        /** Get sale by id */
+        $customer_visit = CustomerVisit::find($id);
+
         // if ($input['next_visit_date'] != null && $input['objective'] == null) {
         //     return response()->json(array(
         //         'errors' => 'Por favor, agregue los Objetivos para la próxima visita marcada'
         //     ), 500);
         // }
 
-        // if ($input['next_visit_date'] != null && $input['next_visit_hour'] == null) {
-        //     return response()->json(array(
-        //         'errors' => 'Por favor, agregue la Hora de la próxima visita'
-        //     ), 500);
-        // }
-
-        // if ($input['next_visit_date'] == null || $input['next_visit_hour'] == null) {
-        //     $input['next_visit_date'] = 'No marcado';
-        //     $input['next_visit_hour'] = 'No marcado';
-        //     $input['objective'] = null;
-        // }
-
         /** check if select 'order' is selected */
         if ($input['action'] == 'Enviar Presupuesto') {
+
             /** If not select any product */
             $count_order = DB::table('order_details')
                 ->where('order_details.visit_id', '=', $id)
                 ->count();
 
+            //** check order details */
             if ($count_order == 0) {
                 return response()->json(array(
                     'errors' => 'Por favor, adicione un producto en el Presupuesto'
                 ), 500);
             } else {
-
-                $customer_visit = CustomerVisit::find($id);
 
                 if ($customer_visit->type == 'Sin Presupuesto') {
                     /** Get total amount from items of visit order to Sale */
@@ -325,6 +316,7 @@ class CustomerVisitApiController extends Controller
                         ->where('order_details.visit_id', '=', $customer_visit->id)
                         ->sum('amount');
 
+                    //** Create Sale Order with the order visit */
                     $sale['invoice_number'] = $customer_visit->visit_number;
                     $sale['visit_id'] = $customer_visit->id;
                     $sale['seller_id'] = $input['idReference'];
@@ -336,13 +328,14 @@ class CustomerVisitApiController extends Controller
                     $sale['total'] = $total_order;
                     Sales::create($sale);
                 } else {
-                    /** update total in sales */
+                    /** update total in sales, already exist order sale */
                     $total_order = DB::table('order_details')
                         ->where('order_details.visit_id', '=', $customer_visit->id)
                         ->sum('amount');
 
                     Sales::where('sales.visit_id', '=', $customer_visit->id)
                         ->update([
+                            'customer_id' => $input['customer_id'],
                             'total' => $total_order
                         ]);
                 }
@@ -387,7 +380,9 @@ class CustomerVisitApiController extends Controller
                     }
                 }
             }
-        } elseif ($input['action'] != 'Enviar Presupuesto') {
+        }
+
+        if ($input['action'] != 'Enviar Presupuesto') {
 
             /** Check if have order details, but action is different to Order */
             $count_order = DB::table('order_details')
@@ -408,12 +403,10 @@ class CustomerVisitApiController extends Controller
                 /** add extra items in customer_visit and UPDATE */
                 $input['visit_date'] = Carbon::now();
                 $input['type'] = 'Sin Presupuesto';
-                $customer_visit = CustomerVisit::find($id);
                 $customer_visit->update($input);
             } else {
                 /** add extra items in customer visit and UPDATE */
                 $input['visit_date'] = Carbon::now();
-                $customer_visit = CustomerVisit::find($id);
                 $customer_visit->update($input);
             }
 
@@ -549,9 +542,155 @@ class CustomerVisitApiController extends Controller
         ));
     }
 
-    public function destroy($id)
+    public function cancelCustomerVisit($id, $idRefCurrentUser)
     {
-        Customers::find($id)->delete();
-        return redirect()->to('/user/customers')->with('message', 'Customer deleted successfully');
+        /** Proceed to cancel the visit */
+        DB::table('customer_visits')
+            ->where('customer_visits.id', '=', $id)
+            ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+            ->update([
+                'status' => 'Cancelado',
+            ]);
+
+        /** Get the visit data for notify email */
+        $customer_visit = DB::table('customer_visits')
+            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+            ->leftjoin('users', 'users.idReference', '=', 'customer_visits.seller_id')
+            ->where('customer_visits.id', $id)
+            ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+            ->select(
+                'customer_visits.id',
+                'customer_visits.visit_number',
+                'customer_visits.visit_date',
+                'customer_visits.next_visit_date',
+                'customer_visits.next_visit_hour',
+                'customer_visits.status',
+                'customer_visits.action',
+                'customer_visits.type',
+                'customer_visits.result_of_the_visit',
+                'customer_visits.objective',
+                'customers.name AS customer_name',
+                'customers.estate',
+                'customers.phone',
+                'users.name AS seller_name'
+            )
+            ->first();
+
+        /** is have next_visit_date, need update status in the appointment*/
+        if ($customer_visit->next_visit_date != 'No marcado') {
+            DB::table('appointments')
+                ->where('appointments.visit_id', '=', $id)
+                ->where('appointments.idReference', '=', $idRefCurrentUser)
+                ->update([
+                    'status' => 'Cancelado', //appointment status canceled
+                ]);
+        }
+
+        /** is customer_visit have order, need update status in the sale*/
+        if ($customer_visit->action == 'Enviar Presupuesto') {
+            DB::table('sales')
+                ->where('sales.visit_id', '=', $id)
+                ->where('sales.seller_id', '=', $idRefCurrentUser)
+                ->update([
+                    'status' => 'Cancelado', //sale status canceled
+                ]);
+        }
+
+        /** Send email notification - updated status visit to cancel*/
+        $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+        $head = 'Cancelar una Visita Cliente - #' . $customer_visit->visit_number;
+        $type = 'Visita Cliente';
+
+        //** create link to download pdf invoice in email */
+        if ($customer_visit->type == 'Presupuesto') {
+            $linkOrderPDF = url('/customer_visits/' . $idRefCurrentUser . '/generateInvoicePDF/?download=pdf&visit_id=' . $customer_visit->id);
+        } else {
+            $linkOrderPDF = null;
+        }
+
+        Mail::to($emailDefault)->send(new NotifyMail($customer_visit, $head, $linkOrderPDF, $type));
+
+        return response()->json(array(
+            'success' => 'Customer Visit canceled successfully.'
+        ));
+    }
+
+    public function pendingToProcess(Request $request, $id)
+    {
+        /** date validation, not less than 1980 and not greater than the current year **/
+        $initialDate = '1980-01-01';
+        $currentDate = (date('Y') + 2) . '-01-01'; //current date + 2 year
+
+        $request->validate([
+            'customer_id' => 'required',
+            'visit_date' => 'nullable',
+            'next_visit_date' => 'nullable|max:15|min:5',
+            'next_visit_hour' => 'nullable|max:15|min:5',
+            'action' => 'required|max:30|min:5',
+            'result_of_the_visit' => 'nullable|max:1000|min:3',
+            'objective' => 'nullable|max:1000|min:3',
+        ]);
+
+        $input = $request->all();
+
+        /** Get customer_visit by id */
+        $customer_visit = DB::table('customer_visits')
+            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+            ->leftjoin('users', 'users.idReference', '=', 'customer_visits.seller_id')
+            ->where('customer_visits.id', $id)
+            ->select(
+                'customer_visits.id',
+                'customer_visits.visit_number',
+                'customer_visits.visit_date',
+                'customer_visits.next_visit_date',
+                'customer_visits.next_visit_hour',
+                'customer_visits.status',
+                'customer_visits.action',
+                'customer_visits.type',
+                'customer_visits.result_of_the_visit',
+                'customer_visits.objective',
+                'customers.name AS customer_name',
+                'customers.estate',
+                'customers.phone',
+                'users.name AS seller_name'
+            )
+            ->first();
+
+        //** Update status in customer visit */
+        DB::table('customer_visits')
+            ->where('id', '=', $id)
+            ->update([
+                'status' => 'Procesado',
+            ]);
+
+        /** check if next_visit_date is marked, change status in appointment */
+        if ($input['next_visit_date'] != 'No marcado') {
+            DB::table('appointments')
+                ->where('appointments.visit_id', '=', $id)
+                ->where('appointments.idReference', '=', $input['idReference'])
+                ->update([
+                    'status' => 'Procesado'
+                ]);
+        }
+
+        /** Send email notification - updated status visit to proceseed*/
+        $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+        $head = 'procesar una Visita Cliente - #' . $customer_visit->visit_number;
+        $type = 'Visita Cliente';
+
+        //** create link to download pdf invoice in email */
+        if ($customer_visit->type == 'Presupuesto') {
+            $linkOrderPDF = url('/customer_visits/' . $input['idReference'] . '/generateInvoicePDF/?download=pdf&visit_id=' . $customer_visit->id);
+        } else {
+            $linkOrderPDF = null;
+        }
+
+        Mail::to($emailDefault)->send(new NotifyMail($customer_visit, $head, $linkOrderPDF, $type));
+
+        //return response
+        return response()->json(array(
+            'success' => 'Customer visit processed successfully.',
+            'data'   => $customer_visit
+        ), 200);
     }
 }
