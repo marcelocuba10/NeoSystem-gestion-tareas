@@ -420,6 +420,8 @@ class SalesController extends Controller
 
         /** Cancel sale direct, without customer visit, update status */
         if ($sale->type == 'Venta' && !$sale->visit_id) {
+
+            /** a sale cannot be edited, since it was processed, only the cancel button */
             if ($request->cancelSale == true) {
                 DB::table('sales')
                     ->where('sales.id', '=', $request->id)
@@ -472,6 +474,8 @@ class SalesController extends Controller
 
         /** Cancel sale, relationship with customer visit, update two status in every table */
         if ($sale->type == 'Venta' && $sale->visit_id) {
+
+            /** when the sale comes to visit, no change is verified here since it is verified in customer visits, here only button cancel */
             if ($request->cancelSale == true) {
                 /** update status in sales and customer_visit */
                 DB::table('sales')
@@ -531,7 +535,7 @@ class SalesController extends Controller
             }
         }
 
-        /** if it is a order created from sales, check validations and process, else, if is created by customer_visit, ignore validations and update the status*/
+        /** if it is a order created from sales, check validations and process */
         if ($sale->type == 'Presupuesto' && !$sale->visit_id) {
             $request->validate([
                 'customer_id' => 'required',
@@ -540,6 +544,8 @@ class SalesController extends Controller
                 'price' => 'required',
                 'amount' => 'required',
             ]);
+
+            $input = $request->all();
 
             /** If not select any product */
             if (strlen($request->product_id[0]) > 10) {
@@ -573,7 +579,7 @@ class SalesController extends Controller
                         }
                     }
                 } else {
-                    /** Array not have news product_id, update values */
+                    /** Array not have news product_id, update values in order details */
                     foreach ($request->product_id as $key => $value) {
 
                         if (intval($request->qty[$key]) <= 0) {
@@ -656,7 +662,6 @@ class SalesController extends Controller
                         ->update([
                             'status' => 'Procesado',
                             'type' => 'Venta',
-                            'total' => $total_order
                         ]);
 
                     /** Send email notification - updated status sale to process*/
@@ -691,23 +696,28 @@ class SalesController extends Controller
                         ->first();
 
                     Mail::to($emailDefault)->send(new NotifyMail($sale, $head, $linkOrderPDF, $type));
-                } elseif ($request->cancelSale == true) {
+                }
+
+                if ($request->cancelSale == true) {
                     Sales::where('sales.id', '=', $sale->id)
                         ->update([
                             'status' => 'Cancelado',
-                            'total' => $total_order
-                        ]);
-                } elseif ($request->cancelSale == false) {
-                    Sales::where('sales.id', '=', $sale->id)
-                        ->update([
-                            'total' => $total_order
                         ]);
                 }
+
+                /** Update Sale */
+                Sales::where('sales.id', '=', $sale->id)
+                    ->update([
+                        'customer_id' => $input['customer_id'],
+                        'total' => $total_order
+                    ]);
             }
-        } else {
+        }
+
+        /** if is a Order created by customer_visit, ignore validations and update the status */
+        if ($sale->type == 'Presupuesto' && $sale->visit_id) {
 
             /** Here update status to process this is created by customer_visit, ignore validations */
-
             /** check if have changes in order details, get total order */
             $total_order = DB::table('order_details')
                 ->where('order_details.visit_id', '=', $sale->visit_id)

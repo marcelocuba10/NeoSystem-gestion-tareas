@@ -200,8 +200,7 @@ class SalesApiController extends Controller
         /** Get sale by id */
         $sale = Sales::find($id);
 
-
-        /** if it is a order created from sales, check validations and process, else, if is created by customer_visit, ignore validations and update the status*/
+        /** if it is a order created from sales, check validations and process */
         if ($sale->type == 'Presupuesto' && !$sale->visit_id) {
 
             /** Get total amount from items of Sale */
@@ -211,12 +210,11 @@ class SalesApiController extends Controller
 
             /** Update Sale with total items detail and check if process or cancel sale */
             /** Order pass to Sale */
-            if ($request->orderToSale == true) {
+            if ($input['orderToSale'] == true) {
                 Sales::where('sales.id', '=', $sale->id)
                     ->update([
                         'status' => 'Procesado',
                         'type' => 'Venta',
-                        'total' => $total_order
                     ]);
 
                 /** Send email notification - updated status sale to process*/
@@ -252,22 +250,26 @@ class SalesApiController extends Controller
                     ->first();
 
                 Mail::to($emailDefault)->send(new NotifyMail($sale, $head, $linkOrderPDF, $type));
-            } elseif ($request->cancelSale == true) {
+            }
+
+            if ($request->cancelSale == true) {
                 Sales::where('sales.id', '=', $sale->id)
                     ->update([
                         'status' => 'Cancelado',
-                        'total' => $total_order
-                    ]);
-            } elseif ($request->cancelSale == false) {
-                Sales::where('sales.id', '=', $sale->id)
-                    ->update([
-                        'total' => $total_order
                     ]);
             }
-        } else {
 
+            /** Update Sale */
+            Sales::where('sales.id', '=', $sale->id)
+                ->update([
+                    'customer_id' => $input['customer_id'],
+                    'total' => $total_order
+                ]);
+        }
+
+        /** if is a Order created by customer_visit, ignore validations and update the status */
+        if ($sale->type == 'Presupuesto' && $sale->visit_id) {
             /** Here update status to process this is created by customer_visit */
-
             /** check if have changes in order details, get total order */
             $total_order = DB::table('order_details')
                 ->where('order_details.visit_id', '=', $sale->visit_id)
