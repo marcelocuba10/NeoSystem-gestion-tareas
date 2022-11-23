@@ -41,6 +41,8 @@ class CustomerVisitApiController extends Controller
                 'customer_visits.status',
                 'customers.name AS customer_name',
                 'customers.estate',
+                'customers.latitude',
+                'customers.longitude',
             )
             ->orderBy('customer_visits.created_at', 'DESC')
             ->get();

@@ -135,6 +135,7 @@ class HomeApiController extends Controller
             'cant_customers' => $cant_customers,
             'sales_count' => $sales_count,
             'orders_count' => $orders_count,
+            'currentMonthName' => $currentMonthName
         ));
     }
 }

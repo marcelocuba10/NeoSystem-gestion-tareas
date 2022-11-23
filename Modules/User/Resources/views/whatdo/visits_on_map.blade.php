@@ -67,7 +67,7 @@
         var status = marker.status;
         var action = marker.action;
 
-        var html = "<b style='overflow: hidden;font-weight: 500;font-size: 14px;color:#333'>" + customer_name + "</b> <br/>Visitado: " + visit_date +",<br/>Próxima Paso: "+ next_visit_date +",<br/>Hora: "+ next_visit_hour + ",<br/>Acción: " + action + ",<br/>Estado: " + status + "<br/><a href='/facundo/user/customers/show/"+ customer_id +"'>Ver Ficha Cliente</a>";
+        var html = "<b style='overflow: hidden;font-weight: 500;font-size: 14px;color:#333'>" + customer_name + "</b> <br/>Visitado: " + visit_date +",<br/>Próximo Paso: "+ next_visit_date +",<br/>Hora: "+ next_visit_hour + ",<br/>Acción: " + action + ",<br/>Estado: " + status + "<br/><a href='/facundo/user/customers/show/"+ customer_id +"'>Ver Ficha Cliente</a>";
 
         const then = new Date(visit_date); //visit_date
         const now = new Date(); //current date
@@ -79,18 +79,18 @@
 
         console.log(daysBetweenDates);
         if (daysBetweenDates < 30) {
-          console.log('visitado hace menos de 30 días');
+          console.log('visited less than 30 days ago');
           let a = (daysBetweenDates)/(1000*60*60*24);
           var imageColor = "{!! asset('public/images/markers/marker-icon-green-20x32.png') !!}";
         } 
         
         if(daysBetweenDates > 30 && daysBetweenDates < 90) {
-          console.log('visitado entre 30 y 90 días');
+          console.log('visited between 30 and 90 days');
           var imageColor ="{!! asset('public/images/markers/marker-icon-yellow-20x32.png') !!}";
         }
 
         if (daysBetweenDates > 90) {
-          console.log('visitado hace más de 90 días');
+          console.log('visited more than 90 days ago');
           var imageColor = "{!! asset('public/images/markers/marker-icon-red-20x32.png') !!}";
         } 
 
