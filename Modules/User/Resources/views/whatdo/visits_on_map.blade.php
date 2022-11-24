@@ -78,20 +78,21 @@
         const daysBetweenDates = msBetweenDates / (24 * 60 * 60 * 1000);
 
         console.log(daysBetweenDates);
+
         if (daysBetweenDates < 30) {
           console.log('visited less than 30 days ago');
           let a = (daysBetweenDates)/(1000*60*60*24);
-          var imageColor = "{!! asset('public/images/markers/marker-icon-green-20x32.png') !!}";
+          var customIconColor = "{!! asset('public/images/markers/marker-icon-green-20x32.png') !!}";
         } 
         
         if(daysBetweenDates > 30 && daysBetweenDates < 90) {
           console.log('visited between 30 and 90 days');
-          var imageColor ="{!! asset('public/images/markers/marker-icon-yellow-20x32.png') !!}";
+          var customIconColor ="{!! asset('public/images/markers/marker-icon-yellow-20x32.png') !!}";
         }
 
         if (daysBetweenDates > 90) {
           console.log('visited more than 90 days ago');
-          var imageColor = "{!! asset('public/images/markers/marker-icon-red-20x32.png') !!}";
+          var customIconColor = "{!! asset('public/images/markers/marker-icon-red-20x32.png') !!}";
         } 
 
         var markerLatlng = new google.maps.LatLng(parseFloat(marker.latitude),parseFloat(marker.longitude));
@@ -99,7 +100,7 @@
         var mark = new google.maps.Marker({
             map: map,
             position: markerLatlng,
-            icon: imageColor,
+            icon: customIconColor,
         });
 
         google.maps.event.addListener(mark, 'click', (function() {
