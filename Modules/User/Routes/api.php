@@ -9,6 +9,7 @@ use Modules\User\Http\Controllers\Api\ProductsApiController;
 use Modules\User\Http\Controllers\Api\HomeApiController;
 use Modules\User\Http\Controllers\Api\OrderDetailApiController;
 use Modules\User\Http\Controllers\Api\SalesApiController;
+use Modules\User\Http\Controllers\Api\WhatDoApiController;
 
 Route::group(['prefix' => 'auth'], function () {
 
@@ -24,6 +25,13 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 Route::middleware(['cors'])->group(function () {
+
+    /*** WhatDo Routes ***/
+    Route::group(['prefix' => 'whatdo'], function () {
+        Route::get('/getCustomerVisits/{idReference}', [WhatDoApiController::class, 'getCustomerVisits']);
+        Route::get('/visit_on_map/{idReference}', [WhatDoApiController::class, 'visit_on_map']);
+        Route::get('/filter/{filter}/{type}/{idReference}', [WhatDoApiController::class, 'filter']);
+    });
 
     /*** Sales Routes ***/
     Route::group(['prefix' => 'sales'], function () {

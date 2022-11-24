@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\User\Http\Controllers;
+namespace Modules\User\Http\Controllers\Api;
 
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
@@ -12,26 +12,57 @@ use Illuminate\Support\Facades\View;
 use Modules\User\Entities\Customers;
 use Modules\User\Entities\CustomerVisit;
 
-class WhatDoController extends Controller
+class WhatDoApiController extends Controller
 {
-    public function __construct()
+    public function getCustomerVisits($idRefCurrentUser)
     {
-        $this->middleware('auth:web', ['except' => ['logout']]);
+        $customer_visits = DB::table('customer_visits')
+            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+            ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+            ->select(
+                'customer_visits.id',
+                'customer_visits.visit_number',
+                'customer_visits.customer_id',
+                'customer_visits.visit_date',
+                'customer_visits.next_visit_date',
+                'customer_visits.next_visit_hour',
+                'customer_visits.result_of_the_visit',
+                'customer_visits.objective',
+                'customer_visits.action',
+                'customer_visits.type',
+                'customer_visits.status',
+                'customers.name AS customer_name',
+                'customers.estate',
+                'customers.latitude',
+                'customers.longitude',
+            )
+            ->orderBy('customer_visits.created_at', 'DESC')
+            ->get();
 
-        $this->middleware('permission:what_can_do-list|what_can_do-create|what_can_do-edit|what_can_do-delete', ['only' => ['index']]);
-        $this->middleware('permission:what_can_do-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:what_can_do-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:what_can_do-delete', ['only' => ['destroy']]);
-    }
-
-    public function index()
-    {
         $categories = DB::table('parameters')
             ->where('type', '=', 'Rubro')
             ->select('id', 'name')
             ->get();
 
+        $potential_products = DB::table('parameters')
+            ->where('type', '=', 'Equipos Potenciales')
+            ->select('id', 'name')
+            ->get();
+
+        $customers = DB::table('customers')
+            ->where('idReference', '=', $idRefCurrentUser)
+            ->where('customers.status', '=', 1)
+            ->orderBy('created_at', 'DESC')
+            ->get();
+
+        $actions = [
+            'Realizar Llamada',
+            'Realizar Visita',
+            'Enviar Presupuesto'
+        ];
+
         $status = [
+            'Pendiente',
             'Procesado',
             'No Procesado',
             'Cancelado'
@@ -43,37 +74,19 @@ class WhatDoController extends Controller
             'Más de 90 días'
         ];
 
-        $estates = [
-            'Alto Paraná',
-            'Central',
-            'Concepción',
-            'San Pedro',
-            'Cordillera',
-            'Guairá',
-            'Caaguazú',
-            'Caazapá',
-            'Itapúa',
-            'Misiones',
-            'Paraguarí',
-            'Ñeembucú',
-            'Amambay',
-            'Canindeyú',
-            'Presidente Hayes',
-            'Boquerón',
-            'Alto Paraguay'
-        ];
-
-        $potential_products = DB::table('parameters')
-            ->where('type', '=', 'Equipos Potenciales')
-            ->get();
-
-        return view('user::whatdo.index', compact('categories', 'potential_products', 'estates', 'status', 'visits_labels'))->with('i', (request()->input('page', 1) - 1) * 10);
+        return response()->json(array(
+            'customer_visits' => $customer_visits,
+            'categories' => $categories,
+            'potential_products' => $potential_products,
+            'status' => $status,
+            'visits_labels' => $visits_labels,
+            'customers' => $customers,
+            'actions' => $actions
+        ));
     }
 
-    public function visit_on_map()
+    public function visit_on_map($idRefCurrentUser)
     {
-        $idRefCurrentUser = Auth::user()->idReference;
-
         $customer_visits = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
@@ -96,15 +109,13 @@ class WhatDoController extends Controller
             ->orderBy('customer_visits.visit_date', 'ASC')
             ->get();
 
-        return view('user::whatdo.visits_on_map', compact('customer_visits',));
+        return response()->json(array(
+            'customer_visits' => $customer_visits,
+        ));
     }
 
-    public function filter(Request $request)
+    public function filter($filter, $type, $idRefCurrentUser)
     {
-        $filter = $request->input('filter');
-        $type = $request->input('type');
-        $idRefCurrentUser = Auth::user()->idReference;
-
         if ($filter == '') {
             $customer_visits = DB::table('customer_visits')
                 ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
@@ -112,37 +123,23 @@ class WhatDoController extends Controller
                 ->select(
                     'customer_visits.id',
                     'customer_visits.visit_number',
+                    'customer_visits.customer_id',
                     'customer_visits.visit_date',
                     'customer_visits.next_visit_date',
-                    'customer_visits.status',
+                    'customer_visits.next_visit_hour',
+                    'customer_visits.result_of_the_visit',
+                    'customer_visits.objective',
+                    'customer_visits.action',
                     'customer_visits.type',
+                    'customer_visits.status',
                     'customers.name AS customer_name',
                     'customers.estate',
-                    'customers.category'
+                    'customers.category',
                 )
                 ->orderBy('customer_visits.created_at', 'DESC')
                 ->get();
         } else {
-
-            if ($type == 'estate') {
-                $customer_visits = DB::table('customer_visits')
-                    ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-                    ->where('customers.estate', 'LIKE', "%{$filter}%")
-                    ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
-                    ->select(
-                        'customer_visits.id',
-                        'customer_visits.visit_number',
-                        'customer_visits.visit_date',
-                        'customer_visits.next_visit_date',
-                        'customer_visits.status',
-                        'customer_visits.type',
-                        'customers.name AS customer_name',
-                        'customers.estate',
-                        'customers.category'
-                    )
-                    ->orderBy('customer_visits.created_at', 'DESC')
-                    ->get();
-            } elseif ($type == 'status') {
+            if ($type == 'status') {
                 $customer_visits = DB::table('customer_visits')
                     ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
                     ->where('customer_visits.status', 'LIKE', "{$filter}%")
@@ -150,13 +147,18 @@ class WhatDoController extends Controller
                     ->select(
                         'customer_visits.id',
                         'customer_visits.visit_number',
+                        'customer_visits.customer_id',
                         'customer_visits.visit_date',
                         'customer_visits.next_visit_date',
-                        'customer_visits.status',
+                        'customer_visits.next_visit_hour',
+                        'customer_visits.result_of_the_visit',
+                        'customer_visits.objective',
+                        'customer_visits.action',
                         'customer_visits.type',
+                        'customer_visits.status',
                         'customers.name AS customer_name',
                         'customers.estate',
-                        'customers.category'
+                        'customers.category',
                     )
                     ->orderBy('customer_visits.created_at', 'DESC')
                     ->get();
@@ -169,13 +171,18 @@ class WhatDoController extends Controller
                     ->select(
                         'customer_visits.id',
                         'customer_visits.visit_number',
+                        'customer_visits.customer_id',
                         'customer_visits.visit_date',
                         'customer_visits.next_visit_date',
-                        'customer_visits.status',
+                        'customer_visits.next_visit_hour',
+                        'customer_visits.result_of_the_visit',
+                        'customer_visits.objective',
+                        'customer_visits.action',
                         'customer_visits.type',
+                        'customer_visits.status',
                         'customers.name AS customer_name',
                         'customers.estate',
-                        'customers.category'
+                        'customers.category',
                     )
                     ->orderBy('customer_visits.created_at', 'DESC')
                     ->get();
@@ -188,52 +195,43 @@ class WhatDoController extends Controller
                     ->select(
                         'customer_visits.id',
                         'customer_visits.visit_number',
+                        'customer_visits.customer_id',
                         'customer_visits.visit_date',
                         'customer_visits.next_visit_date',
-                        'customer_visits.status',
+                        'customer_visits.next_visit_hour',
+                        'customer_visits.result_of_the_visit',
+                        'customer_visits.objective',
+                        'customer_visits.action',
                         'customer_visits.type',
+                        'customer_visits.status',
                         'customers.name AS customer_name',
                         'customers.estate',
-                        'customers.category'
+                        'customers.category',
                     )
                     ->orderBy('customer_visits.created_at', 'DESC')
                     ->get();
-
-                // } elseif ($type == 'visit_date') {
-                //     $customer_visits = DB::table('customer_visits')
-                //         ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-                //         ->where('customer_visits.visit_date', 'LIKE', "{$filter}%")
-                //         ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
-                //         ->select(
-                //             'customer_visits.id',
-                //             'customer_visits.visit_number',
-                //             'customer_visits.visit_date',
-                //             'customer_visits.next_visit_date',
-                //             'customer_visits.status',
-                //             'customer_visits.type',
-                //             'customers.name AS customer_name',
-                //             'customers.estate',
-                //             'customers.category'
-                //         )
-                //         ->orderBy('customer_visits.created_at', 'DESC')
-                //         ->get();
             } elseif ($type == 'visit_date') {
 
                 if ($filter == 'Menos de 30 días') {
                     $customer_visits = DB::table('customer_visits')
                         ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
                         ->where('customers.idReference', '=', $idRefCurrentUser)
-                        ->where('visit_date', '>', Carbon::now()->subDays(30))
+                        ->where('visit_date', '>', Carbon::now()->subDays(30)) //Laravel Carbon subtract days from current date
                         ->select(
                             'customer_visits.id',
                             'customer_visits.visit_number',
+                            'customer_visits.customer_id',
                             'customer_visits.visit_date',
                             'customer_visits.next_visit_date',
-                            'customer_visits.status',
+                            'customer_visits.next_visit_hour',
+                            'customer_visits.result_of_the_visit',
+                            'customer_visits.objective',
+                            'customer_visits.action',
                             'customer_visits.type',
+                            'customer_visits.status',
                             'customers.name AS customer_name',
                             'customers.estate',
-                            'customers.category'
+                            'customers.category',
                         )
                         ->orderBy('customer_visits.created_at', 'DESC')
                         ->get();
@@ -248,13 +246,18 @@ class WhatDoController extends Controller
                         ->select(
                             'customer_visits.id',
                             'customer_visits.visit_number',
+                            'customer_visits.customer_id',
                             'customer_visits.visit_date',
                             'customer_visits.next_visit_date',
-                            'customer_visits.status',
+                            'customer_visits.next_visit_hour',
+                            'customer_visits.result_of_the_visit',
+                            'customer_visits.objective',
+                            'customer_visits.action',
                             'customer_visits.type',
+                            'customer_visits.status',
                             'customers.name AS customer_name',
                             'customers.estate',
-                            'customers.category'
+                            'customers.category',
                         )
                         ->orderBy('customer_visits.created_at', 'DESC')
                         ->get();
@@ -268,19 +271,23 @@ class WhatDoController extends Controller
                         ->select(
                             'customer_visits.id',
                             'customer_visits.visit_number',
+                            'customer_visits.customer_id',
                             'customer_visits.visit_date',
                             'customer_visits.next_visit_date',
-                            'customer_visits.status',
+                            'customer_visits.next_visit_hour',
+                            'customer_visits.result_of_the_visit',
+                            'customer_visits.objective',
+                            'customer_visits.action',
                             'customer_visits.type',
+                            'customer_visits.status',
                             'customers.name AS customer_name',
                             'customers.estate',
-                            'customers.category'
+                            'customers.category',
                         )
                         ->orderBy('customer_visits.created_at', 'DESC')
                         ->get();
                 }
             } elseif ($type == 'next_visit_date') {
-
                 $customer_visits = DB::table('customer_visits')
                     ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
                     ->where('customer_visits.next_visit_date', 'LIKE', "{$filter}%")
@@ -288,13 +295,18 @@ class WhatDoController extends Controller
                     ->select(
                         'customer_visits.id',
                         'customer_visits.visit_number',
+                        'customer_visits.customer_id',
                         'customer_visits.visit_date',
                         'customer_visits.next_visit_date',
-                        'customer_visits.status',
+                        'customer_visits.next_visit_hour',
+                        'customer_visits.result_of_the_visit',
+                        'customer_visits.objective',
+                        'customer_visits.action',
                         'customer_visits.type',
+                        'customer_visits.status',
                         'customers.name AS customer_name',
                         'customers.estate',
-                        'customers.category'
+                        'customers.category',
                     )
                     ->orderBy('customer_visits.created_at', 'DESC')
                     ->get();
@@ -306,59 +318,25 @@ class WhatDoController extends Controller
             ->select('id', 'name')
             ->get();
 
-        return View::make('user::whatdo._partials.datatable', compact('customer_visits', 'filter', 'categories'));
-    }
+        $potential_products = DB::table('parameters')
+            ->where('type', '=', 'Equipos Potenciales')
+            ->select('id', 'name')
+            ->get();
 
-    public function search(Request $request)
-    {
-        $search = $request->input('search');
-        $idRefCurrentUser = Auth::user()->idReference;
+        $customers = DB::table('customers')
+            ->where('idReference', '=', $idRefCurrentUser)
+            ->where('customers.status', '=', 1)
+            ->orderBy('created_at', 'DESC')
+            ->get();
 
-        if ($search == '') {
-            $customer_visits = DB::table('customer_visits')
-                ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-                ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
-                ->select(
-                    'customer_visits.id',
-                    'customer_visits.visit_number',
-                    'customer_visits.visit_date',
-                    'customer_visits.next_visit_date',
-                    'customer_visits.status',
-                    'customer_visits.type',
-                    'customers.name AS customer_name',
-                    'customers.estate',
-                    'customers.category'
-                )
-                ->orderBy('customer_visits.created_at', 'DESC')
-                ->get();
-        } else {
-            $customer_visits = DB::table('customer_visits')
-                ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-                ->where('customers.idReference', '=', $idRefCurrentUser)
-                ->where('customers.name', 'LIKE', "%{$search}%")
-                ->select(
-                    'customer_visits.id',
-                    'customer_visits.visit_number',
-                    'customer_visits.visit_date',
-                    'customer_visits.next_visit_date',
-                    'customer_visits.next_visit_hour',
-                    'customer_visits.result_of_the_visit',
-                    'customer_visits.objective',
-                    'customer_visits.status',
-                    'customer_visits.type',
-                    'customers.name AS customer_name',
-                    'customers.estate',
-                    'customers.category'
-                )
-                ->orderBy('customer_visits.created_at', 'DESC')
-                ->get();
-        }
-
-        $customers_categories = DB::table('parameters')
-            ->where('type', '=', 'Rubro')
-            ->pluck('name', 'name');
+        $actions = [
+            'Realizar Llamada',
+            'Realizar Visita',
+            'Enviar Presupuesto'
+        ];
 
         $status = [
+            'Pendiente',
             'Procesado',
             'No Procesado',
             'Cancelado'
@@ -370,31 +348,14 @@ class WhatDoController extends Controller
             'Más de 90 días'
         ];
 
-        $estates = [
-            'Alto Paraná',
-            'Central',
-            'Concepción',
-            'San Pedro',
-            'Cordillera',
-            'Guairá',
-            'Caaguazú',
-            'Caazapá',
-            'Itapúa',
-            'Misiones',
-            'Paraguarí',
-            'Ñeembucú',
-            'Amambay',
-            'Canindeyú',
-            'Presidente Hayes',
-            'Boquerón',
-            'Alto Paraguay'
-        ];
-
-        $categories = DB::table('parameters')
-            ->where('type', '=', 'Rubro')
-            ->select('id', 'name')
-            ->get();
-
-        return View::make('user::whatdo._partials.datatable', compact('customer_visits', 'search', 'categories'));
+        return response()->json(array(
+            'customer_visits' => $customer_visits,
+            'categories' => $categories,
+            'potential_products' => $potential_products,
+            'status' => $status,
+            'visits_labels' => $visits_labels,
+            'customers' => $customers,
+            'actions' => $actions
+        ));
     }
 }

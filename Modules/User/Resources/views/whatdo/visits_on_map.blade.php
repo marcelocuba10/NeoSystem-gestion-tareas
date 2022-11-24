@@ -60,16 +60,23 @@
 
       function addMarker(marker){
         var customer_id = marker.customer_id;
-        var customer_name = marker.customer_name;
-        var visit_date = marker.visit_date;
-        var next_visit_date = marker.next_visit_date;
+        var customer_name = marker.customer_name; 
+
+        var visit_date = new Date(marker.visit_date).toLocaleString();  // format 2022-11-01 08:38:51 to 1/11/2022, 08:38:51
+
+        if (marker.next_visit_date != 'No marcado') {
+          var next_visit_date = new Date(marker.next_visit_date).toLocaleDateString();  // format 2022-11-01 to 1/11/2022
+        }else{
+          var next_visit_date = marker.next_visit_date;
+        }
+        
         var next_visit_hour = marker.next_visit_hour;
         var status = marker.status;
         var action = marker.action;
 
         var html = "<b style='overflow: hidden;font-weight: 500;font-size: 14px;color:#333'>" + customer_name + "</b> <br/>Visitado: " + visit_date +",<br/>Próximo Paso: "+ next_visit_date +",<br/>Hora: "+ next_visit_hour + ",<br/>Acción: " + action + ",<br/>Estado: " + status + "<br/><a href='/facundo/user/customers/show/"+ customer_id +"'>Ver Ficha Cliente</a>";
 
-        const then = new Date(visit_date); //visit_date
+        const then = new Date(marker.visit_date); //visit_date
         const now = new Date(); //current date
         //Subtract visit date with current date, result in milliseconds.
         const msBetweenDates = Math.abs(then.getTime() - now.getTime());

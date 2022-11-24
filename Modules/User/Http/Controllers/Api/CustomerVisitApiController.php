@@ -21,7 +21,6 @@ use Modules\User\Emails\NotifyMail;
 
 class CustomerVisitApiController extends Controller
 {
-
     public function index($idRefCurrentUser)
     {
         $customer_visits = DB::table('customer_visits')
@@ -62,7 +61,7 @@ class CustomerVisitApiController extends Controller
         return response()->json(array(
             'customer_visits' => $customer_visits,
             'customers' => $customers,
-            'actions' => $actions,
+            'actions' => $actions
         ));
     }
 

@@ -629,6 +629,7 @@ class ReportsController extends Controller
                     $customer_visits = DB::table('customer_visits')
                         ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
                         ->where('visit_date', '<', Carbon::now()->subDays(30))
+                        ->where('visit_date', '>', Carbon::now()->subDays(90))
                         ->select(
                             'customer_visits.id',
                             'customer_visits.visit_number',
@@ -886,7 +887,7 @@ class ReportsController extends Controller
                     $sales = DB::table('sales')
                         ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
                         ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
-                        ->where('sales.updated_at', '>', Carbon::now()->subDays(30))
+                        ->where('sales.sale_date', '>', Carbon::now()->subDays(30))
                         ->select(
                             'sales.id',
                             'sales.invoice_number',
@@ -906,7 +907,8 @@ class ReportsController extends Controller
                     $sales = DB::table('sales')
                         ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
                         ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
-                        ->where('sales.updated_at', '<', Carbon::now()->subDays(30))
+                        ->where('sales.sale_date', '<', Carbon::now()->subDays(30))
+                        ->where('sales.sale_date', '>', Carbon::now()->subDays(90))
                         ->select(
                             'sales.id',
                             'sales.invoice_number',
@@ -926,7 +928,7 @@ class ReportsController extends Controller
                     $sales = DB::table('sales')
                         ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
                         ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
-                        ->where('sales.updated_at', '<', Carbon::now()->subDays(90))
+                        ->where('sales.sale_date', '<', Carbon::now()->subDays(90))
                         ->select(
                             'sales.id',
                             'sales.invoice_number',

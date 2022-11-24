@@ -45,7 +45,7 @@
       <div class="col-3">
         <div class="input-style-1">
           <label>Fecha/Hora</label>
-          <input type="text" value="{{ $sale->sale_date ?? old('sale_date') }}" readonly>
+          <input type="text" value="{{ date('d/m/Y - H:i', strtotime($sale->sale_date)) }}" readonly>
         </div>
       </div>
       <div class="col-sm-2">
