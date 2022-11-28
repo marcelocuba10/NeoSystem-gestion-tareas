@@ -7,6 +7,7 @@ use Modules\User\Http\Controllers\Api\AppointmentsApiController;
 use Modules\User\Http\Controllers\Api\CustomerVisitApiController;
 use Modules\User\Http\Controllers\Api\ProductsApiController;
 use Modules\User\Http\Controllers\Api\HomeApiController;
+use Modules\User\Http\Controllers\Api\MultimediaApiController;
 use Modules\User\Http\Controllers\Api\OrderDetailApiController;
 use Modules\User\Http\Controllers\Api\SalesApiController;
 use Modules\User\Http\Controllers\Api\WhatDoApiController;
@@ -25,6 +26,12 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 Route::middleware(['cors'])->group(function () {
+
+    /*** Multimedia Routes ***/
+    Route::group(['prefix' => 'multimedia'], function () {
+        Route::get('/', [MultimediaApiController::class, 'index']);
+        Route::get('/filter/{filter}', [MultimediaApiController::class, 'filter']);
+    });
 
     /*** WhatDo Routes ***/
     Route::group(['prefix' => 'whatdo'], function () {
