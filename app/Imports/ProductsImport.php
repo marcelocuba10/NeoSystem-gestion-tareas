@@ -18,10 +18,10 @@ class ProductsImport implements ToModel, WithUpserts
 
         /** the letters of the excel headers, put in lowercase and the spaces with an _ */
         return new Products([
-            'custom_code' => $row[1],
-            'name' => $row[2],
-            'purchase_price' => $row[3],
-            'sale_price' => $row[4],
+            'custom_code' => $row[0],
+            'name' => $row[1],
+            'purchase_price' => $row[2],
+            'sale_price' => $row[3],
         ]);
     }
 }

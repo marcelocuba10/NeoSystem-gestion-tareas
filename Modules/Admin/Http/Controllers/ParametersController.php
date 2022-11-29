@@ -2,6 +2,7 @@
 
 namespace Modules\Admin\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -25,6 +26,7 @@ class ParametersController extends Controller
     public function index()
     {
         $parameters = DB::table('parameters')
+            ->where('type', '!=', 'Email')
             ->select(
                 'id',
                 'name',
@@ -34,7 +36,7 @@ class ParametersController extends Controller
             ->orderBy('created_at', 'DESC')
             ->paginate(10);
 
-        $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+        $emailDefault = DB::table('parameters')->where('type', 'Email')->pluck('email')->first();
 
         return view('admin::parameters.index', compact('parameters', 'emailDefault'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
@@ -105,6 +107,13 @@ class ParametersController extends Controller
         return view('admin::parameters.edit', compact('parameter', 'keys', 'type_parameter'));
     }
 
+    public function editEmailNotify()
+    {
+        $emailDefault = DB::table('parameters')->where('type', 'Email')->pluck('email')->first();
+
+        return view('admin::parameters.email.edit', compact('emailDefault'));
+    }
+
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -120,6 +129,23 @@ class ParametersController extends Controller
         return redirect()->to('/admin/parameters')->with('message', 'Parameter updated successfully.');
     }
 
+    public function updateEmailNotify(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|max:50|min:5|email:rfc,dns',
+        ]);
+
+        DB::table('parameters')
+            ->where('type', '=', 'Email')
+            ->update([
+                'email' => $request->email,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ]);
+
+        return redirect()->to('/admin/parameters')->with('message', 'Email actualizado correctamente.');
+    }
+
     public function search(Request $request)
     {
         $search = $request->input('search');
@@ -127,6 +153,7 @@ class ParametersController extends Controller
 
         if ($search == '') {
             $parameters = DB::table('parameters')
+                ->where('type', '!=', 'Email')
                 ->select(
                     'id',
                     'name',
@@ -137,6 +164,7 @@ class ParametersController extends Controller
                 ->paginate(10);
         } else {
             $parameters = DB::table('parameters')
+                ->where('type', '!=', 'Email')
                 ->where('name', 'LIKE', "%{$search}%")
                 ->select(
                     'id',
@@ -148,7 +176,7 @@ class ParametersController extends Controller
                 ->paginate();
         }
 
-        return view('admin::parameters.index', compact('parameters', 'search','emailDefault'))->with('i', (request()->input('page', 1) - 1) * 10);
+        return view('admin::parameters.index', compact('parameters', 'search', 'emailDefault'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
     public function destroy($id)

@@ -114,6 +114,9 @@
                   <input type="text" placeholder="Ingrese un email" value="{{ $emailDefault }}" readonly>
                   <span class="form-text m-b-none">En este email llegarán las notificaciones cuando el agente registra eventos en el sistema.</span>
                 </div>
+                <a href="{{ url('/admin/parameters/email/edit/') }}">
+                  <button type="button" class="btn btn-block btn-secondary">Cambiar Email</button>
+                </a>
               </div>
             </div>
           </div>

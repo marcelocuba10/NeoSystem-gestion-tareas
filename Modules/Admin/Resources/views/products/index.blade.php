@@ -135,7 +135,7 @@
         event.preventDefault();
         swal({
             title: '¿Está seguro que desea eliminar este registro?',
-            // text: "Si eliminas esto, desaparecerá para siempre.",
+            // text: "Subtitulo",
             icon: "warning",
             buttons: true,
             dangerMode: true,

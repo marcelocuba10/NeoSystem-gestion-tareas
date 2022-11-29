@@ -161,12 +161,6 @@ class ProductsController extends Controller
         return redirect()->to('/admin/products')->with('message', 'Producto actualizado correctamente');
     }
 
-    public function destroy($id)
-    {
-        Products::find($id)->delete();
-        return redirect()->to('/admin/products')->with('message', 'Producto Eliminado Correctamente');
-    }
-
     public function search(Request $request)
     {
         $search = $request->input('search');
@@ -276,6 +270,12 @@ class ProductsController extends Controller
         } else {
             return back()->with("error", "Failed to upload image.");
         }
+    }
+
+    public function destroy($id)
+    {
+        Products::find($id)->delete();
+        return redirect()->to('/admin/products')->with('message', 'Producto Eliminado Correctamente');
     }
 
     public function destroyImage($id)

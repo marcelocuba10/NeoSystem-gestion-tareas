@@ -77,16 +77,6 @@
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
   <!-- ========= Scripts ======== -->
-  <!-- ========= disable button after send form ======== -->
-  <script>
-    $(document).ready(function(){
-      $('form').submit(function (event) {
-        var btn_submit = document.getElementById('btn_submit');
-        btn_submit.disabled = true;
-        btn_submit.innerText = 'Procesando...'
-      });
-    })
-  </script>
   <!-- ========= Select2 Multiple ======== -->
   <script>
     $(document).ready(function() {

@@ -83,7 +83,6 @@ Route::prefix('admin')->group(function () {
             Route::get('/edit/{id}', 'ProductsController@edit');
             Route::put('/update/{id}', 'ProductsController@update');
             Route::delete('/delete/{id}', 'ProductsController@destroy');
-            Route::delete('/delete-product/{id}', 'ProductsController@destroy_product');
             Route::get('/search', 'ProductsController@search');
 
             Route::get('image-gallery/{id}', 'ProductsController@imageGallery');
@@ -129,7 +128,9 @@ Route::prefix('admin')->group(function () {
             Route::post('/create', 'ParametersController@store');
             Route::get('/show/{id}', 'ParametersController@show');
             Route::get('/edit/{id}', 'ParametersController@edit');
+            Route::get('/email/edit', 'ParametersController@editEmailNotify');
             Route::put('/update/{id}', 'ParametersController@update');
+            Route::put('/email/update', 'ParametersController@updateEmailNotify');
             Route::delete('/delete/{id}', 'ParametersController@destroy');
             Route::get('/search', 'ParametersController@search');
         });
