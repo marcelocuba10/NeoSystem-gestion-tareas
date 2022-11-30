@@ -21,10 +21,13 @@ class CustomersApiController extends Controller
             ->get();
 
         $categories = DB::table('parameters')
+            ->select('id', 'name')
             ->where('type', '=', 'Rubro')
-            ->get();
+            ->get()
+            ->toArray();
 
         $potential_products = DB::table('parameters')
+            ->select('id', 'name')
             ->where('type', '=', 'Equipos Potenciales')
             ->get();
 

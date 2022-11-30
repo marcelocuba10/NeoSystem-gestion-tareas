@@ -44,7 +44,7 @@ class CustomersController extends Controller
             ->where('type', '=', 'Rubro')
             ->select('id', 'name')
             ->get();
-
+            
         return view('user::customers.index', compact('customers', 'categories'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
