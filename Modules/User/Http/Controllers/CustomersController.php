@@ -44,7 +44,7 @@ class CustomersController extends Controller
             ->where('type', '=', 'Rubro')
             ->select('id', 'name')
             ->get();
-            
+
         return view('user::customers.index', compact('customers', 'categories'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
@@ -293,59 +293,28 @@ class CustomersController extends Controller
 
             $customer = Customers::find($id);
 
-            /** potential products array */
+            /** Delete all id parameters in table customer_parameters */
+            DB::table('customer_parameters')
+                ->where('customer_id', $customer->id)
+                ->delete();
+
+            /** ADD potential_products array */
             foreach ($request->potential_products as $key => $value) {
-                if (intval($request->qty[$key]) <= 0) {
-                    return back()->with('error', 'Por favor, ingrese una cantidad válida en Producto Potencial.');
-                } else {
-
-                    // get product_id
-                    $potential_product_id = DB::table('customer_parameters')
-                        ->where('customer_parameters.customer_id', '=', $customer->id)
-                        ->where('customer_parameters.potential_product_id', '=', $request->potential_products[$key])
-                        ->select(
-                            'customer_parameters.potential_product_id',
-                        )
-                        ->first();
-
-                    /** if find product_id, update potential product; else create new potential product */
-                    if ($potential_product_id) {
-                        DB::table('customer_parameters')
-                            ->where('customer_parameters.customer_id', '=', $customer->id)
-                            ->where('customer_parameters.potential_product_id', '=', $request->potential_products[$key])
-                            ->update([
-                                'quantity' => $request->qty[$key],
-                            ]);
-                    } else {
-                        $item = new CustomerParameters();
-                        $item->customer_id = $customer->id;
-                        $item->potential_product_id = $request->potential_products[$key];
-                        $item->quantity = $request->qty[$key];
-                        $item->save();
-                    }
-                }
+                /** Save potential_product in table customer_parameters */
+                $item = new CustomerParameters();
+                $item->customer_id = $customer->id;
+                $item->potential_product_id = $request->potential_products[$key];
+                $item->quantity = $request->qty[$key];
+                $item->save();
             }
 
-            /** categories array */
+            /** ADD categories array */
             foreach ($request->category as $key => $value) {
-
-                $ifCatExist = DB::table('customer_parameters')
-                    ->leftjoin('customers', 'customers.id', '=', 'customer_parameters.customer_id')
-                    ->where('customer_parameters.category_id', '=', $request->category[$key])
-                    ->where('customer_parameters.customer_id', '=', $customer->id)
-                    ->select(
-                        'customer_parameters.category_id',
-                    )
-                    ->first();
-
-                /** if find category id, update category; */
-                if (!$ifCatExist) {
-                    /** Save new category in table customer_parameters */
-                    $item = new CustomerParameters();
-                    $item->customer_id = $customer->id;
-                    $item->category_id = $request->category[$key];
-                    $item->save();
-                }
+                /** Save new category_id in table customer_parameters */
+                $item = new CustomerParameters();
+                $item->customer_id = $customer->id;
+                $item->category_id = $request->category[$key];
+                $item->save();
             }
 
             $customer->update($input);

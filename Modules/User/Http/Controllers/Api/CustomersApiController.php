@@ -104,6 +104,8 @@ class CustomersApiController extends Controller
             'city' => 'nullable|max:50|min:5',
             'estate' => 'required|max:50|min:5',
             'is_vigia' => 'nullable',
+            'category' => 'required|max:150|min:1',
+            'potential_products' => 'required|max:150|min:1',
             'result_of_the_visit' => 'nullable|max:1000|min:3',
             'objective' => 'nullable|max:1000|min:3',
             'next_visit_date' => 'nullable|date_format:Y-m-d|after_or_equal:today',
@@ -117,10 +119,36 @@ class CustomersApiController extends Controller
             $input['is_vigia'] = null;
         }
 
-        //update in DB
+        /** Find customer by ID */
         $customer = Customers::find($id);
-        $input['category'] = str_replace('/\/', '', $customer->category);
-        $input['potential_products'] = str_replace('/\/', '', $customer->potential_products);
+
+        /** Delete all id parameters in table customer_parameters */
+        DB::table('customer_parameters')
+            ->where('customer_id', $customer->id)
+            ->delete();
+
+        /** ADD potential_products array */
+        foreach ($request->potential_products as $key => $value) {
+            /** Save potential_product in table customer_parameters */
+            $item = new CustomerParameters();
+            $item->customer_id = $customer->id;
+            $item->potential_product_id = $request->potential_products[$key];
+            $item->quantity = 1;
+            $item->save();
+        }
+
+        /** ADD categories array */
+        foreach ($request->category as $key => $value) {
+            /** Save new category_id in table customer_parameters */
+            $item = new CustomerParameters();
+            $item->customer_id = $customer->id;
+            $item->category_id = $request->category[$key];
+            $item->save();
+        }
+
+        $input['category'] = str_replace('/\/', '', $input['category']);
+        $input['potential_products'] = str_replace('/\/', '', $input['potential_products']);
+
         $customer->update($input);
 
         //return response
