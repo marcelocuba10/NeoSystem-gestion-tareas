@@ -26,6 +26,7 @@ class CreateCustomerVisitsTable extends Migration
             $table->string('status');
             $table->string('action');
             $table->string('type');
+            $table->integer('isTemp');
             $table->timestamps();
         });
     }

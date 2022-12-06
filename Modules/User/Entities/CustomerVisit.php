@@ -20,7 +20,8 @@ class CustomerVisit extends Model
         'objective',
         'status',
         'action',
-        'type'
+        'type',
+        'isTemp'
     ];
     
     protected static function newFactory()

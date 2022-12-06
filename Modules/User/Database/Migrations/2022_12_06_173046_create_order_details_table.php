@@ -15,8 +15,8 @@ class CreateOrderDetailsTable extends Migration
     {
         Schema::create('order_details', function (Blueprint $table) {
             $table->id();
-            $table->integer('visit_id')->nullable();
-            //$table->unsignedBigInteger('visit_id')->nullable();
+            //$table->integer('visit_id')->nullable();
+            $table->unsignedBigInteger('visit_id')->nullable();
             $table->unsignedBigInteger('sale_id')->nullable();
             $table->integer('product_id');
             $table->decimal('price', 12, 0);
@@ -25,9 +25,9 @@ class CreateOrderDetailsTable extends Migration
             $table->decimal('amount', 12, 0);
             $table->timestamps();
 
-            // $table->foreign('visit_id')
-            //     ->references('id')->on('customer_visits')
-            //     ->onDelete('cascade');
+            $table->foreign('visit_id')
+                ->references('id')->on('customer_visits')
+                ->onDelete('cascade');
 
             $table->foreign('sale_id')
                 ->references('id')->on('sales')
