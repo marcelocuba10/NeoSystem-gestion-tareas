@@ -28,6 +28,10 @@ class CreateOrderDetailsTable extends Migration
             // $table->foreign('visit_id')
             //     ->references('id')->on('customer_visits')
             //     ->onDelete('cascade');
+
+            $table->foreign('sale_id')
+                ->references('id')->on('sales')
+                ->onDelete('cascade');
         });
     }
 

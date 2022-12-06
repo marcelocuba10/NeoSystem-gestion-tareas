@@ -19,7 +19,8 @@ class Sales extends Model
         'type',
         'previous_type',
         'status',
-        'total'
+        'total',
+        'isTemp'
     ];
     
     protected static function newFactory()
