@@ -25,7 +25,7 @@ class CreateSalesTable extends Migration
             $table->string('previous_type');
             $table->string('status');
             $table->decimal('total', 12, 0);
-            $table->integer('isTemp');
+            $table->integer('isTemp')->default(0);
             $table->timestamps();
 
             $table->foreign('visit_id')

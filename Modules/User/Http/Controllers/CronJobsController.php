@@ -16,11 +16,12 @@ class CronJobsController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    public function cronjob()
+    /** verify expiration dates of appointments and customer visits */
+    public function checkExpirationDates()
     {
         $currentDateHour = Carbon::now()->format('Y-m-d H:i');
 
-        \Log::info("CronJob executed: " . $currentDateHour);
+        // \Log::info("CronJob executed: " . $currentDateHour);
 
         /** get all appointments with status Pending */
         $late_appointments = DB::table('appointments')
@@ -67,4 +68,13 @@ class CronJobsController extends Controller
 
         return json_encode('complete');
     }
+
+    /** verify if there are sales and orphan customer visits, we proceed to eliminate them. */
+    public function checkTemporarySales()
+    {
+        $currentDateHour = Carbon::now()->format('Y-m-d H:i');
+
+        // \Log::info("CronJob checkTemporarySales executed: " . $currentDateHour);
+
+     }
 }

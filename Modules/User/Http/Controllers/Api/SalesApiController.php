@@ -99,79 +99,10 @@ class SalesApiController extends Controller
                 $input['previous_type'] = 'Presupuesto';
             }
 
-            $input['isTemp'] = 1;
             $input['total'] = 0;
 
             /** Create */
             $sale = Sales::create($input);
-        } else {
-            /** Check If not select any product */
-            $count_order = DB::table('order_details')
-                ->where('order_details.sale_id', '=', $input['id'])
-                ->count();
-
-            if ($count_order == 0) {
-                return response()->json(array(
-                    'errors' => 'Por favor, adicione mínimo un producto'
-                ), 500);
-            } else {
-
-                /** Extra values */
-                $input['invoice_number'] = $this->generateUniqueCode();
-                $input['seller_id'] = $input['idReference'];
-                $input['sale_date'] = $currentDate;
-
-                if ($input['type'] == 'Venta') {
-                    $input['status'] = 'Procesado';
-                    $input['previous_type'] = 'Venta';
-                } elseif ($input['type'] == 'Presupuesto') {
-                    $input['status'] = 'Pendiente';
-                    $input['previous_type'] = 'Presupuesto';
-                }
-
-                /** Get total amount from items orders of Sale */
-                $total_order = DB::table('order_details')
-                    ->where('order_details.sale_id', '=', $input['id'])
-                    ->sum('amount');
-
-                $input['total'] = $total_order;
-
-                /** Create */
-                $sale = Sales::create($input);
-
-                /** Send email notification - updated status sale to process*/
-                $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
-                $head = 'crear un(a) ' . $sale->type . ' - #' . $sale->invoice_number;
-                $type = 'Venta';
-                //** create link to download pdf invoice in email */
-                $linkOrderPDF = url('/sales/' . $input['idReference'] . '/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
-
-                $sale = DB::table('sales')
-                    ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
-                    ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
-                    ->leftjoin('users', 'users.idReference', '=', 'sales.seller_id')
-                    ->where('sales.id', $sale->id)
-                    ->select(
-                        'sales.sale_date',
-                        'sales.type',
-                        'sales.status',
-                        'sales.total',
-                        'sales.visit_id',
-                        'customer_visits.action',
-                        'customer_visits.visit_date',
-                        'customer_visits.next_visit_date',
-                        'customer_visits.next_visit_hour',
-                        'customer_visits.result_of_the_visit',
-                        'customer_visits.objective',
-                        'customers.name AS customer_name',
-                        'customers.estate',
-                        'customers.phone',
-                        'users.name AS seller_name'
-                    )
-                    ->first();
-
-                Mail::to($emailDefault)->send(new NotifyMail($sale, $head, $linkOrderPDF, $type));
-            }
         }
 
         //return response
@@ -228,9 +159,9 @@ class SalesApiController extends Controller
         /** Get sale by id */
         $sale = Sales::find($id);
 
-        /** if it is a order created from sales, check validations and process */
-        if ($sale->type == 'Presupuesto' && !$sale->visit_id) {
+        /** check is sale have order details items */
 
+        if ($sale->type == 'Venta' && !$sale->visit_id) {
             /** Check If not select any product */
             $count_order = DB::table('order_details')
                 ->where('order_details.sale_id', '=', $id)
@@ -250,8 +181,110 @@ class SalesApiController extends Controller
                 Sales::where('sales.id', '=', $sale->id)
                     ->update([
                         'customer_id' => $input['customer_id'],
-                        'total' => $total_order,
-                        'isTemp' => $input['isTemp']
+                        'isTemp' => $input['isTemp'],
+                        'total' => $total_order
+                    ]);
+
+                /** send notification when is the first customer_visit order */
+                if ($sale->isTemp == 1) {
+
+                    /** Send email notification - updated status sale to process*/
+                    $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+                    $head = 'crear un(a) ' . $sale->type . ' - #' . $sale->invoice_number;
+                    $type = 'Venta';
+                    //** create link to download pdf invoice in email */
+                    $linkOrderPDF = url('/sales/' . $input['idReference'] . '/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
+
+                    $sale_email = DB::table('sales')
+                        ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+                        ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+                        ->leftjoin('users', 'users.idReference', '=', 'sales.seller_id')
+                        ->where('sales.id', $sale->id)
+                        ->select(
+                            'sales.sale_date',
+                            'sales.type',
+                            'sales.status',
+                            'sales.total',
+                            'sales.visit_id',
+                            'customer_visits.action',
+                            'customer_visits.visit_date',
+                            'customer_visits.next_visit_date',
+                            'customer_visits.next_visit_hour',
+                            'customer_visits.result_of_the_visit',
+                            'customer_visits.objective',
+                            'customers.name AS customer_name',
+                            'customers.estate',
+                            'customers.phone',
+                            'users.name AS seller_name'
+                        )
+                        ->first();
+
+                    Mail::to($emailDefault)->send(new NotifyMail($sale_email, $head, $linkOrderPDF, $type));
+                }
+            }
+        }
+
+        /** if it is a order created from sales, check validations and process */
+        if ($sale->type == 'Presupuesto' && !$sale->visit_id) {
+
+            /** Check If not select any product */
+            $count_order = DB::table('order_details')
+                ->where('order_details.sale_id', '=', $id)
+                ->count();
+
+            if ($count_order == 0) {
+                return response()->json(array(
+                    'errors' => 'Por favor, adicione mínimo un producto'
+                ), 500);
+            } else {
+
+                /** send notification when is the first customer_visit order */
+                if ($sale->isTemp == 1) {
+
+                    /** Send email notification - updated status sale to process*/
+                    $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+                    $head = 'crear un(a) ' . $sale->type . ' - #' . $sale->invoice_number;
+                    $type = 'Venta';
+                    //** create link to download pdf invoice in email */
+                    $linkOrderPDF = url('/sales/' . $input['idReference'] . '/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
+
+                    $sale_email = DB::table('sales')
+                        ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+                        ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+                        ->leftjoin('users', 'users.idReference', '=', 'sales.seller_id')
+                        ->where('sales.id', $sale->id)
+                        ->select(
+                            'sales.sale_date',
+                            'sales.type',
+                            'sales.status',
+                            'sales.total',
+                            'sales.visit_id',
+                            'customer_visits.action',
+                            'customer_visits.visit_date',
+                            'customer_visits.next_visit_date',
+                            'customer_visits.next_visit_hour',
+                            'customer_visits.result_of_the_visit',
+                            'customer_visits.objective',
+                            'customers.name AS customer_name',
+                            'customers.estate',
+                            'customers.phone',
+                            'users.name AS seller_name'
+                        )
+                        ->first();
+
+                    Mail::to($emailDefault)->send(new NotifyMail($sale_email, $head, $linkOrderPDF, $type));
+                }
+
+                /** Get total amount from items of Sale */
+                $total_order = DB::table('order_details')
+                    ->where('order_details.sale_id', '=', $sale->id)
+                    ->sum('amount');
+
+                /** Update Sale */
+                Sales::where('sales.id', '=', $sale->id)
+                    ->update([
+                        'customer_id' => $input['customer_id'],
+                        'total' => $total_order
                     ]);
 
                 /** Update Sale with total items detail and check if process sale */

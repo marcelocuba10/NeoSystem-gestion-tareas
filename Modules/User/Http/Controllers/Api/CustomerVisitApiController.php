@@ -117,102 +117,10 @@ class CustomerVisitApiController extends Controller
                 $sale['status'] = 'Pendiente';
                 $sale['total'] = 0;
                 Sales::create($sale);
-            } else {
-
-                /** If not select any product */
-                $count_order = DB::table('order_details')
-                    ->where('order_details.visit_id', '=', $customer_visit->id)
-                    ->count();
-
-                if ($count_order == 0) {
-                    return response()->json(array(
-                        'errors' => 'Por favor, adicione un producto en el Presupuesto'
-                    ), 500);
-                } else {
-
-                    $input['type'] = 'Presupuesto';
-                    $input['status'] = 'Pendiente';
-                    $input['visit_date'] = $currentDate;
-                    $input['visit_number'] = $this->generateUniqueCodeVisit();
-                    $input['seller_id'] = $input['idReference'];
-                    $customer_visit = CustomerVisit::create($input);
-
-                    /** Get total amount from items of visit order to Sale */
-                    $total_order = DB::table('order_details')
-                        ->where('order_details.visit_id', '=', $customer_visit->id)
-                        ->sum('amount');
-
-                    /** Create Sale-order because order is checked */
-                    $sale['invoice_number'] = $customer_visit->visit_number;
-                    $sale['visit_id'] = $customer_visit->id;
-                    $sale['seller_id'] = $input['idReference'];
-                    $sale['customer_id'] = $customer_visit->customer_id;
-                    $sale['order_date'] = $customer_visit->visit_date;
-                    $sale['type'] = 'Presupuesto';
-                    $sale['previous_type'] = 'Presupuesto';
-                    $sale['status'] = 'Pendiente';
-                    $sale['total'] = $total_order;
-                    Sales::create($sale);
-
-                    /** check if next_visit_date is marked, do appointment */
-                    /** String comparison using strcmp(); Returns 0 if the strings are equal. */
-                    if (strcmp($input['next_visit_date'], 'No marcado') !== 0) {
-                        $field['idReference'] = $input['idReference'];
-                        $field['visit_number'] = $customer_visit->visit_number;
-                        $field['visit_id'] = $customer_visit->id;
-                        $field['customer_id'] = $input['customer_id'];
-                        $field['date'] = $input['next_visit_date'];
-                        $field['hour'] = $input['next_visit_hour'];
-                        $field['action'] =  $input['action'];
-                        $field['status'] = 'Pendiente';
-                        Appointment::create($field);
-                    }
-
-                    /** Send email notification */
-                    $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
-                    $head = 'crear una Visita Cliente - #' . $customer_visit->visit_number;
-                    $type = 'Visita Cliente';
-                    //** create link to download pdf invoice in email */
-                    $linkOrderPDF = url('/customer_visits/' . $input['idReference'] . '/generateInvoicePDF/?download=pdf&visit_id=' . $customer_visit->id);
-
-                    $customer_visit = DB::table('customer_visits')
-                        ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-                        ->leftjoin('users', 'users.idReference', '=', 'customer_visits.seller_id')
-                        ->where('customer_visits.id', $customer_visit->id)
-                        ->select(
-                            'customer_visits.id',
-                            'customer_visits.visit_number',
-                            'customer_visits.visit_date',
-                            'customer_visits.next_visit_date',
-                            'customer_visits.next_visit_hour',
-                            'customer_visits.status',
-                            'customer_visits.action',
-                            'customer_visits.type',
-                            'customer_visits.result_of_the_visit',
-                            'customer_visits.objective',
-                            'customers.name AS customer_name',
-                            'customers.estate',
-                            'customers.phone',
-                            'users.name AS seller_name'
-                        )
-                        ->first();
-
-                    Mail::to($emailDefault)->send(new NotifyMail($customer_visit, $head, $linkOrderPDF, $type));
-                }
             }
-        } elseif ($input['action'] != 'Enviar Presupuesto') {
+        }
 
-            /** Check if have order details, but action is different to Order */
-            // $count_order = DB::table('order_details')
-            //     ->where('order_details.visit_id', '=', $input['id'])
-            //     ->count();
-
-            // if ($count_order != 0) {
-            //     /** remove item order */
-            //     DB::table('order_details')
-            //         ->where('visit_id', $input['id'])
-            //         ->delete();
-            // }
+        if ($input['action'] != 'Enviar Presupuesto') {
 
             $input['visit_number'] = $this->generateUniqueCodeVisit();
             $input['type'] = 'Sin Presupuesto';
@@ -311,8 +219,12 @@ class CustomerVisitApiController extends Controller
     public function update(Request $request, $id)
     {
         /** date validation, not less than 1980 and not greater than the current year **/
-        $initialDate = '1980-01-01';
-        $currentDate = (date('Y') + 2) . '-01-01'; //current date + 2 year
+        // $initialDate = '1980-01-01';
+        // $currentDate = (date('Y') + 2) . '-01-01'; //current date + 2 year
+
+        /** Format Date */
+        $currentDate = Carbon::now();
+        $currentDate = $currentDate->toDateTimeString();
 
         $request->validate([
             'customer_id' => 'required',
@@ -329,12 +241,6 @@ class CustomerVisitApiController extends Controller
         /** Get sale by id */
         $customer_visit = CustomerVisit::find($id);
 
-        // if ($input['next_visit_date'] != null && $input['objective'] == null) {
-        //     return response()->json(array(
-        //         'errors' => 'Por favor, agregue los Objetivos para la próxima visita marcada'
-        //     ), 500);
-        // }
-
         /** check if select 'order' is selected */
         if ($input['action'] == 'Enviar Presupuesto') {
 
@@ -350,8 +256,46 @@ class CustomerVisitApiController extends Controller
                 ), 500);
             } else {
 
+                /** send notification when is the first customer_visit order */
+                if ($customer_visit->isTemp == 1) {
+                    /** Send email notification */
+                    $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+                    $head = 'crear una Visita Cliente - #' . $customer_visit->visit_number;
+                    $type = 'Visita Cliente';
+                    //** create link to download pdf invoice in email */
+                    $linkOrderPDF = url('/customer_visits/' . $input['idReference'] . '/generateInvoicePDF/?download=pdf&visit_id=' . $customer_visit->id);
+
+                    $customer_visit_email = DB::table('customer_visits')
+                        ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+                        ->leftjoin('users', 'users.idReference', '=', 'customer_visits.seller_id')
+                        ->where('customer_visits.id', $customer_visit->id)
+                        ->select(
+                            'customer_visits.id',
+                            'customer_visits.visit_number',
+                            'customer_visits.visit_date',
+                            'customer_visits.next_visit_date',
+                            'customer_visits.next_visit_hour',
+                            'customer_visits.status',
+                            'customer_visits.action',
+                            'customer_visits.type',
+                            'customer_visits.result_of_the_visit',
+                            'customer_visits.objective',
+                            'customers.name AS customer_name',
+                            'customers.estate',
+                            'customers.phone',
+                            'users.name AS seller_name'
+                        )
+                        ->first();
+
+                    Mail::to($emailDefault)->send(new NotifyMail($customer_visit_email, $head, $linkOrderPDF, $type));
+                }
+
+                /** Update */
+                $customer_visit->update($input);
+
+                /** update total in order Sale */
                 if ($customer_visit->type == 'Sin Presupuesto') {
-                    /** Get total amount from items of visit order to Sale */
+                    /** Get total amount from items of visit order */
                     $total_order = DB::table('order_details')
                         ->where('order_details.visit_id', '=', $customer_visit->id)
                         ->sum('amount');
@@ -379,12 +323,6 @@ class CustomerVisitApiController extends Controller
                             'total' => $total_order
                         ]);
                 }
-
-                /** add extra items in customer visit and UPDATE */
-                $input['type'] = 'Presupuesto';
-                $input['visit_date'] = Carbon::now();
-                $input['seller_id'] = $input['idReference'];
-                $customer_visit->update($input);
 
                 /** check if next_visit_date is marked, create or update appointment */
                 /** String comparison using strcmp(); Returns 0 if the strings are equal. */

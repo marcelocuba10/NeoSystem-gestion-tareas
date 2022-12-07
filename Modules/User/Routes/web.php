@@ -11,7 +11,8 @@ Route::prefix('user')->group(function () {
     Route::group(['middleware' => ['guest']], function () {
 
         /** CronJob */
-        Route::get('/appointments/cron', 'CronJobsController@cronjob');
+        Route::get('/crontab/checkExpirationDates', 'CronJobsController@checkExpirationDates');
+        Route::get('/crontab/checkTemporarySales', 'CronJobsController@checkTemporarySales');
 
         Route::get('/login', 'Auth\LoginController@show');
         Route::post('/login', 'Auth\LoginController@login');
