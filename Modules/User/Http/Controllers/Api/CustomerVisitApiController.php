@@ -115,6 +115,7 @@ class CustomerVisitApiController extends Controller
                 $sale['type'] = 'Presupuesto';
                 $sale['previous_type'] = 'Presupuesto';
                 $sale['status'] = 'Pendiente';
+                $sale['isTemp'] = 1;
                 $sale['total'] = 0;
                 Sales::create($sale);
             }

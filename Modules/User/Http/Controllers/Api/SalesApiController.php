@@ -99,6 +99,7 @@ class SalesApiController extends Controller
                 $input['previous_type'] = 'Presupuesto';
             }
 
+            $input['isTemp'] = 1;
             $input['total'] = 0;
 
             /** Create */
@@ -480,16 +481,16 @@ class SalesApiController extends Controller
         return $invoice_number;
     }
 
-    public function getLastID($idRefCurrentUser)
-    {
-        $lastIdSales = DB::table('sales')
-            ->where('sales.seller_id', '=', $idRefCurrentUser)
-            ->max('sales.id');
+    // public function getLastID($idRefCurrentUser)
+    // {
+    //     $lastIdSales = DB::table('sales')
+    //         ->where('sales.seller_id', '=', $idRefCurrentUser)
+    //         ->max('sales.id');
 
-        return response()->json(array(
-            'lastIdSales' => $lastIdSales
-        ));
-    }
+    //     return response()->json(array(
+    //         'lastIdSales' => $lastIdSales
+    //     ));
+    // }
 
     public function cancelSale($id, $idRefCurrentUser)
     {

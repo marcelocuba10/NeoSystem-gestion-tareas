@@ -12,7 +12,7 @@ Route::prefix('user')->group(function () {
 
         /** CronJob */
         Route::get('/crontab/checkExpirationDates', 'CronJobsController@checkExpirationDates');
-        Route::get('/crontab/checkTemporarySales', 'CronJobsController@checkTemporarySales');
+        Route::get('/crontab/deleteTempSalesCustomer_visit', 'CronJobsController@deleteTempSalesCustomer_visit');
 
         Route::get('/login', 'Auth\LoginController@show');
         Route::post('/login', 'Auth\LoginController@login');

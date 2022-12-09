@@ -69,12 +69,24 @@ class CronJobsController extends Controller
         return json_encode('complete');
     }
 
-    /** verify if there are sales and orphan customer visits, we proceed to eliminate them. */
-    public function checkTemporarySales()
+    /** verify if there are sales and orphan customer_visits, we proceed to eliminate them. */
+    public function deleteTempSalesCustomer_visit()
     {
         $currentDateHour = Carbon::now()->format('Y-m-d H:i');
 
         // \Log::info("CronJob checkTemporarySales executed: " . $currentDateHour);
 
-     }
+        /** Remove temporal sales */
+        $sales = DB::table('sales')
+            ->where('isTemp', '=', 1)
+            ->orWhere('total', '=', 0)
+            ->delete();
+
+            /** Remove temporal customer_visits */
+        $customer_visits = DB::table('customer_visits')
+            ->where('isTemp', '=', 1)
+            ->delete();
+
+        return json_encode('temporary sales and customer_visits removed!');
+    }
 }
