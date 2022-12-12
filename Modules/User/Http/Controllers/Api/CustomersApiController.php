@@ -2,6 +2,7 @@
 
 namespace Modules\User\Http\Controllers\Api;
 
+use Dotenv\Validator;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -42,8 +43,8 @@ class CustomersApiController extends Controller
     {
         /** date validation, not less than 1980 and not greater than the current year **/
         $initialDate = '1980-01-01';
-        $currentDate = (date('Y') + 1) . '-01-01'; //2023-01-01
-
+        $currentDate = (date('Y') + 1) . '-01-01'; //2023-01-01    
+            
         $request->validate([
             'name' => 'required|max:50|min:5',
             'phone' => 'nullable|max:25|min:5',
@@ -59,6 +60,10 @@ class CustomersApiController extends Controller
             'objective' => 'nullable|max:1000|min:3',
             'next_visit_date' => 'nullable|date_format:Y-m-d|after_or_equal:' . $initialDate . '|before:' . $currentDate,
             'next_visit_hour' => 'nullable|max:10|min:5',
+        ],
+        [
+            'required'  => 'El campo :attribute es obligatorio.',
+            'doc_id.unique'    => 'El nro de Documento ya esta registrado en otro cliente.'
         ]);
 
         $input = $request->all();
@@ -110,6 +115,10 @@ class CustomersApiController extends Controller
             'objective' => 'nullable|max:1000|min:3',
             'next_visit_date' => 'nullable|date_format:Y-m-d|after_or_equal:today',
             'next_visit_hour' => 'nullable|max:10|min:5',
+        ],
+        [
+            'required'  => 'El campo :attribute es obligatorio.',
+            'doc_id.unique'    => 'El nro de Documento ya esta registrado en otro cliente.'
         ]);
 
         $input = $request->all();

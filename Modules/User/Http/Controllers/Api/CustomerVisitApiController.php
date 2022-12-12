@@ -77,8 +77,8 @@ class CustomerVisitApiController extends Controller
         $request->validate([
             'customer_id' => 'nullable',
             'visit_date' => 'nullable',
-            'next_visit_date' => 'nullable|max:15|min:5',
-            'next_visit_hour' => 'nullable|max:15|min:5',
+            'next_visit_date' => 'nullable|max:20|min:5',
+            'next_visit_hour' => 'nullable|max:20|min:5',
             'action' => 'required|max:30|min:5',
             'result_of_the_visit' => 'nullable|max:1000|min:3',
             'objective' => 'nullable|max:1000|min:3',
@@ -230,8 +230,8 @@ class CustomerVisitApiController extends Controller
         $request->validate([
             'customer_id' => 'required',
             'visit_date' => 'nullable',
-            'next_visit_date' => 'nullable|max:15|min:5',
-            'next_visit_hour' => 'nullable|max:15|min:5',
+            'next_visit_date' => 'nullable|max:20|min:5',
+            'next_visit_hour' => 'nullable|max:20|min:5',
             'action' => 'required|max:30|min:5',
             'result_of_the_visit' => 'nullable|max:1000|min:3',
             'objective' => 'nullable|max:1000|min:3',
