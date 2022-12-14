@@ -285,6 +285,7 @@ class SalesApiController extends Controller
                 Sales::where('sales.id', '=', $sale->id)
                     ->update([
                         'customer_id' => $input['customer_id'],
+                        'isTemp' => $input['isTemp'],
                         'total' => $total_order
                     ]);
 
