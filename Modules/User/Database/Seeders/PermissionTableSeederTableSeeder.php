@@ -71,11 +71,6 @@ class PermissionTableSeederTableSeeder extends Seeder
             'what_can_do-create',
             'what_can_do-edit',
             'what_can_do-delete',
-
-            'parameter-list',
-            'parameter-create',
-            'parameter-edit',
-            'parameter-delete',
         ];
 
         foreach ($permissions as $permission) {

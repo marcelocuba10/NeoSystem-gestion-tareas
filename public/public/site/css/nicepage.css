@@ -31239,6 +31239,9 @@ a.u-link.u-text-hover-grey-90:hover {
 
 .u-footer {
   background-image: none;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }
 
 .u-footer .u-sheet-1 {

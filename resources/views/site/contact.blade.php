@@ -7,7 +7,7 @@
     <meta name="keywords" content="Exploring Adaptive and Flexible Manufacturing Solutions">
     <meta name="description" content="">
     <meta name="page_type" content="np-template-header-footer-from-plugin">
-    <title>P&P</title>
+    <title>P&P - Contacto</title>
 
     <meta property="og:title" content="Page 2">
     <meta property="og:type" content="website">
@@ -61,7 +61,7 @@
                         </li>
                         <li class="u-nav-item"><a
                                 class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base"
-                                href="{{ url('about') }}" data-page-id="107860" style="padding: 10px 20px;">Quienes Somos</a>
+                                href="#" data-page-id="107860" style="padding: 10px 20px;">Quienes Somos</a>
                         </li>
                         <li class="u-nav-item"><a
                                 class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base"
@@ -81,7 +81,7 @@
                                 <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/"
                                         data-page-id="107855">Inicio</a>
                                 </li>
-                                <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/about"
+                                <li class="u-nav-item"><a class="u-button-style u-nav-link" href="#"
                                         data-page-id="107860">Quienes Somos</a>
                                 </li>
                                 <li class="u-nav-item"><a class="u-button-style u-nav-link" href="#"

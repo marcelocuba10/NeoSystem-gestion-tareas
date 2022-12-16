@@ -22,7 +22,6 @@
     <script class="u-script" type="text/javascript" src="//capp.nicepage.com/db56a7a5b6da0ea8a26d65edbfbdeaabc1befa0f/nicepage.js" defer=""></script>
     <meta name="generator" content="Nicepage 2.24.9, nicepage.com">
 
-
     <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i">
     <link id="u-page-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald:200,300,400,500,600,700">
     
@@ -61,7 +60,7 @@
                         </li>
                         <li class="u-nav-item"><a
                                 class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base"
-                                href="{{ url('about') }}" data-page-id="107860" style="padding: 10px 20px;">Quienes Somos</a>
+                                href="#" data-page-id="107860" style="padding: 10px 20px;">Quienes Somos</a>
                         </li>
                         <li class="u-nav-item"><a
                                 class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base"
@@ -81,7 +80,7 @@
                                 <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/"
                                         data-page-id="107855">Inicio</a>
                                 </li>
-                                <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/about"
+                                <li class="u-nav-item"><a class="u-button-style u-nav-link" href="#"
                                         data-page-id="107860">Quienes Somos</a>
                                 </li>
                                 <li class="u-nav-item"><a class="u-button-style u-nav-link" href="#"
@@ -99,14 +98,19 @@
         </div>
     </header>
 
-    <section class="u-align-left u-clearfix u-image u-shading u-section-2" id="carousel_ff44">
-        <div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
-            <h1 class="u-custom-font u-font-oswald u-text u-text-body-alt-color u-text-1">Excelentes soluciones en sectores como Agricultura, Ganaderia, Transporte, etc.</h1>
-            <p class="u-text u-text-body-alt-color u-text-2">Desde el año 2004, Plohn & Petersen S.R.L, ofrece productos y servicios de calidad al mercado Paraguayo.</p>
-            <a href="/" class="u-btn u-button-style u-white u-btn-2">Contactar</a>
-        </div>
+    <section style="background: gray;text-align: center;color: #fff;padding: 45px 0px;">
+        <h2>Nosotros</h2>
     </section>
 
+    <section class="section-about">
+        <p>Desde el año 2004, Plohn &amp; Petersen S.R.L. ofrece Productos y Servicios de calidad al mercado paraguayo, que cada día requiere más profesionalismo y rápida respuesta en sectores clave, como la Agricultura, el Transporte, la Construcción y otros.
+        Hoy día, ofrecemos a dichos mercados los equipos Vigia, Viesa y Rentagro, equipos clave para maximizar y dar continuidad a la producción.
+        A fin de lograr los objetivos fijados en materia de Distribución y Servicio Pos-Venta, contamos con una red de distribuidores a nivel nacional. A la fecha contamos con 13 agentes y seguimos en la búsqueda de nuevos socios comerciales que compartan nuestra pasión por el trabajo.
+        Plohn &amp; Petersen S.R.L. analiza en forma permanente nuevos negocios en materia de Importación-Exportación, Distribución, Logística, Servicio Pos-Venta y Construcción.
+        Desde ya le agradezco su interés en nuestra empresa y quedo a su disposición para cualquier consulta acerca de los productos y empresas que representamos.</p>
+        <p>Atentamente,</p>
+        <p>Facundo M. Plohn<br>Gerente Comercial</p>
+    </section>
 
     <footer class="u-align-center u-clearfix u-footer u-grey-80 u-footer" id="sec-d57d">
         <div class="u-clearfix u-sheet u-sheet-1">

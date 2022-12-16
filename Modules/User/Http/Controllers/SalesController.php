@@ -110,6 +110,9 @@ class SalesController extends Controller
             'price' => 'required',
             'amount' => 'required',
             'type' => 'required'
+        ],
+        [
+            'customer_id.required'  => 'El campo Cliente es obligatorio.'
         ]);
 
         /** If not select any product */
