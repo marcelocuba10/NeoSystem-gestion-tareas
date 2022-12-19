@@ -101,7 +101,6 @@ class CustomerVisitApiController extends Controller
                 $input['status'] = 'Pendiente';
 
                 $input['isTemp'] = 1;
-                $input['total'] = 0;
 
                 /** Create */
                 $customer_visit = CustomerVisit::create($input);
@@ -386,6 +385,7 @@ class CustomerVisitApiController extends Controller
             } else {
                 /** add extra items in customer visit and UPDATE */
                 $input['visit_date'] = Carbon::now();
+                $input['type'] = 'Sin Presupuesto';
                 $customer_visit->update($input);
             }
 

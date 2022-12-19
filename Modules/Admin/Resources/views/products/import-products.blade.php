@@ -28,7 +28,7 @@
                   <div class="alert">
                     <span class="text-medium">
                       Por favor, descargue la plantilla ejemplo, para continuar con la importación.
-                    </span>&nbsp;<a href="https://conectatests.com/facundo/public/docs/plantilla_importar_lista_precios_guaranies.xlsx" target="_blank" style="color: #4a70f7;font-weight: 700;;text-decoration: underline">Descargar plantilla</a>
+                    </span>&nbsp;<a href="https://www.pyp.com.py/public/docs/plantilla_importar_lista_precios_guaranies.xlsx" target="_blank" style="color: #4a70f7;font-weight: 700;;text-decoration: underline">Descargar plantilla</a>
                   </div>
                 </div>
                 <form action="{{ url('/admin/products/import') }}" id="import-csv-form" method="POST" accept-charset="utf-8" enctype="multipart/form-data">

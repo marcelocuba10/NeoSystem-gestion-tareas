@@ -31,9 +31,9 @@
                   <li>
                     <a href="{{ url('/user/users/profile/'.Auth::user()->id) }} "><i class="lni lni-user"></i> Mi Perfil</a>
                   </li>
-                  <li>
+                  {{-- <li>
                     <a href="#0"> <i class="lni lni-cog"></i> Configuraciones </a>
-                  </li>
+                  </li> --}}
                   <li>
                     <a href="{{ url('/user/logout/') }} "> <i class="lni lni-exit"></i> Cerrar Sesión </a>
                   </li>
