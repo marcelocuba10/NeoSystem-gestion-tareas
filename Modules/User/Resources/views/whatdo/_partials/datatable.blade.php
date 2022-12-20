@@ -39,7 +39,7 @@
               <div class="btn-group">
                 <div class="action">
                   @if ($customer_visit->type == 'Presupuesto')
-                    <a href="{{ url('/user/customer_visits/generateInvoicePDF/?download=pdf&customer_visit='.$customer_visit->id) }}" data-toggle="tooltip" data-placement="bottom" title="Imprimir" target="_blank">
+                    <a href="{{ url('/user/customer_visits/generateInvoicePDF/?download=pdf&visit_id='.$customer_visit->id) }}" data-toggle="tooltip" data-placement="bottom" title="Imprimir" target="_blank">
                       <button class="text-secondary"><i class="lni lni-printer"></i></button>
                     </a>
                   @endif
