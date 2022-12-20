@@ -126,11 +126,6 @@ Route::prefix('user')->group(function () {
             Route::put('/update/profile/{id}', 'UserController@updateProfile');
         });
 
-        /** Charts & Graphics Routes */
-        Route::group(['prefix' => 'chart'], function () {
-            Route::get('machines', 'ChartController@index');
-        });
-
         /*** Reports Routes ***/
         Route::group(['prefix' => 'reports'], function () {
             Route::get('/customers', 'ReportsController@customers');

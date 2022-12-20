@@ -98,6 +98,7 @@ class SalesController extends Controller
             $sales = DB::table('sales')
                 ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
                 ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+                ->where('sales.isTemp', '!=', 1)
                 ->select(
                     'sales.id',
                     'sales.invoice_number',
@@ -117,6 +118,7 @@ class SalesController extends Controller
                 ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
                 ->where('customers.name', 'LIKE', "%{$search}%")
                 ->orWhere('sales.invoice_number', 'LIKE', "%{$search}%")
+                ->where('sales.isTemp', '!=', 1)
                 ->select(
                     'sales.id',
                     'sales.invoice_number',

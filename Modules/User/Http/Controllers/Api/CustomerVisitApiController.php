@@ -320,6 +320,7 @@ class CustomerVisitApiController extends Controller
                     Sales::where('sales.visit_id', '=', $customer_visit->id)
                         ->update([
                             'customer_id' => $input['customer_id'],
+                            'isTemp' => $input['isTemp'],
                             'total' => $total_order
                         ]);
                 }

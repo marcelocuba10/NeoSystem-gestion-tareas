@@ -27,6 +27,7 @@ class HomeController extends Controller
         $customer_visits = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+            ->where('customer_visits.isTemp', '!=', 1)
             ->select(
                 'customer_visits.id',
                 'customer_visits.visit_number',
@@ -48,6 +49,7 @@ class HomeController extends Controller
             ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
             ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
             ->where('sales.seller_id', '=', $idRefCurrentUser)
+            ->where('customer_visits.isTemp', '!=', 1)
             ->orWhere('customer_visits.seller_id', '=', $idRefCurrentUser)
             ->select(
                 'sales.id',
@@ -73,18 +75,21 @@ class HomeController extends Controller
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customers.idReference', '=', $idRefCurrentUser)
             ->where('visit_date', '>', Carbon::now()->subDays(30))
+            ->where('customer_visits.isTemp', '!=', 1)
             ->count();
 
         $visited_more_30_days = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customers.idReference', '=', $idRefCurrentUser)
             ->where('visit_date', '<', Carbon::now()->subDays(30))
+            ->where('customer_visits.isTemp', '!=', 1)
             ->count();
 
         $visited_more_90_days = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customers.idReference', '=', $idRefCurrentUser)
             ->where('visit_date', '<', Carbon::now()->subDays(90))
+            ->where('customer_visits.isTemp', '!=', 1)
             ->count();
 
         /** For Pie Chart */
@@ -93,6 +98,7 @@ class HomeController extends Controller
             ->where('customers.idReference', '=', $idRefCurrentUser)
             ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('customer_visits.status', '=', 'Cancelado')
+            ->where('customer_visits.isTemp', '!=', 1)
             ->count();
 
         $visits_process_count = DB::table('customer_visits')
@@ -100,6 +106,7 @@ class HomeController extends Controller
             ->where('customers.idReference', '=', $idRefCurrentUser)
             ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('customer_visits.status', '=', 'Procesado')
+            ->where('customer_visits.isTemp', '!=', 1)
             ->count();
 
         $visits_no_process_count = DB::table('customer_visits')
@@ -107,6 +114,7 @@ class HomeController extends Controller
             ->where('customers.idReference', '=', $idRefCurrentUser)
             ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('customer_visits.status', '=', 'No Procesado')
+            ->where('customer_visits.isTemp', '!=', 1)
             ->count();
 
         $visits_pending_count = DB::table('customer_visits')
@@ -114,6 +122,7 @@ class HomeController extends Controller
             ->where('customers.idReference', '=', $idRefCurrentUser)
             ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('customer_visits.status', '=', 'Pendiente')
+            ->where('customer_visits.isTemp', '!=', 1)
             ->count();
 
         $sales_count = DB::table('sales')
@@ -122,6 +131,7 @@ class HomeController extends Controller
             ->whereMonth('sales.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('sales.type', '=', 'Venta')
             ->where('sales.status', '=', 'Procesado')
+            ->where('sales.isTemp', '!=', 1)
             ->count();
 
         $orders_count = DB::table('sales')
@@ -130,6 +140,7 @@ class HomeController extends Controller
             ->whereMonth('sales.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('sales.previous_type', '=', 'Presupuesto')
             ->where('sales.status', '!=', 'Cancelado')
+            ->where('sales.isTemp', '!=', 1)
             ->count();
 
         /** For Column Chart */
@@ -140,6 +151,7 @@ class HomeController extends Controller
             ->whereYear('sales.created_at', '>=', $currentOnlyYear)
             ->where('sales.type', '=', 'Venta')
             ->where('sales.status', '=', 'Procesado')
+            ->where('sales.isTemp', '!=', 1)
             ->orderBy('sales.created_at', 'ASC')
             ->groupBy('period')
             ->get();
@@ -151,6 +163,7 @@ class HomeController extends Controller
             ->whereYear('sales.created_at', '>=', $currentOnlyYear)
             ->where('sales.type', '=', 'Venta')
             ->where('sales.status', '=', 'Cancelado')
+            ->where('sales.isTemp', '!=', 1)
             ->orderBy('sales.created_at', 'ASC')
             ->groupBy('period')
             ->get();
@@ -162,6 +175,7 @@ class HomeController extends Controller
             ->whereYear('sales.created_at', '>=', $currentOnlyYear)
             ->where('sales.previous_type', '=', 'Presupuesto')
             ->where('sales.status', '!=', 'Cancelado')
+            ->where('sales.isTemp', '!=', 1)
             ->orderBy('sales.created_at', 'ASC')
             ->groupBy('period')
             ->get();
@@ -174,6 +188,7 @@ class HomeController extends Controller
             ->where('sales.type', '=', 'Presupuesto')
             ->where('sales.previous_type', '=', 'Presupuesto')
             ->where('sales.status', '=', 'Cancelado')
+            ->where('sales.isTemp', '!=', 1)
             ->orderBy('sales.created_at', 'ASC')
             ->groupBy('period')
             ->get();

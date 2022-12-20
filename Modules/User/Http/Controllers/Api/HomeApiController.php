@@ -12,8 +12,6 @@ class HomeApiController extends Controller
 
     public function index($idRefCurrentUser)
     {
-        $currentDate = Carbon::now()->format('d/m/Y');
-        $currentOnlyYear = Carbon::now()->format('Y');
         $currentMonth = Carbon::now()->format('m');
 
         Carbon::setlocale('ES');
@@ -22,6 +20,7 @@ class HomeApiController extends Controller
         $customer_visits = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+            ->where('customer_visits.isTemp', '!=', 1)
             ->select(
                 'customer_visits.id',
                 'customer_visits.visit_number',
@@ -39,27 +38,6 @@ class HomeApiController extends Controller
             ->limit(4)
             ->get();
 
-        $sales = DB::table('sales')
-            ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
-            ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
-            ->where('sales.seller_id', '=', $idRefCurrentUser)
-            ->orWhere('customer_visits.seller_id', '=', $idRefCurrentUser)
-            ->select(
-                'sales.id',
-                'sales.customer_id',
-                'sales.invoice_number',
-                'sales.sale_date',
-                'sales.type',
-                'sales.status',
-                'sales.total',
-                'customers.name AS customer_name',
-                'customers.estate',
-                'customer_visits.visit_date',
-            )
-            ->orderBy('sales.created_at', 'DESC')
-            ->limit(5)
-            ->get();
-
         $cant_customers = DB::table('customers')
             ->where('customers.idReference', '=', $idRefCurrentUser)
             ->count();
@@ -68,54 +46,30 @@ class HomeApiController extends Controller
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customers.idReference', '=', $idRefCurrentUser)
             ->where('visit_date', '>', Carbon::now()->subDays(30))
+            ->where('customer_visits.isTemp', '!=', 1)
             ->count();
 
         $visited_more_30_days = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customers.idReference', '=', $idRefCurrentUser)
             ->where('visit_date', '<', Carbon::now()->subDays(30))
+            ->where('customer_visits.isTemp', '!=', 1)
             ->count();
 
         $visited_more_90_days = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customers.idReference', '=', $idRefCurrentUser)
             ->where('visit_date', '<', Carbon::now()->subDays(90))
+            ->where('customer_visits.isTemp', '!=', 1)
             ->count();
 
         /** For Pie Chart */
-        $visits_cancel_count = DB::table('customer_visits')
-            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-            ->where('customers.idReference', '=', $idRefCurrentUser)
-            ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
-            ->where('customer_visits.status', '=', 'Cancelado')
-            ->count();
-
-        $visits_process_count = DB::table('customer_visits')
-            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-            ->where('customers.idReference', '=', $idRefCurrentUser)
-            ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
-            ->where('customer_visits.status', '=', 'Procesado')
-            ->count();
-
-        $visits_no_process_count = DB::table('customer_visits')
-            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-            ->where('customers.idReference', '=', $idRefCurrentUser)
-            ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
-            ->where('customer_visits.status', '=', 'No Procesado')
-            ->count();
-
-        $visits_pending_count = DB::table('customer_visits')
-            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-            ->where('customers.idReference', '=', $idRefCurrentUser)
-            ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
-            ->where('customer_visits.status', '=', 'Pendiente')
-            ->count();
-
         $sales_count = DB::table('sales')
             ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
             ->where('customers.idReference', '=', $idRefCurrentUser)
             ->whereMonth('sales.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('sales.type', '=', 'Venta')
+            ->where('sales.isTemp', '!=', 1)
             ->where('sales.status', '=', 'Procesado')
             ->count();
 
@@ -124,6 +78,7 @@ class HomeApiController extends Controller
             ->where('customers.idReference', '=', $idRefCurrentUser)
             ->whereMonth('sales.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('sales.previous_type', '=', 'Presupuesto')
+            ->where('sales.isTemp', '!=', 1)
             ->where('sales.status', '!=', 'Cancelado')
             ->count();
 

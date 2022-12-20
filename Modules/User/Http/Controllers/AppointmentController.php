@@ -151,21 +151,6 @@ class AppointmentController extends Controller
         return $visit_number;
     }
 
-    public function edit($id)
-    {
-        //
-    }
-
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    public function show($id)
-    {
-        //
-    }
-
     public function filter(Request $request)
     {
         $filter = $request->input('filter');

@@ -30,6 +30,7 @@ class ReportsController extends Controller
             ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
             ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
             ->where('customers.idReference', '=', $idRefCurrentUser)
+            ->where('sales.isTemp', '!=', 1)
             ->select(
                 'sales.id',
                 'sales.customer_id',
@@ -76,6 +77,7 @@ class ReportsController extends Controller
                 ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
                 ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
                 ->where('customers.idReference', '=', $idRefCurrentUser)
+                ->where('sales.isTemp', '!=', 1)
                 ->select(
                     'sales.id',
                     'sales.customer_id',
@@ -97,6 +99,7 @@ class ReportsController extends Controller
                     ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
                     ->where('sales.status', 'LIKE', "{$filter}%")
                     ->where('customers.idReference', '=', $idRefCurrentUser)
+                    ->where('sales.isTemp', '!=', 1)
                     ->select(
                         'sales.id',
                         'sales.invoice_number',
@@ -116,6 +119,7 @@ class ReportsController extends Controller
                     ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
                     ->where('sales.type', 'LIKE', "{$filter}%")
                     ->where('customers.idReference', '=', $idRefCurrentUser)
+                    ->where('sales.isTemp', '!=', 1)
                     ->select(
                         'sales.id',
                         'sales.invoice_number',
@@ -137,6 +141,7 @@ class ReportsController extends Controller
                         ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
                         ->where('customers.idReference', '=', $idRefCurrentUser)
                         ->where('sales.updated_at', '>', Carbon::now()->subDays(30))
+                        ->where('sales.isTemp', '!=', 1)
                         ->select(
                             'sales.id',
                             'sales.invoice_number',
@@ -158,6 +163,7 @@ class ReportsController extends Controller
                         ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
                         ->where('customers.idReference', '=', $idRefCurrentUser)
                         ->where('sales.updated_at', '<', Carbon::now()->subDays(30))
+                        ->where('sales.isTemp', '!=', 1)
                         ->select(
                             'sales.id',
                             'sales.invoice_number',
@@ -179,6 +185,7 @@ class ReportsController extends Controller
                         ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
                         ->where('customers.idReference', '=', $idRefCurrentUser)
                         ->where('sales.updated_at', '<', Carbon::now()->subDays(90))
+                        ->where('sales.isTemp', '!=', 1)
                         ->select(
                             'sales.id',
                             'sales.invoice_number',
@@ -209,6 +216,7 @@ class ReportsController extends Controller
                 ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
                 ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
                 ->where('customers.idReference', '=', $idRefCurrentUser)
+                ->where('sales.isTemp', '!=', 1)
                 ->select(
                     'sales.id',
                     'sales.customer_id',
@@ -229,6 +237,7 @@ class ReportsController extends Controller
                 ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
                 ->where('customers.name', 'LIKE', "%{$search}%")
                 ->where('customers.idReference', '=', $idRefCurrentUser)
+                ->where('sales.isTemp', '!=', 1)
                 ->select(
                     'sales.id',
                     'sales.customer_id',
@@ -340,6 +349,7 @@ class ReportsController extends Controller
             ->where('customers.idReference', '=', $idRefCurrentUser)
             ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('customer_visits.status', '=', 'Cancelado')
+            ->where('customer_visits.isTemp', '!=', 1)
             ->count();
 
         $visits_process_count = DB::table('customer_visits')
@@ -347,6 +357,7 @@ class ReportsController extends Controller
             ->where('customers.idReference', '=', $idRefCurrentUser)
             ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('customer_visits.status', '=', 'Procesado')
+            ->where('customer_visits.isTemp', '!=', 1)
             ->count();
 
         $visits_no_process_count = DB::table('customer_visits')
@@ -354,6 +365,7 @@ class ReportsController extends Controller
             ->where('customers.idReference', '=', $idRefCurrentUser)
             ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('customer_visits.status', '=', 'No Procesado')
+            ->where('customer_visits.isTemp', '!=', 1)
             ->count();
 
         $visits_pending_count = DB::table('customer_visits')
@@ -361,6 +373,7 @@ class ReportsController extends Controller
             ->where('customers.idReference', '=', $idRefCurrentUser)
             ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('customer_visits.status', '=', 'Pendiente')
+            ->where('customer_visits.isTemp', '!=', 1)
             ->count();
 
         $sales_count = DB::table('sales')
@@ -369,6 +382,7 @@ class ReportsController extends Controller
             ->whereMonth('sales.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('sales.type', '=', 'Venta')
             ->where('sales.status', '=', 'Procesado')
+            ->where('sales.isTemp', '!=', 1)
             ->count();
 
         $orders_count = DB::table('sales')
@@ -377,6 +391,7 @@ class ReportsController extends Controller
             ->whereMonth('sales.created_at', $currentMonth) //get data current month 11,12 etc
             ->where('sales.previous_type', '=', 'Presupuesto')
             ->where('sales.status', '!=', 'Cancelado')
+            ->where('sales.isTemp', '!=', 1)
             ->count();
 
         /** For Column Chart */
@@ -387,6 +402,7 @@ class ReportsController extends Controller
             ->whereYear('sales.created_at', '>=', $currentOnlyYear)
             ->where('sales.type', '=', 'Venta')
             ->where('sales.status', '=', 'Procesado')
+            ->where('sales.isTemp', '!=', 1)
             ->orderBy('sales.created_at', 'ASC')
             ->groupBy('period')
             ->get();
@@ -398,6 +414,7 @@ class ReportsController extends Controller
             ->whereYear('sales.created_at', '>=', $currentOnlyYear)
             ->where('sales.type', '=', 'Venta')
             ->where('sales.status', '=', 'Cancelado')
+            ->where('sales.isTemp', '!=', 1)
             ->orderBy('sales.created_at', 'ASC')
             ->groupBy('period')
             ->get();
@@ -409,6 +426,7 @@ class ReportsController extends Controller
             ->whereYear('sales.created_at', '>=', $currentOnlyYear)
             ->where('sales.previous_type', '=', 'Presupuesto')
             ->where('sales.status', '!=', 'Cancelado')
+            ->where('sales.isTemp', '!=', 1)
             ->orderBy('sales.created_at', 'ASC')
             ->groupBy('period')
             ->get();
@@ -420,6 +438,7 @@ class ReportsController extends Controller
             ->whereYear('sales.created_at', '>=', $currentOnlyYear)
             ->where('sales.previous_type', '=', 'Presupuesto')
             ->where('sales.status', '=', 'Cancelado')
+            ->where('sales.isTemp', '!=', 1)
             ->orderBy('sales.created_at', 'ASC')
             ->groupBy('period')
             ->get();

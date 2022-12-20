@@ -34,7 +34,7 @@ class CustomerVisitController extends Controller
         $customer_visits = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
-            ->where('customer_visits.isTemp', '!=', '1')
+            ->where('customer_visits.isTemp', '!=', 1)
             ->select(
                 'customer_visits.id',
                 'customer_visits.visit_number',
@@ -721,8 +721,8 @@ class CustomerVisitController extends Controller
         if ($search == '') {
             $customer_visits = DB::table('customer_visits')
                 ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-                ->where('customers.idReference', '=', $idRefCurrentUser)
-                ->where('customer_visits.isTemp', '!=', '1')
+                ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+                ->where('customer_visits.isTemp', '!=', 1)
                 ->select(
                     'customer_visits.id',
                     'customer_visits.visit_number',
@@ -743,9 +743,9 @@ class CustomerVisitController extends Controller
             $customer_visits = DB::table('customer_visits')
                 ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
                 ->where('customers.name', 'LIKE', "%{$search}%")
-                ->where('customer_visits.isTemp', '!=', '1')
                 ->orWhere('customer_visits.visit_number', 'LIKE', "%{$search}%")
-                ->where('customers.idReference', '=', $idRefCurrentUser)
+                ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+                ->where('customer_visits.isTemp', '!=', 1)
                 ->select(
                     'customer_visits.id',
                     'customer_visits.visit_number',

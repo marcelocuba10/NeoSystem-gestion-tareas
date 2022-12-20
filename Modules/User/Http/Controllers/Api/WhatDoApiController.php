@@ -19,6 +19,7 @@ class WhatDoApiController extends Controller
         $customer_visits = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+            ->where('customer_visits.isTemp', '!=', 1)
             ->select(
                 'customer_visits.id',
                 'customer_visits.visit_number',
@@ -90,6 +91,7 @@ class WhatDoApiController extends Controller
         $customer_visits = DB::table('customer_visits')
             ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
             ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+            ->where('customer_visits.isTemp', '!=', 1)
             ->select(
                 'customer_visits.id',
                 'customer_visits.visit_number',
@@ -120,6 +122,7 @@ class WhatDoApiController extends Controller
             $customer_visits = DB::table('customer_visits')
                 ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
                 ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+                ->where('customer_visits.isTemp', '!=', 1)
                 ->select(
                     'customer_visits.id',
                     'customer_visits.visit_number',
@@ -144,6 +147,7 @@ class WhatDoApiController extends Controller
                     ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
                     ->where('customer_visits.status', 'LIKE', "{$filter}%")
                     ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+                    ->where('customer_visits.isTemp', '!=', 1)
                     ->select(
                         'customer_visits.id',
                         'customer_visits.visit_number',
@@ -168,6 +172,7 @@ class WhatDoApiController extends Controller
                     ->leftjoin('customer_parameters', 'customer_parameters.customer_id', '=', 'customers.id')
                     ->where('customer_parameters.category_id', '=', $filter)
                     ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+                    ->where('customer_visits.isTemp', '!=', 1)
                     ->select(
                         'customer_visits.id',
                         'customer_visits.visit_number',
@@ -192,6 +197,7 @@ class WhatDoApiController extends Controller
                     ->leftjoin('customer_parameters', 'customer_parameters.customer_id', '=', 'customers.id')
                     ->where('customer_parameters.potential_product_id', '=', $filter)
                     ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+                    ->where('customer_visits.isTemp', '!=', 1)
                     ->select(
                         'customer_visits.id',
                         'customer_visits.visit_number',
@@ -217,6 +223,7 @@ class WhatDoApiController extends Controller
                         ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
                         ->where('customers.idReference', '=', $idRefCurrentUser)
                         ->where('visit_date', '>', Carbon::now()->subDays(30)) //Laravel Carbon subtract days from current date
+                        ->where('customer_visits.isTemp', '!=', 1)
                         ->select(
                             'customer_visits.id',
                             'customer_visits.visit_number',
@@ -243,6 +250,7 @@ class WhatDoApiController extends Controller
                         ->where('customers.idReference', '=', $idRefCurrentUser)
                         ->where('visit_date', '<', Carbon::now()->subDays(30))
                         ->where('visit_date', '>', Carbon::now()->subDays(90))
+                        ->where('customer_visits.isTemp', '!=', 1)
                         ->select(
                             'customer_visits.id',
                             'customer_visits.visit_number',
@@ -268,6 +276,7 @@ class WhatDoApiController extends Controller
                         ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
                         ->where('customers.idReference', '=', $idRefCurrentUser)
                         ->where('visit_date', '<', Carbon::now()->subDays(90))
+                        ->where('customer_visits.isTemp', '!=', 1)
                         ->select(
                             'customer_visits.id',
                             'customer_visits.visit_number',
@@ -292,6 +301,7 @@ class WhatDoApiController extends Controller
                     ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
                     ->where('customer_visits.next_visit_date', 'LIKE', "{$filter}%")
                     ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
+                    ->where('customer_visits.isTemp', '!=', 1)
                     ->select(
                         'customer_visits.id',
                         'customer_visits.visit_number',

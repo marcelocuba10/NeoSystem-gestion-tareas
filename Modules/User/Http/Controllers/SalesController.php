@@ -37,8 +37,7 @@ class SalesController extends Controller
             ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
             ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
             ->where('sales.seller_id', '=', $idRefCurrentUser)
-            ->where('sales.isTemp', '!=', '1')
-            ->orWhere('customer_visits.seller_id', '=', $idRefCurrentUser)
+            ->where('sales.isTemp', '!=', 1)
             ->select(
                 'sales.id',
                 'sales.customer_id',
@@ -103,17 +102,19 @@ class SalesController extends Controller
         /** Get current ID user */
         $idRefCurrentUser = Auth::user()->idReference;
 
-        $request->validate([
-            'customer_id' => 'required',
-            'product_id' => 'required',
-            'qty' => 'required',
-            'price' => 'required',
-            'amount' => 'required',
-            'type' => 'required'
-        ],
-        [
-            'customer_id.required'  => 'El campo Cliente es obligatorio.'
-        ]);
+        $request->validate(
+            [
+                'customer_id' => 'required',
+                'product_id' => 'required',
+                'qty' => 'required',
+                'price' => 'required',
+                'amount' => 'required',
+                'type' => 'required'
+            ],
+            [
+                'customer_id.required'  => 'El campo Cliente es obligatorio.'
+            ]
+        );
 
         /** If not select any product */
         if (strlen($request->product_id[0]) > 10) {
@@ -795,8 +796,7 @@ class SalesController extends Controller
                 ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
                 ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
                 ->where('sales.seller_id', '=', $idRefCurrentUser)
-                ->where('sales.isTemp', '!=', '1')
-                ->orWhere('customer_visits.seller_id', '=', $idRefCurrentUser)
+                ->where('sales.isTemp', '!=', 1)
                 ->select(
                     'sales.id',
                     'sales.customer_id',
@@ -816,9 +816,9 @@ class SalesController extends Controller
                 ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
                 ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
                 ->where('customers.name', 'LIKE', "%{$search}%")
-                ->where('sales.isTemp', '!=', '1')
+                ->where('sales.isTemp', '!=', 1)
                 ->orWhere('sales.invoice_number', 'LIKE', "%{$search}%")
-                ->where('customers.idReference', '=', $idRefCurrentUser)
+                ->where('sales.seller_id', '=', $idRefCurrentUser)
                 ->select(
                     'sales.id',
                     'sales.invoice_number',

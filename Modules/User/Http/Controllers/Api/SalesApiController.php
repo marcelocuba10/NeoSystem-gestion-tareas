@@ -28,7 +28,7 @@ class SalesApiController extends Controller
             ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
             ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
             ->where('sales.seller_id', '=', $idRefCurrentUser)
-            ->where('sales.isTemp', '=', 0)
+            ->where('sales.isTemp', '!=', 1)
             ->select(
                 'sales.id',
                 'sales.customer_id',
