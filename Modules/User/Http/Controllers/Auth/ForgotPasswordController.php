@@ -37,7 +37,10 @@ class ForgotPasswordController extends Controller
     public function submitForgetPasswordForm(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|min:6|max:100|exists:users',
+            'email' => 'required|email:rfc,dns|min:6|max:100|exists:users',
+        ],[
+            'email.exists'    => 'Correo electrónico no encontrado.',
+            'email.email'    => 'Correo electrónico inválido.'
         ]);
 
         $token = Str::random(64);
@@ -53,7 +56,7 @@ class ForgotPasswordController extends Controller
             $message->subject('Restablecer la contraseña');
         });
 
-        return back()->with('message', '¡Le hemos enviado por correo electrónico un enlace para restablecimiento de contraseña!');
+        return redirect()->to('/user/login')->with('message', '¡Le hemos enviado por correo electrónico un enlace para restablecer su contraseña!');
     }
 
     public function showResetPasswordForm($token)

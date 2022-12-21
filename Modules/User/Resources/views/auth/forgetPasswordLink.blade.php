@@ -21,7 +21,7 @@
         @csrf
         <input type="hidden" name="token" value="{{ $token }}">
 
-        <div class="form-icon"><img class="img-logo" src="{{ asset('/public/img/conectacode.png') }}"></div>
+        <div class="form-icon"><img class="img-logo" src="{{ asset('/public/adminLTE/images/logo/logo-pyp.png') }}"></div>
         <p class="login-message2">Restablecer la Contraseña</p>
 
         @if (Session::has('message'))
@@ -47,15 +47,15 @@
         @endif
         
         <div class="form-group">
-            <input name="email" type="email" value="{{ old('email') }}" class="form-control item" placeholder="Email" required>
+            <input name="email" type="email" value="{{ old('email') }}" class="form-control item" placeholder="Ingrese su Email" required>
         </div>
 
         <div class="form-group">
-            <input name="password" type="password" value="{{ old('password') }}" class="form-control item" placeholder="Contraseña" required>
+            <input name="password" type="password" value="{{ old('password') }}" class="form-control item" placeholder="Nueva Contraseña" required>
         </div>
 
         <div class="form-group">
-            <input name="password_confirmation" type="password" value="{{ old('password_confirmation') }}" class="form-control item" placeholder="Confirme Contraseña" required>
+            <input name="password_confirmation" type="password" value="{{ old('password_confirmation') }}" class="form-control item" placeholder="Confirme Nueva Contraseña" required>
         </div>
 
         <div class="form-group" style="text-align: center;margin-top: -25px;">

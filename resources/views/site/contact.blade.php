@@ -1,118 +1,44 @@
-<!DOCTYPE html>
-<html style="font-size: 16px;">
+@extends('site.layouts.app')
+@section('content')
 
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="utf-8">
-    <meta name="keywords" content="Exploring Adaptive and Flexible Manufacturing Solutions">
-    <meta name="description" content="">
-    <meta name="page_type" content="np-template-header-footer-from-plugin">
-    <title>P&P - Contacto</title>
+<section class="header-section">
+    <h2>Contacto</h2>
+</section>
 
-    <meta property="og:title" content="Page 2">
-    <meta property="og:type" content="website">
-    <meta name="theme-color" content="#478ac9">
-    <link rel="canonical" href="https://website107854.nicepage.io/Page-2.html">
-    <meta property="og:url" content="https://website107854.nicepage.io/Page-2.html">
+<section class="section-map">
+    <iframe
+        src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d378.5936992694031!2d-54.624325677394026!3d-25.4780001755099!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2spy!4v1671626462269!5m2!1sen!2spy"
+        width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"></iframe>
+</section>
 
-    <link rel="stylesheet" href="{{ asset('/public/site/css/nicepage.css') }}" media="screen">
-    <link rel="stylesheet" href="{{ asset('/public/site/css/custom-style.css') }}" media="screen">
-
-    <script class="u-script" type="text/javascript" src="//static.nicepage.com/shared/assets/jquery-1.9.1.min.js" defer=""></script>
-    <script class="u-script" type="text/javascript" src="//capp.nicepage.com/db56a7a5b6da0ea8a26d65edbfbdeaabc1befa0f/nicepage.js" defer=""></script>
-    <meta name="generator" content="Nicepage 2.24.9, nicepage.com">
-
-
-    <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i">
-    <link id="u-page-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald:200,300,400,500,600,700">
-    
-</head>
-
-<body class="u-body">
-    <header class="u-clearfix u-header u-header" id="sec-648d">
-        <div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
-            <a href="/" class="u-image u-logo u-image-1">
-                <img src="{{ asset('/public/site/imgs/logo-pyp.jpg') }}" class="u-logo-image u-logo-image-1">
-            </a>
-            <nav class="u-menu u-menu-dropdown u-offcanvas u-menu-1">
-                <div class="menu-collapse" style="font-size: 1rem; letter-spacing: 0px;" wfd-invisible="true">
-                    <a class="u-button-style u-custom-left-right-menu-spacing u-custom-padding-bottom u-custom-top-bottom-menu-spacing u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base"
-                        href="#">
-                        <svg>
-                            <use xlink:href="#menu-hamburger"></use>
-                        </svg>
-                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
-                            xmlns:xlink="http://www.w3.org/1999/xlink">
-                            <defs>
-                                <symbol id="menu-hamburger" viewBox="0 0 16 16" style="width: 16px; height: 16px;">
-                                    <rect y="1" width="16" height="2"></rect>
-                                    <rect y="7" width="16" height="2"></rect>
-                                    <rect y="13" width="16" height="2"></rect>
-                                </symbol>
-                            </defs>
-                        </svg>
-                    </a>
-                </div>
-                <div class="u-nav-container" wfd-invisible="true">
-                    <ul class="u-nav u-unstyled u-nav-1">
-                        <li class="u-nav-item"><a
-                                class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base"
-                                href="/" data-page-id="107855" style="padding: 10px 20px;">Inicio</a>
-                        </li>
-                        <li class="u-nav-item"><a
-                                class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base"
-                                href="#" data-page-id="107860" style="padding: 10px 20px;">Quienes Somos</a>
-                        </li>
-                        <li class="u-nav-item"><a
-                                class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base"
-                                href="#" data-page-id="107875" style="padding: 10px 20px;">Contacto</a>
-                        </li>
-                        <li class="u-nav-item"><a
-                                class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base"
-                                href="{{ url('user/login') }}" data-page-id="108240" style="padding: 10px 20px;">Iniciar Sesión</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="u-nav-container-collapse" wfd-invisible="true">
-                    <div class="u-black u-container-style u-inner-container-layout u-opacity u-opacity-95 u-sidenav">
-                        <div class="u-sidenav-overflow">
-                            <div class="u-menu-close"></div>
-                            <ul class="u-align-center u-nav u-popupmenu-items u-unstyled u-nav-2">
-                                <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/"
-                                        data-page-id="107855">Inicio</a>
-                                </li>
-                                <li class="u-nav-item"><a class="u-button-style u-nav-link" href="#"
-                                        data-page-id="107860">Quienes Somos</a>
-                                </li>
-                                <li class="u-nav-item"><a class="u-button-style u-nav-link" href="#"
-                                        data-page-id="107875">Contacto</a>
-                                </li>
-                                <li class="u-nav-item"><a class="u-button-style u-nav-link" href="{{ url('user/login') }}"
-                                        data-page-id="108240">Iniciar Sesión</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="u-black u-menu-overlay u-opacity u-opacity-70" wfd-invisible="true"></div>
-                </div>
-            </nav>
+<section class="section-about">
+    <div class="container" style="padding-bottom: 75px;">
+        <div class="row st-text">
+          <div class="col-sm">
+                <svg style="margin-bottom: 10px;" xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                    <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
+                    <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                </svg>
+                <h4>Dirección:</h4>
+                <p>Maurico Cardozo Ocampo, zona comercial, Paraná Country Club – Hernandarias – Alto Paraná - Paraguay</p>
+          </div>
+          <div class="col-sm">
+                <svg style="margin-bottom: 10px;" xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16">
+                    <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
+                </svg>
+                <h4>Email:</h4>
+                <p>info@pyp.com.py</p>
+          </div>
+          <div class="col-sm">
+                <svg style="margin-bottom: 10px;" xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-telephone" viewBox="0 0 16 16">
+                    <path d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.568 17.568 0 0 0 4.168 6.608 17.569 17.569 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.678.678 0 0 0-.58-.122l-2.19.547a1.745 1.745 0 0 1-1.657-.459L5.482 8.062a1.745 1.745 0 0 1-.46-1.657l.548-2.19a.678.678 0 0 0-.122-.58L3.654 1.328zM1.884.511a1.745 1.745 0 0 1 2.612.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/>
+                </svg>
+                <h4>Teléfono:</h4>
+                <p>+595 0981 418 662</p>
+          </div>
         </div>
-    </header>
+      </div>
+</section>
 
-    <section class="u-align-left u-clearfix u-image u-shading u-section-2" id="carousel_ff44">
-        <div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
-            <h1 class="u-custom-font u-font-oswald u-text u-text-body-alt-color u-text-1">Excelentes soluciones en sectores como Agricultura, Ganaderia, Transporte, etc.</h1>
-            <p class="u-text u-text-body-alt-color u-text-2">Desde el año 2004, Plohn & Petersen S.R.L, ofrece productos y servicios de calidad al mercado Paraguayo.</p>
-            <a href="/" class="u-btn u-button-style u-white u-btn-2">Contactar</a>
-        </div>
-    </section>
-
-
-    <footer class="u-align-center u-clearfix u-footer u-grey-80 u-footer" id="sec-d57d">
-        <div class="u-clearfix u-sheet u-sheet-1">
-            <p class="u-small-text u-text u-text-variant u-text-1">Plohn & Petersen - © 2022</p>
-        </div>
-    </footer>
-</body>
-
-</html>
+@endsection

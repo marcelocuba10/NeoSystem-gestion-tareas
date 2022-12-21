@@ -104,7 +104,7 @@
                                                         <tr>
                                                             <td class="pad" style="padding-bottom:10px;width:100%;padding-right:0;padding-left:0">
                                                                 <div class="alignment" align="center" style="line-height:10px;margin-top:20px">
-                                                                    <img src="{{ asset('/public/adminLTE/images/logo/logo-pyp.png') }}" style="display:block;height:auto;border:0;max-width:100%;width: 190px;margin-top: 20px;padding-top:20px;" width="190" alt="your-logo" title="your-logo">
+                                                                    <img src="https://www.pyp.com.py/public/adminLTE/images/logo/logo-pyp.png" style="display:block;height:auto;border:0;max-width:100%;width: 190px;margin-top: 20px;padding-top:20px;" width="190" alt="your-logo" title="your-logo">
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -249,7 +249,7 @@
                                                                     <table class="social-table" width="168px" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace:0;mso-table-rspace:0;display:inline">
                                                                         <tr>
                                                                             <td style="padding:0 5px 0 5px">
-                                                                                <a href="https://www.facebook.com/conectacodepy"
+                                                                                <a href=""
                                                                                     target="_blank"><img
                                                                                         src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-outline-circle-default-gray/facebook@2x.png"
                                                                                         width="32" height="32"
@@ -257,7 +257,7 @@
                                                                                         style="display:block;height:auto;border:0"></a>
                                                                             </td>
                                                                             <td style="padding:0 5px 0 5px"><a
-                                                                                    href="https://www.instagram.com/conectacode/" 
+                                                                                    href="" 
                                                                                     target="_blank"><img
                                                                                         src="https://app-rsrc.getbee.io/public/resources/social-networks-icon-sets/t-outline-circle-default-gray/instagram@2x.png"
                                                                                         width="32" height="32"
@@ -287,8 +287,8 @@
                                                                     <div class="txtTinyMce-wrapper" style="font-size:12px;font-family:Tahoma,Verdana,Segoe,sans-serif;mso-line-height-alt:14.399999999999999px;color:silver;line-height:1.2">
                                                                         <p style="margin:0;text-align:center;font-family:Tahoma,Verdana,Segoe,sans-serif;mso-line-height-alt:14.399999999999999px">&nbsp;</p>
                                                                         <p style="margin:0;text-align:center;font-family:Tahoma,Verdana,Segoe,sans-serif;font-family:Tahoma,Verdana,Segoe,sans-serif">
-                                                                            Maurico Cardozo Ocampo, salon 03, zona comercial, Paraná Country Club – Hernandarias – Alto Paraná - Paraguay&nbsp;
-                                                                            /&nbsp;&nbsp;contacto@conectacode.com.py /&nbsp;+595 984 124 580
+                                                                            Maurico Cardozo Ocampo, salon 04, zona comercial, Paraná Country Club – Hernandarias – Alto Paraná - Paraguay&nbsp;
+                                                                            /&nbsp;&nbsp;fp@pyp.com.py /&nbsp;+595 0981 418 662
                                                                         </p>
                                                                         <p style="margin:0;font-size:12px;text-align:center;font-family:Tahoma,Verdana,Segoe,sans-serif;font-family:Tahoma,Verdana,Segoe,sans-serif">
                                                                             <span style="color:#c0c0c0;">&nbsp;</span>

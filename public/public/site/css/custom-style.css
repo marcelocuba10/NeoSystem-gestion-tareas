@@ -6,6 +6,19 @@
     font-family: inherit;
 }
 
+.header-section{
+    background: gray;
+    text-align: center;
+    color: #fff;
+    padding: 45px 0px;
+}
+
+.section-map{
+    text-align: center;
+    padding: 30px 10px;
+    height: 340px;
+}
+
 @media only screen and  (max-width: 768px) {
     .section-about{
         width: 80%;
@@ -13,6 +26,16 @@
         margin: auto;
         padding: 30px 0px;
         font-family: inherit;
+    }
+    .header-section{
+        background: gray;
+        text-align: center;
+        color: #fff;
+        padding: 10px 0px;
+    }
+
+    .st-text{
+        font-size: 14px;
     }
 }
 

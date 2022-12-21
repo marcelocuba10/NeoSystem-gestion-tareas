@@ -25,8 +25,11 @@ class LoginController extends Controller
     {
 
         $credentials = $request->validate([
-            'email' => 'required|email|min:6|max:100',
+            'email' => 'required|email:rfc,dns|min:6|max:100',
             'password' => 'required|min:6|max:50'
+        ],
+        [
+            'email.email'    => 'Correo electrónico inválido.'
         ]);
 
         $email = $request->input('email');
