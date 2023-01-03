@@ -46,11 +46,9 @@ class HomeController extends Controller
             ->get();
 
         $sales = DB::table('sales')
-            ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
             ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
             ->where('sales.seller_id', '=', $idRefCurrentUser)
-            ->where('customer_visits.isTemp', '!=', 1)
-            ->orWhere('customer_visits.seller_id', '=', $idRefCurrentUser)
+            ->where('sales.isTemp', '!=', 1)
             ->select(
                 'sales.id',
                 'sales.customer_id',
@@ -61,7 +59,6 @@ class HomeController extends Controller
                 'sales.total',
                 'customers.name AS customer_name',
                 'customers.estate',
-                'customer_visits.visit_date',
             )
             ->orderBy('sales.created_at', 'DESC')
             ->limit(5)

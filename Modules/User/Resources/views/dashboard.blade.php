@@ -128,7 +128,7 @@
                     <li class="todo-list-item primary">
                       <div class="todo-content">
                         <p class="text-sm mb-2">
-                          <i class="lni lni-calendar"></i> Fecha Prox: {{ $customer_visit->next_visit_date }} | <i class="lni lni-alarm-clock"></i> Hora Prox: {{ $customer_visit->next_visit_hour }}
+                          <i class="lni lni-calendar"></i> Fecha Prox: {{ date('d/m/Y', strtotime($customer_visit->next_visit_date)) }} | <i class="lni lni-alarm-clock"></i> Hora Prox: {{ $customer_visit->next_visit_hour }}
                         </p>
                         <a href="{{ url('/user/customer_visits/show/'.$customer_visit->id ) }}"><h6 class="{{ ($customer_visit->status == 'Procesado' || $customer_visit->status == 'Pendiente') ? 'text-dark' : 'text-disabled' }}">{{ $customer_visit->customer_name }}</h6></a>
                         <p class="text-sm">

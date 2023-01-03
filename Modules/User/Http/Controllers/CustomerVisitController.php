@@ -133,6 +133,7 @@ class CustomerVisitController extends Controller
                 $input['visit_date'] = Carbon::now();
                 $input['visit_number'] = $this->generateUniqueCodeVisit();
                 $input['seller_id'] = $idRefCurrentUser;
+                $input['isTemp'] = 0;
                 $customer_visit = CustomerVisit::create($input);
 
                 foreach ($request->product_id as $key => $value) {
@@ -171,6 +172,7 @@ class CustomerVisitController extends Controller
                     $sale['previous_type'] = 'Presupuesto';
                     $sale['status'] = 'Pendiente';
                     $sale['total'] = $total_order;
+                    $sale['isTemp'] = 0;
                     Sales::create($sale);
 
                     /** check if next_visit_date is marked, do appointment */
@@ -218,13 +220,16 @@ class CustomerVisitController extends Controller
                     Mail::to($emailDefault)->send(new NotifyMail($customer_visit, $head, $linkOrderPDF, $type));
                 }
             }
-        } elseif ($request->isSetOrder == 'false') {
+        }
+
+        if ($request->isSetOrder == 'false') {
 
             $input['visit_number'] = $this->generateUniqueCodeVisit();
             $input['type'] = 'Sin Presupuesto';
             $input['status'] = 'Pendiente';
             $input['visit_date'] = Carbon::now();
             $input['seller_id'] = $idRefCurrentUser;
+            $input['isTemp'] = 0;
             $customer_visit = CustomerVisit::create($input);
 
             /** check if next_visit_date is marked, do appointment */

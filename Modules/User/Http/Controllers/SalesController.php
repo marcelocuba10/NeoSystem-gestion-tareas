@@ -125,6 +125,7 @@ class SalesController extends Controller
             $input['invoice_number'] = $this->generateUniqueCode();
             $input['seller_id'] = $idRefCurrentUser;
             $input['sale_date'] = $currentDate;
+            $input['isTemp'] = 1;
 
             if ($input['type'] == 'Venta') {
                 $input['status'] = 'Procesado';
@@ -197,6 +198,7 @@ class SalesController extends Controller
 
                 /** Update Sale with de total */
                 $input['total'] = $total_order;
+                $input['isTemp'] = 0;
                 $sale = Sales::find($sale->id);
                 $sale->update($input);
 
@@ -532,7 +534,7 @@ class SalesController extends Controller
                 $type = 'Venta';
 
                 //** create link to download pdf invoice in email */
-                $linkOrderPDF = url('/sales/' . $idRefCurrentUser . '/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
+                $linkOrderPDF = url('/sales/' . $idRefCurrentUser . '/generateInvoicePDF/?download=pdf&saleId=' . $id);
 
                 Mail::to($emailDefault)->send(new NotifyMail($sale, $head, $linkOrderPDF, $type));
 
@@ -576,7 +578,7 @@ class SalesController extends Controller
                             /** Save item detail sale */
                             $order = new OrderDetail();
                             $order->product_id = $request->product_id[$key];
-                            $order->sale_id = $sale->id;
+                            $order->sale_id = $id;
                             $order->quantity = $request->qty[$key];
                             $order->price = str_replace(',', '', $request->price[$key]);
                             $order->amount = $request->amount[$key];
@@ -594,7 +596,7 @@ class SalesController extends Controller
                             /** if find product id, if exist product_id, update values else delete old product_id and create new item detail with the new product_id */
                             $order_detail_id = DB::table('order_details')
                                 ->where('order_details.product_id', '=', $request->product_id[$key])
-                                ->where('order_details.sale_id', '=', $sale->id)
+                                ->where('order_details.sale_id', '=', $id)
                                 ->select(
                                     'order_details.product_id',
                                 )
@@ -602,7 +604,7 @@ class SalesController extends Controller
 
                             if ($order_detail_id) {
                                 DB::table('order_details')
-                                    ->where('order_details.sale_id', '=', $sale->id)
+                                    ->where('order_details.sale_id', '=', $id)
                                     ->where('order_details.product_id', '=', $request->product_id[$key])
                                     ->update([
                                         'quantity' => $request->qty[$key],
@@ -612,7 +614,7 @@ class SalesController extends Controller
                                 /** Save item detail sale */
                                 $order = new OrderDetail();
                                 $order->product_id = $request->product_id[$key];
-                                $order->sale_id = $sale->id;
+                                $order->sale_id = $id;
                                 $order->quantity = $request->qty[$key];
                                 $order->price = str_replace(',', '', $request->price[$key]);
                                 $order->amount = $request->amount[$key];
@@ -642,7 +644,7 @@ class SalesController extends Controller
                 //         $order->price = $request->price[$key];
                 //         $order->amount = $request->amount[$key];
                 //         $order->product_id = $request->product_id[$key];
-                //         $order->sale_id = $sale->id;
+                //         $order->sale_id = $id;
                 //         $order->update();
 
                 //         /** Discount inventory from product */
@@ -657,13 +659,13 @@ class SalesController extends Controller
 
                 /** Get total amount from items of Sale */
                 $total_order = DB::table('order_details')
-                    ->where('order_details.sale_id', '=', $sale->id)
+                    ->where('order_details.sale_id', '=', $id)
                     ->sum('amount');
 
                 /** Update Sale with total items detail and check if process or cancel sale */
                 /** Order pass to Sale */
                 if ($request->orderToSale == true) {
-                    Sales::where('sales.id', '=', $sale->id)
+                    Sales::where('sales.id', '=', $id)
                         ->update([
                             'status' => 'Procesado',
                             'type' => 'Venta',
@@ -674,13 +676,13 @@ class SalesController extends Controller
                     $head = 'procesar un ' . $sale->previous_type . ' para Venta - #' . $sale->invoice_number;
                     $type = 'Venta';
                     //** create link to download pdf invoice in email */
-                    $linkOrderPDF = url('/sales/' . $idRefCurrentUser . '/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
+                    $linkOrderPDF = url('/sales/' . $idRefCurrentUser . '/generateInvoicePDF/?download=pdf&saleId=' . $id);
 
                     $sale = DB::table('sales')
                         ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
                         ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
                         ->leftjoin('users', 'users.idReference', '=', 'sales.seller_id')
-                        ->where('sales.id', $sale->id)
+                        ->where('sales.id', $id)
                         ->select(
                             'sales.sale_date',
                             'sales.type',
@@ -704,14 +706,14 @@ class SalesController extends Controller
                 }
 
                 if ($request->cancelSale == true) {
-                    Sales::where('sales.id', '=', $sale->id)
+                    Sales::where('sales.id', '=', $id)
                         ->update([
                             'status' => 'Cancelado',
                         ]);
                 }
 
                 /** Update Sale */
-                Sales::where('sales.id', '=', $sale->id)
+                Sales::where('sales.id', '=', $id)
                     ->update([
                         'customer_id' => $input['customer_id'],
                         'total' => $total_order
@@ -730,9 +732,9 @@ class SalesController extends Controller
 
             /** Update Sale with total items detail and check if process or cancel sale */
             /** Order pass to Sale */
-            if ($input['orderToSale'] == true) {
+            if ($request['orderToSale'] == true) {
                 /** update status in sales and customer_visit */
-                Sales::where('sales.id', '=', $sale->id)
+                Sales::where('sales.id', '=', $id)
                     ->update([
                         'status' => 'Procesado',
                         'type' => 'Venta',
@@ -751,13 +753,13 @@ class SalesController extends Controller
                 $head = 'procesar un ' . $sale->previous_type . ' para Venta - #' . $sale->invoice_number;
                 $type = 'Venta';
                 //** create link to download pdf invoice in email */
-                $linkOrderPDF = url('/sales/' . $idRefCurrentUser . '/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
+                $linkOrderPDF = url('/sales/' . $idRefCurrentUser . '/generateInvoicePDF/?download=pdf&saleId=' . $id);
 
                 $sale = DB::table('sales')
                     ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
                     ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
                     ->leftjoin('users', 'users.idReference', '=', 'sales.seller_id')
-                    ->where('sales.id', $sale->id)
+                    ->where('sales.id', $id)
                     ->select(
                         'sales.sale_date',
                         'sales.type',
