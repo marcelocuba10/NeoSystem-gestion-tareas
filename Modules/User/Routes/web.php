@@ -80,6 +80,7 @@ Route::prefix('user')->group(function () {
             Route::delete('/deleteItemOrder', 'SalesController@destroyItemOrder');
             Route::get('/search', 'SalesController@search');
             Route::get('/generateInvoicePDF', 'SalesController@generateInvoicePDF');
+            Route::get('/select2-autocomplete-ajax', 'SalesController@dataAjax');
         });
 
         /*** Customer Visits Routes ***/

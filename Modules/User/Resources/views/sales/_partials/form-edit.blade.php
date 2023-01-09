@@ -130,15 +130,16 @@
               @endphp
               @foreach ($order_detail as $item_order)
                 <tr>
-                  <td>
-                    <select name="product_id[]" class="form-control product">
+                  <td style="width: 45%">
+                    <select name="product_id[]" class="itemName form-control product">
                       <option>Seleccione Producto</option>
                       @foreach($products as $product)  
                         <option value="{{ $product->id }}" name="product_id[]" {{ ( $product->id == $item_order->product_id) ? 'selected' : '' }}> {{ $product->name}} </option>
                       @endforeach
                     </select>
+                    {{-- <select name="product_id[]" value="{{ $item_order->product_id }}" class="itemName form-control product"></select> --}}
                   </td>
-                  <td><input type="text" name="price[]" value="{{ $item_order->price }}" class="form-control price" readonly></td>
+                  <td><input type="text" name="price[]" value="{{number_format($item_order->price, 0)}}" class="form-control price" readonly></td>
                   <td><input type="number" min="1" name="qty[]" value="{{ $item_order->quantity }}" class="form-control qty"></td>
                   <td><input type="text" name="amount[]" class="form-control amount" value="{{ $item_order->amount }}" readonly></td>
                   @if ($c == 0)
@@ -165,8 +166,10 @@
           </table>
         </div>
       </div>
+    @endif
+
     <!-- if is order or sale created with customer_visit or sales page -- readonly -->  
-    @else
+    @if ($sale->type == 'Presupuesto' && $sale->visit_id)
       <div class="table-responsive">
         <table class="invoice-table table">
           <thead style="background-color: #DAEFFE;">
@@ -213,8 +216,9 @@
         </table>
       </div>
     @endif  
-    <!-- if is order created with customer_visit page -- readonly -->    
-    {{-- @elseif($sale->type == 'Venta')
+
+    <!-- if sale processed -- readonly -->    
+    @if($sale->type == 'Venta')
       <div class="table-responsive">
         <table class="invoice-table table">
           <thead style="background-color: #DAEFFE;">
@@ -260,7 +264,7 @@
           </tbody>
         </table>
       </div>
-    @endif --}}
+    @endif
     
     <!-- Actions buttons -->    
     @if ($sale->type == 'Presupuesto')
@@ -283,7 +287,9 @@
           </div>
         </div>
       </div>
-    @elseif($sale->type == 'Venta')
+    @endif  
+
+    @if($sale->type == 'Venta')
       <div class="col-12">
         <div class="button-group d-flex justify-content-center flex-wrap">
           <input type="hidden" name="sale_id" id="sale_id">
@@ -437,13 +443,14 @@
     console.log('add_btn');
     var html = '';
     html += '<tr>';
-    html += '<td> <select name="product_id[]" class="form-control product"> <option>Seleccione Producto</option> @foreach($products as $product) <option name="product_id[]" data-price="{{ $product->sale_price }}" value="{{ $product->id }}">{{ $product->name }}</option> @endforeach </select> </td>';
+    html += '<td><select name="product_id[]" class="itemName form-control product"></select></td>';
     html += '<td><input type="text" name="price[]" class="form-control price" readonly></td>';
     html += '<td><input type="number" min="1" name="qty[]" class="form-control qty"></td>';
     html += '<td><input type="text" name="amount[]" class="form-control amount" readonly></td>';
     html += '<td><button type="button" class="btn btn-danger" id="remove"><i class="lni lni-trash-can"></i></button></td>';
     html += '</tr>';
     $('tbody').append(html);
+    renderSelect2(); // call to render select2
   })
   
   $(document).on('click', '#remove', function () {
@@ -488,3 +495,53 @@
     });
   </script>
 @endif
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+<script type="text/javascript">
+  $('.itemName').select2({
+    placeholder: 'Seleccione un producto',
+    ajax: {
+      url     :"{{ URL::to('/user/sales/select2-autocomplete-ajax') }}",
+      dataType: 'json',
+      delay: 250,
+      processResults: function (data) {
+        return {
+          results:  $.map(data, function (item) {
+                return {
+                    text: item.name,
+                    id: item.id
+                }
+            })
+        };
+      },
+      cache: true
+    }}).on('select2:select', function (e) {
+      var data = e.params.data;
+      console.log(data);
+    });
+
+  function renderSelect2(){
+    $('.itemName').select2({
+    placeholder: 'Seleccione un producto',
+    ajax: {
+      url     :"{{ URL::to('/user/sales/select2-autocomplete-ajax') }}",
+      dataType: 'json',
+      delay: 250,
+      processResults: function (data) {
+        return {
+          results:  $.map(data, function (item) {
+                return {
+                    text: item.name,
+                    id: item.id
+                }
+            })
+        };
+      },
+      cache: true
+    }}).on('select2:select', function (e) {
+        var data = e.params.data;
+        console.log(data);
+    });
+  }
+
+</script>

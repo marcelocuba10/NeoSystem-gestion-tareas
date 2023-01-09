@@ -33,7 +33,7 @@
                             <form method="POST" action="{{ url('/user/sales/update/'.$sale->id) }}">
                                 @csrf
                                 @method('PUT')
-                                @include('user::sales._partials.form-temp')
+                                @include('user::sales._partials.form-edit')
                             </form>
                         </div>
                     </div>

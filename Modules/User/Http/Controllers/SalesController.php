@@ -288,7 +288,7 @@ class SalesController extends Controller
                     'products.custom_code',
                     'products.name',
                 )
-                ->orderBy('order_details.created_at', 'DESC')
+                ->orderBy('order_details.created_at', 'ASC')
                 ->get();
 
             $total_order = DB::table('order_details')
@@ -308,7 +308,7 @@ class SalesController extends Controller
                     'products.custom_code',
                     'products.name',
                 )
-                ->orderBy('order_details.created_at', 'DESC')
+                ->orderBy('order_details.created_at', 'ASC')
                 ->get();
 
             $total_order = DB::table('order_details')
@@ -363,7 +363,7 @@ class SalesController extends Controller
                     'products.custom_code',
                     'products.name',
                 )
-                ->orderBy('order_details.created_at', 'DESC')
+                ->orderBy('order_details.created_at', 'ASC')
                 ->get();
 
             $total_order = DB::table('order_details')
@@ -383,7 +383,7 @@ class SalesController extends Controller
                     'products.custom_code',
                     'products.name',
                 )
-                ->orderBy('order_details.created_at', 'DESC')
+                ->orderBy('order_details.created_at', 'ASC')
                 ->get();
 
             $total_order = DB::table('order_details')
@@ -883,7 +883,7 @@ class SalesController extends Controller
                     'products.custom_code',
                     'products.name',
                 )
-                ->orderBy('order_details.created_at', 'DESC')
+                ->orderBy('order_details.created_at', 'ASC')
                 ->get();
 
             $total_order = DB::table('order_details')
@@ -901,7 +901,7 @@ class SalesController extends Controller
                     'products.name',
                     'products.custom_code',
                 )
-                ->orderBy('order_details.created_at', 'DESC')
+                ->orderBy('order_details.created_at', 'ASC')
                 ->get();
 
             $total_order = DB::table('order_details')
@@ -919,6 +919,19 @@ class SalesController extends Controller
             return $pdf->stream();
             // return $pdf->download('pdfview.pdf');
         }
+    }
+
+    public function dataAjax(Request $request)
+    {
+    	$data = [];
+ 
+        if($request->has('q')){
+            $search = $request->q;
+            $data =Products::select("id","name")
+             ->where('name','LIKE',"%$search%")
+             ->get();
+        }
+        return response()->json($data);
     }
 
     public function destroyItemOrder(Request $request)
