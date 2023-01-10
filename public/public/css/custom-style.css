@@ -3,6 +3,12 @@
     height: 46px;
 }
 
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    margin-top: -7px !important;
+}
+.select2-container .select2-search--inline {
+    margin-top: -9px !important;
+}
 textarea {
     resize: auto;
 }

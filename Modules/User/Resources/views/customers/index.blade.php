@@ -10,7 +10,7 @@
             <div class="title d-flex align-items-center flex-wrap mb-30">
               <h2 class="mr-40">Listado de Clientes</h2>
               @can('customer-create')
-                <a href="{{ url('/user/customers/create') }}" class="main-btn info-btn btn-hover btn-sm"><i class="lni lni-plus mr-5"></i></a>
+                <a href="{{ url('/user/customers/create') }}" class="main-btn info-btn btn-hover btn-sm" data-toggle="tooltip" data-placement="bottom" title="Crear Nuevo Cliente"><i class="lni lni-plus mr-5"></i></a>
               @endcan  
             </div>
           </div>
@@ -50,7 +50,7 @@
                     @foreach ($customers as $customer)
                     <tr>
                       <td class="text-sm"><h6 class="text-sm">{{ ++$i }}</h6></td>
-                      <td class="min-width"><h5 class="text-bold text-dark"><a href="{{ url('/user/customers/show/'.$customer->id ) }}">{{ $customer->name }} {{ $customer->last_name ?? old('last_name') }}</a></h5></td>
+                      <td class="min-width"><h5 class="{{ ($customer->status == 1 ) ? 'text-dark' : 'text-disabled' }}"><a href="{{ url('/user/customers/show/'.$customer->id ) }}">{{ $customer->name }} {{ $customer->last_name ?? old('last_name') }}</a></h5></td>
                       <td class="text-sm" style="width: 180px;">
                         @foreach ($categories as $item) 
                           <span class="{{ in_array($item->id, json_decode($customer->category) )  ? 'show-span' : 'hide-span' }} ">
