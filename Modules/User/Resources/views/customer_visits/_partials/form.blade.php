@@ -105,15 +105,15 @@
                 @endphp
                 @foreach ($order_details as $item_order)
                   <tr>
-                    <td>
-                      <select name="product_id[]" class="form-control product">
+                    <td style="width: 45%">
+                      <select name="product_id[]" class="itemName form-control product">
                         <option>Seleccione Producto</option>
                         @foreach($products as $product)  
                           <option value="{{ $product->id }}" name="product_id[]" {{ ( $product->id == $item_order->product_id) ? 'selected' : '' }}> {{ $product->name}} </option>
                         @endforeach
                       </select>
                     </td>
-                    <td><input type="text" name="price[]" value="{{ $item_order->price }}" class="form-control price" readonly></td>
+                    <td><input type="text" name="price[]" value="{{number_format($item_order->price, 0)}}" class="form-control price" readonly></td>
                     <td><input type="number" min="1" name="qty[]" value="{{ $item_order->quantity }}" class="form-control qty"></td>
                     <td><input type="text" name="amount[]" class="form-control amount" value="{{ $item_order->amount }}" readonly></td>
                     @if ($c == 0)
@@ -147,8 +147,9 @@
             <a class="main-btn primary-btn-outline m-2" href="{{ url('/user/customer_visits') }}">Atrás</a>
           </div>
         </div>
+      @endif
 
-      @elseif($customer_visit->type == 'Sin Presupuesto')
+      @if($customer_visit->type == 'Sin Presupuesto')
 
         <div class="col-12" id="setOrder" style="display: none">
           <div class="table-wrapper table-responsive">
@@ -164,8 +165,8 @@
               </thead>
               <tbody>
                 <tr>
-                  <td>
-                    <select name="product_id[]" class="form-control product">
+                  <td style="width: 45%">
+                    <select name="product_id[]" class="itemName form-control product">
                       <option>Seleccione Producto</option>
                       @foreach($products as $product)  
                         <option name="product_id[]" value="{{ $product->id }}">{{ $product->name }}</option>
@@ -204,8 +205,10 @@
         </div>
       @endif
 
+    @endif
+
     {{-- New customer visit --}}
-    @else
+    @if (!$customer_visit)
 
       <div class="col-12" id="setOrder" style="display: none">
         <div class="table-wrapper table-responsive">
@@ -221,13 +224,14 @@
             </thead>
             <tbody>
               <tr>
-                <td>
-                  <select name="product_id[]" class="form-control product">
+                <td style="width: 45%">
+                  {{-- <select name="product_id[]" class="form-control product">
                     <option>Seleccione Producto</option>
                     @foreach($products as $product)  
                       <option name="product_id[]" value="{{ $product->id }}">{{ $product->name }}</option>
                     @endforeach
-                  </select>
+                  </select> --}}
+                  <select name="product_id[]" class="itemName form-control product"></select>
                 </td>
                 <td><input type="text" name="price[]" class="form-control price" readonly></td>
                 <td><input type="number" min="1" name="qty[]" class="form-control qty"></td>
@@ -429,13 +433,15 @@
   $('#add_btn').on('click',function(){
     var html = '';
     html += '<tr>';
-    html += '<td> <select name="product_id[]" class="form-control product"> <option>Seleccione Producto</option> @foreach($products as $product) <option name="product_id[]" data-price="{{ $product->sale_price }}" value="{{ $product->id }}">{{ $product->name }}</option> @endforeach </select> </td>';
+    //html += '<td> <select name="product_id[]" class="form-control product"> <option>Seleccione Producto</option> @foreach($products as $product) <option name="product_id[]" data-price="{{ $product->sale_price }}" value="{{ $product->id }}">{{ $product->name }}</option> @endforeach </select> </td>';
+    html += '<td><select name="product_id[]" class="itemName form-control product"></select></td>';
     html += '<td><input type="text" name="price[]" class="form-control price" readonly></td>';
     html += '<td><input type="number" min="1" name="qty[]" class="form-control qty"></td>';
     html += '<td><input type="text" name="amount[]" class="form-control amount" readonly></td>';
     html += '<td><button type="button" class="btn btn-danger" id="remove"><i class="lni lni-trash-can"></i></button></td>';
     html += '</tr>';
     $('tbody').append(html);
+    renderSelect2(); // call to render select2
   })
 </script>   
 
@@ -475,5 +481,53 @@
   </script>
 @endif
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+<script type="text/javascript">
+  $('.itemName').select2({
+    placeholder: 'Seleccione un producto',
+    ajax: {
+      url     :"{{ URL::to('/user/sales/select2-autocomplete-ajax') }}",
+      dataType: 'json',
+      delay: 250,
+      processResults: function (data) {
+        return {
+          results:  $.map(data, function (item) {
+                return {
+                    text: item.name,
+                    id: item.id
+                }
+            })
+        };
+      },
+      cache: true
+    }}).on('select2:select', function (e) {
+      var data = e.params.data;
+      console.log(data);
+    });
 
+  function renderSelect2(){
+    $('.itemName').select2({
+    placeholder: 'Seleccione un producto',
+    ajax: {
+      url     :"{{ URL::to('/user/sales/select2-autocomplete-ajax') }}",
+      dataType: 'json',
+      delay: 250,
+      processResults: function (data) {
+        return {
+          results:  $.map(data, function (item) {
+                return {
+                    text: item.name,
+                    id: item.id
+                }
+            })
+        };
+      },
+      cache: true
+    }}).on('select2:select', function (e) {
+        var data = e.params.data;
+        console.log(data);
+    });
+  }
+
+</script>
   

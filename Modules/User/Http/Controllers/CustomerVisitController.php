@@ -15,6 +15,7 @@ use Modules\User\Entities\Sales;
 use PDF;
 use Mail;
 use Modules\User\Emails\NotifyMail;
+use Modules\User\Entities\Products;
 
 class CustomerVisitController extends Controller
 {
@@ -336,7 +337,7 @@ class CustomerVisitController extends Controller
                 'order_details.inventory',
                 'order_details.amount'
             )
-            ->orderBy('order_details.created_at', 'DESC')
+            ->orderBy('order_details.created_at', 'ASC')
             ->get();
 
         $total_order = DB::table('order_details')
@@ -398,7 +399,7 @@ class CustomerVisitController extends Controller
             ->where('order_details.visit_id', '=', $id)
             ->leftjoin('products', 'products.id', '=', 'order_details.product_id')
             ->select('products.name', 'products.code', 'order_details.price', 'order_details.quantity', 'order_details.inventory', 'order_details.amount', 'order_details.product_id')
-            ->orderBy('order_details.created_at', 'DESC')
+            ->orderBy('order_details.created_at', 'ASC')
             ->get();
 
         $total_order = DB::table('order_details')
@@ -816,7 +817,7 @@ class CustomerVisitController extends Controller
                 'order_details.inventory',
                 'order_details.amount'
             )
-            ->orderBy('order_details.created_at', 'DESC')
+            ->orderBy('order_details.created_at', 'ASC')
             ->get();
 
         $total_order = DB::table('order_details')
@@ -828,6 +829,19 @@ class CustomerVisitController extends Controller
             return $pdf->stream();
             // return $pdf->download('pdfview.pdf');
         }
+    }
+
+    public function dataAjax(Request $request)
+    {
+        $data = [];
+
+        if ($request->has('q')) {
+            $search = $request->q;
+            $data = Products::select("id", "name")
+                ->where('name', 'LIKE', "%$search%")
+                ->get();
+        }
+        return response()->json($data);
     }
 
     public function destroyItemOrder(Request $request)

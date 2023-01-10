@@ -137,7 +137,6 @@
                         <option value="{{ $product->id }}" name="product_id[]" {{ ( $product->id == $item_order->product_id) ? 'selected' : '' }}> {{ $product->name}} </option>
                       @endforeach
                     </select>
-                    {{-- <select name="product_id[]" value="{{ $item_order->product_id }}" class="itemName form-control product"></select> --}}
                   </td>
                   <td><input type="text" name="price[]" value="{{number_format($item_order->price, 0)}}" class="form-control price" readonly></td>
                   <td><input type="number" min="1" name="qty[]" value="{{ $item_order->quantity }}" class="form-control qty"></td>
@@ -453,6 +452,7 @@
     renderSelect2(); // call to render select2
   })
   
+  //hide row when item order is deleted, and recalculate total
   $(document).on('click', '#remove', function () {
     $(this).closest('tr').remove();
     total();
@@ -460,6 +460,7 @@
   
 </script>
 
+<!-- remove item order detail -- edit mode; else remove in create mode -->
 @if ($sale != null)
   <script type="text/javascript">
     $(document).on('click', '#remove', function () {

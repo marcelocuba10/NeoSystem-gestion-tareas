@@ -95,6 +95,7 @@ Route::prefix('user')->group(function () {
             Route::delete('/deleteItemOrder', 'CustomerVisitController@destroyItemOrder');
             Route::get('/search', 'CustomerVisitController@search');
             Route::get('/generateInvoicePDF', 'CustomerVisitController@generateInvoicePDF');
+            Route::get('/select2-autocomplete-ajax', 'CustomerVisitController@dataAjax');
         });
 
         /*** Customers Routes ***/

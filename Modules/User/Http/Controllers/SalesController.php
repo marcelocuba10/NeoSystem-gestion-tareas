@@ -923,13 +923,13 @@ class SalesController extends Controller
 
     public function dataAjax(Request $request)
     {
-    	$data = [];
- 
-        if($request->has('q')){
+        $data = [];
+
+        if ($request->has('q')) {
             $search = $request->q;
-            $data =Products::select("id","name")
-             ->where('name','LIKE',"%$search%")
-             ->get();
+            $data = Products::select("id", "name")
+                ->where('name', 'LIKE', "%$search%")
+                ->get();
         }
         return response()->json($data);
     }
