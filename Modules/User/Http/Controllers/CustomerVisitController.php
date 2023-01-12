@@ -100,10 +100,10 @@ class CustomerVisitController extends Controller
             'action' => 'required|max:30|min:5',
             'result_of_the_visit' => 'nullable|max:1000|min:3',
             'objective' => 'nullable|max:1000|min:3',
-            'product_id' => 'required',
-            'qty' => 'required',
-            'price' => 'required',
-            'amount' => 'required',
+            'product_id' => 'nullable',
+            'qty' => 'nullable',
+            'price' => 'nullable',
+            'amount' => 'nullable',
         ]);
 
         $input = $request->all();

@@ -19,10 +19,6 @@
         <div class="row">
           <div class="col-12">
             <div class="invoice-card card-style mb-30">
-              <div class="invoice-header">
-                <div class="invoice-for">
-                </div>
-              </div>
 
               <div class="table-responsive">
                 <table class="invoice-table table">
