@@ -21,7 +21,7 @@ class CronJobsController extends Controller
     {
         $currentDateHour = Carbon::now()->format('Y-m-d H:i');
 
-        \Log::info("CronJob checkExpirationDates executed: " . $currentDateHour);
+        //\Log::info("CronJob checkExpirationDates executed: " . $currentDateHour);
 
         /** get all appointments with status Pending */
         $late_appointments = DB::table('appointments')
@@ -74,7 +74,7 @@ class CronJobsController extends Controller
     {
         $currentDateHour = Carbon::now()->format('Y-m-d H:i');
 
-         \Log::info("CronJob checkTemporarySales executed: " . $currentDateHour);
+         //\Log::info("CronJob checkTemporarySales executed: " . $currentDateHour);
 
         /** Remove temporal sales */
         $sales = DB::table('sales')

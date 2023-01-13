@@ -70,7 +70,7 @@ class MultimediaController extends Controller
     {
         $request->validate([
             'filename' => 'required|unique:images_products,filename',
-            'filename.*' => 'mimes:jpeg,png,jpg,gif,svg,pdf,xlsx,csv,xls|max:500000',
+            'filename' => 'required|file|mimes:jpeg,png,jpg,gif,svg,pdf,xlsx,csv,xls|max:50000',
         ]);
 
         /** check if not select category */
