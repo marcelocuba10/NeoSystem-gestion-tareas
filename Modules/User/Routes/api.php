@@ -22,6 +22,8 @@ Route::group(['prefix' => 'auth'], function () {
     Route::group(['middleware' => 'auth:api'], function () {
         Route::get('logout', 'Api\Auth\AuthController@logout');
         Route::get('user', 'Api\Auth\AuthController@user');
+        Route::put('update', 'Api\Auth\AuthController@update');
+        Route::post('update/location', 'Api\Auth\AuthController@updateLocation');
     });
 });
 
@@ -96,4 +98,5 @@ Route::middleware(['cors'])->group(function () {
 
     /** Dashboard */
     Route::get('/dashboard/{idReference}', [HomeApiController::class, 'index']);
+    
 });

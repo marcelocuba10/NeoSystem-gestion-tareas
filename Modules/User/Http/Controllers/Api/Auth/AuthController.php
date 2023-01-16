@@ -13,6 +13,7 @@ use Modules\User\Entities\User;
 
 class AuthController extends Controller
 {
+
     public function login(Request $request)
     {
         $request->validate([
@@ -85,13 +86,16 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * Get the authenticated User
-     *
-     * @return [json] user object
-     */
+    /** Get the authenticated User **/
     public function user(Request $request)
     {
         return response()->json($request->user());
+    }
+
+    public function updateLocation(Request $request)
+    {    
+        return response()->json([
+            'message' => 'Here location'
+        ]);
     }
 }
