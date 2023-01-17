@@ -23,7 +23,6 @@ Route::group(['prefix' => 'auth'], function () {
         Route::get('logout', 'Api\Auth\AuthController@logout');
         Route::get('user', 'Api\Auth\AuthController@user');
         Route::put('update', 'Api\Auth\AuthController@update');
-        Route::post('update/location', 'Api\Auth\AuthController@updateLocation');
     });
 });
 

@@ -8,6 +8,7 @@ use Illuminate\Routing\Controller;
 
 //passport
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Modules\User\Entities\User;
 
@@ -92,10 +93,45 @@ class AuthController extends Controller
         return response()->json($request->user());
     }
 
-    public function updateLocation(Request $request)
-    {    
+    public function update(Request $request)
+    {
+
+        $input = $request->all();
+
+        $request->validate([
+            'name' => 'nullable|max:50|min:5',
+            'seller_contact_1' => 'nullable|max:50|min:5',
+            'seller_contact_2' => 'nullable|max:50|min:5',
+            'phone_1' => 'nullable|max:50|min:5',
+            'phone_2' => 'nullable|max:50|min:5',
+            'city' => 'nullable|max:50|min:5',
+            'estate' => 'nullable|max:50|min:5',
+            'address' => 'nullable|max:255|min:5',
+            'email' => 'nullable|max:50|min:5|email:rfc,dns|unique:users,email,' . $input['user']['id'],
+            'password' => 'nullable|max:50|min:5',
+            'confirm_password' => 'nullable|max:50|min:5|same:password',
+            'doc_id' => 'nullable|max:25|min:5|unique:users,doc_id,' . $input['user']['id'],
+        ]);
+
+        if (empty($input['password'])) {
+            $input = Arr::except($input, array('password'));
+        } else {
+            if (empty($input['confirm_password'])) {
+                return response()->json([
+                    'message' => 'Confirm password'
+                ], 401);
+            }
+        }
+
+        User::where('users.id', '=', $input['user']['id'])
+            ->update([
+                'latitude' => $input['user']['latitude'],
+                'longitude' => $input['user']['longitude']
+            ]);
+
         return response()->json([
-            'message' => 'Here location'
+            'message' => 'User updated',
+            'data' => $input
         ]);
     }
 }
