@@ -48,6 +48,7 @@ class SalesApiController extends Controller
                 'customer_visits.next_visit_hour',
                 'customer_visits.result_of_the_visit',
                 'customer_visits.objective',
+                'customer_visits.datetime',
             )
             ->orderBy('sales.created_at', 'DESC')
             ->get();
@@ -129,6 +130,7 @@ class SalesApiController extends Controller
                 'customer_visits.action',
                 'customer_visits.type',
                 'customer_visits.status',
+                'customer_visits.datetime',
                 'customers.name AS customer_name',
                 'customers.estate',
             )

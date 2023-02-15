@@ -40,6 +40,7 @@ class CustomerVisitApiController extends Controller
                 'customer_visits.type',
                 'customer_visits.status',
                 'customer_visits.isTemp',
+                'customer_visits.datetime',
                 'customers.name AS customer_name',
                 'customers.estate',
                 'customers.latitude',
@@ -198,6 +199,7 @@ class CustomerVisitApiController extends Controller
                 'customer_visits.action',
                 'customer_visits.type',
                 'customer_visits.status',
+                'customer_visits.datetime',
                 'customers.name AS customer_name',
                 'customers.estate',
             )
@@ -256,7 +258,7 @@ class CustomerVisitApiController extends Controller
                 ), 500);
             } else {
 
-                /** send notification when is the first customer_visit order */
+                /** send email notification when is the first customer_visit order */
                 if ($customer_visit->isTemp == 1) {
                     /** Send email notification */
                     $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
@@ -290,10 +292,8 @@ class CustomerVisitApiController extends Controller
                     Mail::to($emailDefault)->send(new NotifyMail($customer_visit_email, $head, $linkOrderPDF, $type));
                 }
 
-                /** Update */
-                $customer_visit->update($input);
-
-                /** update total in order Sale */
+                /** Check if it is the first time the order is created or if it already existed */
+                /** Create new sale with the values */
                 if ($customer_visit->type == 'Sin Presupuesto') {
                     /** Get total amount from items of visit order */
                     $total_order = DB::table('order_details')
@@ -310,6 +310,7 @@ class CustomerVisitApiController extends Controller
                     $sale['previous_type'] = 'Presupuesto';
                     $sale['status'] = 'Pendiente';
                     $sale['total'] = $total_order;
+                    $sale['isTemp'] = $input['isTemp'];
                     Sales::create($sale);
                 } else {
                     /** update total in sales, already exist order sale */
@@ -358,6 +359,12 @@ class CustomerVisitApiController extends Controller
                         Appointment::create($field);
                     }
                 }
+
+                /** Set extra values */
+                $input['type'] = 'Presupuesto';
+
+                /** Update */
+                $customer_visit->update($input);
             }
         }
 

@@ -21,11 +21,12 @@ class CustomerVisit extends Model
         'status',
         'action',
         'type',
-        'isTemp'
+        'isTemp',
+        'datetime'
     ];
     
     protected static function newFactory()
     {
-        return \Modules\User\Database\factories\CustomerVisitFactory::new();
+        //return \Modules\User\Database\factories\CustomerVisitFactory::new();
     }
 }

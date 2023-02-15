@@ -32,6 +32,7 @@ class AppointmentsApiController extends Controller
                 'appointments.action',
                 'appointments.status',
                 'appointments.observation',
+                'appointments.datetime',
                 'customers.name AS customer_name',
                 'customers.phone AS customer_phone',
             )
@@ -86,9 +87,10 @@ class AppointmentsApiController extends Controller
         $field['action'] = $input['action'];
         $field['type'] = 'Sin Presupuesto';
         $field['status'] = 'Pendiente';
+        $field['datetime'] = $input['datetime'];
         $customer_visit = CustomerVisit::create($field);
 
-        /** Add input extra values and CREATE new appointment */
+        /** Create new appointment with extra values */
         $input['idReference'] = $input['idReference'];
         $input['visit_number'] = $customer_visit->visit_number;
         $input['visit_id'] = $customer_visit->id;

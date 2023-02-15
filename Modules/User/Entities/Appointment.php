@@ -19,6 +19,7 @@ class Appointment extends Model
         'action',
         'observation',
         'status',
+        'datetime'
     ];
     
     protected static function newFactory()
