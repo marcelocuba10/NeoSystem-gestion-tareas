@@ -3,7 +3,6 @@
 
 <section class="section">
   <div class="container-fluid">
-    <!-- ========== title-wrapper start ========== -->
     <div class="title-wrapper pt-30">
       <div class="row align-items-center">
         <div class="col-md-6">
@@ -24,7 +23,6 @@
         </div>
       </div>
     </div>
-    <!-- ========== title-wrapper end ========== -->
 
     <div class="form-layout-wrapper">
       <div class="row">
@@ -70,7 +68,7 @@
               </div>
               <div class="col-5">
                 <div class="input-style-1">
-                  <label>Objetivos</label>
+                  <label>Potencial del Cliente</label>
                   <textarea type="text" value="{{ $customer_visit->objective ?? old('objective') }}" readonly>{{ $customer_visit->objective ?? old('objective') }}</textarea>
                 </div>
               </div>

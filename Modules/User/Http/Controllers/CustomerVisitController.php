@@ -69,7 +69,7 @@ class CustomerVisitController extends Controller
         $actions = [
             'Realizar Llamada',
             'Realizar Visita',
-            'Enviar Presupuesto'
+            'Enviar Presupuesto',
         ];
 
         $products = DB::table('products')

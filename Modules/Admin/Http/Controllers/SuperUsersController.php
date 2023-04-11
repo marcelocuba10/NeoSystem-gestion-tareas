@@ -51,16 +51,30 @@ class SuperUsersController extends Controller
 
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required|max:50|min:5',
-            'last_name' => 'required|max:50|min:5',
-            'email' => 'required|email|unique:super_users,email',
-            'phone' => 'nullable|max:20|min:5',
-            'doc_id' => 'required|max:25|min:5|unique:super_users,doc_id',
-            'password' => 'required|max:50|min:5',
-            'confirm_password' => 'required|max:50|min:5|same:password',
-            'roles' => 'required'
-        ]);
+        $request->validate(
+            [
+                'name' => 'required|max:50|min:2',
+                'last_name' => 'required|max:50|min:2',
+                'email' => 'required|email|unique:super_users,email',
+                'phone' => 'nullable|max:20|min:2',
+                'doc_id' => 'required|max:25|min:2|unique:super_users,doc_id',
+                'password' => 'required|max:50|min:2',
+                'confirm_password' => 'required|max:50|min:2|same:password',
+                'roles' => 'required'
+            ],
+            [
+                'name.required'  => 'El campo Nombre es obligatorio.',
+                'last_name.required'  => 'El campo Apellidos es obligatorio.',
+
+                'password.required'  => 'El campo Contraseña es obligatorio.',
+                'confirm_password.required'  => 'El campo Confirmar Contraseña es obligatorio.',
+                'email.required'  => 'El campo Email es obligatorio.',
+                'email.unique'  => 'El Email ya esta en uso.',
+                'doc_id.required'  => 'El campo Documento Identidad es obligatorio.',
+                'doc_id.unique'  => 'El Documento Identidad ya esta en uso.',
+                'doc_id.min'  => 'El Documento Identidad debe ser mayor a 1 dígito.',
+            ]
+        );
 
         $input = $request->all();
 
@@ -144,16 +158,27 @@ class SuperUsersController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'name' => 'required|max:50|min:5',
-            'last_name' => 'required|max:50|min:5',
-            'email' => 'required|email|unique:super_users,email,' . $id,
-            'phone' => 'nullable|max:20|min:5',
-            'doc_id' => 'required|max:25|min:5|unique:super_users,doc_id,' . $id,
-            'password' => 'nullable|max:50|min:5',
-            'confirm_password' => 'nullable|max:50|min:5|same:password',
-            'roles' => 'required'
-        ]);
+        $request->validate(
+            [
+                'name' => 'required|max:50|min:2',
+                'last_name' => 'required|max:50|min:2',
+                'email' => 'required|email|unique:super_users,email,' . $id,
+                'phone' => 'nullable|max:20|min:2',
+                'doc_id' => 'required|max:25|min:2|unique:super_users,doc_id,' . $id,
+                'password' => 'nullable|max:50|min:2',
+                'confirm_password' => 'nullable|max:50|min:2|same:password',
+                'roles' => 'required'
+            ],
+            [
+                'name.required'  => 'El campo Nombre es obligatorio.',
+                'last_name.required'  => 'El campo Apellidos es obligatorio.',
+                'email.required'  => 'El campo Email es obligatorio.',
+                'email.unique'  => 'El Email ya esta en uso.',
+                'doc_id.required'  => 'El campo Documento Identidad es obligatorio.',
+                'doc_id.unique'  => 'El Documento Identidad ya esta en uso.',
+                'doc_id.min'  => 'El Documento Identidad debe ser mayor a 1 dígito.',
+            ]
+        );
 
         $input = $request->all();
 
@@ -182,16 +207,27 @@ class SuperUsersController extends Controller
 
     public function updateProfile($id, Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required|max:50|min:5',
-            'last_name' => 'required|max:50|min:5',
-            'email' => 'required|email|unique:super_users,email,' . $id,
-            'phone' => 'nullable|max:20|min:5',
-            'doc_id' => 'required|max:25|min:5|unique:super_users,doc_id,' . $id,
-            'password' => 'nullable|max:50|min:5',
-            'confirm_password' => 'nullable|max:50|min:5|same:password',
-            'roles' => 'required'
-        ]);
+        $request->validate(
+            [
+                'name' => 'required|max:50|min:2',
+                'last_name' => 'required|max:50|min:2',
+                'email' => 'required|email|unique:super_users,email,' . $id,
+                'phone' => 'nullable|max:20|min:2',
+                'doc_id' => 'required|max:25|min:2|unique:super_users,doc_id,' . $id,
+                'password' => 'nullable|max:50|min:2',
+                'confirm_password' => 'nullable|max:50|min:2|same:password',
+                'roles' => 'required'
+            ],
+            [
+                'name.required'  => 'El campo Nombre es obligatorio.',
+                'last_name.required'  => 'El campo Apellidos es obligatorio.',
+                'email.required'  => 'El campo Email es obligatorio.',
+                'email.unique'  => 'El Email ya esta en uso.',
+                'doc_id.required'  => 'El campo Documento Identidad es obligatorio.',
+                'doc_id.unique'  => 'El Documento Identidad ya esta en uso.',
+                'doc_id.min'  => 'El Documento Identidad debe ser mayor a 1 dígito.',
+            ]
+        );
 
         $input = $request->all();
 

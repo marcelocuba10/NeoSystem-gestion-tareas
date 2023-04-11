@@ -82,21 +82,33 @@ class SellersController extends Controller
 
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required|max:50|min:5',
-            'seller_contact_1' => 'required|max:50|min:5',
-            'seller_contact_2' => 'nullable|max:50|min:5',
-            'phone_1' => 'nullable|max:25|min:5',
-            'phone_2' => 'nullable|max:25|min:5',
+        $request->validate(
+            [
+            'name' => 'required|max:50|min:2',
+            'seller_contact_1' => 'nullable|max:50|min:2',
+            'seller_contact_2' => 'nullable|max:50|min:2',
+            'phone_1' => 'nullable|max:50|min:2',
+            'phone_2' => 'nullable|max:50|min:2',
             'status' => 'required|integer|between:0,1',
-            'city' => 'nullable|max:50|min:5',
-            'estate' => 'required|max:50|min:5',
-            'address' => 'nullable|max:255|min:4',
-            'email' => 'nullable|max:50|min:5|email:rfc,dns|unique:users,email',
-            'password' => 'required|max:50|min:5',
-            'confirm_password' => 'required|max:50|min:5|same:password',
-            'doc_id' => 'required|max:25|min:5|unique:users,doc_id',
-        ]);
+            'city' => 'nullable|max:50|min:2',
+            'estate' => 'nullable|max:50|min:2',
+            'address' => 'nullable|max:255|min:2',
+            'email' => 'required|max:50|min:5|email:rfc,dns|unique:users,email',
+            'password' => 'required|max:50|min:2',
+            'confirm_password' => 'required|max:50|min:2|same:password',
+            'doc_id' => 'required|max:25|min:2|unique:users,doc_id',
+        ],
+        [
+            'doc_id.required'  => 'El campo Documento Identidad es obligatorio.',
+            'password.required'  => 'El campo Contraseña es obligatorio.',
+            'confirm_password.required'  => 'El campo Confirmar Contraseña es obligatorio.',
+            'name.required'  => 'El campo Nombre es obligatorio.',
+            'email.required'  => 'El campo Email es obligatorio.',
+            'doc_id.unique'  => 'El Documento Identidad ya esta en uso.',
+            'doc_id.min'  => 'El Documento Identidad debe ser mayor a 1 dígito.',
+            'email.unique'  => 'El Email ya esta en uso.',
+        ]
+        );
 
         $input = $request->all();
 
@@ -215,20 +227,31 @@ class SellersController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'name' => 'required|max:50|min:5',
-            'seller_contact_1' => 'required|max:50|min:5',
-            'seller_contact_2' => 'nullable|max:50|min:5',
-            'phone_1' => 'nullable|max:25|min:5',
-            'phone_2' => 'nullable|max:25|min:5',
+        $request->validate( 
+            [
+            'name' => 'required|max:50|min:2',
+            'seller_contact_1' => 'nullable|max:50|min:2',
+            'seller_contact_2' => 'nullable|max:50|min:2',
+            'phone_1' => 'nullable|max:25|min:2',
+            'phone_2' => 'nullable|max:25|min:2',
             'status' => 'required|integer|between:0,1',
-            'city' => 'nullable|max:50|min:5',
-            'estate' => 'required|max:50|min:5',
-            'address' => 'nullable|max:255|min:4',
-            'email' => 'required|max:50|min:5|email:rfc,dns|unique:users,email,' . $id,
-            'password' => 'nullable|max:50|min:5',
-            'confirm_password' => 'nullable|max:20|min:5|same:password',
-            'doc_id' => 'required|max:25|min:5|unique:users,doc_id,' . $id,
+            'city' => 'nullable|max:50|min:2',
+            'estate' => 'nullable|max:50|min:2',
+            'address' => 'nullable|max:255|min:2',
+            'email' => 'required|max:50|min:2|email:rfc,dns|unique:users,email,' . $id,
+            'password' => 'nullable|max:50|min:2',
+            'confirm_password' => 'nullable|max:20|min:2|same:password',
+            'doc_id' => 'required|max:25|min:2|unique:users,doc_id,' . $id,
+        ],
+        [
+            'doc_id.required'  => 'El campo Documento Identidad es obligatorio.',
+            'password.required'  => 'El campo Contraseña es obligatorio.',
+            'confirm_password.required'  => 'El campo Confirmar Contraseña es obligatorio.',
+            'name.required'  => 'El campo Nombre es obligatorio.',
+            'email.required'  => 'El campo Email es obligatorio.',
+            'doc_id.unique'  => 'El Documento Identidad ya esta en uso.',
+            'doc_id.min'  => 'El Documento Identidad debe ser mayor a 1 dígito.',
+            'email.unique'  => 'El Email ya esta en uso.',
         ]);
 
         $input = $request->all();

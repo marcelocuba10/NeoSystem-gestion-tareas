@@ -70,7 +70,7 @@ class MultimediaController extends Controller
     {
         $request->validate([
             'filename' => 'required|unique:images_products,filename',
-            'filename' => 'required|file|mimes:jpeg,png,jpg,gif,svg,pdf,xlsx,csv,xls|max:50000',
+            'filename' => 'required|file|mimes:jpeg,png,jpg,gif,svg,pdf,xlsx,csv,xls|max:640000',
         ]);
 
         /** check if not select category */
@@ -160,7 +160,7 @@ class MultimediaController extends Controller
                     'created_at'
                 )
                 ->orderBy('created_at', 'DESC')
-                ->paginate(10);
+                ->get();
         } else {
             $multimedias = DB::table('multimedia')
                 ->where('multimedia.type', 'LIKE', "%{$filter}%")
@@ -173,7 +173,7 @@ class MultimediaController extends Controller
                     'created_at'
                 )
                 ->orderBy('created_at', 'DESC')
-                ->paginate(10);
+                ->get();
         }
 
         return View::make('admin::multimedia._partials.datatable', compact('multimedias', 'filter'))->with('i', (request()->input('page', 1) - 1) * 10);

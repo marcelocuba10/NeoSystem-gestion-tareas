@@ -3,7 +3,6 @@
 
 <section class="table-components">
   <div class="container-fluid">
-    <!-- ========== title-wrapper start ========== -->
     <div class="title-wrapper pt-30">
       <div class="row align-items-center">
         <div class="col-md-6">
@@ -26,9 +25,7 @@
         </div>
       </div>
     </div>
-    <!-- ========== title-wrapper end ========== -->
 
-    <!-- ========== tables-wrapper start ========== -->
     <div class="file-manager-cards-wrapper">
       <div class="row">
         <div class="col-xl-3 col-lg-4 col-sm-6">

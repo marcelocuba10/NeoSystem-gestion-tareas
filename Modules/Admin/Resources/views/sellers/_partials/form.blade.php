@@ -8,7 +8,7 @@
     </div>
     <div class="col-6">
       <div class="input-style-1">
-        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Nombre del Encargado</label>
+        <label>Nombre del Encargado</label>
         <input name="seller_contact_1" value="{{ $user->seller_contact_1 ?? old('seller_contact_1') }}" type="text" class="bg-transparent">
       </div>
     </div>
@@ -88,7 +88,7 @@
     </div>
     <div class="col-4">
       <div class="select-style-1">
-        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Departamento</label>
+        <label>Departamento</label>
         <div class="select-position">
           <select name="estate">
             @foreach ($estates as $key)
