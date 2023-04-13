@@ -36,10 +36,16 @@
                           class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base"
                           href="{{ url('contact') }}" data-page-id="107875" style="padding: 10px 20px;">Contacto</a>
                   </li>
-                  <li class="u-nav-item"><a
-                          class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base"
-                          href="{{ url('user/login') }}" data-page-id="108240" style="padding: 10px 20px;">Iniciar Sesión</a>
-                  </li>
+                    @auth
+                        <li class="u-nav-item">
+                            <a class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="{{ url('/user/dashboard') }}" style="padding: 10px 20px;">{{auth()->user()->name}}</a>
+                        </li>
+                    @endauth
+                    @guest
+                        <li class="u-nav-item">
+                            <a class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="{{ url('/user/login') }}" style="padding: 10px 20px;">Iniciar Sesión</a>
+                        </li>
+                    @endguest
               </ul>
           </div>
           <div class="u-nav-container-collapse" wfd-invisible="true">
@@ -56,9 +62,16 @@
                           <li class="u-nav-item"><a class="u-button-style u-nav-link" href="{{ url('contact') }}"
                                   data-page-id="107875">Contacto</a>
                           </li>
-                          <li class="u-nav-item"><a class="u-button-style u-nav-link" href="{{ url('user/login') }}"
-                                  data-page-id="108240">Iniciar Sesión</a>
-                          </li>
+                            @auth
+                                <li class="u-nav-item">
+                                    <a class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="{{ url('/user/dashboard') }}" style="padding: 10px 20px;">{{auth()->user()->name}}</a>
+                                </li>
+                            @endauth
+                            @guest
+                                <li class="u-nav-item">
+                                    <a class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="{{ url('user/login') }}" style="padding: 10px 20px;">Iniciar Sesión</a>
+                                </li>
+                            @endguest
                       </ul>
                   </div>
               </div>

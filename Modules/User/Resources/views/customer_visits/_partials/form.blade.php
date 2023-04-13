@@ -86,6 +86,7 @@
 
     {{-- Update visit customer --}}
     @if ($customer_visit)
+    
       @if ($customer_visit->type == 'Presupuesto')
         <div class="col-12" id="setOrder">
           <div class="table-wrapper table-responsive">
@@ -198,7 +199,7 @@
             @if ($customer_visit->status == 'Pendiente')
               <input type="hidden" name="pendingToProcess" id="pendingToProcess">
               <button type="submit" id="btn_submit" class="main-btn primary-btn btn-hover m-2 btn-pendingToProcess">Marcar como Procesado</button>
-              <button type="submit" id="btn_submit" class="main-btn primary-btn-outline btn-hover m-2">Actualizar</button>
+              <button type="submit" id="btn_submit2" class="main-btn primary-btn-outline btn-hover m-2">Actualizar</button>
             @endif
             <a class="main-btn primary-btn-outline m-2" href="{{ url('/user/customer_visits') }}">Atrás</a>
           </div>
@@ -273,6 +274,10 @@
       var btn_submit = document.getElementById('btn_submit');
       btn_submit.disabled = true;
       btn_submit.innerText = 'Procesando...'
+
+      var btn_submit = document.getElementById('btn_submit2');
+      btn_submit2.disabled = true;
+      btn_submit2.innerText = 'Procesando...'
     });
   })
 </script>

@@ -54,6 +54,7 @@ class HomeController extends Controller
                 'sales.customer_id',
                 'sales.invoice_number',
                 'sales.sale_date',
+                'sales.order_date',
                 'sales.type',
                 'sales.status',
                 'sales.total',

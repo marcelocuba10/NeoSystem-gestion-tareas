@@ -59,8 +59,8 @@ class InvoicesPDFController extends Controller
 
         if ($request->has('download')) {
             $pdf = PDF::loadView('invoicesPDF.invoicePDFCustomerVisit', compact('user', 'customer_visit', 'order_details', 'total_order'));
-            return $pdf->stream();
-            // return $pdf->download('pdfview.pdf');
+            //return $pdf->stream();
+            return $pdf->download('Documento-'.$customer_visit->visit_number.'.pdf');
         }
     }
 
@@ -138,9 +138,9 @@ class InvoicesPDFController extends Controller
             ->first();
 
         if ($request->has('download')) {
-            $pdf = PDF::loadView('user::sales.invoicePDF.invoicePrintPDF', compact('user', 'sale', 'order_details', 'total_order'));
-            return $pdf->stream();
-            // return $pdf->download('pdfview.pdf');
+            $pdf = PDF::loadView('invoicesPDF.invoicePDFSale', compact('user', 'sale', 'order_details', 'total_order'));
+            //return $pdf->stream();
+            return $pdf->download('Documento-'.$sale->invoice_number.'.pdf');
         }
     }
 }

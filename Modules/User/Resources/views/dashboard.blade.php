@@ -3,7 +3,6 @@
 
   <section class="section">
     <div class="container-fluid">
-      <!-- ========== title-wrapper start ========== -->
       <div class="title-wrapper pt-30">
         <div class="row align-items-center">
           <div class="col-md-6">
@@ -13,7 +12,6 @@
           </div>
         </div>
       </div>
-      <!-- ========== title-wrapper end ========== -->
 
       <div class="row">
         <div class="col-xl-3 col-lg-4 col-sm-6">
@@ -25,7 +23,7 @@
               <h6 class="mb-10">Visita a clientes</h6>
               <h3 class="text-bold mb-10">{{ $visited_less_30_days }}</h3>
               <p class="text-sm text-success">
-                <span class="text-gray">(menos de 30 días)</span>
+                <span class="text-gray">(Últimos 30 días)</span>
               </p>
             </div>
           </div>
@@ -58,7 +56,7 @@
           <div class="icon-card mb-30">
             <div class="icon primary"><i class="lni lni-users"></i></div>
             <div class="content">
-              <h6 class="mb-10">Total Clientes</h6>
+              <h6 class="mb-10">Total Clientes Registrados</h6>
               <h3 class="text-bold mb-10">{{ $cant_customers }}</h3>
             </div>
           </div>
@@ -85,7 +83,7 @@
                       <td class="employee-info">
                         <h5 class="text-bold {{ ($sale->status == 'Procesado' || $sale->status == 'Pendiente') ? 'text-dark' : 'text-disabled' }}"><a href="{{ url('/user/sales/show/'.$sale->id) }}">{{ $sale->customer_name }}</a></h5>
                         <p class="text-sm">
-                          Creado el: {{ date('d/m/Y', strtotime($sale->sale_date)) }}
+                          Creado el: @if($sale->sale_date) {{ date('d/m/Y',strtotime($sale->sale_date)) }} @else {{ date('d/m/Y',strtotime($sale->order_date)) }} @endif
                         </p>
                       </td>
                       <td class="min-width">
@@ -128,7 +126,7 @@
                     <li class="todo-list-item primary">
                       <div class="todo-content">
                         <p class="text-sm mb-2">
-                          <i class="lni lni-calendar"></i> Fecha Prox: {{ date('d/m/Y', strtotime($customer_visit->next_visit_date)) }} | <i class="lni lni-alarm-clock"></i> Hora Prox: {{ $customer_visit->next_visit_hour }}
+                          <i class="lni lni-calendar"></i> Fecha Prox: @if($customer_visit->next_visit_date != 'No marcado') {{ date('d/m/Y', strtotime($customer_visit->next_visit_date)) }} @else {{ $customer_visit->next_visit_date }} @endif | <i class="lni lni-alarm-clock"></i> Hora Prox: {{ $customer_visit->next_visit_hour }}
                         </p>
                         <a href="{{ url('/user/customer_visits/show/'.$customer_visit->id ) }}"><h6 class="{{ ($customer_visit->status == 'Procesado' || $customer_visit->status == 'Pendiente') ? 'text-dark' : 'text-disabled' }}">{{ $customer_visit->customer_name }}</h6></a>
                         <p class="text-sm">

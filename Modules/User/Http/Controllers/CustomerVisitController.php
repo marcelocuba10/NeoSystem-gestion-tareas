@@ -826,8 +826,8 @@ class CustomerVisitController extends Controller
 
         if ($request->has('download')) {
             $pdf = PDF::loadView('user::customer_visits.invoicePDF.invoicePrintPDF', compact('user', 'customer_visit', 'order_details', 'total_order'));
-            return $pdf->stream();
-            // return $pdf->download('pdfview.pdf');
+            //return $pdf->stream();
+            return $pdf->download('Documento-'.$customer_visit->visit_number.'.pdf');
         }
     }
 

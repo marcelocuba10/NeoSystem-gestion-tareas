@@ -916,8 +916,8 @@ class SalesController extends Controller
 
         if ($request->has('download')) {
             $pdf = PDF::loadView('user::sales.invoicePDF.invoicePrintPDF', compact('user', 'sale', 'order_details', 'total_order'));
-            return $pdf->stream();
-            // return $pdf->download('pdfview.pdf');
+            //return $pdf->stream();
+            return $pdf->download('Documento-'.$sale->invoice_number.'.pdf');
         }
     }
 

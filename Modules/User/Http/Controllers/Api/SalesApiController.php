@@ -41,6 +41,7 @@ class SalesApiController extends Controller
                 'sales.total',
                 'sales.isTemp',
                 'sales.previous_type',
+                'sales.updated_at',
                 'customers.name AS customer_name',
                 'customers.estate',
                 'customer_visits.visit_date',
