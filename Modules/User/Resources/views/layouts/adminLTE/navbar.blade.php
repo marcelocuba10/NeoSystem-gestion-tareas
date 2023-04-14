@@ -1,4 +1,4 @@
-    <!-- ========== header start ========== -->
+
     <header class="header">
       <div class="container-fluid">
         <div class="row">
@@ -9,11 +9,16 @@
                   <i class="lni lni-chevron-left me-2"></i> Menu
                 </button>
               </div>
+              <div class="header-search d-none d-md-flex" style="margin-right: 20px">
+                <p style="font-size: 14px;">Total Visitas (mes): <span style="font-weight: 500;">@if(Auth::user()->count_meta_visits) {{Auth::user()->count_meta_visits}}@else 0 @endif</span></p>
+              </div>
+              <div class="header-search d-none d-md-flex">
+                <p style="font-size: 14px;">Total Ventas (mes): <span style="font-weight: 500;">{{number_format(Auth::user()->count_meta_billing, 0,",",".")}}</span></p>
+              </div>
             </div>
           </div>
           <div class="col-lg-7 col-md-7 col-6">
             <div class="header-right">
-              <!-- profile start -->
               <div class="profile-box ml-15">
                 <button class="dropdown-toggle bg-transparent border-0" type="button" id="profile" data-bs-toggle="dropdown" aria-expanded="false">
                   <div class="profile-info">
@@ -31,9 +36,6 @@
                   <li>
                     <a href="{{ url('/user/users/profile/'.Auth::user()->id) }} "><i class="lni lni-user"></i> Mi Perfil</a>
                   </li>
-                  {{-- <li>
-                    <a href="#0"> <i class="lni lni-cog"></i> Configuraciones </a>
-                  </li> --}}
                   <li>
                     <a href="{{ url('/user/logout/') }} "> <i class="lni lni-exit"></i> Cerrar Sesión </a>
                   </li>
@@ -44,4 +46,3 @@
         </div>
       </div>
     </header>
-    <!-- ========== header end ========== -->

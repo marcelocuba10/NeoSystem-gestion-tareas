@@ -3,7 +3,6 @@
 
   <section class="table-components">
     <div class="container-fluid">
-      <!-- ========== title-wrapper start ========== -->
       <div class="title-wrapper pt-30">
         <div class="row align-items-center">
           <div class="col-md-8">
@@ -26,9 +25,7 @@
           </div>
         </div>
       </div>
-      <!-- ========== title-wrapper end ========== -->
 
-      <!-- ========== tables-wrapper start ========== -->
       <div class="tables-wrapper">
         <div class="row">
           <div class="col-lg-12">
@@ -95,13 +92,15 @@
                             @endcan
                             @can('customer_visit-delete')
                               @if ($customer_visit->status == 'Procesado' || $customer_visit->status == 'Pendiente')
-                                <form method="POST" action="{{ url('/user/customer_visits/delete/'.$customer_visit->id) }}" data-toggle="tooltip" data-placement="bottom" title="Cancelar">
-                                  @csrf
-                                  <div class="action">
-                                    <input name="_method" type="hidden" value="DELETE">
-                                    <button type="submit" class="text-danger show_confirm"><i class="lni lni-trash-can"></i></button>
-                                  </div>
-                                </form>
+                                @if ($customer_visit->action != 'Enviar Presupuesto')
+                                  <form method="POST" action="{{ url('/user/customer_visits/delete/'.$customer_visit->id) }}" data-toggle="tooltip" data-placement="bottom" title="Cancelar">
+                                    @csrf
+                                    <div class="action">
+                                      <input name="_method" type="hidden" value="DELETE">
+                                      <button type="submit" class="text-danger show_confirm"><i class="lni lni-trash-can"></i></button>
+                                    </div>
+                                  </form>
+                                @endif
                               @endif
                             @endcan
                           </div>

@@ -3,7 +3,6 @@
 
   <section class="section">
     <div class="container-fluid">
-      <!-- ========== title-wrapper start ========== -->
       <div class="title-wrapper pt-30">
         <div class="row align-items-center">
           <div class="col-md-6">
@@ -23,7 +22,7 @@
           </div>
         </div>
       </div>
-      <!-- ========== title-wrapper end ========== -->
+
       <div class="row">
         <div class="col-xxl-9 col-lg-8">
           <div class="profile-wrapper mb-30">
@@ -44,6 +43,20 @@
                 </div>
               </div>
               <div class="profiles-activities w-100 pt-30">
+                <ul class="d-flex align-items-center">
+                  <li class="mr-30">
+                    <p><strong>.</strong> .</p>
+                  </li>
+                  <li class="mr-30">
+                    <p><strong>.</strong> .</p>
+                  </li>
+                  <li class="mr-30">
+                    <p><strong>.</strong> .</p>
+                  </li>
+                  <li class="mr-30">
+                    <p><strong>.</strong> .</p>
+                  </li>
+                </ul>
                 <ul class="d-flex align-items-center">
                   <li class="ms-auto">
                     <a href="{{ url('/user/users/edit/profile/'.$user->id) }}" class="main-btn btn-sm primary-btn btn-hover mb-20">

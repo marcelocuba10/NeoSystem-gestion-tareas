@@ -92,7 +92,7 @@ class ProductsController extends Controller
             'phone_supplier' => 'nullable|max:50|min:3',
         ]);
 
-        //remove the separator thousands
+        //remove the separator thousands, example: 1.000.000 to 1000000
         $input = $request->all();
         $input['sale_price'] = str_replace('.', '', $input['sale_price']);
         $input['purchase_price'] = str_replace('.', '', $input['purchase_price']);

@@ -56,7 +56,7 @@
           <div class="icon-card mb-30">
             <div class="icon primary"><i class="lni lni-users"></i></div>
             <div class="content">
-              <h6 class="mb-10">Total Clientes</h6>
+              <h6 class="mb-10">Total Clientes Registrados</h6>
               <h3 class="text-bold mb-10">{{ $cant_customers }}</h3>
             </div>
           </div>

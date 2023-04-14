@@ -6,19 +6,37 @@
         <input name="name" value="{{ $user->name ?? old('name') }}" type="text" class="bg-transparent">
       </div>
     </div>
-    <div class="col-6">
+    <div class="col-3">
+      <div class="input-style-1">
+        <label>Meta en Visitas (mes)</label>
+        <input name="meta_visits" value="{{ $user->meta_visits ?? old('meta_visits') }}" type="number" class="bg-transparent">
+        @if ($user)
+          <span class="form-text m-b-none" style="color: green;font-weight: 500;">Status: {{ $user->count_meta_visits }} / {{ $user->meta_visits }}</span>
+        @endif
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="input-style-1">
+        <label>Meta en Facturación (mes)</label>
+        <input name="meta_billing" id="currency_1" value="{{ $user->meta_billing ?? old('meta_billing') }}" type="text" class="bg-transparent">
+        @if ($user)
+          <span class="form-text m-b-none" style="color: green;font-weight: 500;">Status: {{number_format($user->count_meta_billing, 0,",",".")}} / {{number_format($user->meta_billing, 0,",",".")}}</span>
+        @endif
+      </div>
+    </div>
+    <div class="col-4">
       <div class="input-style-1">
         <label>Nombre del Encargado</label>
         <input name="seller_contact_1" value="{{ $user->seller_contact_1 ?? old('seller_contact_1') }}" type="text" class="bg-transparent">
       </div>
     </div>
-    <div class="col-6">
+    <div class="col-4">
       <div class="input-style-1">
         <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Email</label>
         <input name="email" value="{{ $user->email ?? old('email') }}" type="email" class="bg-transparent">
       </div>
     </div>
-    <div class="col-6">
+    <div class="col-4">
       <div class="input-style-1">
         <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Contraseña</label>
         <input name="password" type="password" class="bg-transparent">

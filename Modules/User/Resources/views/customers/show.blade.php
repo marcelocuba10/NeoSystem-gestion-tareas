@@ -3,7 +3,6 @@
 
 <section class="section">
   <div class="container-fluid">
-    <!-- ========== title-wrapper start ========== -->
     <div class="title-wrapper pt-30">
       <div class="row align-items-center">
         <div class="col-md-6">
@@ -24,7 +23,6 @@
         </div>
       </div>
     </div>
-    <!-- ========== title-wrapper end ========== -->
     <div class="form-layout-wrapper">
       <div class="row">
         <div class="col-lg-12">
@@ -36,21 +34,18 @@
                   <input type="text" value="{{ $customer->name ?? old('name') }}" readonly>
                 </div>
               </div>
-              <!-- end col -->
               <div class="col-3">
                 <div class="input-style-1">
                   <label>Doc Identidad</label>
                   <input type="text" value="{{ $customer->doc_id ?? old('doc_id') }}" readonly>
                 </div>
               </div>
-              <!-- end col -->
               <div class="col-3">
                 <div class="input-style-1">
                   <label>Teléfono</label>
                   <input type="text" value="{{ $customer->phone ?? old('phone') }}" readonly>
                 </div>
               </div>
-              <!-- end col -->
               <div class="col-6">
                 <div class="input-style-1">
                   <label>Rubro</label>
@@ -63,7 +58,6 @@
                   </div>
                 </div>
               </div>
-              <!-- end col -->
               <div class="col-6" style="margin-top: -12px;">
                 <div class="table-wrapper table-responsive">
                   <table class="table top-selling-table mb-30">
@@ -96,70 +90,61 @@
                   </table>
                 </div>
               </div>
-              <!-- end col -->
               <div class="col-6">
                 <div class="input-style-1">
                   <label>Resultado de la Visita</label>
                   <textarea type="text" value="{{ $customer->result_of_the_visit ?? old('result_of_the_visit') }}" readonly>{{ $customer->result_of_the_visit ?? old('result_of_the_visit') }}</textarea>
                 </div>
               </div>
-              <!-- end col -->
               <div class="col-6">
                 <div class="input-style-1">
                   <label>Objetivos</label>
                   <textarea type="text" value="{{ $customer->objective ?? old('objective') }}" readonly>{{ $customer->objective ?? old('objective') }}</textarea>
                 </div>
               </div>
-              <!-- end col -->
-              <div class="col-6">
+              <div class="col-4">
                 <div class="input-style-1">
                   <label>Email</label>
                   <input type="text" value="{{ $customer->email ?? old('email') }}" readonly>
                 </div>
               </div>
-              <!-- end col -->
-              <div class="col-3">
+              {{-- <div class="col-3">
                 <div class="input-style-1">
                   <label>Fecha Próxima Visita</label>
                   <input type="date" id="date" class="bg-gray" placeholder="DD/MM/YYYY" value="{{ $customer->next_visit_date ?? old('next_visit_date') }}" readonly>
                 </div>
               </div>
-              <!-- end col -->
               <div class="col-3">
                 <div class="input-style-1">
                   <label>Hora Próxima Visita</label>
                     <input type="time" class="bg-gray" value="{{ $customer->next_visit_hour ?? old('next_visit_hour') }}" readonly>
                 </div>
-              </div>
-              <!-- end col -->
+              </div> --}}
               <div class="col-5">
                 <div class="input-style-1">
                   <label>Ciudad</label>
                   <input type="text" value="{{ $customer->city ?? old('city') }}" readonly>
                 </div>
               </div>
-              <!-- end col -->
-              <div class="col-4">
+              <div class="col-3">
                 <div class="input-style-1">
                   <label>Departamento</label>
                   <input type="text" value="{{ $customer->estate ?? old('estate') }}" readonly>
                 </div>
               </div>
-              <!-- end col -->
+              <div class="col-6">
+                <div class="input-style-1">
+                  <label>Dirección</label>
+                  <input type="text" value="{{ $customer->address ?? old('address') }}" readonly>
+                </div>
+              </div>
               <div class="col-3">
                 <div class="form-check checkbox-style mb-30" style="margin-top: 40px;">
                   <input @if(!empty($customer->is_vigia)) {{ $customer->is_vigia = 'on'  ? 'checked' : '' }} @endif class="form-check-input" type="checkbox" id="checkbox-not-robot" onclick="return false;">
                   <label class="form-check-label" for="checkbox-not-robot" >¿Es Cliente Vigia?</label>
                 </div>
               </div>
-              <!-- end col -->
-              <div class="col-12">
-                <div class="input-style-1">
-                  <label>Dirección</label>
-                  <input type="text" value="{{ $customer->address ?? old('address') }}" readonly>
-                </div>
-              </div>
-              <!-- end col -->
+
               <h6 class="mb-20">Actualice la ubicación del cliente desde la app móvil.</h6>
               <div id="map"></div>
 

@@ -16,6 +16,7 @@ use Modules\User\Entities\Sales;
 use PDF;
 use Mail;
 use Modules\User\Emails\NotifyMail;
+use Modules\User\Entities\User;
 
 class SalesController extends Controller
 {
@@ -137,12 +138,13 @@ class SalesController extends Controller
 
             $sale = Sales::create($input);
 
+            /** Check and Save items of sale */
             foreach ($request->product_id as $key => $value) {
 
                 if (intval($request->qty[$key]) <= 0) {
                     return back()->with('error', 'Por favor, ingrese una cantidad válida.');
                 } else {
-                    /** Save items of sale */
+
                     $order = new OrderDetail();
                     $order->sale_id = $sale->id;
                     $order->product_id = $request->product_id[$key];
@@ -189,7 +191,7 @@ class SalesController extends Controller
                 // }
             }
 
-            /** If everything is ok, proceed with the operation */
+            /** If everything is ok with the order detail, proceed with the operation SUM total for sale */
             if ($saleIsDeleted == false) {
                 /** Get total amount from items of Sale */
                 $total_order = DB::table('order_details')
@@ -199,8 +201,20 @@ class SalesController extends Controller
                 /** Update Sale with de total */
                 $input['total'] = $total_order;
                 $input['isTemp'] = 0;
+                /** Find Sale for update */
                 $sale = Sales::find($sale->id);
                 $sale->update($input);
+
+                if ($sale->type == 'Venta') {
+                    /** Update the META in seller - increment */
+                    $seller = User::where('idReference', $sale->seller_id)->first();
+
+                    DB::table('users')
+                        ->where('users.idReference', '=', $sale->seller_id)
+                        ->update([
+                            'count_meta_billing' => $seller->count_meta_billing + $sale->total
+                        ]);
+                }
 
                 /** Send email notification - updated status sale to process*/
                 $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
@@ -438,6 +452,17 @@ class SalesController extends Controller
                         'status' => 'Cancelado'
                     ]);
 
+                /** Update the META in seller - discount*/
+                $seller = User::where('idReference', $sale->seller_id)->first();
+                /** no discount meta visits if is 0 - prevent numbers negative */
+                if ($seller->count_meta_billing > 0) {
+                    DB::table('users')
+                        ->where('users.idReference', '=', $sale->seller_id)
+                        ->update([
+                            'count_meta_billing' => $seller->count_meta_billing - $sale->total
+                        ]);
+                }
+
                 /** Get sale info to notify email*/
                 $sale = DB::table('sales')
                     ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
@@ -499,6 +524,17 @@ class SalesController extends Controller
                     ->update([
                         'status' => 'Cancelado'
                     ]);
+
+                /** Update the META in seller - discount*/
+                $seller = User::where('idReference', $sale->seller_id)->first();
+                /** no discount meta visits if is 0 - prevent numbers negative */
+                if ($seller->count_meta_billing > 0) {
+                    DB::table('users')
+                        ->where('users.idReference', '=', $sale->seller_id)
+                        ->update([
+                            'count_meta_billing' => $seller->count_meta_billing - $sale->total
+                        ]);
+                }
 
                 /** Get sale info to notify email*/
                 $sale = DB::table('sales')
@@ -671,6 +707,14 @@ class SalesController extends Controller
                             'type' => 'Venta',
                         ]);
 
+                    /** Update the META in seller - increment */
+                    $seller = User::where('idReference', $sale->seller_id)->first();
+                    DB::table('users')
+                        ->where('users.idReference', '=', $sale->seller_id)
+                        ->update([
+                            'count_meta_billing' => $seller->count_meta_billing + $sale->total
+                        ]);
+
                     /** Send email notification - updated status sale to process*/
                     $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
                     $head = 'procesar un ' . $sale->previous_type . ' para Venta - #' . $sale->invoice_number;
@@ -705,11 +749,23 @@ class SalesController extends Controller
                     Mail::to($emailDefault)->send(new NotifyMail($sale, $head, $linkOrderPDF, $type));
                 }
 
+                /** Cancel Sale */
                 if ($request->cancelSale == true) {
                     Sales::where('sales.id', '=', $id)
                         ->update([
                             'status' => 'Cancelado',
                         ]);
+
+                    /** Update the META in seller - discount*/
+                    $seller = User::where('idReference', $sale->seller_id)->first();
+                    /** no discount meta visits if is 0 - prevent numbers negative */
+                    if ($seller->count_meta_billing > 0) {
+                        DB::table('users')
+                            ->where('users.idReference', '=', $sale->seller_id)
+                            ->update([
+                                'count_meta_billing' => $seller->count_meta_billing - $sale->total
+                            ]);
+                    }
                 }
 
                 /** Update Sale */
@@ -746,6 +802,15 @@ class SalesController extends Controller
                     ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
                     ->update([
                         'status' => 'Procesado',
+                    ]);
+
+                /** Update the META in seller - increment */
+                $seller = User::where('idReference', $sale->seller_id)->first();
+
+                DB::table('users')
+                    ->where('users.idReference', '=', $sale->seller_id)
+                    ->update([
+                        'count_meta_billing' => $seller->count_meta_billing + $sale->total
                     ]);
 
                 /** Send email notification - updated status sale to process*/
@@ -917,7 +982,7 @@ class SalesController extends Controller
         if ($request->has('download')) {
             $pdf = PDF::loadView('user::sales.invoicePDF.invoicePrintPDF', compact('user', 'sale', 'order_details', 'total_order'));
             //return $pdf->stream();
-            return $pdf->download('Documento-'.$sale->invoice_number.'.pdf');
+            return $pdf->download('Documento-' . $sale->invoice_number . '.pdf');
         }
     }
 
@@ -988,6 +1053,17 @@ class SalesController extends Controller
                 ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
                 ->update([
                     'status' => 'Cancelado'
+                ]);
+        }
+
+        /** Update the META in seller - discount*/
+        $seller = User::where('idReference', $sale->seller_id)->first();
+        /** no discount meta visits if is 0 - prevent numbers negative */
+        if ($seller->count_meta_billing > 0) {
+            DB::table('users')
+                ->where('users.idReference', '=', $sale->seller_id)
+                ->update([
+                    'count_meta_billing' => $seller->count_meta_billing - $sale->total
                 ]);
         }
 

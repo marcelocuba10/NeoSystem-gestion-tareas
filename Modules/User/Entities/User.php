@@ -38,6 +38,10 @@ class User extends Authenticatable
         'latitude',
         'longitude',
         'img_profile',
+        'meta_visits',
+        'meta_billing',
+        'count_meta_visits',
+        'count_meta_billing'
     ];
 
     public function reports()

@@ -3,7 +3,6 @@
 
 <section class="section">
   <div class="container-fluid">
-    <!-- ========== title-wrapper start ========== -->
     <div class="title-wrapper pt-30">
       <div class="row align-items-center">
         <div class="col-md-6">
@@ -24,7 +23,6 @@
         </div>
       </div>
     </div>
-    <!-- ========== title-wrapper end ========== -->
 
     <div class="form-layout-wrapper">
       <div class="row">
@@ -39,13 +37,27 @@
                     <input value="{{ $user->name ?? old('name') }}" readonly type="text">
                   </div>
                 </div>
-                <div class="col-6">
+                <div class="col-3">
+                  <div class="input-style-1">
+                    <label>Meta en Visitas (mes)</label>
+                    <input name="meta_visits" value="{{ $user->meta_visits ?? old('meta_visits') }}" type="number" readonly>
+                    <span class="form-text m-b-none" style="color: green;font-weight: 500;">Status: {{ $user->count_meta_visits }} / {{ $user->meta_visits }}</span>
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="input-style-1">
+                    <label>Meta en Facturación (mes)</label>
+                    <input value="{{number_format($user->meta_billing, 0,",",".")}}" type="text" readonly>
+                    <span class="form-text m-b-none" style="color: green;font-weight: 500;">Status: {{number_format($user->count_meta_billing, 0,",",".")}} / {{number_format($user->meta_billing, 0,",",".")}}</span>
+                  </div>
+                </div>
+                <div class="col-3">
                   <div class="input-style-1">
                     <label>Nombre del Encargado</label>
                     <input value="{{ $user->seller_contact_1 ?? old('seller_contact_1') }}" type="text" readonly>
                   </div>
                 </div>
-                <div class="col-6">
+                <div class="col-3">
                   <div class="input-style-1">
                     <label>Email</label>
                     <input value="{{ $user->email ?? old('email') }}" type="email" readonly>

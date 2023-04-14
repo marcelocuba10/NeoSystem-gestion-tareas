@@ -32,6 +32,10 @@ class CreateUsersTable extends Migration
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();
             $table->string('img_profile')->nullable();
+            $table->integer('meta_visits')->nullable();
+            $table->integer('count_meta_visits')->nullable();
+            $table->decimal('meta_billing', 12, 0)->nullable();
+            $table->decimal('count_meta_billing', 12, 0)->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->integer('status')->default(1);

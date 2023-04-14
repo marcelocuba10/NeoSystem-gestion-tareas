@@ -84,30 +84,39 @@ class SellersController extends Controller
     {
         $request->validate(
             [
-            'name' => 'required|max:50|min:2',
-            'seller_contact_1' => 'nullable|max:50|min:2',
-            'seller_contact_2' => 'nullable|max:50|min:2',
-            'phone_1' => 'nullable|max:50|min:2',
-            'phone_2' => 'nullable|max:50|min:2',
-            'status' => 'required|integer|between:0,1',
-            'city' => 'nullable|max:50|min:2',
-            'estate' => 'nullable|max:50|min:2',
-            'address' => 'nullable|max:255|min:2',
-            'email' => 'required|max:50|min:5|email:rfc,dns|unique:users,email',
-            'password' => 'required|max:50|min:2',
-            'confirm_password' => 'required|max:50|min:2|same:password',
-            'doc_id' => 'required|max:25|min:2|unique:users,doc_id',
-        ],
-        [
-            'doc_id.required'  => 'El campo Documento Identidad es obligatorio.',
-            'password.required'  => 'El campo Contraseña es obligatorio.',
-            'confirm_password.required'  => 'El campo Confirmar Contraseña es obligatorio.',
-            'name.required'  => 'El campo Nombre es obligatorio.',
-            'email.required'  => 'El campo Email es obligatorio.',
-            'doc_id.unique'  => 'El Documento Identidad ya esta en uso.',
-            'doc_id.min'  => 'El Documento Identidad debe ser mayor a 1 dígito.',
-            'email.unique'  => 'El Email ya esta en uso.',
-        ]
+                'name' => 'required|max:50|min:2',
+                'seller_contact_1' => 'nullable|max:50|min:2',
+                'seller_contact_2' => 'nullable|max:50|min:2',
+                'meta_visits' => 'nullable|max:999|min:1',
+                'meta_billing' => 'nullable|max:12|min:1',
+                'phone_1' => 'nullable|max:50|min:2',
+                'phone_2' => 'nullable|max:50|min:2',
+                'status' => 'required|integer|between:0,1',
+                'city' => 'nullable|max:50|min:2',
+                'estate' => 'nullable|max:50|min:2',
+                'address' => 'nullable|max:255|min:2',
+                'email' => 'required|max:50|min:5|email:rfc,dns|unique:users,email',
+                'password' => 'required|max:50|min:2',
+                'confirm_password' => 'required|max:50|min:2|same:password',
+                'doc_id' => 'required|max:25|min:2|unique:users,doc_id',
+            ],
+            [
+                'doc_id.required'  => 'El campo Documento Identidad es obligatorio.',
+                'password.required'  => 'El campo Contraseña es obligatorio.',
+                'confirm_password.required'  => 'El campo Confirmar Contraseña es obligatorio.',
+                'confirm_password.same'  => 'Las Contraseñas no coinciden',
+                'name.required'  => 'El campo Nombre es obligatorio.',
+                'name.min'  => 'El campo Nombre debe ser mayor a 1 dígito.',
+                'phone_1.min'  => 'El campo Teléfono 1 debe ser mayor a 1 dígito.',
+                'phone_2.min'  => 'El campo Teléfono 2 debe ser mayor a 1 dígito.',
+                'address.min'  => 'El campo Dirección debe ser mayor a 1 dígito.',
+                'city.min'  => 'El campo Ciudad debe ser mayor a 1 dígito.',
+                'seller_contact_1.min'  => 'El campo Nombre del Encargado debe ser mayor a 1 dígito.',
+                'email.required'  => 'El campo Email es obligatorio.',
+                'doc_id.unique'  => 'El Documento Identidad ya esta en uso.',
+                'doc_id.min'  => 'El Documento Identidad debe ser mayor a 1 dígito.',
+                'email.unique'  => 'El Email ya esta en uso.',
+            ]
         );
 
         $input = $request->all();
@@ -115,6 +124,9 @@ class SellersController extends Controller
         // generate idReference unique and random
         $input['idReference'] = $this->generateUniqueCode();
         $input['main_user'] = 1;
+
+        //remove the separator thousands, example: 1.000.000 to 1000000
+        $input['meta_billing'] = str_replace('.', '', $input['meta_billing']);
 
         $user = User::create($input);
         /** Main user is Role Admin */
@@ -219,6 +231,7 @@ class SellersController extends Controller
         );
 
         $user = User::find($id);
+
         $userStatus = $user->status;
         $userEstate = $user->estate;
 
@@ -227,32 +240,41 @@ class SellersController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate( 
+        $request->validate(
             [
-            'name' => 'required|max:50|min:2',
-            'seller_contact_1' => 'nullable|max:50|min:2',
-            'seller_contact_2' => 'nullable|max:50|min:2',
-            'phone_1' => 'nullable|max:25|min:2',
-            'phone_2' => 'nullable|max:25|min:2',
-            'status' => 'required|integer|between:0,1',
-            'city' => 'nullable|max:50|min:2',
-            'estate' => 'nullable|max:50|min:2',
-            'address' => 'nullable|max:255|min:2',
-            'email' => 'required|max:50|min:2|email:rfc,dns|unique:users,email,' . $id,
-            'password' => 'nullable|max:50|min:2',
-            'confirm_password' => 'nullable|max:20|min:2|same:password',
-            'doc_id' => 'required|max:25|min:2|unique:users,doc_id,' . $id,
-        ],
-        [
-            'doc_id.required'  => 'El campo Documento Identidad es obligatorio.',
-            'password.required'  => 'El campo Contraseña es obligatorio.',
-            'confirm_password.required'  => 'El campo Confirmar Contraseña es obligatorio.',
-            'name.required'  => 'El campo Nombre es obligatorio.',
-            'email.required'  => 'El campo Email es obligatorio.',
-            'doc_id.unique'  => 'El Documento Identidad ya esta en uso.',
-            'doc_id.min'  => 'El Documento Identidad debe ser mayor a 1 dígito.',
-            'email.unique'  => 'El Email ya esta en uso.',
-        ]);
+                'name' => 'required|max:50|min:2',
+                'seller_contact_1' => 'nullable|max:50|min:2',
+                'seller_contact_2' => 'nullable|max:50|min:2',
+                'meta_visits' => 'nullable|max:999|min:1',
+                'meta_billing' => 'nullable|max:12|min:1',
+                'phone_1' => 'nullable|max:25|min:2',
+                'phone_2' => 'nullable|max:25|min:2',
+                'status' => 'required|integer|between:0,1',
+                'city' => 'nullable|max:50|min:2',
+                'estate' => 'nullable|max:50|min:2',
+                'address' => 'nullable|max:255|min:2',
+                'email' => 'required|max:50|min:2|email:rfc,dns|unique:users,email,' . $id,
+                'password' => 'nullable|max:50|min:2',
+                'confirm_password' => 'nullable|max:20|min:2|same:password',
+                'doc_id' => 'required|max:25|min:2|unique:users,doc_id,' . $id,
+            ],
+            [
+                'doc_id.required'  => 'El campo Documento Identidad es obligatorio.',
+                'password.required'  => 'El campo Contraseña es obligatorio.',
+                'confirm_password.required'  => 'El campo Confirmar Contraseña es obligatorio.',
+                'confirm_password.same'  => 'Las Contraseñas no coinciden',
+                'name.required'  => 'El campo Nombre es obligatorio.',
+                'name.min'  => 'El campo Nombre debe ser mayor a 1 dígito.',
+                'phone_1.min'  => 'El campo Teléfono 1 debe ser mayor a 1 dígito.',
+                'phone_2.min'  => 'El campo Teléfono 2 debe ser mayor a 1 dígito.',
+                'address.min'  => 'El campo Dirección debe ser mayor a 1 dígito.',
+                'city.min'  => 'El campo Ciudad debe ser mayor a 1 dígito.',
+                'email.required'  => 'El campo Email es obligatorio.',
+                'doc_id.unique'  => 'El Documento Identidad ya esta en uso.',
+                'doc_id.min'  => 'El Documento Identidad debe ser mayor a 1 dígito.',
+                'email.unique'  => 'El Email ya esta en uso.',
+            ]
+        );
 
         $input = $request->all();
         $input['main_user'] = 1;
@@ -265,6 +287,8 @@ class SellersController extends Controller
             }
         }
 
+        //remove the separator thousands, example: 1.000.000 to 1000000
+        $input['meta_billing'] = str_replace('.', '', $input['meta_billing']);
 
         $user = User::find($id);
         $user->update($input);

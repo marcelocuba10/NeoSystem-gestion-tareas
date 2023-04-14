@@ -16,6 +16,7 @@ use PDF;
 use Mail;
 use Modules\User\Emails\NotifyMail;
 use Modules\User\Entities\Products;
+use Modules\User\Entities\User;
 
 class CustomerVisitController extends Controller
 {
@@ -677,6 +678,14 @@ class CustomerVisitController extends Controller
                     ]);
             }
 
+            /** Update the META in seller - increment */
+            $seller = User::where('idReference', $idRefCurrentUser)->first();
+            DB::table('users')
+                ->where('users.idReference', '=', $idRefCurrentUser)
+                ->update([
+                    'count_meta_visits' => $seller->count_meta_visits + 1
+                ]);
+
             /** Send email notification - updated status visit to proceseed*/
             $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
             $head = 'procesar una Visita Cliente - #' . $customer_visit->visit_number;
@@ -827,7 +836,7 @@ class CustomerVisitController extends Controller
         if ($request->has('download')) {
             $pdf = PDF::loadView('user::customer_visits.invoicePDF.invoicePrintPDF', compact('user', 'customer_visit', 'order_details', 'total_order'));
             //return $pdf->stream();
-            return $pdf->download('Documento-'.$customer_visit->visit_number.'.pdf');
+            return $pdf->download('Documento-' . $customer_visit->visit_number . '.pdf');
         }
     }
 
@@ -881,6 +890,17 @@ class CustomerVisitController extends Controller
             ->update([
                 'status' => 'Cancelado',
             ]);
+
+        /** Update the META in seller - discount*/
+        $seller = User::where('idReference', $idRefCurrentUser)->first();
+        /** no discount meta visits if is 0 - prevent numbers negative */
+        if ($seller->count_meta_visits > 0) {
+            DB::table('users')
+                ->where('users.idReference', '=', $idRefCurrentUser)
+                ->update([
+                    'count_meta_visits' => $seller->count_meta_visits - 1
+                ]);
+        }
 
         /** Get the visit data for notify email */
         $customer_visit = DB::table('customer_visits')
