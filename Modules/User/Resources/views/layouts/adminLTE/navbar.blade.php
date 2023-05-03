@@ -10,10 +10,10 @@
                 </button>
               </div>
               <div class="header-search d-none d-md-flex" style="margin-right: 20px">
-                <p style="font-size: 14px;">Total Visitas (mes): <span style="font-weight: 500;">@if(Auth::user()->count_meta_visits) {{Auth::user()->count_meta_visits}}@else 0 @endif</span></p>
+                <p style="font-size: 14px;">Total Visitas (mes): <span style="font-weight: 500;padding: 0px 5px;color: white;@if(Auth::user()->count_meta_visits < Auth::user()->meta_visits) background-color: red; @else background-color: green; @endif">@if(Auth::user()->count_meta_visits) {{ Auth::user()->count_meta_visits }}@else 0 @endif</span><span style="font-weight: 500;"> / {{ Auth::user()->meta_visits }}</span></p>
               </div>
               <div class="header-search d-none d-md-flex">
-                <p style="font-size: 14px;">Total Ventas (mes): <span style="font-weight: 500;">{{number_format(Auth::user()->count_meta_billing, 0,",",".")}}</span></p>
+                <p style="font-size: 14px;">Total Ventas (mes): <span style="font-weight: 500;padding: 0px 5px;color: white;@if(Auth::user()->count_meta_billing < Auth::user()->meta_billing) background-color: red; @else background-color: green; @endif">{{ number_format(Auth::user()->count_meta_billing, 0,",",".") }} </span><span style="font-weight: 500;"> / {{ number_format(Auth::user()->meta_billing, 0,",",".") }}</span></p>
               </div>
             </div>
           </div>

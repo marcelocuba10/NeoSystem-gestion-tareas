@@ -3,7 +3,6 @@
 
 <section class="section">
   <div class="container-fluid">
-    <!-- ========== title-wrapper start ========== -->
     <div class="title-wrapper pt-30">
       <div class="row align-items-center">
         <div class="col-md-6">
@@ -24,7 +23,6 @@
         </div>
       </div>
     </div>
-    <!-- ========== title-wrapper end ========== -->
     <div class="form-layout-wrapper">
       <div class="row">
         <div class="col-lg-12">
@@ -36,56 +34,54 @@
                   <input value="{{ $product->custom_code ?? old('custom_code') }}" type="text" readonly>
                 </div>
               </div>
-              <!-- end col -->
               <div class="col-9">
                 <div class="input-style-1">
                   <label>Nombre</label>
                   <input value="{{ $product->name ?? old('name') }}" type="text">
                 </div>
               </div>
-              <!-- end col -->
               <div class="col-4">
                 <div class="input-style-1">
-                  <label>Precio Venta Público</label>
+                  <label>Precio Agente</label>
+                  <input id="currency_2" value="{{number_format($product->purchase_price, 0)}}" type="text">
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="input-style-1">
+                  <label>Precio Público</label>
                   <input id="currency_2" value="{{number_format($product->sale_price, 0)}}" type="text">
                 </div>
               </div>
-              <!-- end col -->
               {{-- <div class="col-4">
                 <div class="input-style-1">
                   <label>Inventario</label>
                   <input value="{{ $product->quantity ?? old('quantity') }}" type="text">
                 </div>
-              </div>
-              <!-- end col --> --}}
+              </div> --}}
               <div class="col-4">
                 <div class="input-style-1">
                   <label>Marca</label>
                   <input value="{{ $product->brand ?? old('brand') }}" type="text">
                 </div>
               </div>
-              <!-- end col -->
               <div class="col-4">
                 <div class="input-style-1">
                   <label>Modelo</label>
                   <input value="{{ $product->model ?? old('model') }}" type="text">
                 </div>
               </div>
-              <!-- end col -->
               <div class="col-4">
                 <div class="input-style-1">
                   <label>Nombre del Proveedor</label>
                   <input value="{{ $product->supplier ?? old('supplier') }}" type="text">
                 </div>
               </div>
-              <!-- end col -->
               <div class="col-4">
                 <div class="input-style-1">
                   <label>Teléfono del Proveedor</label>
                   <input value="{{ $product->phone_supplier ?? old('phone_supplier') }}" type="text">
                 </div>
-              </div>
-              <!-- end col -->          
+              </div>         
               <div class="col-12">
                 <div class="button-group d-flex justify-content-center flex-wrap">
                   <a class="main-btn primary-btn-outline m-2" href="{{ url('/user/products') }}">Atrás</a>

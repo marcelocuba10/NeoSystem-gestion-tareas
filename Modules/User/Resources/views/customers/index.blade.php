@@ -3,7 +3,6 @@
 
   <section class="table-components">
     <div class="container-fluid">
-      <!-- ========== title-wrapper start ========== -->
       <div class="title-wrapper pt-30">
         <div class="row align-items-center">
           <div class="col-md-8">
@@ -26,9 +25,7 @@
           </div>
         </div>
       </div>
-      <!-- ========== title-wrapper end ========== -->
 
-      <!-- ========== tables-wrapper start ========== -->
       <div class="tables-wrapper">
         <div class="row">
           <div class="col-lg-12">
@@ -83,7 +80,7 @@
                           @endcan
                           @can('customer-delete')
                             @if ($customer->status == 1)
-                              <form method="POST" action="{{ url('/user/customers/delete/'.$customer->id) }}" data-toggle="tooltip" data-placement="bottom" title="Eliminar">
+                              <form method="POST" action="{{ url('/user/customers/delete/'.$customer->id) }}" data-toggle="tooltip" data-placement="bottom" title="Desactivar Cliente">
                                 @csrf
                                 <div class="action">
                                   <input name="_method" type="hidden" value="DELETE">
@@ -91,7 +88,7 @@
                                 </div>
                               </form>
                             @else
-                              <form method="POST" action="{{ url('/user/customers/delete/'.$customer->id) }}" data-toggle="tooltip" data-placement="bottom" title="Habilitar nuevamente">
+                              <form method="POST" action="{{ url('/user/customers/delete/'.$customer->id) }}" data-toggle="tooltip" data-placement="bottom" title="Habilitar Cliente">
                                 @csrf
                                 <div class="action">
                                   <input name="_method" type="hidden" value="DELETE">

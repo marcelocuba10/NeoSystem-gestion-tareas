@@ -37,7 +37,8 @@
                   <tr>
                     <th><h6>Código</h6></th>
                     <th><h6>Producto</h6></th>
-                    <th><h6>Precio</h6></th>
+                    <th><h6>Precio Agente</h6></th>
+                    <th><h6>Precio Público</h6></th>
                     <th><h6>Acciones</h6></th>
                   </tr>
                 </thead>
@@ -46,6 +47,7 @@
                   <tr>
                     <td class="min-width"><h6 class="text-sm"><a href="{{ url('/user/products/show/'.$product->id) }}">{{ $product->custom_code }}</a></h6></td>
                     <td class="min-width"><p class="text-sm"><a href="{{ url('/user/products/show/'.$product->id) }}">{{ Str::limit($product->name, 75) }}</a></p></td>
+                    <td class="min-width"><p>G$ {{number_format($product->purchase_price, 0,",",".")}}</p></td>
                     <td class="min-width"><p>G$ {{number_format($product->sale_price, 0,",",".")}}</p></td>
                     <td class="text-right">
                       <div class="btn-group">

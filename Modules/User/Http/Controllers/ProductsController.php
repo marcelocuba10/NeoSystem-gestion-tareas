@@ -43,6 +43,7 @@ class ProductsController extends Controller
                 'products.name',
                 'products.description',
                 'products.sale_price',
+                'products.purchase_price'
             )
             ->orderBy('products.created_at', 'DESC')
             ->paginate(30);
@@ -59,7 +60,8 @@ class ProductsController extends Controller
                 'products.custom_code',
                 'products.name',
                 'products.description',
-                'products.sale_price'
+                'products.sale_price',
+                'products.purchase_price'
             )
             ->first();
             
@@ -129,6 +131,7 @@ class ProductsController extends Controller
 
             $products = DB::table('products')
                 ->where('products.name', 'LIKE', "%{$search}%")
+                ->orWhere('products.custom_code', 'LIKE', "%{$search}%")
                 ->select(
                     'products.id',
                     'products.custom_code',

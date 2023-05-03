@@ -22,7 +22,7 @@
       <div class="input-style-1">
         <label>Fecha Próximo Paso</label>
         <input onchange="showFieldObjectives(this);" type="date" name="next_visit_date" id="date" placeholder="DD/MM/YYYY" value="{{ $customer_visit->next_visit_date ?? old('next_visit_date') }}" class="bg-transparent">
-        <span id="msg1" style="display: none" class="form-text m-b-none">Es necesario agregar la <b>Hora</b> y <b>Objetivos</b></span>
+        <span id="msg1" style="display: none" class="form-text m-b-none">Es necesario agregar la <b>Hora</b></span>
       </div>
     </div>
     <div class="col-2">
@@ -72,7 +72,7 @@
     </div>
     <div class="col-5">
       <div class="input-style-1" id="objective" style="display: none">
-        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Potencial del Cliente</label>
+        <label>Potencial del Cliente</label>
         <textarea type="text" name="objective" value="{{ $customer_visit->objective ?? old('objective') }}" class="bg-transparent" >{{ $customer_visit->objective ?? old('objective') }}</textarea>
       </div>
     </div>

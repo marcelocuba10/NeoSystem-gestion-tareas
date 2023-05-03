@@ -110,9 +110,9 @@ class CustomerVisitController extends Controller
         $input = $request->all();
 
         //validations
-        if ($input['next_visit_date'] != null && $input['objective'] == null) {
-            return back()->with('error', 'Por favor, agregue los Objetivos para la próxima visita marcada');
-        }
+        // if ($input['next_visit_date'] != null && $input['objective'] == null) {
+        //     return back()->with('error', 'Por favor, agregue los Objetivos para la próxima visita marcada');
+        // }
 
         if ($input['next_visit_date'] != null && $input['next_visit_hour'] == null) {
             return back()->with('error', 'Por favor, agregue la Hora de la próxima visita');

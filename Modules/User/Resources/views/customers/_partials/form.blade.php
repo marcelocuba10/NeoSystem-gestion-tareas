@@ -8,7 +8,7 @@
     </div>
     <div class="col-3">
       <div class="input-style-1">
-        <label>Doc Identidad / RUC</label>
+        <label>Doc Identidad / RUC (Opcional)</label>
         <input type="text" name="doc_id" value="{{ $customer->doc_id ?? old('doc_id') }}" class="bg-transparent">
       </div>
     </div>
@@ -101,43 +101,31 @@
         </div>
       </div>
     @endif
-    <div class="col-6">
+    <div class="col-7">
       <div class="input-style-1">
         <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Posibles Resultados con este Cliente</label>
         <textarea type="text" name="result_of_the_visit" value="{{ $customer->result_of_the_visit ?? old('result_of_the_visit') }}" class="bg-transparent">{{ $customer->result_of_the_visit ?? old('result_of_the_visit') }}</textarea>
       </div>
     </div>
-    <div class="col-6">
+    {{-- <div class="col-6">
       <div class="input-style-1">
         <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Potencial del cliente</label>
         <textarea type="text" name="objective" value="{{ $customer->objective ?? old('objective') }}" class="bg-transparent">{{ $customer->objective ?? old('objective') }}</textarea>
       </div>
-    </div>
+    </div> --}}
     <div class="col-6">
       <div class="input-style-1">
-        <label>Email</label>
+        <label>Email (Opcional)</label>
         <input type="text" name="email" value="{{ $customer->email ?? old('email') }}" class="bg-transparent">
-      </div>
-    </div>
-    <div class="col-3">
-      <div class="input-style-1">
-        <label>Fecha Próxima Visita</label>
-        <input type="date" name="next_visit_date" id="date" placeholder="DD/MM/YYYY" value="{{ $customer->next_visit_date ?? old('next_visit_date') }}" class="bg-transparent">
-      </div>
-    </div>
-    <div class="col-3">
-      <div class="input-style-1">
-        <label>Hora Próxima Visita</label>
-          <input type="time" name="next_visit_hour" value="{{ $customer->next_visit_hour ?? old('next_visit_hour') }}" class="bg-transparent">
       </div>
     </div>
     <div class="col-5">
       <div class="input-style-1">
-        <label>Ciudad</label>
+        <label>Ciudad (Opcional)</label>
         <input name="city" value="{{ $customer->city ?? old('city') }}" type="text" class="bg-transparent">
       </div>
     </div>
-    <div class="col-4">
+    <div class="col-3">
       <div class="select-style-1">
         <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Departamento</label>
         <div class="select-position">
@@ -149,16 +137,16 @@
         </div>
       </div>
     </div>
-    <div class="col-3">
-      <div class="form-check checkbox-style mb-30" style="margin-top: 40px;">
-        <input name="is_vigia" @if(!empty($customer->is_vigia)) {{ $customer->is_vigia = 'on'  ? 'checked' : '' }} @endif class="form-check-input" type="checkbox" id="checkbox-not-robot">
-        <label class="form-check-label" for="checkbox-not-robot" >¿Es Cliente Vigia?</label>
-      </div>
-    </div>
     <div class="col-6">
       <div class="input-style-1">
-        <label>Dirección</label>
+        <label>Dirección (Opcional)</label>
         <input type="text" name="address" value="{{ $customer->address ?? old('address') }}" class="bg-transparent">
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="form-check checkbox-style mb-30" style="margin-top: 31px;">
+        <input name="is_vigia" @if(!empty($customer->is_vigia)) {{ $customer->is_vigia = 'on'  ? 'checked' : '' }} @endif class="form-check-input" type="checkbox" id="checkbox-not-robot">
+        <label class="form-check-label" for="checkbox-not-robot" >¿Es Cliente Vigia?</label>
       </div>
     </div>
 

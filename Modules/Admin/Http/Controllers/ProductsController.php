@@ -211,6 +211,7 @@ class ProductsController extends Controller
 
             $products = DB::table('products')
                 ->where('name', 'LIKE', "%{$search}%")
+                ->orWhere('products.custom_code', 'LIKE', "%{$search}%")
                 ->select(
                     'products.id',
                     'products.custom_code',

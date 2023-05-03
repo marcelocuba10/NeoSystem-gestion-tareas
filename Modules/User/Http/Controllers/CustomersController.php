@@ -94,24 +94,24 @@ class CustomersController extends Controller
 
         $request->validate(
             [
-                'name' => 'required|max:50|min:5',
+                'name' => 'required|max:50|min:3',
                 'phone' => 'required|max:25|min:5',
                 'doc_id' => 'nullable|max:25|min:5|unique:customers,doc_id',
                 'email' => 'nullable|max:50|min:5|email:rfc,dns|unique:customers,email',
                 'address' => 'nullable|max:255|min:5',
-                'city' => 'nullable|max:50|min:5',
+                'city' => 'nullable|max:50|min:3',
                 'estate' => 'required|max:50|min:5',
                 'is_vigia' => 'nullable',
                 'category' => 'required|max:150|min:1',
                 'potential_products' => 'required|max:150|min:1',
                 'result_of_the_visit' => 'required|max:1000|min:5',
-                'objective' => 'required|max:1000|min:5',
+                'objective' => 'nullable|max:1000|min:5',
                 'next_visit_date' => 'nullable|date_format:Y-m-d|after_or_equal:' . $initialDate . '|before:' . $currentDate,
                 'next_visit_hour' => 'nullable|max:5|min:5',
             ],
             [
                 'name.required'  => 'El campo Nombre es obligatorio.',
-                'name.min'  => 'El campo Nombre debe ser mayor a 5 dígitos.',
+                'name.min'  => 'El campo Nombre debe ser mayor a 3 dígitos.',
                 'phone.required'  => 'El campo Teléfono es obligatorio.',
                 'phone.min'  => 'El campo Teléfono debe ser mayor a 5 dígitos.',
 
@@ -129,7 +129,7 @@ class CustomersController extends Controller
                 'email.unique'  => 'El Email ya esta en uso.',
                 'email.min'  => 'El campo Email debe ser mayor a 5 dígitos.',
                 'address.min'  => 'El campo Dirección debe ser mayor a 5 dígitos.',
-                'city.min'  => 'El campo Ciudad debe ser mayor a 5 dígitos.',
+                'city.min'  => 'El campo Ciudad debe ser mayor a 3 dígitos.',
             ]
         );
 
@@ -288,24 +288,24 @@ class CustomersController extends Controller
 
         $request->validate(
             [
-                'name' => 'required|max:50|min:5',
+                'name' => 'required|max:50|min:3',
                 'phone' => 'required|max:25|min:5',
                 'doc_id' => 'nullable|max:25|min:5|unique:customers,doc_id,' . $id,
                 'email' => 'nullable|max:50|min:5|email:rfc,dns|unique:customers,email,' . $id,
                 'address' => 'nullable|max:255|min:5',
-                'city' => 'nullable|max:50|min:5',
+                'city' => 'nullable|max:50|min:3',
                 'estate' => 'required|max:50|min:5',
                 'is_vigia' => 'nullable',
                 'category' => 'required|max:150|min:1',
                 'potential_products' => 'required|max:150|min:1',
                 'result_of_the_visit' => 'required|max:1000|min:5',
-                'objective' => 'required|max:1000|min:5',
+                'objective' => 'nullable|max:1000|min:5',
                 'next_visit_date' => 'nullable|date_format:Y-m-d|after_or_equal:' . $initialDate . '|before:' . $currentDate,
                 'next_visit_hour' => 'nullable|max:5|min:5',
             ],
             [
                 'name.required'  => 'El campo Nombre es obligatorio.',
-                'name.min'  => 'El campo Nombre debe ser mayor a 5 dígitos.',
+                'name.min'  => 'El campo Nombre debe ser mayor a 3 dígitos.',
                 'phone.required'  => 'El campo Teléfono es obligatorio.',
                 'phone.min'  => 'El campo Teléfono debe ser mayor a 5 dígitos.',
 
@@ -324,7 +324,7 @@ class CustomersController extends Controller
                 'email.unique'  => 'El Email ya esta en uso.',
                 'email.min'  => 'El campo Email debe ser mayor a 5 dígitos.',
                 'address.min'  => 'El campo Dirección debe ser mayor a 5 dígitos.',
-                'city.min'  => 'El campo Ciudad debe ser mayor a 5 dígitos.',
+                'city.min'  => 'El campo Ciudad debe ser mayor a 3 dígitos.',
             ]
         );
 
