@@ -17,6 +17,7 @@ class ProductsApiController extends Controller
                 'products.custom_code',
                 'products.name',
                 'products.description',
+                'products.purchase_price',
                 'products.sale_price',
             )
             ->orderBy('products.created_at', 'DESC')
@@ -36,6 +37,7 @@ class ProductsApiController extends Controller
                 'products.custom_code',
                 'products.name',
                 'products.description',
+                'products.purchase_price',
                 'products.sale_price'
             )
             ->first();
@@ -70,6 +72,7 @@ class ProductsApiController extends Controller
                     'products.custom_code',
                     'products.name',
                     'products.description',
+                    'products.purchase_price',
                     'products.sale_price',
                 )
                 ->orderBy('products.created_at', 'DESC')
@@ -82,6 +85,7 @@ class ProductsApiController extends Controller
                     'products.custom_code',
                     'products.name',
                     'products.description',
+                    'products.purchase_price',
                     'products.sale_price',
                 )
                 ->orderBy('products.created_at', 'DESC')
