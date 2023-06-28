@@ -192,37 +192,37 @@ class SalesApiController extends Controller
                 if ($sale->isTemp == 1) {
 
                     /** Send email notification - updated status sale to process*/
-                    $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
-                    $head = 'crear un(a) ' . $sale->type . ' - #' . $sale->invoice_number;
-                    $type = 'Venta';
-                    //** create link to download pdf invoice in email */
-                    $linkOrderPDF = url('/sales/' . $input['idReference'] . '/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
+                    // $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+                    // $head = 'crear un(a) ' . $sale->type . ' - #' . $sale->invoice_number;
+                    // $type = 'Venta';
+                    // //** create link to download pdf invoice in email */
+                    // $linkOrderPDF = url('/sales/' . $input['idReference'] . '/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
 
-                    $sale_email = DB::table('sales')
-                        ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
-                        ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
-                        ->leftjoin('users', 'users.idReference', '=', 'sales.seller_id')
-                        ->where('sales.id', $sale->id)
-                        ->select(
-                            'sales.sale_date',
-                            'sales.type',
-                            'sales.status',
-                            'sales.total',
-                            'sales.visit_id',
-                            'customer_visits.action',
-                            'customer_visits.visit_date',
-                            'customer_visits.next_visit_date',
-                            'customer_visits.next_visit_hour',
-                            'customer_visits.result_of_the_visit',
-                            'customer_visits.objective',
-                            'customers.name AS customer_name',
-                            'customers.estate',
-                            'customers.phone',
-                            'users.name AS seller_name'
-                        )
-                        ->first();
+                    // $sale_email = DB::table('sales')
+                    //     ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+                    //     ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+                    //     ->leftjoin('users', 'users.idReference', '=', 'sales.seller_id')
+                    //     ->where('sales.id', $sale->id)
+                    //     ->select(
+                    //         'sales.sale_date',
+                    //         'sales.type',
+                    //         'sales.status',
+                    //         'sales.total',
+                    //         'sales.visit_id',
+                    //         'customer_visits.action',
+                    //         'customer_visits.visit_date',
+                    //         'customer_visits.next_visit_date',
+                    //         'customer_visits.next_visit_hour',
+                    //         'customer_visits.result_of_the_visit',
+                    //         'customer_visits.objective',
+                    //         'customers.name AS customer_name',
+                    //         'customers.estate',
+                    //         'customers.phone',
+                    //         'users.name AS seller_name'
+                    //     )
+                    //     ->first();
 
-                    Mail::to($emailDefault)->send(new NotifyMail($sale_email, $head, $linkOrderPDF, $type));
+                    // Mail::to($emailDefault)->send(new NotifyMail($sale_email, $head, $linkOrderPDF, $type));
                 }
             }
         }
@@ -245,37 +245,37 @@ class SalesApiController extends Controller
                 if ($sale->isTemp == 1) {
 
                     /** Send email notification - updated status sale to process*/
-                    $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
-                    $head = 'crear un(a) ' . $sale->type . ' - #' . $sale->invoice_number;
-                    $type = 'Venta';
-                    //** create link to download pdf invoice in email */
-                    $linkOrderPDF = url('/sales/' . $input['idReference'] . '/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
+                    // $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+                    // $head = 'crear un(a) ' . $sale->type . ' - #' . $sale->invoice_number;
+                    // $type = 'Venta';
+                    // //** create link to download pdf invoice in email */
+                    // $linkOrderPDF = url('/sales/' . $input['idReference'] . '/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
 
-                    $sale_email = DB::table('sales')
-                        ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
-                        ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
-                        ->leftjoin('users', 'users.idReference', '=', 'sales.seller_id')
-                        ->where('sales.id', $sale->id)
-                        ->select(
-                            'sales.sale_date',
-                            'sales.type',
-                            'sales.status',
-                            'sales.total',
-                            'sales.visit_id',
-                            'customer_visits.action',
-                            'customer_visits.visit_date',
-                            'customer_visits.next_visit_date',
-                            'customer_visits.next_visit_hour',
-                            'customer_visits.result_of_the_visit',
-                            'customer_visits.objective',
-                            'customers.name AS customer_name',
-                            'customers.estate',
-                            'customers.phone',
-                            'users.name AS seller_name'
-                        )
-                        ->first();
+                    // $sale_email = DB::table('sales')
+                    //     ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+                    //     ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+                    //     ->leftjoin('users', 'users.idReference', '=', 'sales.seller_id')
+                    //     ->where('sales.id', $sale->id)
+                    //     ->select(
+                    //         'sales.sale_date',
+                    //         'sales.type',
+                    //         'sales.status',
+                    //         'sales.total',
+                    //         'sales.visit_id',
+                    //         'customer_visits.action',
+                    //         'customer_visits.visit_date',
+                    //         'customer_visits.next_visit_date',
+                    //         'customer_visits.next_visit_hour',
+                    //         'customer_visits.result_of_the_visit',
+                    //         'customer_visits.objective',
+                    //         'customers.name AS customer_name',
+                    //         'customers.estate',
+                    //         'customers.phone',
+                    //         'users.name AS seller_name'
+                    //     )
+                    //     ->first();
 
-                    Mail::to($emailDefault)->send(new NotifyMail($sale_email, $head, $linkOrderPDF, $type));
+                    // Mail::to($emailDefault)->send(new NotifyMail($sale_email, $head, $linkOrderPDF, $type));
                 }
 
                 /** Get total amount from items of Sale */
@@ -301,38 +301,38 @@ class SalesApiController extends Controller
                         ]);
 
                     /** Send email notification - updated status sale to process*/
-                    $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
-                    $head = 'procesar un ' . $sale->previous_type . ' para Venta - #' . $sale->invoice_number;
-                    $type = 'Venta';
+                    // $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+                    // $head = 'procesar un ' . $sale->previous_type . ' para Venta - #' . $sale->invoice_number;
+                    // $type = 'Venta';
 
-                    //** create link to download pdf invoice in email */
-                    $linkOrderPDF = url('/sales/' . $input['idReference'] . '/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
+                    // //** create link to download pdf invoice in email */
+                    // $linkOrderPDF = url('/sales/' . $input['idReference'] . '/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
 
-                    $sale = DB::table('sales')
-                        ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
-                        ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
-                        ->leftjoin('users', 'users.idReference', '=', 'sales.seller_id')
-                        ->where('sales.id', $sale->id)
-                        ->select(
-                            'sales.sale_date',
-                            'sales.type',
-                            'sales.status',
-                            'sales.total',
-                            'sales.visit_id',
-                            'customer_visits.action',
-                            'customer_visits.visit_date',
-                            'customer_visits.next_visit_date',
-                            'customer_visits.next_visit_hour',
-                            'customer_visits.result_of_the_visit',
-                            'customer_visits.objective',
-                            'customers.name AS customer_name',
-                            'customers.estate',
-                            'customers.phone',
-                            'users.name AS seller_name'
-                        )
-                        ->first();
+                    // $sale = DB::table('sales')
+                    //     ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+                    //     ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+                    //     ->leftjoin('users', 'users.idReference', '=', 'sales.seller_id')
+                    //     ->where('sales.id', $sale->id)
+                    //     ->select(
+                    //         'sales.sale_date',
+                    //         'sales.type',
+                    //         'sales.status',
+                    //         'sales.total',
+                    //         'sales.visit_id',
+                    //         'customer_visits.action',
+                    //         'customer_visits.visit_date',
+                    //         'customer_visits.next_visit_date',
+                    //         'customer_visits.next_visit_hour',
+                    //         'customer_visits.result_of_the_visit',
+                    //         'customer_visits.objective',
+                    //         'customers.name AS customer_name',
+                    //         'customers.estate',
+                    //         'customers.phone',
+                    //         'users.name AS seller_name'
+                    //     )
+                    //     ->first();
 
-                    Mail::to($emailDefault)->send(new NotifyMail($sale, $head, $linkOrderPDF, $type));
+                    // Mail::to($emailDefault)->send(new NotifyMail($sale, $head, $linkOrderPDF, $type));
                 }
             }
         }
@@ -376,38 +376,38 @@ class SalesApiController extends Controller
                         ]);
 
                     /** Send email notification - updated status sale to process*/
-                    $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
-                    $head = 'procesar un ' . $sale->previous_type . ' para Venta - #' . $sale->invoice_number;
-                    $type = 'Venta';
+                    // $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+                    // $head = 'procesar un ' . $sale->previous_type . ' para Venta - #' . $sale->invoice_number;
+                    // $type = 'Venta';
 
-                    //** create link to download pdf invoice in email */
-                    $linkOrderPDF = url('/sales/' . $input['idReference'] . '/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
+                    // //** create link to download pdf invoice in email */
+                    // $linkOrderPDF = url('/sales/' . $input['idReference'] . '/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
 
-                    $sale = DB::table('sales')
-                        ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
-                        ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
-                        ->leftjoin('users', 'users.idReference', '=', 'sales.seller_id')
-                        ->where('sales.id', $sale->id)
-                        ->select(
-                            'sales.sale_date',
-                            'sales.type',
-                            'sales.status',
-                            'sales.total',
-                            'sales.visit_id',
-                            'customer_visits.action',
-                            'customer_visits.visit_date',
-                            'customer_visits.next_visit_date',
-                            'customer_visits.next_visit_hour',
-                            'customer_visits.result_of_the_visit',
-                            'customer_visits.objective',
-                            'customers.name AS customer_name',
-                            'customers.estate',
-                            'customers.phone',
-                            'users.name AS seller_name'
-                        )
-                        ->first();
+                    // $sale = DB::table('sales')
+                    //     ->leftjoin('customer_visits', 'customer_visits.id', '=', 'sales.visit_id')
+                    //     ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
+                    //     ->leftjoin('users', 'users.idReference', '=', 'sales.seller_id')
+                    //     ->where('sales.id', $sale->id)
+                    //     ->select(
+                    //         'sales.sale_date',
+                    //         'sales.type',
+                    //         'sales.status',
+                    //         'sales.total',
+                    //         'sales.visit_id',
+                    //         'customer_visits.action',
+                    //         'customer_visits.visit_date',
+                    //         'customer_visits.next_visit_date',
+                    //         'customer_visits.next_visit_hour',
+                    //         'customer_visits.result_of_the_visit',
+                    //         'customer_visits.objective',
+                    //         'customers.name AS customer_name',
+                    //         'customers.estate',
+                    //         'customers.phone',
+                    //         'users.name AS seller_name'
+                    //     )
+                    //     ->first();
 
-                    Mail::to($emailDefault)->send(new NotifyMail($sale, $head, $linkOrderPDF, $type));
+                    // Mail::to($emailDefault)->send(new NotifyMail($sale, $head, $linkOrderPDF, $type));
                 }
             }
         }
@@ -553,14 +553,14 @@ class SalesApiController extends Controller
             ->first();
 
         /** Send email notification - updated status sale to cancel*/
-        $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
-        $head = 'Cancelar un(a) ' . $sale->type . ' - #' . $sale->invoice_number;
-        $type = 'Venta';
+        // $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+        // $head = 'Cancelar un(a) ' . $sale->type . ' - #' . $sale->invoice_number;
+        // $type = 'Venta';
 
-        //** create link to download pdf invoice in email */
-        $linkOrderPDF = url('/sales/' . $idRefCurrentUser . '/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
+        // //** create link to download pdf invoice in email */
+        // $linkOrderPDF = url('/sales/' . $idRefCurrentUser . '/generateInvoicePDF/?download=pdf&saleId=' . $sale->id);
 
-        Mail::to($emailDefault)->send(new NotifyMail($sale, $head, $linkOrderPDF, $type));
+        // Mail::to($emailDefault)->send(new NotifyMail($sale, $head, $linkOrderPDF, $type));
 
         return response()->json(array(
             'success' => 'Sale Canceled successfully.'

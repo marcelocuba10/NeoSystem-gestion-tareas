@@ -145,34 +145,34 @@ class CustomerVisitApiController extends Controller
             }
 
             /** Send email notification */
-            $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
-            $head = 'crear una Visita Cliente - #' . $customer_visit->visit_number;
-            $type = 'Visita Cliente';
-            $linkOrderPDF = null;
+            // $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+            // $head = 'crear una Visita Cliente - #' . $customer_visit->visit_number;
+            // $type = 'Visita Cliente';
+            // $linkOrderPDF = null;
 
-            $customer_visit = DB::table('customer_visits')
-                ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-                ->leftjoin('users', 'users.idReference', '=', 'customer_visits.seller_id')
-                ->where('customer_visits.id', $customer_visit->id)
-                ->select(
-                    'customer_visits.id',
-                    'customer_visits.visit_number',
-                    'customer_visits.visit_date',
-                    'customer_visits.next_visit_date',
-                    'customer_visits.next_visit_hour',
-                    'customer_visits.status',
-                    'customer_visits.action',
-                    'customer_visits.type',
-                    'customer_visits.result_of_the_visit',
-                    'customer_visits.objective',
-                    'customers.name AS customer_name',
-                    'customers.estate',
-                    'customers.phone',
-                    'users.name AS seller_name'
-                )
-                ->first();
+            // $customer_visit = DB::table('customer_visits')
+            //     ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+            //     ->leftjoin('users', 'users.idReference', '=', 'customer_visits.seller_id')
+            //     ->where('customer_visits.id', $customer_visit->id)
+            //     ->select(
+            //         'customer_visits.id',
+            //         'customer_visits.visit_number',
+            //         'customer_visits.visit_date',
+            //         'customer_visits.next_visit_date',
+            //         'customer_visits.next_visit_hour',
+            //         'customer_visits.status',
+            //         'customer_visits.action',
+            //         'customer_visits.type',
+            //         'customer_visits.result_of_the_visit',
+            //         'customer_visits.objective',
+            //         'customers.name AS customer_name',
+            //         'customers.estate',
+            //         'customers.phone',
+            //         'users.name AS seller_name'
+            //     )
+            //     ->first();
 
-            Mail::to($emailDefault)->send(new NotifyMail($customer_visit, $head, $linkOrderPDF, $type));
+            // Mail::to($emailDefault)->send(new NotifyMail($customer_visit, $head, $linkOrderPDF, $type));
         }
 
         //return response
@@ -261,35 +261,35 @@ class CustomerVisitApiController extends Controller
                 /** send email notification when is the first customer_visit order */
                 if ($customer_visit->isTemp == 1) {
                     /** Send email notification */
-                    $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
-                    $head = 'crear una Visita Cliente - #' . $customer_visit->visit_number;
-                    $type = 'Visita Cliente';
-                    //** create link to download pdf invoice in email */
-                    $linkOrderPDF = url('/customer_visits/' . $input['idReference'] . '/generateInvoicePDF/?download=pdf&visit_id=' . $customer_visit->id);
+                    // $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+                    // $head = 'crear una Visita Cliente - #' . $customer_visit->visit_number;
+                    // $type = 'Visita Cliente';
+                    // //** create link to download pdf invoice in email */
+                    // $linkOrderPDF = url('/customer_visits/' . $input['idReference'] . '/generateInvoicePDF/?download=pdf&visit_id=' . $customer_visit->id);
 
-                    $customer_visit_email = DB::table('customer_visits')
-                        ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-                        ->leftjoin('users', 'users.idReference', '=', 'customer_visits.seller_id')
-                        ->where('customer_visits.id', $customer_visit->id)
-                        ->select(
-                            'customer_visits.id',
-                            'customer_visits.visit_number',
-                            'customer_visits.visit_date',
-                            'customer_visits.next_visit_date',
-                            'customer_visits.next_visit_hour',
-                            'customer_visits.status',
-                            'customer_visits.action',
-                            'customer_visits.type',
-                            'customer_visits.result_of_the_visit',
-                            'customer_visits.objective',
-                            'customers.name AS customer_name',
-                            'customers.estate',
-                            'customers.phone',
-                            'users.name AS seller_name'
-                        )
-                        ->first();
+                    // $customer_visit_email = DB::table('customer_visits')
+                    //     ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
+                    //     ->leftjoin('users', 'users.idReference', '=', 'customer_visits.seller_id')
+                    //     ->where('customer_visits.id', $customer_visit->id)
+                    //     ->select(
+                    //         'customer_visits.id',
+                    //         'customer_visits.visit_number',
+                    //         'customer_visits.visit_date',
+                    //         'customer_visits.next_visit_date',
+                    //         'customer_visits.next_visit_hour',
+                    //         'customer_visits.status',
+                    //         'customer_visits.action',
+                    //         'customer_visits.type',
+                    //         'customer_visits.result_of_the_visit',
+                    //         'customer_visits.objective',
+                    //         'customers.name AS customer_name',
+                    //         'customers.estate',
+                    //         'customers.phone',
+                    //         'users.name AS seller_name'
+                    //     )
+                    //     ->first();
 
-                    Mail::to($emailDefault)->send(new NotifyMail($customer_visit_email, $head, $linkOrderPDF, $type));
+                    // Mail::to($emailDefault)->send(new NotifyMail($customer_visit_email, $head, $linkOrderPDF, $type));
                 }
 
                 /** Check if it is the first time the order is created or if it already existed */
@@ -584,18 +584,18 @@ class CustomerVisitApiController extends Controller
         }
 
         /** Send email notification - updated status visit to cancel*/
-        $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
-        $head = 'Cancelar una Visita Cliente - #' . $customer_visit->visit_number;
-        $type = 'Visita Cliente';
+        // $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+        // $head = 'Cancelar una Visita Cliente - #' . $customer_visit->visit_number;
+        // $type = 'Visita Cliente';
 
-        //** create link to download pdf invoice in email */
-        if ($customer_visit->type == 'Presupuesto') {
-            $linkOrderPDF = url('/customer_visits/' . $idRefCurrentUser . '/generateInvoicePDF/?download=pdf&visit_id=' . $customer_visit->id);
-        } else {
-            $linkOrderPDF = null;
-        }
+        // //** create link to download pdf invoice in email */
+        // if ($customer_visit->type == 'Presupuesto') {
+        //     $linkOrderPDF = url('/customer_visits/' . $idRefCurrentUser . '/generateInvoicePDF/?download=pdf&visit_id=' . $customer_visit->id);
+        // } else {
+        //     $linkOrderPDF = null;
+        // }
 
-        Mail::to($emailDefault)->send(new NotifyMail($customer_visit, $head, $linkOrderPDF, $type));
+        // Mail::to($emailDefault)->send(new NotifyMail($customer_visit, $head, $linkOrderPDF, $type));
 
         return response()->json(array(
             'success' => 'Customer Visit canceled successfully.'
@@ -661,18 +661,18 @@ class CustomerVisitApiController extends Controller
         }
 
         /** Send email notification - updated status visit to proceseed*/
-        $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
-        $head = 'procesar una Visita Cliente - #' . $customer_visit->visit_number;
-        $type = 'Visita Cliente';
+        // $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+        // $head = 'procesar una Visita Cliente - #' . $customer_visit->visit_number;
+        // $type = 'Visita Cliente';
 
-        //** create link to download pdf invoice in email */
-        if ($customer_visit->type == 'Presupuesto') {
-            $linkOrderPDF = url('/customer_visits/' . $input['idReference'] . '/generateInvoicePDF/?download=pdf&visit_id=' . $customer_visit->id);
-        } else {
-            $linkOrderPDF = null;
-        }
+        // //** create link to download pdf invoice in email */
+        // if ($customer_visit->type == 'Presupuesto') {
+        //     $linkOrderPDF = url('/customer_visits/' . $input['idReference'] . '/generateInvoicePDF/?download=pdf&visit_id=' . $customer_visit->id);
+        // } else {
+        //     $linkOrderPDF = null;
+        // }
 
-        Mail::to($emailDefault)->send(new NotifyMail($customer_visit, $head, $linkOrderPDF, $type));
+        // Mail::to($emailDefault)->send(new NotifyMail($customer_visit, $head, $linkOrderPDF, $type));
 
         //return response
         return response()->json(array(

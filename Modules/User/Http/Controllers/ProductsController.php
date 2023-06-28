@@ -97,6 +97,7 @@ class ProductsController extends Controller
             //         'products.description',
             //         'products.sale_price',
             //         'products.inventory',
+            //         'products.purchase_price',
             //         'images_products.filename'
             //     )
             //     ->orderBy('products.created_at', 'DESC')
@@ -109,6 +110,7 @@ class ProductsController extends Controller
                     'products.custom_code',
                     'products.name',
                     'products.description',
+                    'products.purchase_price',
                     'products.sale_price',
                 )
                 ->orderBy('products.created_at', 'DESC')
@@ -137,6 +139,7 @@ class ProductsController extends Controller
                     'products.custom_code',
                     'products.name',
                     'products.description',
+                    'products.purchase_price',
                     'products.sale_price',
                 )
                 ->orderBy('products.created_at', 'DESC')

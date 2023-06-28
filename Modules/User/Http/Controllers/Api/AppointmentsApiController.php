@@ -98,32 +98,32 @@ class AppointmentsApiController extends Controller
         $appointment = Appointment::create($input);
 
         /** Send email notification */
-        $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
-        $head = 'crear una agenda - #' . $appointment->visit_number;
-        $type = 'Agenda';
-        $linkOrderPDF = null;
+        // $emailDefault = DB::table('parameters')->where('type', 'email')->pluck('email')->first();
+        // $head = 'crear una agenda - #' . $appointment->visit_number;
+        // $type = 'Agenda';
+        // $linkOrderPDF = null;
 
-        $appointment = DB::table('appointments')
-            ->leftjoin('customers', 'customers.id', '=', 'appointments.customer_id')
-            ->leftjoin('users', 'users.idReference', '=', 'appointments.idReference')
-            ->where('appointments.id', $appointment->id)
-            ->select(
-                'appointments.id',
-                'appointments.visit_number',
-                'appointments.date',
-                'appointments.hour',
-                'appointments.status',
-                'appointments.action',
-                'appointments.observation',
-                'appointments.created_at',
-                'customers.name AS customer_name',
-                'customers.estate',
-                'customers.phone',
-                'users.name AS seller_name'
-            )
-            ->first();
+        // $appointment = DB::table('appointments')
+        //     ->leftjoin('customers', 'customers.id', '=', 'appointments.customer_id')
+        //     ->leftjoin('users', 'users.idReference', '=', 'appointments.idReference')
+        //     ->where('appointments.id', $appointment->id)
+        //     ->select(
+        //         'appointments.id',
+        //         'appointments.visit_number',
+        //         'appointments.date',
+        //         'appointments.hour',
+        //         'appointments.status',
+        //         'appointments.action',
+        //         'appointments.observation',
+        //         'appointments.created_at',
+        //         'customers.name AS customer_name',
+        //         'customers.estate',
+        //         'customers.phone',
+        //         'users.name AS seller_name'
+        //     )
+        //     ->first();
 
-        Mail::to($emailDefault)->send(new NotifyMail($appointment, $head, $linkOrderPDF, $type));
+        // Mail::to($emailDefault)->send(new NotifyMail($appointment, $head, $linkOrderPDF, $type));
 
         //return response
         return response()->json(array(
