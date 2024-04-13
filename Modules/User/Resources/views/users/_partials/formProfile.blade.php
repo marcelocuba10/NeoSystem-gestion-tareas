@@ -2,29 +2,29 @@
   <div class="row">
     <div class="col-6">
       <div class="input-style-1">
-        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Razón Social</label>
+        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Nombre</label>
         <input type="text" class="bg-transparent" value="{{ $user->name ?? old('name') }}" name="name">
       </div>
     </div>
     <div class="col-6">
       <div class="input-style-1">
-        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Nombre del Encargado</label>
-        <input name="seller_contact_1" value="{{ $user->seller_contact_1 ?? old('seller_contact_1') }}" type="text" class="bg-transparent">
+        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Apellidos</label>
+        <input type="text" class="bg-transparent" value="{{ $user->last_name ?? old('last_name') }}" name="last_name">
       </div>
     </div>
     <div class="col-6">
       <div class="input-style-1">
-          <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Email</label>
-          <input type="email" class="bg-transparent" value="{{ $user->email ?? old('email') }}" name="email">
+        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Email</label>
+        <input type="email" class="bg-transparent" value="{{ $user->email ?? old('email') }}" name="email">
       </div>
     </div>
     <div class="col-6">
       <div class="input-style-1">
-          <label>Contraseña</label>
-          <input type="password" name="password" class="bg-transparent">
-          @if ($user)
-            <span class="form-text m-b-none">Déjelo en blanco si no desea cambiar la contraseña</span>
-          @endif
+        <label>Contraseña</label>
+        <input type="password" name="password" class="bg-transparent">
+        @if ($user)
+          <span class="form-text m-b-none">Déjelo en blanco si no desea cambiar la contraseña</span>
+        @endif
       </div>
     </div>
     <div class="col-6">
@@ -36,40 +36,16 @@
         @endif
       </div>
     </div>
-    <div class="col-3">
+    <div class="col-6">
       <div class="input-style-1">
-        <label>Teléfono 1</label>
-        <input name="phone_1" value="{{ $user->phone_1 ?? old('phone_1') }}" type="text" class="bg-transparent">
+        <label>Teléfono</label>
+        <input type="text" name="phone" value="{{ $user->phone ?? old('phone') }}" class="bg-transparent">
       </div>
     </div>
-    <div class="col-3">
+    <div class="col-6">
       <div class="input-style-1">
-        <label>Teléfono 2</label>
-        <input name="phone_2" value="{{ $user->phone_2 ?? old('phone_2') }}" type="text" class="bg-transparent">
-      </div>
-    </div>
-    <div class="col-3">
-      <div class="input-style-1">
-        <label>Doc Identidad / RUC</label>
+        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Doc Identidad</label>
         <input type="text" name="doc_id" value="{{ $user->doc_id ?? old('doc_id') }}" class="bg-transparent">
-      </div>
-    </div>
-    <div class="col-4">
-      <div class="input-style-1">
-        <label>Ciudad</label>
-        <input name="city" value="{{ $user->city ?? old('city') }}" type="text" class="bg-transparent">
-      </div>
-    </div>
-    <div class="col-4">
-      <div class="select-style-1">
-        <label><span class="c_red" data-toggle="tooltip" data-placement="bottom" title="Campo Obligatorio">(*)&nbsp;</span>Departamento</label>
-        <div class="select-position">
-          <select name="estate">
-            @foreach ($estates as $key)
-              <option value="{{ $key[1] }}" {{ ( $key[1] == $userEstate) ? 'selected' : '' }}> {{ $key[1] }} </option>
-            @endforeach 
-          </select>
-        </div>
       </div>
     </div>
     <div class="col-12">

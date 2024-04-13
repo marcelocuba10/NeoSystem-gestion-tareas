@@ -46,17 +46,6 @@ return [
             'provider' => 'users',
             'hash' => false,
         ],
-
-        'admin' => [
-            'driver' => 'session',
-            'provider' => 'admins',
-        ],
-
-        'admin-api' => [
-            'driver' => 'passport',
-            'provider' => 'admins',
-            'hash' => false,
-        ],
     ],
 
     /*
@@ -80,11 +69,6 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => \Modules\User\Entities\User::class,
-        ],
-
-        'admins' => [
-            'driver' => 'eloquent',
-            'model' => \Modules\Admin\Entities\SuperUser::class,
         ],
 
         // 'users' => [

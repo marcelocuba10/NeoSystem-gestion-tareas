@@ -30,11 +30,11 @@
                   </li>
                   <li class="u-nav-item"><a
                           class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base"
-                          href="{{ url('about') }}" data-page-id="107860" style="padding: 10px 20px;">Quienes Somos</a>
+                          href="#" data-page-id="107860" style="padding: 10px 20px;">viverra</a>
                   </li>
                   <li class="u-nav-item"><a
                           class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base"
-                          href="{{ url('contact') }}" data-page-id="107875" style="padding: 10px 20px;">Contacto</a>
+                          href="#" data-page-id="107875" style="padding: 10px 20px;">semper</a>
                   </li>
                     @auth
                         <li class="u-nav-item">
@@ -56,11 +56,11 @@
                           <li class="u-nav-item"><a class="u-button-style u-nav-link" href="/"
                                   data-page-id="107855">Inicio</a>
                           </li>
-                          <li class="u-nav-item"><a class="u-button-style u-nav-link" href="{{ url('about') }}"
-                                  data-page-id="107860">Quienes Somos</a>
+                          <li class="u-nav-item"><a class="u-button-style u-nav-link" href="#"
+                                  data-page-id="107860">viverra</a>
                           </li>
-                          <li class="u-nav-item"><a class="u-button-style u-nav-link" href="{{ url('contact') }}"
-                                  data-page-id="107875">Contacto</a>
+                          <li class="u-nav-item"><a class="u-button-style u-nav-link" href="#"
+                                  data-page-id="107875">semper</a>
                           </li>
                             @auth
                                 <li class="u-nav-item">

@@ -16,7 +16,7 @@ class HomeController extends Controller
 
     public function index()
     {
-        $idRefCurrentUser = Auth::user()->idReference;
+        $currentUserId = Auth::user()->id;
         $currentDate = Carbon::now()->format('d/m/Y');
         $currentOnlyYear = Carbon::now()->format('Y');
         $currentMonth = Carbon::now()->format('m');
@@ -24,201 +24,31 @@ class HomeController extends Controller
         Carbon::setlocale('ES');
         $currentMonthName = Carbon::parse(Carbon::now()->format('Y/m/d'))->translatedFormat('F');
 
-        $customer_visits = DB::table('customer_visits')
-            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-            ->where('customer_visits.seller_id', '=', $idRefCurrentUser)
-            ->where('customer_visits.isTemp', '!=', 1)
-            ->select(
-                'customer_visits.id',
-                'customer_visits.visit_number',
-                'customer_visits.visit_date',
-                'customer_visits.next_visit_date',
-                'customer_visits.next_visit_hour',
-                'customer_visits.status',
-                'customer_visits.action',
-                'customer_visits.type',
-                'customers.name AS customer_name',
-                'customers.estate',
-                'customers.phone',
-            )
-            ->orderBy('customer_visits.created_at', 'DESC')
-            ->limit(4)
+        $qty_tasks = DB::table('tasks')
+            ->where('tasks.user_id', '=', $currentUserId)
+            ->count();
+
+        $qty_users = DB::table('users')
+            ->where('users.status', '=', 1)
+            ->count();
+
+        $tasks = DB::table('tasks')
+            ->where('tasks.user_id', '=', $currentUserId)
             ->get();
 
-        $sales = DB::table('sales')
-            ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
-            ->where('sales.seller_id', '=', $idRefCurrentUser)
-            ->where('sales.isTemp', '!=', 1)
-            ->select(
-                'sales.id',
-                'sales.customer_id',
-                'sales.invoice_number',
-                'sales.sale_date',
-                'sales.order_date',
-                'sales.type',
-                'sales.status',
-                'sales.total',
-                'customers.name AS customer_name',
-                'customers.estate',
-            )
-            ->orderBy('sales.created_at', 'DESC')
-            ->limit(5)
+        $users = DB::table('users')
+            ->where('users.status', '=', 1)
+            ->select('id','name','email')
             ->get();
-
-        $cant_customers = DB::table('customers')
-            ->where('customers.idReference', '=', $idRefCurrentUser)
-            ->count();
-
-        $visited_less_30_days = DB::table('customer_visits')
-            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-            ->where('customers.idReference', '=', $idRefCurrentUser)
-            ->where('visit_date', '>', Carbon::now()->subDays(30))
-            ->where('customer_visits.isTemp', '!=', 1)
-            ->count();
-
-        $visited_more_30_days = DB::table('customer_visits')
-            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-            ->where('customers.idReference', '=', $idRefCurrentUser)
-            ->where('visit_date', '<', Carbon::now()->subDays(30))
-            ->where('customer_visits.isTemp', '!=', 1)
-            ->count();
-
-        $visited_more_90_days = DB::table('customer_visits')
-            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-            ->where('customers.idReference', '=', $idRefCurrentUser)
-            ->where('visit_date', '<', Carbon::now()->subDays(90))
-            ->where('customer_visits.isTemp', '!=', 1)
-            ->count();
-
-        /** For Pie Chart */
-        $visits_cancel_count = DB::table('customer_visits')
-            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-            ->where('customers.idReference', '=', $idRefCurrentUser)
-            ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
-            ->where('customer_visits.status', '=', 'Cancelado')
-            ->where('customer_visits.isTemp', '!=', 1)
-            ->count();
-
-        $visits_process_count = DB::table('customer_visits')
-            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-            ->where('customers.idReference', '=', $idRefCurrentUser)
-            ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
-            ->where('customer_visits.status', '=', 'Procesado')
-            ->where('customer_visits.isTemp', '!=', 1)
-            ->count();
-
-        $visits_no_process_count = DB::table('customer_visits')
-            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-            ->where('customers.idReference', '=', $idRefCurrentUser)
-            ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
-            ->where('customer_visits.status', '=', 'No Procesado')
-            ->where('customer_visits.isTemp', '!=', 1)
-            ->count();
-
-        $visits_pending_count = DB::table('customer_visits')
-            ->leftjoin('customers', 'customers.id', '=', 'customer_visits.customer_id')
-            ->where('customers.idReference', '=', $idRefCurrentUser)
-            ->whereMonth('customer_visits.created_at', $currentMonth) //get data current month 11,12 etc
-            ->where('customer_visits.status', '=', 'Pendiente')
-            ->where('customer_visits.isTemp', '!=', 1)
-            ->count();
-
-        $sales_count = DB::table('sales')
-            ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
-            ->where('customers.idReference', '=', $idRefCurrentUser)
-            ->whereMonth('sales.created_at', $currentMonth) //get data current month 11,12 etc
-            ->where('sales.type', '=', 'Venta')
-            ->where('sales.status', '=', 'Procesado')
-            ->where('sales.isTemp', '!=', 1)
-            ->count();
-
-        $orders_count = DB::table('sales')
-            ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
-            ->where('customers.idReference', '=', $idRefCurrentUser)
-            ->whereMonth('sales.created_at', $currentMonth) //get data current month 11,12 etc
-            ->where('sales.previous_type', '=', 'Presupuesto')
-            ->where('sales.status', '!=', 'Cancelado')
-            ->where('sales.isTemp', '!=', 1)
-            ->count();
-
-        /** For Column Chart */
-        $getSalesCountByMonth = DB::table('sales')
-            ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
-            ->where('customers.idReference', '=', $idRefCurrentUser)
-            ->selectRaw("count(sales.id) as total, date_format(sales.created_at, '%b %Y') as period")  //Essentially, what this selection date_format(created_at, '%b %Y') does is that it maps the created_at field into a string containing the field's month and year, like 'Mar 2022'.
-            ->whereYear('sales.created_at', '>=', $currentOnlyYear)
-            ->where('sales.type', '=', 'Venta')
-            ->where('sales.status', '=', 'Procesado')
-            ->where('sales.isTemp', '!=', 1)
-            ->orderBy('sales.created_at', 'ASC')
-            ->groupBy('period')
-            ->get();
-
-        $getSalesCancelCountByMonth = DB::table('sales')
-            ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
-            ->where('customers.idReference', '=', $idRefCurrentUser)
-            ->selectRaw("count(sales.id) as total, date_format(sales.created_at, '%b %Y') as period")  //Essentially, what this selection date_format(created_at, '%b %Y') does is that it maps the created_at field into a string containing the field's month and year, like 'Mar 2022'.
-            ->whereYear('sales.created_at', '>=', $currentOnlyYear)
-            ->where('sales.type', '=', 'Venta')
-            ->where('sales.status', '=', 'Cancelado')
-            ->where('sales.isTemp', '!=', 1)
-            ->orderBy('sales.created_at', 'ASC')
-            ->groupBy('period')
-            ->get();
-
-        $getOrdersCountByMonth = DB::table('sales')
-            ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
-            ->where('customers.idReference', '=', $idRefCurrentUser)
-            ->selectRaw("count(sales.id) as total, date_format(sales.created_at, '%b %Y') as period")  //Essentially, what this selection date_format(created_at, '%b %Y') does is that it maps the created_at field into a string containing the field's month and year, like 'Mar 2022'.
-            ->whereYear('sales.created_at', '>=', $currentOnlyYear)
-            ->where('sales.previous_type', '=', 'Presupuesto')
-            ->where('sales.status', '!=', 'Cancelado')
-            ->where('sales.isTemp', '!=', 1)
-            ->orderBy('sales.created_at', 'ASC')
-            ->groupBy('period')
-            ->get();
-
-        $getOrdersCancelCountByMonth = DB::table('sales')
-            ->leftjoin('customers', 'customers.id', '=', 'sales.customer_id')
-            ->where('customers.idReference', '=', $idRefCurrentUser)
-            ->selectRaw("count(sales.id) as total, date_format(sales.created_at, '%b %Y') as period")  //Essentially, what this selection date_format(created_at, '%b %Y') does is that it maps the created_at field into a string containing the field's month and year, like 'Mar 2022'.
-            ->whereYear('sales.created_at', '>=', $currentOnlyYear)
-            ->where('sales.type', '=', 'Presupuesto')
-            ->where('sales.previous_type', '=', 'Presupuesto')
-            ->where('sales.status', '=', 'Cancelado')
-            ->where('sales.isTemp', '!=', 1)
-            ->orderBy('sales.created_at', 'ASC')
-            ->groupBy('period')
-            ->get();
-
-        $salesCountByMonth = $getSalesCountByMonth->pluck('total')->toArray();
-        $salesCancelCountByMonth = $getSalesCancelCountByMonth->pluck('total')->toArray();
-        $ordersCountByMonth = $getOrdersCountByMonth->pluck('total')->toArray();
-        $ordersCancelCountByMonth = $getOrdersCancelCountByMonth->pluck('total')->toArray();
-
-        $salesPeriods = $getSalesCountByMonth->pluck('period')->toArray();
 
         return view('user::dashboard', compact(
+            'tasks',
+            'qty_tasks',
+            'qty_users',
+            'users',
             'currentMonthName',
-            'customer_visits',
-            'cant_customers',
-            'sales',
             'currentDate',
             'currentOnlyYear',
-            'visited_less_30_days',
-            'visited_more_30_days',
-            'visited_more_90_days',
-            'sales_count',
-            'orders_count',
-            'salesCountByMonth',
-            'salesCancelCountByMonth',
-            'ordersCountByMonth',
-            'ordersCancelCountByMonth',
-            'salesPeriods',
-            'visits_cancel_count',
-            'visits_pending_count',
-            'visits_process_count',
-            'visits_no_process_count',
         ));
     }
 }

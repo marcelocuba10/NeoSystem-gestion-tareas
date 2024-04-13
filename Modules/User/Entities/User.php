@@ -15,39 +15,23 @@ use Laravel\Passport\HasApiTokens;
 class User extends Authenticatable
 {
 
-    use HasFactory, Notifiable, HasRoles, HasApiTokens;  //importante adicionar HasRoles
+    use HasFactory, Notifiable, HasRoles, HasApiTokens; 
 
     protected $guard_name = 'web';
 
     protected $fillable = [
         'name',
         'last_name',
-        'idReference',
-        'phone_1',
-        'phone_2',
+        'phone',
         'address',
         'doc_id',
         'email',
         'password',
-        'main_user',
         'status',
-        'seller_contact_1',
-        'seller_contact_2',
         'city',
         'estate',
-        'latitude',
-        'longitude',
         'img_profile',
-        'meta_visits',
-        'meta_billing',
-        'count_meta_visits',
-        'count_meta_billing'
     ];
-
-    public function reports()
-    {
-        return $this->hasMany(Reports::class);
-    }
 
     protected $hidden = [
         'password',

@@ -7,11 +7,10 @@
     <div class="right">
         <div class="ergts" style="display: flex;">
             <a href="{{ url('/') }}"><button class="ththhf" type="button" class="btn btn-block create-account">Página Web</button></a>
-            <a href="{{ url('/admin/login') }}"><button class="ththhf" type="button" class="btn btn-block create-account">Gestión</button></a>
         </div>    
         <div class="login-texto off-mobile">
             <p class="login-title">Bienvenido a {{ config('app.name') }}</p>
-            <p class="login-message">Gestión Comercial de Agentes</p>
+            <p class="login-message">Gestión Tareas</p>
         </div>
     </div>    
 </div> 
@@ -72,6 +71,9 @@
 
         <div class="form-group" style="text-align: center;">
             <button style="padding: 10px 50px;" type="submit" class="btn btn-block create-account">Ingresar</button>
+        </div>
+        <div class="text-muted text-center" style="margin-top: 20px">
+            <small>¿No tenes una cuenta? <a class="footer-link-login" style="color: #212529;" href="{{ url('/user/register') }}">Registrate Acá</a></small>
         </div>
     </form>
 </div>

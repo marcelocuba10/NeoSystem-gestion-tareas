@@ -2,18 +2,13 @@
 
 namespace Modules\User\Http\Controllers;
 
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 //use Illuminate\Routing\Controller;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Modules\User\Entities\Customers;
 use Modules\User\Entities\User;
-
-//spatie
-use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -21,90 +16,72 @@ class UserController extends Controller
     public function __construct()
     {
         $this->middleware('auth:web', ['except' => ['logout']]);
-
-        $this->middleware('permission:user-list|user-create|user-edit|user-delete', ['only' => ['index']]);
-        $this->middleware('permission:user-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:user-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:user-delete', ['only' => ['destroy']]);
     }
 
     public function index()
     {
-        return redirect()->to('user/dashboard');
+        $currentUserId = Auth::id();
+
+        $users = DB::table('users')
+            ->where('users.status', '=', 1)
+            ->select(
+                'users.id',
+                'users.name',
+                'users.phone',
+                'users.last_name',
+                'users.status',
+                'users.email',
+            )
+            ->orderBy('users.created_at', 'DESC')
+            ->paginate(10);
+
+        return view('user::users.index', compact('users', 'currentUserId'))->with('i', (request()->input('page', 1) - 1) * 10);
+    }
+
+
+    public function show($id)
+    {
+        $user = User::find($id);
+
+        return view('user::users.show', compact('user'));
     }
 
     public function showProfile($id)
     {
         $user = User::find($id);
-        $roles = Role::where('guard_name', '=', 'web')
-            ->where('name', '!=', 'Admin')
-            ->pluck('name', 'name')
-            ->all();
 
-        $userRoleArray = $user->roles->pluck('name')->toArray(); //get user assigned role
-
-        /** get current user role */
-        $arrayCurrentUserRole = Auth::user()->roles->pluck('name');
-        $currentUserRole = $arrayCurrentUserRole[0];
-
-        return view('user::users.profile', compact('user', 'currentUserRole'));
+        return view('user::users.profile', compact('user'));
     }
 
     public function editProfile($id)
     {
-        /** get current user role */
-        $arrayCurrentUserRole = Auth::user()->roles->pluck('name');
-        $currentUserRole = $arrayCurrentUserRole[0];
-
         $user = User::find($id);
-        $roles = Role::where('guard_name', '=', 'web')
-            ->where('name', '!=', 'Admin')
-            ->pluck('name', 'name')
-            ->all();
 
-        $estates = array(
-            array('1', 'Alto Paraná'),
-            array('2', 'Central'),
-            array('3', 'Concepción'),
-            array('4', 'San Pedro'),
-            array('5', 'Cordillera'),
-            array('6', 'Guairá'),
-            array('7', 'Caaguazú'),
-            array('8', 'Caazapá'),
-            array('9', 'Itapúa'),
-            array('10', 'Misiones'),
-            array('11', 'Paraguarí'),
-            array('12', 'Ñeembucú'),
-            array('13', 'Amambay'),
-            array('14', 'Canindeyú'),
-            array('15', 'Presidente Hayes'),
-            array('16', 'Boquerón'),
-            array('17', 'Alto Paraguay')
-        );
-
-        $userEstate = $user->estate;
-
-        $userRoleArray = $user->roles->pluck('name')->toArray(); //get user assigned role
-
-        return view('user::users.editProfile', compact('user', 'roles', 'currentUserRole','estates', 'userEstate'));
+        return view('user::users.editProfile', compact('user'));
     }
 
     public function updateProfile($id, Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required|max:50|min:5',
-            'seller_contact_1' => 'required|max:50|min:5',
-            'seller_contact_2' => 'nullable|max:50|min:5',
-            'phone_1' => 'nullable|max:50|min:5',
-            'phone_2' => 'nullable|max:50|min:5',
-            'city' => 'nullable|max:50|min:5',
-            'estate' => 'required|max:50|min:5',
-            'address' => 'nullable|max:255|min:5',
-            'email' => 'required|max:50|min:5|email:rfc,dns|unique:users,email,' . $id,
-            'password' => 'nullable|max:50|min:5',
-            'confirm_password' => 'nullable|max:50|min:5|same:password',
-            'doc_id' => 'nullable|max:25|min:5|unique:users,doc_id,' . $id,
-        ]);
+        $request->validate(
+            [
+                'name' => 'required|max:50|min:2',
+                'last_name' => 'required|max:50|min:2',
+                'email' => 'required|email|unique:users,email,' . $id,
+                'phone' => 'nullable|max:20|min:2',
+                'doc_id' => 'nullable|max:25|min:2|unique:users,doc_id,' . $id,
+                'password' => 'nullable|max:50|min:2',
+                'confirm_password' => 'nullable|max:50|min:2|same:password',
+            ],
+            [
+                'name.required'  => 'El campo Nombre es obligatorio.',
+                'last_name.required'  => 'El campo Apellidos es obligatorio.',
+                'email.required'  => 'El campo Email es obligatorio.',
+                'email.unique'  => 'El Email ya esta en uso.',
+                'doc_id.required'  => 'El campo Documento Identidad es obligatorio.',
+                'doc_id.unique'  => 'El Documento Identidad ya esta en uso.',
+                'doc_id.min'  => 'El Documento Identidad debe ser mayor a 1 dígito.',
+            ]
+        );
 
         $input = $request->all();
 
@@ -112,18 +89,77 @@ class UserController extends Controller
             $input = Arr::except($input, array('password'));
         } else {
             if (empty($input['confirm_password'])) {
-                return redirect()->to('user/users/edit/profile/' . $id)->withErrors('Confirm password')->withInput();
+                return redirect()->to('/user/users/edit/profile/' . $id)->withErrors('Confirme la Contraseña, déjelo en blanco si no desea cambiar la contraseña')->withInput();
             }
         }
 
         $user = User::find($id);
-
         $user->update($input);
 
-        /** Main user is Role Admin */
-        $user->syncRoles('Admin');
-        $user->assignRole('Admin');
+        return redirect()->to('/user/users/profile/' . $id)->with('message', 'Registro actualizado correctamente');
+    }
 
-        return redirect()->to('user/users/edit/profile/' . $id)->with('message', 'User Profile updated successfully');
+    public function updatePhotoProfile(Request $request)
+    {
+        $user = auth()->user();
+
+        $request->validate(
+            [
+                'photo' => 'image|mimes:jpeg,png,jpg|max:5048'
+            ],
+            [
+                'photo.max'  => 'La imagen excede el límite permitido 2MB',
+                'photo.mimes'  => 'La imagen debe ser en uno de los formatos:  jpg, jpeg, png',
+                'photo.image'  => 'La imagen no es válida',
+            ]
+        );
+
+        if ($request->hasFile('photo')) {
+            $file = $request->file('photo');
+            $photoName = str_replace(' ', '-', $file->getClientOriginalName());
+            $file->move(public_path('/images/profiles/'), $photoName);
+
+            // Update profile photo
+            $user->img_profile = $photoName;
+            $user->save();
+        }
+
+        return redirect()->to('user/users/profile/' . $user->id)->with('message', 'Foto de perfil actualizada correctamente');
+    }
+
+    public function search(Request $request)
+    {
+        $currentUser = Auth::user();
+        $currentUserId = $currentUser->id;
+        $search = $request->input('search');
+
+        if ($search == '') {
+            $users = DB::table('users')
+                ->select(
+                    'users.id',
+                    'users.name',
+                    'users.phone',
+                    'users.last_name',
+                    'users.status',
+                    'users.email',
+                )
+                ->orderBy('users.created_at', 'DESC')
+                ->paginate(10);
+        } else {
+            $users = DB::table('users')
+                ->where('users.name', 'LIKE', "%{$search}%")
+                ->select(
+                    'users.id',
+                    'users.name',
+                    'users.phone',
+                    'users.last_name',
+                    'users.status',
+                    'users.email',
+                )
+                ->orderBy('users.created_at', 'DESC')
+                ->paginate();
+        }
+
+        return view('user::users.index', compact('users', 'search', 'currentUserId'))->with('i', (request()->input('page', 1) - 1) * 10);
     }
 }

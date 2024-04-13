@@ -175,17 +175,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        //spatie package
-        Spatie\Permission\PermissionServiceProvider::class,
-
         //Passport
         Laravel\Passport\PassportServiceProvider::class,
-
-        //QrCode
-        SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
-
-        //Barryvdh PDF
-        Barryvdh\DomPDF\ServiceProvider::class,
 
     ],
 
@@ -238,14 +229,6 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-
-        //QrCode
-        'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
-
-        //Barryvdh PDF
-        //'PDF' => Barryvdh\DomPDF\Facade::class,
-        'PDF' => Barryvdh\DomPDF\Facade\Pdf::class,
-
     ],
 
 ];

@@ -29,10 +29,5 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Passport::routes();
-
-        //cuando registramos este email, lo detecta como super admin
-        // Gate::before(function($user , $ability){
-        //     return $user->email == 'admin@admin.com' ?? null;
-        // });
     }
 }

@@ -46,11 +46,6 @@ class Kernel extends HttpKernel
             'throttle:60,1',
             \Fruitcake\Cors\HandleCors::class,
         ],
-
-        // 'api' => [
-        //     'throttle:api',
-        //     \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        // ],
     ];
 
     /**
@@ -71,12 +66,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
-        //spatie package
-        'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
-        'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
-        'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
         //CORS
         'cors' => \Fruitcake\Cors\HandleCors::class,
-        //'cors' => \App\Http\Middleware\Cors::class,
     ];
 }
